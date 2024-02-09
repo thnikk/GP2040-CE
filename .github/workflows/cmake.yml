@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        GP2040_BOARDCONFIG: [Pico, PicoW, BentoBox, FightboardV3, FightboardV3Mirrored, FlatboxRev4, FlatboxRev5, FlatboxRev5RGB, FlatboxRev5Southpaw, KB2040, KeyboardConverter, Haute42, Liatris, Mavercade, OpenCore0, OpenCore0WASD, PicoFightingBoard, RanaTadpole, ReflexCtrlSNES, ReflexEncodeV1.2, ReflexEncodeV2.0, RP2040AdvancedBreakoutBoard, RP2040AdvancedBreakoutBoardUSBPassthrough, RP2040MiniBreakoutBoard, SparkFunProMicro, WaveshareZero, Stress, SGFBridget, SGFFaust]
+        GP2040_BOARDCONFIG: [FightboardV3, FightboardV3Mirrored]
 
     steps:
     #Global Setup
@@ -67,7 +67,7 @@ jobs:
         name: GP2040-CE - ${{ matrix.GP2040_BOARDCONFIG }}
         path: ${{github.workspace}}/build/GP2040-CE_*_${{ matrix.GP2040_BOARDCONFIG }}.uf2
         if-no-files-found: error
-        
+
     - name: Upload .elf Artifact
       if: ${{ matrix.GP2040_BOARDCONFIG == 'Pico'}}
       uses: actions/upload-artifact@v4.3.1
