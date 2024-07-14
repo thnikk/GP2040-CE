@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        GP2040_BOARDCONFIG: [FightboardV3, FightboardV3Mirrored]
+        GP2040_BOARDCONFIG: [FightboardV3, FightboardV3Mirrored, FightboardV3MirroredUnflipped, Flightboard]
 
     steps:
     #Global Setup
