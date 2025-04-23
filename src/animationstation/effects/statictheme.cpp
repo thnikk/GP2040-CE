@@ -261,6 +261,21 @@ StaticTheme::StaticTheme(PixelMatrix &matrix) : Animation(matrix) {
 		{ GAMEPAD_MASK_L2, ColorPink },
 	});
 
+	const map<uint32_t, RGB> themeSpringboard({
+		{ GAMEPAD_MASK_DU, ColorWhite },
+		{ GAMEPAD_MASK_DD, ColorWhite },
+		{ GAMEPAD_MASK_DL, ColorWhite },
+		{ GAMEPAD_MASK_DR, ColorWhite },
+		{ GAMEPAD_MASK_B1, ColorGreen },
+		{ GAMEPAD_MASK_B2, ColorRed },
+		{ GAMEPAD_MASK_B3, ColorBlue },
+		{ GAMEPAD_MASK_B4, ColorYellow },
+		{ GAMEPAD_MASK_R1, ColorPink },
+		{ GAMEPAD_MASK_R2, ColorPurple },
+		{ GAMEPAD_MASK_L1, ColorAqua },
+		{ GAMEPAD_MASK_L2, ColorBlue },
+	});
+
 	// Rainbow theme on a Stickless layout should use green for up button
   std::map<uint32_t, RGB> themeStaticRainbow({
 		{ GAMEPAD_MASK_DL, ColorRed },
@@ -301,6 +316,7 @@ StaticTheme::StaticTheme(PixelMatrix &matrix) : Animation(matrix) {
 	AddTheme(themeGuiltyGearTypeD);
 	AddTheme(themeGuiltyGearTypeE);
 	AddTheme(themeFightboard);
+	AddTheme(themeSpringboard);
 }
 
 bool StaticTheme::Animate(RGB (&frame)[100]) {
