@@ -98,7 +98,7 @@ void DisplaySaverScreen::drawSnowScene() {
     }
 
     for (uint8_t x = 0; x < SCREEN_WIDTH; ++x) {
-        if (rand() % 100 == 0) {
+        if (rand() % 10 == 0) {
             getRenderer()->drawPixel(x, 0, 1);
             snowflakeSpeeds[x][0] = (rand() % 3) + 1;
             snowflakeDrift[x][0] = (rand() % 3) - 1;
