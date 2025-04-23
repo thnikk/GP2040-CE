@@ -285,6 +285,21 @@ void addStaticThemes(const LEDOptions& options, const AnimationOptions& animatio
 		{ GAMEPAD_MASK_L2, ColorPink },
 	});
 
+	const map<uint32_t, RGB> themeSpringboard({
+		{ GAMEPAD_MASK_DU, ColorWhite },
+		{ GAMEPAD_MASK_DD, ColorWhite },
+		{ GAMEPAD_MASK_DL, ColorWhite },
+		{ GAMEPAD_MASK_DR, ColorWhite },
+		{ GAMEPAD_MASK_B1, ColorGreen },
+		{ GAMEPAD_MASK_B2, ColorRed },
+		{ GAMEPAD_MASK_B3, ColorBlue },
+		{ GAMEPAD_MASK_B4, ColorYellow },
+		{ GAMEPAD_MASK_R1, ColorPink },
+		{ GAMEPAD_MASK_R2, ColorPurple },
+		{ GAMEPAD_MASK_L1, ColorAqua },
+		{ GAMEPAD_MASK_L2, ColorBlue },
+	});
+
 	// Rainbow theme on a Stickless layout should use green for up button
 	themeStaticRainbow[GAMEPAD_MASK_DU] = (options.ledLayout == BUTTON_LAYOUT_STICKLESS) ? ColorGreen : ColorOrange;
 
@@ -314,6 +329,7 @@ void addStaticThemes(const LEDOptions& options, const AnimationOptions& animatio
 	StaticTheme::AddTheme(themeGuiltyGearTypeE);
 
 	StaticTheme::AddTheme(themeFightboard);
+	StaticTheme::AddTheme(themeSpringboard);
 
 	if (animationOptions.hasCustomTheme)
 	{
