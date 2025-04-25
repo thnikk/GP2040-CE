@@ -17,7 +17,7 @@ void ButtonLayoutScreen::init() {
     EventManager::getInstance().registerEventHandler(GP_EVENT_PROFILE_CHANGE, GPEVENT_CALLBACK(this->handleProfileChange(event)));
     EventManager::getInstance().registerEventHandler(GP_EVENT_USBHOST_MOUNT, GPEVENT_CALLBACK(this->handleUSB(event)));
     EventManager::getInstance().registerEventHandler(GP_EVENT_USBHOST_UNMOUNT, GPEVENT_CALLBACK(this->handleUSB(event)));
-    
+
     footer = "";
     historyString = "";
     inputHistory.clear();
@@ -36,7 +36,7 @@ void ButtonLayoutScreen::init() {
     }
 
 	// start with profile mode displayed
-	bannerDisplay = true;
+	// bannerDisplay = true;
     prevProfileNumber = -1;
 
     prevLayoutLeft = Storage::getInstance().getDisplayOptions().buttonLayout;
@@ -46,7 +46,7 @@ void ButtonLayoutScreen::init() {
     prevOrientation = Storage::getInstance().getDisplayOptions().buttonLayoutOrientation;
 
     // we cannot look at macro options enabled, pull the pins
-    
+
     // macro display now uses our pin functions, so we need to check if pins are enabled...
     macroEnabled = false;
     // Macro Button initialized by void Gamepad::setup()
@@ -86,7 +86,7 @@ void ButtonLayoutScreen::shutdown() {
 int8_t ButtonLayoutScreen::update() {
     bool configMode = Storage::getInstance().GetConfigMode();
     uint8_t profileNumber = getGamepad()->getOptions().profileNumber;
-    
+
     // Check if we've updated button layouts while in config mode
     if (configMode) {
         uint8_t layoutLeft = Storage::getInstance().getDisplayOptions().buttonLayout;
@@ -137,7 +137,7 @@ void ButtonLayoutScreen::generateHeader() {
 			if (bannerMessage.empty()) {
 				statusBar.assign(storage.currentProfileLabel(), strlen(storage.currentProfileLabel()));
 				if (statusBar.empty()) {
-					statusBar = "     Profile #";
+					statusBar = "PROFILE ";
 					statusBar +=  std::to_string(getGamepad()->getOptions().profileNumber);
 				} else {
 					statusBar.insert(statusBar.begin(), (21-statusBar.length())/2, ' ');
@@ -426,7 +426,7 @@ bool ButtonLayoutScreen::compareCustomLayouts()
 
     bool leftChanged = ((leftOptions.layout != prevLeftOptions.layout) || (leftOptions.common.startX != prevLeftOptions.common.startX) || (leftOptions.common.startY != prevLeftOptions.common.startY) || (leftOptions.common.buttonPadding != prevLeftOptions.common.buttonPadding) || (leftOptions.common.buttonRadius != prevLeftOptions.common.buttonRadius));
     bool rightChanged = ((rightOptions.layout != prevRightOptions.layout) || (rightOptions.common.startX != prevRightOptions.common.startX) || (rightOptions.common.startY != prevRightOptions.common.startY) || (rightOptions.common.buttonPadding != prevRightOptions.common.buttonPadding) || (rightOptions.common.buttonRadius != prevRightOptions.common.buttonRadius));
-    
+
     return (leftChanged || rightChanged);
 }
 
