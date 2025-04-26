@@ -402,6 +402,12 @@ void Gamepad::read()
 
 	state.lt = 0;
 	state.rt = 0;
+
+	if state.buttons || state.dpad || state.lx != joystickMid || state.ly != joystickMid || state.rx != joystickMid || state.ry != joystickMid {
+		state.any = 1;
+	} else {
+		state.any = 0;
+	}
 }
 
 void Gamepad::hotkey()
