@@ -124,7 +124,7 @@ PLEDAnimationState getXBoneAnimationNEOPICO(Gamepad * gamepad)
         .animation = PLED_ANIM_OFF
     };
 
-    if ( gamepad->auxState.playerID.ledValue == 1 ) { 
+    if ( gamepad->auxState.playerID.ledValue == 1 ) {
         animationState.animation = PLED_ANIM_SOLID;
     }
 
@@ -286,6 +286,11 @@ void NeoPicoLEDAddon::process()
     } else {
         as.SetBrightness(AnimationStation::GetBrightness());
     }
+
+		float diffTime = getMillis() - prevMillis;
+		if (diffTime > 60000) {
+			as.SetBrightness(10);
+		}
 
     as.ApplyBrightness(frame);
 
