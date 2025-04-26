@@ -46,7 +46,7 @@ void DisplaySaverScreen::drawScreen() {
 
 int8_t DisplaySaverScreen::update() {
     if (!Storage::getInstance().GetConfigMode()) {
-        uint16_t buttonState = getGamepad()->state.buttons;
+        bool buttonState = getGamepad()->state.any;
         if (prevButtonState && !buttonState) {
             if (prevButtonState != 0) {
                 prevButtonState = 0;
