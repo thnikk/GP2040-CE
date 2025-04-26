@@ -5,6 +5,7 @@
 
 #include "AnimationStation.hpp"
 #include "AnimationStorage.hpp"
+#include "storagemanager.h"
 #include "NeoPico.hpp"
 #include "Pixel.hpp"
 #include "PlayerLEDs.h"
@@ -284,7 +285,8 @@ void NeoPicoLEDAddon::process()
 		if (gamepad->state.any) prevMillis = getMillis();
 		float diffTime = getMillis() - prevMillis;
     // if (turnOffWhenSuspended && get_usb_suspended()) {
-		if (diffTime > 60000) {
+		uint32_t timeout = Storage::getInstance().getDisplayOptions().displaySaverTimeout;
+		if (diffTime > timeout) {
         as.DimBrightnessTo0();
     } else {
         as.SetBrightness(AnimationStation::GetBrightness());
