@@ -253,7 +253,7 @@ void ButtonLayoutScreen::generateHeader() {
 void ButtonLayoutScreen::drawScreen() {
     if (bannerDisplay) {
         getRenderer()->drawRectangle(0, 0, 128, 7, false, true);
-    	getRenderer()->drawText(0, 0, statusBar, true);
+    	getRenderer()->drawText(0, 0, statusBar, false);
     } else {
 		getRenderer()->drawText(0, 0, statusBar);
 	}
