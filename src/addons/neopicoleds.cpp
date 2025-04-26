@@ -281,16 +281,14 @@ void NeoPicoLEDAddon::process()
 
     as.Animate();
 
-    if (turnOffWhenSuspended && get_usb_suspended()) {
+		if (gamepad->state.any) prevMillis = getMillis();
+		float diffTime = getMillis() - prevMillis;
+    // if (turnOffWhenSuspended && get_usb_suspended()) {
+		if (diffTime > 60000) {
         as.DimBrightnessTo0();
     } else {
         as.SetBrightness(AnimationStation::GetBrightness());
     }
-
-		float diffTime = getMillis() - prevMillis;
-		if (diffTime > 60000) {
-			as.SetBrightness(10);
-		}
 
     as.ApplyBrightness(frame);
 
