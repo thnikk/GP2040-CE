@@ -36,7 +36,7 @@ void ButtonLayoutScreen::init() {
     }
 
 	// start with profile mode displayed
-	// bannerDisplay = true;
+	bannerDisplay = true;
     prevProfileNumber = -1;
 
     prevLayoutLeft = Storage::getInstance().getDisplayOptions().buttonLayout;
@@ -252,7 +252,7 @@ void ButtonLayoutScreen::generateHeader() {
 
 void ButtonLayoutScreen::drawScreen() {
     if (bannerDisplay) {
-        getRenderer()->drawRectangle(0, 0, 128, 7, true, true);
+        getRenderer()->drawRectangle(0, 0, 128, 7, false, true);
     	getRenderer()->drawText(0, 0, statusBar, true);
     } else {
 		getRenderer()->drawText(0, 0, statusBar);
