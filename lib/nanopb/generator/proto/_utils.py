@@ -35,8 +35,12 @@ def invoke_protoc(argv):
 
     if has_grpcio_protoc():
         import grpc_tools.protoc as protoc
-        import pkg_resources
-        proto_include = pkg_resources.resource_filename('grpc_tools', '_proto')
+        try:
+            import pkg_resources
+            proto_include = pkg_resources.resource_filename('grpc_tools', '_proto')
+        except ImportError:
+            import importlib.resources
+            proto_include = str(importlib.resources.files('grpc_tools').joinpath('_proto'))
         argv.append('-I' + proto_include)
 
         return protoc.main(argv)
