@@ -7,7 +7,6 @@ import sys
 import tempfile
 import shutil
 import traceback
-import pkg_resources
 from ._utils import has_grpcio_protoc, invoke_protoc, print_versions
 
 # Compatibility layer to make TemporaryDirectory() available on Python 2.
@@ -42,7 +41,12 @@ def build_nanopb_proto(protosrc, dirname):
     if has_grpcio_protoc():
         # grpcio-tools has an extra CLI argument
         # from grpc.tools.protoc __main__ invocation.
-        _builtin_proto_include = pkg_resources.resource_filename('grpc_tools', '_proto')
+        try:
+            import pkg_resources
+            _builtin_proto_include = pkg_resources.resource_filename('grpc_tools', '_proto')
+        except ImportError:
+            import importlib.resources
+            _builtin_proto_include = str(importlib.resources.files('grpc_tools').joinpath('_proto'))
         cmd.append("-I={}".format(_builtin_proto_include))
 
     try:
