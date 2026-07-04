@@ -88,7 +88,7 @@
 // each on its own PIO state machine.
 #define BOARD_LEDS_RGB_ENABLED 1
 #define BOARD_LEDS_RGB_PIN 16
-#define BOARD_LEDS_RGB_BRIGHTNESS 128
+#define BOARD_LEDS_RGB_BRIGHTNESS 16
 
 #define HAS_I2C_DISPLAY 1
 #define I2C1_ENABLED 1
