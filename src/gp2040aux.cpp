@@ -7,6 +7,7 @@
 #include "usbhostmanager.h"
 
 #include "addons/board_led.h"  // Add-Ons
+#include "addons/board_led_rgb.h"
 #include "addons/buzzerspeaker.h"
 #include "addons/display.h"
 #include "addons/pleds.h"
@@ -46,6 +47,7 @@ void GP2040Aux::setup() {
 	addons.LoadAddon(new NeoPicoLEDAddon(), CORE1_LOOP);
 	addons.LoadAddon(new PlayerLEDAddon(), CORE1_LOOP);
 	addons.LoadAddon(new BoardLedAddon(), CORE1_LOOP);
+	addons.LoadAddon(new BoardLedRgbAddon(), CORE1_LOOP);
 	addons.LoadAddon(new BuzzerSpeakerAddon(), CORE1_LOOP);
 	addons.LoadAddon(new DRV8833RumbleAddon(), CORE1_LOOP);
 	addons.LoadAddon(new ReactiveLEDAddon(), CORE1_LOOP);

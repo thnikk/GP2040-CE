@@ -214,6 +214,7 @@ src/config_utils.cpp
 src/configs/webconfig.cpp
 src/addons/analog.cpp
 src/addons/board_led.cpp
+src/addons/board_led_rgb.cpp
 src/addons/bootsel_button.cpp
 src/addons/focus_mode.cpp
 src/addons/buzzerspeaker.cpp
