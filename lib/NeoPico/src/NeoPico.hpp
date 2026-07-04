@@ -16,6 +16,7 @@ class NeoPico
 {
 public:
   NeoPico(int ledPin, int numPixels, LEDFormat format = LED_FORMAT_GRB);
+  ~NeoPico();
   void Show();
   void Clear();
   void Off();
@@ -26,6 +27,9 @@ private:
   void PutPixel(uint32_t pixel_grb);
   LEDFormat format;
   PIO pio = pio0;
+  // State machine claimed for this instance, so multiple NeoPico
+  // objects can each drive their own pin at the same time.
+  int sm = 0;
   int numPixels = 0;
   uint32_t frame[100];
 };

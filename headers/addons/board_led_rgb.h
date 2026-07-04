@@ -97,9 +97,9 @@
 // Shows the active input mode (XInput, Switch, PS3, etc.) as a color
 // on a single onboard addressable (WS2812-style) RGB LED.
 //
-// NOTE: This addon drives PIO0 state machine 0 directly (via NeoPico),
-// the same resource NeoPicoLEDAddon (button-layout LEDs) uses. Do not
-// enable both addons at the same time.
+// Runs fine alongside NeoPicoLEDAddon (button-layout LEDs): NeoPico
+// claims its own PIO state machine per instance, so each addon drives
+// its own pin independently.
 class BoardLedRgbAddon : public GPAddon {
 public:
 	virtual bool available();

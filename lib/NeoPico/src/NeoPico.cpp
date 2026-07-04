@@ -22,23 +22,42 @@ void NeoPico::PutPixel(uint32_t pixelData) {
   switch (format) {
     case LED_FORMAT_GRB:
     case LED_FORMAT_RGB:
-      pio_sm_put_blocking(pio0, 0, pixelData << 8u);
+      pio_sm_put_blocking(pio, sm, pixelData << 8u);
       break;
     case LED_FORMAT_GRBW:
     case LED_FORMAT_RGBW:
-      pio_sm_put_blocking(pio0, 0, pixelData);
+      pio_sm_put_blocking(pio, sm, pixelData);
       break;
   }
 }
 
 NeoPico::NeoPico(int ledPin, int numPixels, LEDFormat format) : format(format), numPixels(numPixels) {
-  PIO pio = pio0;
-  int sm = 0;
+  // Claim a free state machine so more than one NeoPico instance can
+  // run at the same time (e.g. a per-button LED chain plus a separate
+  // onboard indicator LED), each on its own pin. Try PIO0 first, then
+  // PIO1, then fall back to PIO0 SM0 (the old hardcoded behavior) if
+  // every SM is already claimed.
+  pio = pio0;
+  sm = pio_claim_unused_sm(pio, false);
+  if (sm < 0) {
+    pio = pio1;
+    sm = pio_claim_unused_sm(pio, false);
+  }
+  if (sm < 0) {
+    pio = pio0;
+    sm = 0;
+  }
+
   uint offset = pio_add_program(pio, &ws2812_program);
   bool rgbw = (format == LED_FORMAT_GRBW) || (format == LED_FORMAT_RGBW);
   ws2812_program_init(pio, sm, offset, ledPin, 800000, rgbw);
   this->Clear();
   sleep_ms(10);
+}
+
+NeoPico::~NeoPico() {
+  pio_sm_set_enabled(pio, sm, false);
+  pio_sm_unclaim(pio, sm);
 }
 
 void NeoPico::Clear() {

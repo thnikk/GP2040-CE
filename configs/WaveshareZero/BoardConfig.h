@@ -34,8 +34,6 @@
 
 // Onboard WS2812 RGB LED (GPIO16) - shows the active input mode as a color.
 // Disabled by default; uncomment to enable.
-// NOTE: uses PIO0 state machine 0, same as the NeoPicoLED (button LED) addon -
-// do not enable both at the same time.
 // #define BOARD_LEDS_RGB_ENABLED 1
 // #define BOARD_LEDS_RGB_PIN 16
 // #define BOARD_LEDS_RGB_BRIGHTNESS 128
