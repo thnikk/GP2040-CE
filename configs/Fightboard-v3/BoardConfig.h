@@ -11,6 +11,12 @@
 
 #define BOARD_CONFIG_LABEL "fightboard-v3"
 
+// Boot-hold input mode overrides: holding B1 (A) selects XInput,
+// holding B2 (B) selects Switch. This matches the board's silkscreen
+// button coloring (A=green/XInput, B=red/Switch).
+#define DEFAULT_INPUT_MODE_B1 INPUT_MODE_XINPUT
+#define DEFAULT_INPUT_MODE_B2 INPUT_MODE_SWITCH
+
 // Main pin mapping Configuration
 //                                                  // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
 #define GPIO_PIN_29 GpioAction::BUTTON_PRESS_UP     // UP     | UP     | UP      | UP       | UP     | UP     |
@@ -86,8 +92,11 @@
 // Onboard WS2812 RGB LED (GPIO16) - shows the active input mode as a
 // color. Runs alongside the per-switch LEDs above (BOARD_LEDS_PIN),
 // each on its own PIO state machine.
+// NOTE: this onboard chip is wired RGB, unlike the GRB per-switch
+// chain above (LED_FORMAT) - the color order was swapped.
 #define BOARD_LEDS_RGB_ENABLED 1
 #define BOARD_LEDS_RGB_PIN 16
+#define BOARD_LEDS_RGB_FORMAT LED_FORMAT_RGB
 #define BOARD_LEDS_RGB_BRIGHTNESS 16
 
 #define HAS_I2C_DISPLAY 1
