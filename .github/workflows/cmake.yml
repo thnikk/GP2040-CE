@@ -25,6 +25,7 @@ jobs:
       matrix:
         GP2040_BOARDCONFIG:
           [Fightboard-v3,
+          Fightboard-v3-no-board-led,
           Fightboard-v3-m,
           Fightboard-v3-b,
           Springboard]
