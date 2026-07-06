@@ -107,9 +107,18 @@ function prepareSvg(svg: string): string {
 			let cleaned = attrs
 				.replace(/\s+width="[^"]*"/g, '')
 				.replace(/\s+height="[^"]*"/g, '');
-			if (!cleaned.includes('viewBox')) {
+
+			const vbMatch = cleaned.match(/viewBox="([^"]+)"/);
+			if (vbMatch) {
+				const [x, y, w, h] = vbMatch[1].split(/\s+/).map(Number);
+				cleaned = cleaned.replace(
+					vbMatch[0],
+					`viewBox="${x} ${y} ${w} ${(h * 1.2).toFixed(4)}"`,
+				);
+			} else if (!cleaned.includes('viewBox')) {
 				cleaned += ' viewBox="0 0 100 100"';
 			}
+
 			return `<svg${cleaned}>`;
 		},
 	);
@@ -169,7 +178,12 @@ export default function BoardSVG({
 				labelEl.setAttribute('paint-order', 'stroke fill');
 
 				if (isShape) {
-					el.parentNode?.insertBefore(labelEl, el.nextSibling);
+					const g = document.createElementNS(svgNs, 'g');
+					g.setAttribute('id', id);
+					el.parentNode?.insertBefore(g, el);
+					g.appendChild(el);
+					el.removeAttribute('id');
+					g.appendChild(labelEl);
 				} else {
 					el.appendChild(labelEl);
 				}
@@ -187,17 +201,14 @@ export default function BoardSVG({
 			}
 			labelEl.textContent = displayLabel;
 
-			const buttonRect = (el as Element).getBoundingClientRect();
+			const buttonEl = isShape ? (el as Element) : shapes[0];
+			const buttonRect = (buttonEl as Element).getBoundingClientRect();
 			const labelRect = labelEl.getBoundingClientRect();
 			const svgRoot = el.ownerSVGElement as SVGSVGElement;
 			const screenCTM = svgRoot.getScreenCTM();
 
 			let cx = buttonRect.left + buttonRect.width / 2;
 			let cy = buttonRect.top + buttonRect.height / 2;
-			const needsRotation = labelRect.width > buttonRect.width * 0.85;
-			if (needsRotation) {
-				cy = buttonRect.top + buttonRect.height + 14;
-			}
 
 			if (screenCTM) {
 				const inverse = screenCTM.inverse();
@@ -208,7 +219,7 @@ export default function BoardSVG({
 			labelEl.setAttribute('x', String(cx));
 			labelEl.setAttribute('y', String(cy));
 
-			if (needsRotation) {
+			if (labelRect.width > buttonRect.width * 0.85) {
 				labelEl.setAttribute('transform', `rotate(-25, ${cx}, ${cy})`);
 			} else if (labelEl.hasAttribute('transform')) {
 				labelEl.removeAttribute('transform');
