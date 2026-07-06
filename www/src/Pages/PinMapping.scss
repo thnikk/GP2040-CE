@@ -12,12 +12,11 @@
 
 .board-svg-container {
 	width: 100%;
-	display: flex;
-	justify-content: center;
 
 	svg {
-		max-width: 100%;
+		width: 100%;
 		height: auto;
+		display: block;
 	}
 
 	[id^="pin"] {
@@ -38,9 +37,5 @@
 	.pin-grid {
 		display: flex;
 		flex-direction: column;
-	}
-
-	.board-svg-container svg {
-		width: 100%;
 	}
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import invert from 'lodash/invert';
 import omit from 'lodash/omit';
@@ -100,6 +100,21 @@ const SHAPE_TAGS = new Set([
 	'path', 'rect', 'circle', 'ellipse', 'polygon', 'polyline', 'line',
 ]);
 
+function prepareSvg(svg: string): string {
+	return svg.replace(
+		/<svg([^>]*)>/,
+		(match, attrs) => {
+			let cleaned = attrs
+				.replace(/\s+width="[^"]*"/g, '')
+				.replace(/\s+height="[^"]*"/g, '');
+			if (!cleaned.includes('viewBox')) {
+				cleaned += ' viewBox="0 0 100 100"';
+			}
+			return `<svg${cleaned}>`;
+		},
+	);
+}
+
 export default function BoardSVG({
 	svgContent,
 	pinElements,
@@ -143,9 +158,14 @@ export default function BoardSVG({
 				labelEl = document.createElementNS(svgNs, 'text');
 				labelEl.setAttribute('class', 'pin-action-label');
 				labelEl.setAttribute('text-anchor', 'middle');
+				labelEl.setAttribute('dominant-baseline', 'central');
 				labelEl.setAttribute('font-family', 'monospace');
-				labelEl.setAttribute('font-size', '9');
+				labelEl.setAttribute('font-size', '11');
 				labelEl.setAttribute('font-weight', 'bold');
+				labelEl.setAttribute('stroke', '#1a1a2e');
+				labelEl.setAttribute('stroke-width', '3');
+				labelEl.setAttribute('stroke-linejoin', 'round');
+				labelEl.setAttribute('paint-order', 'stroke fill');
 
 				if (isShape) {
 					el.parentNode?.insertBefore(labelEl, el.nextSibling);
@@ -168,7 +188,7 @@ export default function BoardSVG({
 
 			const bbox = el.getBBox();
 			const cx = bbox.x + bbox.width / 2;
-			const cy = bbox.y + bbox.height + 14;
+			const cy = bbox.y + bbox.height / 2;
 			labelEl.setAttribute('x', String(cx));
 			labelEl.setAttribute('y', String(cy));
 
@@ -223,11 +243,13 @@ export default function BoardSVG({
 		updateLabels();
 	});
 
+	const processedSvg = useMemo(() => prepareSvg(svgContent), [svgContent]);
+
 	return (
 		<div
 			ref={containerRef}
 			className="board-svg-container"
-			dangerouslySetInnerHTML={{ __html: svgContent }}
+			dangerouslySetInnerHTML={{ __html: processedSvg }}
 		/>
 	);
 }
