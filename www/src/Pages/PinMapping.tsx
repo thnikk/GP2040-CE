@@ -3,6 +3,7 @@ import React, {
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -153,8 +154,10 @@ const ProfileLabel = memo(function ProfileLabel({
 
 const PinSelectList = memo(function PinSelectList({
 	profileIndex,
+	excludePins,
 }: {
 	profileIndex: number;
+	excludePins?: Set<number>;
 }) {
 	const setProfilePin = useProfilesStore((state) => state.setProfilePin);
 
@@ -231,7 +234,13 @@ const PinSelectList = memo(function PinSelectList({
 		},
 		[buttonNames],
 	);
-	return Object.entries(pins).map(([pin, pinData], index) => (
+	const pinEntries = Object.entries(pins).filter(([pin]) => {
+		if (!excludePins) return true;
+		const num = parseInt(pin.replace('pin', ''), 10);
+		return !excludePins.has(num);
+	});
+
+	return pinEntries.map(([pin, pinData], index) => (
 		<div key={`select-${index}`} className="d-flex align-items-center">
 			<div className="d-flex flex-shrink-0" style={{ width: '4rem' }}>
 				<label>{pin.toUpperCase()}</label>
@@ -292,6 +301,10 @@ const PinSection = memo(function PinSection({
 	}, []);
 
 	const { svgContent, pinElements, loading, svgMode } = useBoardSVG();
+	const svgPinSet = useMemo(
+		() => new Set(pinElements.map((p) => p.pinNumber)),
+		[pinElements],
+	);
 	const [modalPin, setModalPin] = useState<number | null>(null);
 
 	const profilePins = useProfilesStore(
@@ -401,6 +414,19 @@ const PinSection = memo(function PinSection({
 								onClose={handleModalClose}
 								onAssign={handlePinAssign}
 							/>
+
+							{pinElements.length > 0 && pinElements.length < 30 && (
+								<>
+									<hr />
+									<h5>{t('PinMapping:unmapped-pins-title')}</h5>
+									<div className="pin-grid gap-3 mt-3">
+										<PinSelectList
+											profileIndex={profileIndex}
+											excludePins={svgPinSet}
+										/>
+									</div>
+								</>
+							)}
 						</div>
 					) : (
 						<div className="pin-grid gap-3 mt-3">

@@ -20,6 +20,7 @@ export default {
 	'profile-copy-base': 'Copy base profile',
 	'assign-action-title': 'Assign function to GP{{pin}}',
 	'no-svg-available': 'No board SVG available for this device.',
+	'unmapped-pins-title': 'Additional Pins',
 	errors: {
 		conflict: 'Pin {{pin}} is already assigned to {{conflictedMappings}}',
 		required: '{{button}} is required',
