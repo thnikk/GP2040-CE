@@ -55,13 +55,11 @@ void BoardLedRgbAddon::showColor(uint32_t color) {
 void BoardLedRgbAddon::process() {
     isConfigMode = Storage::getInstance().GetConfigMode();
 
+    // Diagnostic: don't touch the LED hardware at all while in config
+    // mode, to test whether repeated NeoPico/PIO calls during config
+    // mode are what causes the hang. Whatever the LED was last set to
+    // (or its off/boot state) just stays as-is until gamepad mode.
     if (isConfigMode) {
-        uint32_t millis = getMillis();
-        if ((millis - timeSinceBlink) > BOARD_LEDS_RGB_CONFIG_BLINK_MS) {
-            blinkState = !blinkState;
-            timeSinceBlink = millis;
-            showColor(blinkState ? BOARD_LEDS_RGB_COLOR_CONFIG : 0x000000);
-        }
         prevConfigMode = true;
         return;
     }
