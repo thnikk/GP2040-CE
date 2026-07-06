@@ -12,16 +12,16 @@ bool BoardLedRgbAddon::available() {
 }
 
 void BoardLedRgbAddon::setup() {
-    // DIAGNOSTIC: skip constructing the second NeoPico/PIO instance
-    // entirely, to test whether having two simultaneously-loaded
-    // WS2812 PIO programs (regardless of whether either is ever
-    // called again) is what breaks config mode. The addon otherwise
-    // stays registered and "active" so its RAM/code footprint is
-    // unchanged.
-    // neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, BOARD_LEDS_RGB_FORMAT, BOARD_LEDS_RGB_PIO_SM, BOARD_LEDS_RGB_PIO_BLOCK);
+    // NeoPico is NOT constructed here — lazy init in process() instead.
+    // Loading the WS2812 PIO program during setup (even with an empty
+    // FIFO) causes the board to hang when web config mode is entered on
+    // some boards (e.g. Waveshare RP2040-Zero). The exact mechanism
+    // appears to be a PIO/USB interaction — the enabled-but-stalled
+    // state machine on PIO1 somehow interferes with RNDIS init on Core0.
+    // By deferring NeoPico construction to the first process() call that
+    // runs outside of config mode, the PIO program is never loaded
+    // during web config boot.
     neoPico = nullptr;
-    // Sentinel outside the InputMode range forces a color update on the
-    // first process() call.
     prevInputMode = static_cast<InputMode>(-1);
     prevConfigMode = false;
     isConfigMode = Storage::getInstance().GetConfigMode();
@@ -52,8 +52,6 @@ uint32_t BoardLedRgbAddon::colorForInputMode(InputMode mode) {
 }
 
 void BoardLedRgbAddon::showColor(uint32_t color) {
-    // DIAGNOSTIC: neoPico is currently never constructed (see setup()),
-    // so guard against the null pointer.
     if (neoPico == nullptr) {
         return;
     }
@@ -67,20 +65,21 @@ void BoardLedRgbAddon::showColor(uint32_t color) {
 void BoardLedRgbAddon::process() {
     isConfigMode = Storage::getInstance().GetConfigMode();
 
-    // Diagnostic: don't touch the LED hardware at all while in config
-    // mode, to test whether repeated NeoPico/PIO calls during config
-    // mode are what causes the hang. Whatever the LED was last set to
-    // (or its off/boot state) just stays as-is until gamepad mode.
     if (isConfigMode) {
         prevConfigMode = true;
         return;
     }
 
+    // Lazy-init NeoPico on the first process() call outside config
+    // mode. Defers loading the WS2812 PIO program until we are past
+    // web config init, which avoids the config-mode hang.
+    if (neoPico == nullptr) {
+        neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, BOARD_LEDS_RGB_FORMAT, BOARD_LEDS_RGB_PIO_SM, BOARD_LEDS_RGB_PIO_BLOCK);
+    }
+
     Gamepad * processedGamepad = Storage::getInstance().GetProcessedGamepad();
     InputMode mode = processedGamepad->getOptions().inputMode;
 
-    // Update on mode change, or right after leaving config mode so the
-    // real input-mode color is restored.
     if (prevConfigMode || mode != prevInputMode) {
         showColor(colorForInputMode(mode));
         prevInputMode = mode;
