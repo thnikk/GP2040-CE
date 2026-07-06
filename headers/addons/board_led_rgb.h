@@ -23,6 +23,13 @@
 #define BOARD_LEDS_RGB_PIN -1
 #endif
 
+// PIO0 state machine used for this LED. Must be different from the
+// state machine used by NeoPicoLEDAddon (the per-button LED chain,
+// which uses SM0) so the two don't fight over the same PIO hardware.
+#ifndef BOARD_LEDS_RGB_PIO_SM
+#define BOARD_LEDS_RGB_PIO_SM 1
+#endif
+
 // Byte order used by the onboard LED. Most onboard WS2812-style LEDs
 // (including the RP2040-Zero) use GRB.
 #ifndef BOARD_LEDS_RGB_FORMAT
@@ -97,9 +104,9 @@
 // Shows the active input mode (XInput, Switch, PS3, etc.) as a color
 // on a single onboard addressable (WS2812-style) RGB LED.
 //
-// Runs fine alongside NeoPicoLEDAddon (button-layout LEDs): NeoPico
-// claims its own PIO state machine per instance, so each addon drives
-// its own pin independently.
+// Runs alongside NeoPicoLEDAddon (button-layout LEDs) by using a
+// separate, fixed PIO0 state machine (BOARD_LEDS_RGB_PIO_SM) so the
+// two never contend for the same one.
 class BoardLedRgbAddon : public GPAddon {
 public:
 	virtual bool available();

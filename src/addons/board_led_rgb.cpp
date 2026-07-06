@@ -12,7 +12,7 @@ bool BoardLedRgbAddon::available() {
 }
 
 void BoardLedRgbAddon::setup() {
-    neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, BOARD_LEDS_RGB_FORMAT);
+    neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, BOARD_LEDS_RGB_FORMAT, BOARD_LEDS_RGB_PIO_SM);
     // Sentinel outside the InputMode range forces a color update on the
     // first process() call.
     prevInputMode = static_cast<InputMode>(-1);
