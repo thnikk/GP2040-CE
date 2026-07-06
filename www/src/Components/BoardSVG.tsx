@@ -162,7 +162,8 @@ export default function BoardSVG({
 				labelEl.setAttribute('font-family', 'monospace');
 				labelEl.setAttribute('font-size', '11');
 				labelEl.setAttribute('font-weight', 'bold');
-				labelEl.setAttribute('stroke', '#1a1a2e');
+				labelEl.setAttribute('fill', '#000000');
+				labelEl.setAttribute('stroke', '#ffffff');
 				labelEl.setAttribute('stroke-width', '3');
 				labelEl.setAttribute('stroke-linejoin', 'round');
 				labelEl.setAttribute('paint-order', 'stroke fill');
@@ -186,11 +187,18 @@ export default function BoardSVG({
 			}
 			labelEl.textContent = displayLabel;
 
-			const rect = (el as Element).getBoundingClientRect();
+			const buttonRect = (el as Element).getBoundingClientRect();
+			const labelRect = labelEl.getBoundingClientRect();
 			const svgRoot = el.ownerSVGElement as SVGSVGElement;
 			const screenCTM = svgRoot.getScreenCTM();
-			let cx = rect.left + rect.width / 2;
-			let cy = rect.top + rect.height / 2;
+
+			let cx = buttonRect.left + buttonRect.width / 2;
+			let cy = buttonRect.top + buttonRect.height / 2;
+			const needsRotation = labelRect.width > buttonRect.width * 0.85;
+			if (needsRotation) {
+				cy = buttonRect.top + buttonRect.height + 14;
+			}
+
 			if (screenCTM) {
 				const inverse = screenCTM.inverse();
 				const pt = new DOMPoint(cx, cy).matrixTransform(inverse);
@@ -199,6 +207,12 @@ export default function BoardSVG({
 			}
 			labelEl.setAttribute('x', String(cx));
 			labelEl.setAttribute('y', String(cy));
+
+			if (needsRotation) {
+				labelEl.setAttribute('transform', `rotate(-25, ${cx}, ${cy})`);
+			} else if (labelEl.hasAttribute('transform')) {
+				labelEl.removeAttribute('transform');
+			}
 
 			const isHighlighted = highlightedPin !== null && highlightedPin === pinNumber;
 
