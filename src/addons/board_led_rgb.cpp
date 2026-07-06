@@ -12,7 +12,14 @@ bool BoardLedRgbAddon::available() {
 }
 
 void BoardLedRgbAddon::setup() {
-    neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, BOARD_LEDS_RGB_FORMAT, BOARD_LEDS_RGB_PIO_SM, BOARD_LEDS_RGB_PIO_BLOCK);
+    // DIAGNOSTIC: skip constructing the second NeoPico/PIO instance
+    // entirely, to test whether having two simultaneously-loaded
+    // WS2812 PIO programs (regardless of whether either is ever
+    // called again) is what breaks config mode. The addon otherwise
+    // stays registered and "active" so its RAM/code footprint is
+    // unchanged.
+    // neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, BOARD_LEDS_RGB_FORMAT, BOARD_LEDS_RGB_PIO_SM, BOARD_LEDS_RGB_PIO_BLOCK);
+    neoPico = nullptr;
     // Sentinel outside the InputMode range forces a color update on the
     // first process() call.
     prevInputMode = static_cast<InputMode>(-1);
@@ -45,6 +52,11 @@ uint32_t BoardLedRgbAddon::colorForInputMode(InputMode mode) {
 }
 
 void BoardLedRgbAddon::showColor(uint32_t color) {
+    // DIAGNOSTIC: neoPico is currently never constructed (see setup()),
+    // so guard against the null pointer.
+    if (neoPico == nullptr) {
+        return;
+    }
     float brightness = BOARD_LEDS_RGB_BRIGHTNESS / 255.0f;
     uint32_t frame[100] = {0};
     frame[0] = RGB(color).value(BOARD_LEDS_RGB_FORMAT, brightness);
