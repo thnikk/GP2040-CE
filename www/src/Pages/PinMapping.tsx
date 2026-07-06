@@ -12,6 +12,7 @@ import {
 	Alert,
 	Button,
 	Col,
+	Collapse,
 	Form,
 	FormCheck,
 	Nav,
@@ -306,6 +307,7 @@ const PinSection = memo(function PinSection({
 		[pinElements],
 	);
 	const [modalPin, setModalPin] = useState<number | null>(null);
+	const [extraPinsOpen, setExtraPinsOpen] = useState(false);
 
 	const profilePins = useProfilesStore(
 		useShallow((state) => {
@@ -418,13 +420,28 @@ const PinSection = memo(function PinSection({
 							{pinElements.length > 0 && pinElements.length < 30 && (
 								<>
 									<hr />
-									<h5>{t('PinMapping:unmapped-pins-title')}</h5>
-									<div className="pin-grid gap-3 mt-3">
-										<PinSelectList
-											profileIndex={profileIndex}
-											excludePins={svgPinSet}
-										/>
+									<div
+										className="collapsible-heading"
+										onClick={() => setExtraPinsOpen(!extraPinsOpen)}
+										role="button"
+										tabIndex={0}
+										onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExtraPinsOpen(!extraPinsOpen); }}
+										aria-controls="extra-pins-collapse"
+										aria-expanded={extraPinsOpen}
+									>
+										<span>{extraPinsOpen ? '▲' : '▼'}</span>
+										{t('PinMapping:unmapped-pins-title')}
 									</div>
+									<Collapse in={extraPinsOpen}>
+										<div id="extra-pins-collapse">
+											<div className="pin-grid gap-3 mt-3">
+												<PinSelectList
+													profileIndex={profileIndex}
+													excludePins={svgPinSet}
+												/>
+											</div>
+										</div>
+									</Collapse>
 								</>
 							)}
 						</div>

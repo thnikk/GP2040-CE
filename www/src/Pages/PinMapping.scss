@@ -33,6 +33,24 @@
 	}
 }
 
+.collapsible-heading {
+	cursor: pointer;
+	user-select: none;
+	font-weight: 600;
+	font-size: 1.1rem;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	&:hover {
+		color: #0d6efd;
+	}
+
+	span {
+		font-size: 0.7rem;
+	}
+}
+
 @media only screen and (max-width: 680px) {
 	.pin-grid {
 		display: flex;

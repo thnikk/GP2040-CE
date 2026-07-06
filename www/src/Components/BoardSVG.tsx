@@ -104,21 +104,12 @@ function prepareSvg(svg: string): string {
 	return svg.replace(
 		/<svg([^>]*)>/,
 		(match, attrs) => {
-			let cleaned = attrs
+			const cleaned = attrs
 				.replace(/\s+width="[^"]*"/g, '')
 				.replace(/\s+height="[^"]*"/g, '');
-
-			const vbMatch = cleaned.match(/viewBox="([^"]+)"/);
-			if (vbMatch) {
-				const [x, y, w, h] = vbMatch[1].split(/\s+/).map(Number);
-				cleaned = cleaned.replace(
-					vbMatch[0],
-					`viewBox="${x} ${y} ${w} ${(h * 1.2).toFixed(4)}"`,
-				);
-			} else if (!cleaned.includes('viewBox')) {
+			if (!cleaned.includes('viewBox')) {
 				cleaned += ' viewBox="0 0 100 100"';
 			}
-
 			return `<svg${cleaned}>`;
 		},
 	);
