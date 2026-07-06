@@ -96,6 +96,10 @@ const ACTION_LABELS: Record<PinActionValues, string> = {
 	[BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO]: 'Combo',
 };
 
+const SHAPE_TAGS = new Set([
+	'path', 'rect', 'circle', 'ellipse', 'polygon', 'polyline', 'line',
+]);
+
 export default function BoardSVG({
 	svgContent,
 	pinElements,
@@ -121,48 +125,62 @@ export default function BoardSVG({
 		if (!containerRef.current) return;
 
 		pinElements.forEach(({ id, pinNumber }) => {
-			const group = containerRef.current?.querySelector(`#${CSS.escape(id)}`);
-			if (!group) return;
+			const el = containerRef.current?.querySelector(`#${CSS.escape(id)}`);
+			if (!el) return;
 
-			let existing = group.querySelector<HTMLElement>('.pin-action-label');
-			if (!existing) {
-				const svgNs = 'http://www.w3.org/2000/svg';
-				existing = document.createElementNS(svgNs, 'text');
-				existing.setAttribute('class', 'pin-action-label');
-				existing.setAttribute('text-anchor', 'middle');
-				existing.setAttribute('font-family', 'monospace');
-				existing.setAttribute('font-size', '9');
-				existing.setAttribute('fill', '#e94560');
-				existing.setAttribute('font-weight', 'bold');
-				group.appendChild(existing);
-			}
+			const tagName = el.tagName.toLowerCase();
+			const isShape = SHAPE_TAGS.has(tagName);
+			const shapes: Element[] = isShape
+				? [el]
+				: Array.from(el.querySelectorAll('rect, circle, path, ellipse, polygon, polyline, line'));
 
 			const pinData = pins[`pin${pinNumber.toString().padStart(2, '0')}`];
 			const action = pinData?.action ?? BUTTON_ACTIONS.NONE;
-			let label = '';
 
+			let labelEl = el.querySelector<SVGTextElement>('.pin-action-label');
+			if (!labelEl) {
+				const svgNs = 'http://www.w3.org/2000/svg';
+				labelEl = document.createElementNS(svgNs, 'text');
+				labelEl.setAttribute('class', 'pin-action-label');
+				labelEl.setAttribute('text-anchor', 'middle');
+				labelEl.setAttribute('font-family', 'monospace');
+				labelEl.setAttribute('font-size', '9');
+				labelEl.setAttribute('font-weight', 'bold');
+
+				if (isShape) {
+					el.parentNode?.insertBefore(labelEl, el.nextSibling);
+				} else {
+					el.appendChild(labelEl);
+				}
+			}
+
+			let displayLabel = '';
 			if (action === BUTTON_ACTIONS.NONE) {
-				label = '';
+				displayLabel = '';
 			} else if (action === BUTTON_ACTIONS.RESERVED || action === BUTTON_ACTIONS.ASSIGNED_TO_ADDON) {
-				label = ACTION_LABELS[action] || '';
+				displayLabel = ACTION_LABELS[action] || '';
 			} else {
 				const actionKey = invert(BUTTON_ACTIONS)[action];
 				const btnKey = actionKey?.split('BUTTON_PRESS_')?.pop();
-				label = (btnKey && buttonNames[btnKey]) || ACTION_LABELS[action] || actionKey || '';
+				displayLabel = (btnKey && buttonNames[btnKey]) || ACTION_LABELS[action] || actionKey || '';
 			}
+			labelEl.textContent = displayLabel;
 
-			existing.textContent = label;
-
-			const bbox = group.getBBox();
+			const bbox = el.getBBox();
 			const cx = bbox.x + bbox.width / 2;
 			const cy = bbox.y + bbox.height + 14;
-			existing.setAttribute('x', cx.toString());
-			existing.setAttribute('y', cy.toString());
+			labelEl.setAttribute('x', String(cx));
+			labelEl.setAttribute('y', String(cy));
 
-			const shapes = group.querySelectorAll('rect, circle, path, ellipse');
-			shapes.forEach((el) => {
-				const svgEl = el as HTMLElement;
-				if (action === BUTTON_ACTIONS.NONE || action === undefined) {
+			const isHighlighted = highlightedPin !== null && highlightedPin === pinNumber;
+
+			shapes.forEach((shape) => {
+				const svgEl = shape as HTMLElement;
+				if (isHighlighted) {
+					svgEl.style.setProperty('fill', '#3d3d00', 'important');
+					svgEl.style.setProperty('stroke', '#ffff00', 'important');
+					svgEl.style.setProperty('stroke-width', '4', 'important');
+				} else if (action === BUTTON_ACTIONS.NONE || action === undefined) {
 					svgEl.style.setProperty('fill', '#16213e', 'important');
 					svgEl.style.removeProperty('stroke-width');
 				} else if (action === BUTTON_ACTIONS.RESERVED) {
@@ -175,12 +193,6 @@ export default function BoardSVG({
 					svgEl.style.setProperty('fill', '#0a3d0a', 'important');
 					svgEl.style.setProperty('stroke', '#00ff00', 'important');
 					svgEl.style.setProperty('stroke-width', '3', 'important');
-				}
-
-				if (highlightedPin !== null && highlightedPin === pinNumber) {
-					svgEl.style.setProperty('fill', '#3d3d00', 'important');
-					svgEl.style.setProperty('stroke', '#ffff00', 'important');
-					svgEl.style.setProperty('stroke-width', '4', 'important');
 				}
 			});
 		});

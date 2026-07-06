@@ -19,3 +19,6 @@ env.ini
 *Dockerfile
 *docker-compose.yml
 www/src_gen/enums.ts
+
+# Python
+__pycache__/
