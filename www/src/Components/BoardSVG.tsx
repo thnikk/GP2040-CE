@@ -187,8 +187,20 @@ export default function BoardSVG({
 			labelEl.textContent = displayLabel;
 
 			const bbox = el.getBBox();
-			const cx = bbox.x + bbox.width / 2;
-			const cy = bbox.y + bbox.height / 2;
+			let cx = bbox.x + bbox.width / 2;
+			let cy = bbox.y + bbox.height / 2;
+
+			const ctm = (el as SVGGraphicsElement).getCTM();
+			if (ctm && !ctm.isIdentity) {
+				const svgRoot = el.ownerSVGElement as SVGSVGElement;
+				const pt = svgRoot.createSVGPoint();
+				pt.x = cx;
+				pt.y = cy;
+				const p = pt.matrixTransform(ctm);
+				cx = p.x;
+				cy = p.y;
+			}
+
 			labelEl.setAttribute('x', String(cx));
 			labelEl.setAttribute('y', String(cy));
 
