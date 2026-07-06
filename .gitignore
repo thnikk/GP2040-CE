@@ -17,6 +17,7 @@ env.ini
 # Container
 .devcontainer
 *Dockerfile
+!Dockerfile
 *docker-compose.yml
 www/src_gen/enums.ts
 
