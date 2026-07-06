@@ -44,13 +44,14 @@ const contentTypes = new Map([
 	['xsl', 'text/xml'],
 	['pdf', 'application/pdf'],
 	['json', 'application/json'],
+	['svg', 'image/svg+xml'],
 ]);
 
 const defaultContentType = 'text/plain';
 
 const shtmlExtensions = new Set(['shtml', 'shtm', 'ssi', 'xml', 'json']);
 
-const skipCompressionExtensions = new Set(['png', 'json']);
+const skipCompressionExtensions = new Set(['png', 'json', 'svg']);
 
 const serverHeader = 'GP2040-CE';
 

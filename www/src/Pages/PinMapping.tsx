@@ -29,9 +29,12 @@ import useProfilesStore, { MAX_PROFILES } from '../Store/useProfilesStore';
 import Section from '../Components/Section';
 import CustomSelect from '../Components/CustomSelect';
 import CaptureButton from '../Components/CaptureButton';
+import BoardSVG from '../Components/BoardSVG';
+import PinActionModal from '../Components/PinActionModal';
 
 import { BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../Data/Buttons';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
+import { useBoardSVG } from '../hooks/useBoardSVG';
 import './PinMapping.scss';
 import { MultiValue, SingleValue } from 'react-select';
 import InfoCircle from '../Icons/InfoCircle';
@@ -110,6 +113,7 @@ const getMultiValue = (pinData) => {
 			)
 		: options.filter((option) => option.value === pinData.action);
 };
+
 const ProfileLabel = memo(function ProfileLabel({
 	profileIndex,
 }: {
@@ -168,7 +172,6 @@ const PinSelectList = memo(function PinSelectList({
 	const onChange = useCallback(
 		(pin: string) =>
 			(selected: MultiValue<OptionType> | SingleValue<OptionType>) => {
-				// Handle clearing
 				if (!selected || (Array.isArray(selected) && !selected.length)) {
 					setProfilePin(profileIndex, pin, {
 						action: BUTTON_ACTIONS.NONE,
@@ -177,7 +180,6 @@ const PinSelectList = memo(function PinSelectList({
 					});
 				} else if (Array.isArray(selected) && selected.length > 1) {
 					const lastSelected = selected[selected.length - 1];
-					// Revert to single option if choosing action type
 					if (lastSelected.type === 'action') {
 						setProfilePin(profileIndex, pin, {
 							action: lastSelected.value,
@@ -222,7 +224,6 @@ const PinSelectList = memo(function PinSelectList({
 	const getOptionLabel = useCallback(
 		(option: OptionType) => {
 			const labelKey = option.label?.split('BUTTON_PRESS_')?.pop();
-			// Need to fallback as some button actions are not part of button names
 			return (
 				(labelKey && buttonNames[labelKey]) ||
 				t(`PinMapping:actions.${option.label}`)
@@ -250,8 +251,10 @@ const PinSelectList = memo(function PinSelectList({
 
 const PinSection = memo(function PinSection({
 	profileIndex,
+	pressedPin,
 }: {
 	profileIndex: number;
+	pressedPin?: number | null;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -287,6 +290,36 @@ const PinSection = memo(function PinSection({
 			setSaveMessage(t('Common:saved-error-message'));
 		}
 	}, []);
+
+	const { svgContent, pinElements, loading, svgMode } = useBoardSVG();
+	const [modalPin, setModalPin] = useState<number | null>(null);
+
+	const profilePins = useProfilesStore(
+		useShallow((state) => {
+			const p = state.profiles[profileIndex];
+			return p ? omit(p, ['profileLabel', 'enabled']) : {};
+		}),
+	);
+
+	const handlePinClick = useCallback((pinNumber: number) => {
+		setModalPin(pinNumber);
+	}, []);
+
+	const handleModalClose = useCallback(() => {
+		setModalPin(null);
+	}, []);
+
+	const handlePinAssign = useCallback(
+		(pinNumber: number, action: PinActionValues, customButtonMask: number, customDpadMask: number) => {
+			const pinKey = pinNumber < 10 ? `pin0${pinNumber}` : `pin${pinNumber}`;
+			setProfilePin(profileIndex, pinKey, { action, customButtonMask, customDpadMask });
+		},
+		[profileIndex],
+	);
+
+	const currentPinData = modalPin !== null
+		? profilePins[`pin${modalPin.toString().padStart(2, '0')}`]
+		: null;
 
 	return (
 		<>
@@ -338,19 +371,51 @@ const PinSection = memo(function PinSection({
 						)}
 					</div>
 					<hr />
-					<div className="pin-grid gap-3 mt-3">
-						<PinSelectList profileIndex={profileIndex} />
-					</div>
+
+					{svgMode ? (
+						<div className="board-svg-wrapper">
+							{loading ? (
+								<div className="d-flex justify-content-center p-5">
+									<span className="spinner-border" />
+								</div>
+							) : svgContent ? (
+								<BoardSVG
+									svgContent={svgContent}
+									pinElements={pinElements}
+									profileIndex={profileIndex}
+									onPinClick={handlePinClick}
+									highlightedPin={pressedPin}
+								/>
+							) : (
+								<div className="alert alert-info">
+									{t('PinMapping:no-svg-available')}
+								</div>
+							)}
+
+							<PinActionModal
+								show={modalPin !== null}
+								pinNumber={modalPin}
+								currentAction={currentPinData?.action ?? BUTTON_ACTIONS.NONE}
+								currentCustomButtonMask={currentPinData?.customButtonMask ?? 0}
+								currentCustomDpadMask={currentPinData?.customDpadMask ?? 0}
+								onClose={handleModalClose}
+								onAssign={handlePinAssign}
+							/>
+						</div>
+					) : (
+						<div className="pin-grid gap-3 mt-3">
+							<PinSelectList profileIndex={profileIndex} />
+						</div>
+					)}
+
 					<div className="d-flex gap-3 my-3">
 						<CaptureButton
 							labels={Object.values(buttonNames)}
 							onChange={(label, pin) =>
 								setProfilePin(
 									profileIndex,
-									// Convert getHeldPins format to setPinMappings format
 									pin < 10 ? `pin0${pin}` : `pin${pin}`,
 									{
-										// Maps current mode buttons to actions
 										action:
 											BUTTON_ACTIONS[
 												`BUTTON_PRESS_${invert(buttonNames)[
@@ -444,7 +509,7 @@ export default function PinMapping() {
 					<Tab.Content>
 						{profiles.map((_, index) => (
 							<Tab.Pane key={`profile-${index}`} eventKey={`profile-${index}`}>
-								<PinSection profileIndex={index} />
+								<PinSection profileIndex={index} pressedPin={pressedPin} />
 							</Tab.Pane>
 						))}
 					</Tab.Content>

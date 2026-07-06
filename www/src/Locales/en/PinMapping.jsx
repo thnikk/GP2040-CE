@@ -18,6 +18,8 @@ export default {
 	'profile-pins-warning':
 		'Try to avoid changing the buttons and/or directions used for the switch profile hotkeys. Otherwise, it will be difficult to understand what profile is being selected!',
 	'profile-copy-base': 'Copy base profile',
+	'assign-action-title': 'Assign function to GP{{pin}}',
+	'no-svg-available': 'No board SVG available for this device.',
 	errors: {
 		conflict: 'Pin {{pin}} is already assigned to {{conflictedMappings}}',
 		required: '{{button}} is required',

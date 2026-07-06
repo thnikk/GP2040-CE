@@ -3,6 +3,8 @@
 		"minPin": 0,
 		"maxPin": 29,
 		"analogPins": [26, 27, 28],
-		"invalidPins": []
+		"invalidPins": [],
+		"hasBoardSvg": false,
+		"svgPath": ""
 	}
 }

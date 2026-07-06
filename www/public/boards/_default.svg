@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+  <rect x="10" y="10" width="880" height="500" rx="25" fill="#1a1a2e" stroke="#0f3460" stroke-width="3"/>
+  <text x="450" y="45" text-anchor="middle" fill="#e94560" font-family="monospace" font-size="16" font-weight="bold">GP2040-CE Pin Mapping</text>
+  <text x="450" y="65" text-anchor="middle" fill="#555" font-family="monospace" font-size="11">Click a pin to assign a function</text>
+
+  <g id="pin26"><rect x="630" y="90" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="656" y="113" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP26</text><text x="656" y="128" text-anchor="middle" fill="#555" font-family="monospace" font-size="8">A0</text></g>
+  <g id="pin27"><rect x="700" y="90" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="726" y="113" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP27</text><text x="726" y="128" text-anchor="middle" fill="#555" font-family="monospace" font-size="8">A1</text></g>
+  <g id="pin28"><rect x="770" y="90" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="796" y="113" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP28</text><text x="796" y="128" text-anchor="middle" fill="#555" font-family="monospace" font-size="8">A2</text></g>
+  <g id="pin29"><rect x="770" y="155" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="796" y="178" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP29</text><text x="796" y="193" text-anchor="middle" fill="#555" font-family="monospace" font-size="8">A3</text></g>
+
+  <g id="pin22"><rect x="770" y="220" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="796" y="248" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP22</text></g>
+  <g id="pin23"><rect x="770" y="285" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="796" y="313" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP23</text></g>
+  <g id="pin24"><rect x="770" y="350" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="796" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP24</text></g>
+  <g id="pin25"><rect x="700" y="350" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="726" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP25</text></g>
+
+  <g id="pin00"><rect x="630" y="350" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="656" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP0</text></g>
+  <g id="pin01"><rect x="630" y="285" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="656" y="313" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP1</text></g>
+
+  <g id="pin15"><rect x="700" y="220" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="726" y="248" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP15</text></g>
+  <g id="pin14"><rect x="630" y="220" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="656" y="248" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP14</text></g>
+
+  <g id="pin02"><rect x="100" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="127" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP2</text></g>
+  <g id="pin03"><rect x="100" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="127" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP3</text></g>
+  <g id="pin04"><rect x="170" y="192" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="197" y="220" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP4</text></g>
+  <g id="pin05"><rect x="30" y="192" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="57" y="220" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP5</text></g>
+
+  <g id="pin06"><rect x="320" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="347" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP6</text></g>
+  <g id="pin07"><rect x="390" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="417" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP7</text></g>
+  <g id="pin08"><rect x="460" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="487" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP8</text></g>
+
+  <g id="pin09"><rect x="320" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="347" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP9</text></g>
+  <g id="pin10"><rect x="390" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="417" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP10</text></g>
+  <g id="pin11"><rect x="460" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="487" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP11</text></g>
+
+  <g id="pin12"><rect x="320" y="305" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="347" y="333" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP12</text></g>
+  <g id="pin13"><rect x="390" y="305" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="417" y="333" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP13</text></g>
+
+  <g id="pin16"><rect x="460" y="305" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="487" y="333" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP16</text></g>
+  <g id="pin17"><rect x="530" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="557" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP17</text></g>
+  <g id="pin18"><rect x="530" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="557" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP18</text></g>
+  <g id="pin19"><rect x="530" y="305" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="557" y="333" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP19</text></g>
+
+  <g id="pin20"><rect x="100" y="350" width="55" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="127" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP20</text></g>
+  <g id="pin21"><rect x="170" y="350" width="55" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/><text x="197" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP21</text></g>
+</svg>

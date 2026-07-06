@@ -5,9 +5,50 @@
 	grid-template-rows: repeat(15, auto);
 }
 
+.board-svg-wrapper {
+	width: 100%;
+	margin-bottom: 1rem;
+}
+
+.board-svg-container {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+
+	svg {
+		max-width: 100%;
+		height: auto;
+
+		rect,
+		circle,
+		path,
+		ellipse {
+			transition: fill 0.2s ease, stroke 0.2s ease;
+		}
+
+		[id^="pin"]:hover {
+			rect,
+			circle,
+			path,
+			ellipse {
+				fill: #1a3a5c !important;
+			}
+		}
+	}
+
+	.pin-action-label {
+		pointer-events: none;
+		user-select: none;
+	}
+}
+
 @media only screen and (max-width: 680px) {
 	.pin-grid {
 		display: flex;
 		flex-direction: column;
+	}
+
+	.board-svg-container svg {
+		width: 100%;
 	}
 }

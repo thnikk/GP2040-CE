@@ -86,6 +86,20 @@ else()
       if(NOT NPM_CI_RESULT EQUAL "0")
         message(FATAL_ERROR "npm ci failed with ${NPM_CI_RESULT}")
       endif()
+
+      # Check if board config defines BOARD_SVG for SVG-based pin mapping UI
+      string(TOLOWER "${GP2040_BOARDCONFIG}" GP2040_BOARD_LOWER)
+      set(ENV{VITE_GP2040_BOARD} "${GP2040_BOARD_LOWER}")
+      set(ENV{VITE_GP2040_BOARD_HAS_SVG} "false")
+      if(EXISTS "${CMAKE_SOURCE_DIR}/configs/${GP2040_BOARDCONFIG}/BoardConfig.h")
+        file(READ "${CMAKE_SOURCE_DIR}/configs/${GP2040_BOARDCONFIG}/BoardConfig.h" BOARD_CONFIG_CONTENT)
+        string(REGEX MATCH "#[ \t]*define[ \t]+BOARD_SVG" BOARD_HAS_SVG "${BOARD_CONFIG_CONTENT}")
+        if(BOARD_HAS_SVG)
+          set(ENV{VITE_GP2040_BOARD_HAS_SVG} "true")
+          message(STATUS "Board ${GP2040_BOARDCONFIG} has BOARD_SVG defined - SVG pin mapping enabled")
+        endif()
+      endif()
+
       execute_process(COMMAND ${NPM_EXECUTABLE} run build
                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www
                       RESULT_VARIABLE NPM_BUILD_RESULT)
