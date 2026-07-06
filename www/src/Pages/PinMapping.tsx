@@ -315,6 +315,19 @@ const PinSection = memo(function PinSection({
 			return p ? omit(p, ['profileLabel', 'enabled']) : {};
 		}),
 	);
+	const savedProfiles = useProfilesStore((state) => state.savedProfiles);
+	const dirtyPins = useMemo(() => {
+		const saved = savedProfiles[profileIndex];
+		if (!saved) return new Set<number>();
+		const dirty = new Set<number>();
+		for (let i = 0; i < 30; i++) {
+			const key = `pin${i.toString().padStart(2, '0')}`;
+			if (JSON.stringify(saved[key]) !== JSON.stringify(profilePins[key])) {
+				dirty.add(i);
+			}
+		}
+		return dirty;
+	}, [savedProfiles, profilePins]);
 
 	const handlePinClick = useCallback((pinNumber: number) => {
 		setModalPin(pinNumber);
@@ -400,6 +413,7 @@ const PinSection = memo(function PinSection({
 									profileIndex={profileIndex}
 									onPinClick={handlePinClick}
 									highlightedPin={pressedPin}
+									dirtyPins={dirtyPins}
 								/>
 							) : (
 								<div className="alert alert-info">

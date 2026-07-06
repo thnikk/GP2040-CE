@@ -51,6 +51,7 @@ export type PinsType = {
 
 type State = {
 	profiles: PinsType[];
+	savedProfiles: PinsType[];
 	loadingProfiles: boolean;
 };
 
@@ -74,6 +75,7 @@ const INITIAL_STATE: State = {
 	profiles: [
 		// Profiles will be populated dynamically
 	],
+	savedProfiles: [],
 	loadingProfiles: false,
 };
 
@@ -98,10 +100,12 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 		// TODO, unify baseProfile with other profiles when done in web api
 		const baseProfile = await WebApi.getPinMappings();
 		const profiles = await WebApi.getProfileOptions();
+		const allProfiles = [baseProfile, ...profiles];
 
 		set((state) => ({
 			...state,
-			profiles: [baseProfile, ...profiles],
+			profiles: allProfiles,
+			savedProfiles: JSON.parse(JSON.stringify(allProfiles)),
 			loadingProfiles: false,
 		}));
 	},
@@ -143,10 +147,12 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 		}),
 	saveProfiles: async () => {
 		const [baseProfile, ...profiles] = get().profiles;
-		return Promise.all([
+		const result = await Promise.all([
 			WebApi.setPinMappings(baseProfile),
 			WebApi.setProfileOptions(profiles),
 		]);
+		set({ savedProfiles: JSON.parse(JSON.stringify(get().profiles)) });
+		return result;
 	},
 	toggleProfileEnabled: (profileIndex) =>
 		set((state) => {
