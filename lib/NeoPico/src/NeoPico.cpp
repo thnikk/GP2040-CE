@@ -31,13 +31,14 @@ void NeoPico::PutPixel(uint32_t pixelData) {
   }
 }
 
-NeoPico::NeoPico(int ledPin, int numPixels, LEDFormat format, int stateMachine) : format(format), numPixels(numPixels) {
-  // Fixed PIO0 state machine, chosen by the caller, so more than one
-  // NeoPico instance can run at the same time (e.g. a per-button LED
-  // chain plus a separate onboard indicator LED) without fighting
-  // over the same SM. No runtime claiming: it's simpler and avoids
-  // any dynamic PIO/state-machine interaction across cores.
-  pio = pio0;
+NeoPico::NeoPico(int ledPin, int numPixels, LEDFormat format, int stateMachine, PIO pioBlock) : format(format), numPixels(numPixels) {
+  // Fixed PIO block and state machine, chosen by the caller, so more
+  // than one NeoPico instance can run at the same time (e.g. a
+  // per-button LED chain plus a separate onboard indicator LED)
+  // without sharing any PIO hardware. No runtime claiming: it's
+  // simpler and avoids any dynamic PIO/state-machine interaction
+  // across cores.
+  pio = pioBlock;
   sm = stateMachine;
 
   uint offset = pio_add_program(pio, &ws2812_program);

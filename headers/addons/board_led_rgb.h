@@ -23,11 +23,16 @@
 #define BOARD_LEDS_RGB_PIN -1
 #endif
 
-// PIO0 state machine used for this LED. Must be different from the
-// state machine used by NeoPicoLEDAddon (the per-button LED chain,
-// which uses SM0) so the two don't fight over the same PIO hardware.
+// PIO block and state machine used for this LED. Defaults to PIO1
+// SM0, entirely separate hardware from NeoPicoLEDAddon (the
+// per-button LED chain), which always runs on PIO0 SM0. Keeping the
+// two on different PIO blocks avoids any possibility of them
+// contending for the same PIO instruction memory, IRQs, or FIFOs.
+#ifndef BOARD_LEDS_RGB_PIO_BLOCK
+#define BOARD_LEDS_RGB_PIO_BLOCK pio1
+#endif
 #ifndef BOARD_LEDS_RGB_PIO_SM
-#define BOARD_LEDS_RGB_PIO_SM 1
+#define BOARD_LEDS_RGB_PIO_SM 0
 #endif
 
 // Byte order used by the onboard LED. Most onboard WS2812-style LEDs
@@ -104,9 +109,9 @@
 // Shows the active input mode (XInput, Switch, PS3, etc.) as a color
 // on a single onboard addressable (WS2812-style) RGB LED.
 //
-// Runs alongside NeoPicoLEDAddon (button-layout LEDs) by using a
-// separate, fixed PIO0 state machine (BOARD_LEDS_RGB_PIO_SM) so the
-// two never contend for the same one.
+// Runs alongside NeoPicoLEDAddon (button-layout LEDs) on a separate
+// PIO block (BOARD_LEDS_RGB_PIO_BLOCK/BOARD_LEDS_RGB_PIO_SM) so the
+// two share no PIO hardware at all.
 class BoardLedRgbAddon : public GPAddon {
 public:
 	virtual bool available();

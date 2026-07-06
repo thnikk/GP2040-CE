@@ -15,7 +15,7 @@ typedef enum
 class NeoPico
 {
 public:
-  NeoPico(int ledPin, int numPixels, LEDFormat format = LED_FORMAT_GRB, int stateMachine = 0);
+  NeoPico(int ledPin, int numPixels, LEDFormat format = LED_FORMAT_GRB, int stateMachine = 0, PIO pioBlock = pio0);
   void Show();
   void Clear();
   void Off();
@@ -28,8 +28,8 @@ private:
   PIO pio = pio0;
   // Fixed state machine for this instance. Callers that need more
   // than one NeoPico running at once (e.g. a per-button LED chain
-  // plus a separate onboard indicator LED) must pass distinct
-  // stateMachine values so they don't share PIO0 SM0.
+  // plus a separate onboard indicator LED) must pass a distinct
+  // stateMachine and/or pioBlock so they don't share PIO hardware.
   int sm = 0;
   int numPixels = 0;
   uint32_t frame[100];
