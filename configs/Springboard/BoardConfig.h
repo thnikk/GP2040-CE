@@ -91,6 +91,22 @@
 #define BUTTON_LAYOUT BUTTON_LAYOUT_BOARD_DEFINED_A
 #define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_BOARD_DEFINED_B
 
+// Onboard WS2812 RGB LED (GPIO16) - shows the active input mode as a
+// color. Runs alongside the per-switch LEDs above (BOARD_LEDS_PIN),
+// each on its own PIO state machine.
+// NOTE: this onboard chip is wired RGB, unlike the GRB per-switch
+// chain above (LED_FORMAT) - the color order was swapped.
+#define BOARD_LEDS_RGB_ENABLED 1
+#define BOARD_LEDS_RGB_PIN 16
+#define BOARD_LEDS_RGB_FORMAT LED_FORMAT_RGB
+#define BOARD_LEDS_RGB_BRIGHTNESS 16
+
+// Boot-hold input mode overrides: holding B1 (A) selects XInput,
+// holding B2 (B) selects Switch. This matches the board's silkscreen
+// button coloring (A=green/XInput, B=red/Switch).
+#define DEFAULT_INPUT_MODE_B1 INPUT_MODE_XINPUT
+#define DEFAULT_INPUT_MODE_B2 INPUT_MODE_SWITCH
+
 #define DEFAULT_BOARD_LAYOUT_A {\
 	{GP_ELEMENT_BTN_BUTTON, {7,  20, 8, 8, 1, 1, GAMEPAD_MASK_L2,    GP_SHAPE_ELLIPSE}},\
 	{GP_ELEMENT_DIR_BUTTON, {26, 23, 8, 8, 1, 1, GAMEPAD_MASK_UP,    GP_SHAPE_ELLIPSE}},\
