@@ -287,6 +287,8 @@ const PinSection = memo(function PinSection({
 	profileIndex,
 	pressedPin,
 	customTheme,
+	animationMode,
+	themeIndex,
 	hasCustomTheme,
 	onLedColorChange,
 	onSaveTheme,
@@ -294,6 +296,8 @@ const PinSection = memo(function PinSection({
 	profileIndex: number;
 	pressedPin?: number | null;
 	customTheme?: Record<string, { normal: string; pressed: string }>;
+	animationMode?: number;
+	themeIndex?: number;
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSaveTheme?: () => Promise<boolean>;
@@ -429,7 +433,7 @@ const PinSection = memo(function PinSection({
 									<span className="spinner-border" />
 								</div>
 							) : svgContent ? (
-							<BoardSVG
+						<BoardSVG
 								svgContent={svgContent}
 								pinElements={pinElements}
 								profileIndex={profileIndex}
@@ -437,7 +441,8 @@ const PinSection = memo(function PinSection({
 								highlightedPin={pressedPin}
 								dirtyPins={dirtyPins}
 								customTheme={customTheme}
-								hasCustomTheme={hasCustomTheme}
+								animationMode={animationMode}
+								themeIndex={themeIndex}
 							/>
 							) : (
 								<div className="alert alert-info">
@@ -703,14 +708,16 @@ export default function PinMapping() {
 						<Tab.Content>
 							{profiles.map((_, index) => (
 								<Tab.Pane key={`profile-${index}`} eventKey={`profile-${index}`}>
-								<PinSection
-									profileIndex={index}
-									pressedPin={pressedPin}
-									customTheme={customTheme}
-									hasCustomTheme={hasCustomTheme}
-									onLedColorChange={handleLedColorChange}
-									onSaveTheme={submitTheme}
-								/>
+							<PinSection
+								profileIndex={index}
+								pressedPin={pressedPin}
+								customTheme={customTheme}
+								animationMode={animationMode}
+								themeIndex={themeIndex}
+								hasCustomTheme={hasCustomTheme}
+								onLedColorChange={handleLedColorChange}
+								onSaveTheme={submitTheme}
+							/>
 								</Tab.Pane>
 							))}
 						</Tab.Content>

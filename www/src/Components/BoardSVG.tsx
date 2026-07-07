@@ -8,6 +8,30 @@ import useProfilesStore from '../Store/useProfilesStore';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { getButtonLabels } from '../Data/Buttons';
 
+const STATIC_THEME_COLORS: Record<string, string>[] = [
+	{}, // Static Rainbow — computed per-button
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#00ff00', B2: '#ff0000', B3: '#0000ff', B4: '#ffff00', L1: '#000000', L2: '#000000', R1: '#000000', R2: '#000000' }, // Xbox
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#00ff00', B2: '#ff0000', B3: '#0000ff', B4: '#ffff00', L1: '#ffffff', L2: '#ffffff', R1: '#ffffff', R2: '#ffffff' }, // Xbox All
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#ffff00', B2: '#ff0000', B3: '#00ff00', B4: '#0000ff', L1: '#000000', L2: '#000000', R1: '#000000', R2: '#000000' }, // Super Famicom
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#ffff00', B2: '#ff0000', B3: '#00ff00', B4: '#0000ff', L1: '#ffffff', L2: '#ffffff', R1: '#ffffff', R2: '#ffffff' }, // Super Famicom All
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#0000ff', B2: '#ff0000', B3: '#ff00ff', B4: '#00ff00', L1: '#000000', L2: '#000000', R1: '#000000', R2: '#000000' }, // PlayStation
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#0000ff', B2: '#ff0000', B3: '#ff00ff', B4: '#00ff00', L1: '#ffffff', L2: '#ffffff', R1: '#ffffff', R2: '#ffffff' }, // PlayStation All
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ff0000', Right: '#ffffff', B1: '', B2: '', B3: '#ff0000', B4: '#ffff00', L1: '#0000ff', L2: '', R1: '#00ff00', R2: '' }, // Neo Geo
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#ff0000', B2: '', B3: '#ffff00', B4: '#00ff00', L1: '', L2: '', R1: '#0000ff', R2: '' }, // Neo Geo Curved
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#ffff00', B2: '#0000ff', B3: '#ff0000', B4: '#00ff00', L1: '', L2: '', R1: '', R2: '' }, // Neo Geo Modern
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#0000ff', B2: '#ffff00', B3: '#0000ff', B4: '#ffff00', L1: '', L2: '', R1: '#ff0000', R2: '#ff0000' }, // Six Button Fighter
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#0000ff', B2: '#ffff00', B3: '#0000ff', B4: '#ffff00', L1: '#00ff00', L2: '#00ff00', R1: '#ff0000', R2: '#ff0000' }, // Six Button Fighter Plus
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#ff0000', B2: '#ffffff', B3: '#ff0000', B4: '#ffffff', L1: '#000000', L2: '#000000', R1: '#0000ff', R2: '#0000ff' }, // Street Fighter 2
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#00ffff', B2: '#ff00ff', B3: '#ffff00', B4: '#00ff00', L1: '', L2: '', R1: '#ff0000', R2: '' }, // Tekken
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#ff00ff', B3: '#0000ff', B4: '#00ff00', R1: '#ff0000', R2: '#ff8000' }, // Guilty Gear Type-A
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#ff0000', B3: '#ff00ff', B4: '#0000ff', R1: '#00ff00', R2: '#ff8000' }, // Guilty Gear Type-B
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#ff8000', B3: '#ff00ff', B4: '#0000ff', R1: '#00ff00', R2: '#ff0000' }, // Guilty Gear Type-C
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#0000ff', B3: '#ff00ff', B4: '#00ff00', B2: '#ff0000', R1: '#ff8000' }, // Guilty Gear Type-D
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#00ff00', B3: '#ff00ff', B4: '#0000ff', B2: '#ff0000', R1: '#ff8000' }, // Guilty Gear Type-E
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#00ff00', B2: '#ff0000', B3: '#0000ff', B4: '#ffff00', L1: '#ff8000', L2: '#ff00ff', R1: '#8000ff', R2: '#00ffff' }, // Fightboard
+	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#00ff00', B2: '#ff0000', B3: '#0000ff', B4: '#ffff00', L1: '#00ffff', L2: '#0000ff', R1: '#ff00ff', R2: '#8000ff' }, // Springboard
+];
+
 type BoardSVGProps = {
 	svgContent: string;
 	pinElements: { id: string; pinNumber: number }[];
@@ -16,7 +40,8 @@ type BoardSVGProps = {
 	highlightedPin?: number | null;
 	dirtyPins?: Set<number>;
 	customTheme?: Record<string, { normal: string; pressed: string }>;
-	hasCustomTheme?: boolean;
+	animationMode?: number;
+	themeIndex?: number;
 };
 
 const ACTION_LABELS: Record<PinActionValues, string> = {
@@ -118,6 +143,34 @@ function prepareSvg(svg: string): string {
 	);
 }
 
+const BUTTON_ORDER = ['Up', 'Down', 'Left', 'Right', 'B1', 'B2', 'B3', 'B4', 'R1', 'R2', 'L1', 'L2', 'S1', 'S2', 'L3', 'R3', 'A1', 'A2'];
+
+function rainbowColor(btnKey: string): string {
+	const index = BUTTON_ORDER.indexOf(btnKey);
+	if (index === -1) return '';
+	const hue = (index * 360 / BUTTON_ORDER.length) % 360;
+	return `hsl(${hue}, 100%, 50%)`;
+}
+
+function getLedColor(
+	btnKey: string | undefined,
+	animationMode: number,
+	themeIndex: number,
+	customTheme?: Record<string, { normal: string; pressed: string }>,
+): string {
+	if (!btnKey) return '';
+	if (animationMode === 4 && customTheme && customTheme[btnKey]) {
+		return customTheme[btnKey].normal;
+	}
+	if (animationMode === 3 && themeIndex >= 0 && themeIndex < STATIC_THEME_COLORS.length) {
+		return STATIC_THEME_COLORS[themeIndex][btnKey] || '';
+	}
+	if (animationMode === 1 || animationMode === 2) {
+		return rainbowColor(btnKey);
+	}
+	return '';
+}
+
 export default function BoardSVG({
 	svgContent,
 	pinElements,
@@ -126,7 +179,8 @@ export default function BoardSVG({
 	highlightedPin,
 	dirtyPins,
 	customTheme,
-	hasCustomTheme,
+	animationMode = 0,
+	themeIndex = 0,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels } = useContext(AppContext);
@@ -250,11 +304,7 @@ export default function BoardSVG({
 
 			const isHighlighted = highlightedPin !== null && highlightedPin === pinNumber;
 
-			// Determine LED color for button press actions
-			let ledColor = '';
-			if (hasCustomTheme && customTheme && btnKey && customTheme[btnKey]) {
-				ledColor = customTheme[btnKey].normal;
-			}
+			const ledColor = getLedColor(btnKey, animationMode, themeIndex, customTheme);
 
 	        shapes.forEach((shape, shapeIndex) => {
 	            const svgEl = shape as HTMLElement;
@@ -309,7 +359,7 @@ export default function BoardSVG({
 	            }
 	        });
 		});
-	}, [pinElements, pins, buttonNames, highlightedPin, dirtyPins, customTheme, hasCustomTheme]);
+	}, [pinElements, pins, buttonNames, highlightedPin, dirtyPins, customTheme, animationMode, themeIndex]);
 
 	useEffect(() => {
 		if (!containerRef.current || !svgContent) return;
