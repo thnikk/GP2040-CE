@@ -349,6 +349,9 @@ async function getCustomTheme(setLoading) {
 						pressed: rgbIntToHex(response.data[button].d),
 					};
 				});
+
+			console.log(data);
+			return data;
 	} catch (error) {
 		setLoading(false);
 		console.error(error);
