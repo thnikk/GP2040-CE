@@ -760,10 +760,10 @@ export default function PinMapping() {
 							</Overlay>
 						</div>
 					)}
-				</div>
-				<div className="d-flex align-items-center gap-3 mt-3">
-					<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
-					{themeSaveMessage && <Alert variant="info" className="mb-0">{themeSaveMessage}</Alert>}
+					<div className="d-flex align-items-center gap-3 ms-auto">
+						<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
+						{themeSaveMessage && <Alert variant="info" className="mb-0">{themeSaveMessage}</Alert>}
+					</div>
 				</div>
 			</Section>
 			<Tab.Container defaultActiveKey="profile-0">
