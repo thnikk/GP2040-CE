@@ -48,6 +48,7 @@ public:
 	ProfileOptions& getProfileOptions() { return config.profileOptions; }
 	GpioMappingInfo* getProfilePinMappings() { return functionalPinMappings; }
 	PeripheralOptions& getPeripheralOptions() { return config.peripheralOptions; }
+	int32_t getWebConfigPin() { return config.webConfigPin; }
 
 	void init();
 	bool save();

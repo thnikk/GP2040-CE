@@ -404,6 +404,17 @@ GP2040::BootAction GP2040::getBootAction() {
                 bool webConfigLocked  = forcedSetupOptions.mode == FORCED_SETUP_MODE_LOCK_WEB_CONFIG ||
                                         forcedSetupOptions.mode == FORCED_SETUP_MODE_LOCK_BOTH;
 
+				{
+					int wcPin = Storage::getInstance().getWebConfigPin();
+					if (wcPin >= 0) {
+						gpio_init(wcPin);
+						gpio_set_dir(wcPin, GPIO_IN);
+						gpio_pull_up(wcPin);
+						if (!gpio_get(wcPin))
+							return BootAction::ENTER_WEBCONFIG_MODE;
+					}
+				}
+
 				if (gamepad->pressedS1() && gamepad->pressedS2() && gamepad->pressedUp()) {
 					return BootAction::ENTER_USB_MODE;
 				} else if (!webConfigLocked && gamepad->pressedS2()) {

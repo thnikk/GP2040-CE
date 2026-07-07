@@ -281,6 +281,7 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
 
     INIT_UNSET_PROPERTY_STR(config, boardVersion, GP2040VERSION);
     INIT_UNSET_PROPERTY_STR(config, boardConfig, GP2040_BOARDCONFIG);
+    INIT_UNSET_PROPERTY(config, webConfigPin, -1);
 
     // gamepadOptions
     INIT_UNSET_PROPERTY(config.gamepadOptions, inputMode, DEFAULT_INPUT_MODE);
@@ -1322,6 +1323,10 @@ void gpioMappingsMigrationCore(Config& config)
     config.gpioMappings.pins_count = NUM_BANK0_GPIOS;
 
     config.migrations.gpioMappingsMigrated = true;
+
+#ifdef PIN_WEBCONFIG
+    config.webConfigPin = PIN_WEBCONFIG;
+#endif
 }
 
 // if the user previously had the JS slider addon enabled, copy its default to the

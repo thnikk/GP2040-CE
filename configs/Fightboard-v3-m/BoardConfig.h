@@ -39,6 +39,8 @@
 #define GPIO_PIN_06 GpioAction::BUTTON_PRESS_A1     // A1     | Guide  | Home    | PS       | 13     | ~      |
 #define GPIO_PIN_17 GpioAction::BUTTON_PRESS_A2     // A2     | ~      | Capture | ~        | 14     | ~      |
 
+#define PIN_WEBCONFIG 05
+
 // Setting GPIO pins to assigned by add-on
 //
 #define GPIO_PIN_10 GpioAction::ASSIGNED_TO_ADDON

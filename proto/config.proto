@@ -887,4 +887,5 @@ message Config
     optional PeripheralOptions peripheralOptions = 15;
     optional ButtonLayout buttonLayout = 16;
     optional ButtonLayoutRight buttonLayoutRight = 17;
+    optional int32 webConfigPin = 18;
 }
