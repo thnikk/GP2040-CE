@@ -707,8 +707,11 @@ export default function PinMapping() {
 							<Overlay
 								show={staticColorPickerTarget !== null}
 								target={staticColorPickerTarget}
-								placement="auto"
-								popperConfig={{ strategy: 'fixed' }}
+								placement="bottom"
+								popperConfig={{
+									strategy: 'fixed',
+									modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+								}}
 								rootClose
 								onHide={() => setStaticColorPickerTarget(null)}
 							>

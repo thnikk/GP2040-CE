@@ -304,8 +304,11 @@ export default function PinActionModal({
 						<Overlay
 							show={pickerVisible}
 							target={ledOverlayTarget}
-							placement="auto"
-							popperConfig={{ strategy: 'fixed' }}
+							placement="bottom"
+							popperConfig={{
+								strategy: 'fixed',
+								modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+							}}
 							rootClose
 							onHide={handleColorPickerClose}
 						>
