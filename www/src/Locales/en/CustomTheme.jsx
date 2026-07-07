@@ -7,6 +7,9 @@ export default {
 	'led-layout-label': 'Preview Layout',
 	'color-picker-location': 'Color Picker Location',
 	'has-custom-theme-label': 'Enable',
+	'normal-label': 'Normal',
+	'pressed-label': 'Pressed',
+	'no-led-for-action': 'No LED configuration available for this action type.',
 	'modal-title': 'Confirm Clear Custom Theme',
 	'modal-body':
 		'Are you sure you would like to clear your current custom LED theme?',

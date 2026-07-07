@@ -198,6 +198,7 @@ private:
 	PLEDAnimationState animationState; // NeoPico can control the player LEDs
 	NeoPicoPlayerLEDs * neoPLEDs = nullptr;
 	AnimationStation as;
+	uint8_t lastMode = 255;
 	std::map<std::string, int> buttonPositions;
 	bool turnOffWhenSuspended;
     PLEDType ledType;

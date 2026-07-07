@@ -15,6 +15,8 @@ type BoardSVGProps = {
 	onPinClick: (pinNumber: number) => void;
 	highlightedPin?: number | null;
 	dirtyPins?: Set<number>;
+	customTheme?: Record<string, { normal: string; pressed: string }>;
+	hasCustomTheme?: boolean;
 };
 
 const ACTION_LABELS: Record<PinActionValues, string> = {
@@ -123,6 +125,8 @@ export default function BoardSVG({
 	onPinClick,
 	highlightedPin,
 	dirtyPins,
+	customTheme,
+	hasCustomTheme,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels } = useContext(AppContext);
@@ -139,34 +143,34 @@ export default function BoardSVG({
 		}),
 	);
 
-    const updateLabels = useCallback(() => {
-        if (!containerRef.current) return;
+	const updateLabels = useCallback(() => {
+	        if (!containerRef.current) return;
 
-        if (originalFills.current.size === 0) {
-            pinElements.forEach(({ id }) => {
-                const el = containerRef.current?.querySelector(`#${CSS.escape(id)}`);
-                if (!el) return;
-                const tagName = el.tagName.toLowerCase();
-                const isShape = SHAPE_TAGS.has(tagName);
-                const shapeList: Element[] = isShape
-                    ? [el]
-                    : Array.from(el.querySelectorAll('rect, circle, path, ellipse, polygon, polyline, line'));
-                shapeList.forEach((shape, idx) => {
-                    const key = `${id}-${idx}`;
-                    const s = shape as HTMLElement;
-                    let fill = s.style.fill || shape.getAttribute('fill') || '';
-                    if (!fill || fill === 'none') {
-                        fill = window.getComputedStyle(shape).fill;
-                    }
-                    const sw = s.style.strokeWidth || shape.getAttribute('stroke-width') || '';
-                    if (fill && fill !== 'none') {
-                        originalFills.current.set(key, { fill, strokeWidth: sw });
-                    }
-                });
-            });
-        }
+	        if (originalFills.current.size === 0) {
+	            pinElements.forEach(({ id }) => {
+	                const el = containerRef.current?.querySelector(`#${CSS.escape(id)}`);
+	                if (!el) return;
+	                const tagName = el.tagName.toLowerCase();
+	                const isShape = SHAPE_TAGS.has(tagName);
+	                const shapeList: Element[] = isShape
+	                    ? [el]
+	                    : Array.from(el.querySelectorAll('rect, circle, path, ellipse, polygon, polyline, line'));
+	                shapeList.forEach((shape, idx) => {
+	                    const key = `${id}-${idx}`;
+	                    const s = shape as HTMLElement;
+	                    let fill = s.style.fill || shape.getAttribute('fill') || '';
+	                    if (!fill || fill === 'none') {
+	                        fill = window.getComputedStyle(shape).fill;
+	                    }
+	                    const sw = s.style.strokeWidth || shape.getAttribute('stroke-width') || '';
+	                    if (fill && fill !== 'none') {
+	                        originalFills.current.set(key, { fill, strokeWidth: sw });
+	                    }
+	                });
+	            });
+	        }
 
-        pinElements.forEach(({ id, pinNumber }) => {
+	        pinElements.forEach(({ id, pinNumber }) => {
 			const el = containerRef.current?.querySelector(`#${CSS.escape(id)}`);
 			if (!el) return;
 
@@ -207,14 +211,15 @@ export default function BoardSVG({
 				}
 			}
 
+			const actionKey = invert(BUTTON_ACTIONS)[action];
+			const btnKey = actionKey?.split('BUTTON_PRESS_')?.pop();
+
 			let displayLabel = '';
 			if (action === BUTTON_ACTIONS.NONE) {
 				displayLabel = '';
 			} else if (action === BUTTON_ACTIONS.RESERVED || action === BUTTON_ACTIONS.ASSIGNED_TO_ADDON) {
 				displayLabel = ACTION_LABELS[action] || '';
 			} else {
-				const actionKey = invert(BUTTON_ACTIONS)[action];
-				const btnKey = actionKey?.split('BUTTON_PRESS_')?.pop();
 				displayLabel = (btnKey && buttonNames[btnKey]) || ACTION_LABELS[action] || actionKey || '';
 			}
 			labelEl.textContent = displayLabel;
@@ -245,51 +250,66 @@ export default function BoardSVG({
 
 			const isHighlighted = highlightedPin !== null && highlightedPin === pinNumber;
 
-        shapes.forEach((shape, shapeIndex) => {
-            const svgEl = shape as HTMLElement;
-            const orig = originalFills.current.get(`${id}-${shapeIndex}`);
-            const origFill = orig?.fill || '';
-            const origStrokeWidth = orig?.strokeWidth || '';
-            if (isHighlighted) {
-                svgEl.style.setProperty('fill', '#3d3d00', 'important');
-                svgEl.style.setProperty('stroke', '#ffff00', 'important');
-                svgEl.style.setProperty('stroke-width', '4', 'important');
-                svgEl.style.removeProperty('fill-opacity');
-            } else if (action === BUTTON_ACTIONS.NONE || action === undefined) {
-                svgEl.style.setProperty('fill', origFill || '#16213e', 'important');
-                svgEl.style.setProperty('fill-opacity', '0.2', 'important');
-                svgEl.style.removeProperty('stroke');
-                if (origStrokeWidth) {
-                    svgEl.style.setProperty('stroke-width', origStrokeWidth, 'important');
-                } else {
-                    svgEl.style.removeProperty('stroke-width');
-                }
-            } else if (action === BUTTON_ACTIONS.RESERVED) {
-                svgEl.style.setProperty('fill', '#3d0000', 'important');
-                svgEl.style.setProperty('stroke', '#ff0000', 'important');
-                svgEl.style.removeProperty('fill-opacity');
-            } else if (action === BUTTON_ACTIONS.ASSIGNED_TO_ADDON) {
-                svgEl.style.setProperty('fill', '#1a1a3e', 'important');
-                svgEl.style.setProperty('stroke', '#6666ff', 'important');
-                svgEl.style.removeProperty('fill-opacity');
-            } else {
-                svgEl.style.setProperty('fill', origFill || '#0a3d0a', 'important');
-                svgEl.style.removeProperty('fill-opacity');
-                svgEl.style.removeProperty('stroke');
-                if (origStrokeWidth) {
-                    svgEl.style.setProperty('stroke-width', origStrokeWidth, 'important');
-                } else {
-                    svgEl.style.removeProperty('stroke-width');
-                }
-            }
+			// Determine LED color for button press actions
+			let ledColor = '';
+			if (hasCustomTheme && customTheme && btnKey && customTheme[btnKey]) {
+				ledColor = customTheme[btnKey].normal;
+			}
 
-            if (dirtyPins?.has(pinNumber) && !isHighlighted) {
-                svgEl.style.setProperty('stroke', '#00ff00', 'important');
-                svgEl.style.setProperty('stroke-width', '3', 'important');
-            }
-        });
+	        shapes.forEach((shape, shapeIndex) => {
+	            const svgEl = shape as HTMLElement;
+	            const orig = originalFills.current.get(`${id}-${shapeIndex}`);
+	            const origFill = orig?.fill || '';
+	            const origStrokeWidth = orig?.strokeWidth || '';
+	            if (isHighlighted) {
+	                svgEl.style.setProperty('fill', '#3d3d00', 'important');
+	                svgEl.style.setProperty('stroke', '#ffff00', 'important');
+	                svgEl.style.setProperty('stroke-width', '4', 'important');
+	                svgEl.style.removeProperty('fill-opacity');
+	            } else if (action === BUTTON_ACTIONS.NONE || action === undefined) {
+	                svgEl.style.setProperty('fill', origFill || '#16213e', 'important');
+	                svgEl.style.setProperty('fill-opacity', '0.2', 'important');
+	                svgEl.style.removeProperty('stroke');
+	                if (origStrokeWidth) {
+	                    svgEl.style.setProperty('stroke-width', origStrokeWidth, 'important');
+	                } else {
+	                    svgEl.style.removeProperty('stroke-width');
+	                }
+	            } else if (action === BUTTON_ACTIONS.RESERVED) {
+	                svgEl.style.setProperty('fill', '#3d0000', 'important');
+	                svgEl.style.setProperty('stroke', '#ff0000', 'important');
+	                svgEl.style.removeProperty('fill-opacity');
+	            } else if (action === BUTTON_ACTIONS.ASSIGNED_TO_ADDON) {
+	                svgEl.style.setProperty('fill', '#1a1a3e', 'important');
+	                svgEl.style.setProperty('stroke', '#6666ff', 'important');
+	                svgEl.style.removeProperty('fill-opacity');
+	            } else if (ledColor) {
+	                svgEl.style.setProperty('fill', ledColor, 'important');
+	                svgEl.style.removeProperty('fill-opacity');
+	                svgEl.style.removeProperty('stroke');
+	                if (origStrokeWidth) {
+	                    svgEl.style.setProperty('stroke-width', origStrokeWidth, 'important');
+	                } else {
+	                    svgEl.style.removeProperty('stroke-width');
+	                }
+	            } else {
+	                svgEl.style.setProperty('fill', origFill || '#0a3d0a', 'important');
+	                svgEl.style.removeProperty('fill-opacity');
+	                svgEl.style.removeProperty('stroke');
+	                if (origStrokeWidth) {
+	                    svgEl.style.setProperty('stroke-width', origStrokeWidth, 'important');
+	                } else {
+	                    svgEl.style.removeProperty('stroke-width');
+	                }
+	            }
+
+	            if (dirtyPins?.has(pinNumber) && !isHighlighted) {
+	                svgEl.style.setProperty('stroke', '#00ff00', 'important');
+	                svgEl.style.setProperty('stroke-width', '3', 'important');
+	            }
+	        });
 		});
-	}, [pinElements, pins, buttonNames, highlightedPin, dirtyPins]);
+	}, [pinElements, pins, buttonNames, highlightedPin, dirtyPins, customTheme, hasCustomTheme]);
 
 	useEffect(() => {
 		if (!containerRef.current || !svgContent) return;

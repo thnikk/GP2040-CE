@@ -34,9 +34,10 @@ import CaptureButton from '../Components/CaptureButton';
 import BoardSVG from '../Components/BoardSVG';
 import PinActionModal from '../Components/PinActionModal';
 
-import { BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../Data/Buttons';
+import { BUTTONS, BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../Data/Buttons';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { useBoardSVG } from '../hooks/useBoardSVG';
+import WebApi from '../Services/WebApi';
 import './PinMapping.scss';
 import { MultiValue, SingleValue } from 'react-select';
 import InfoCircle from '../Icons/InfoCircle';
@@ -259,12 +260,24 @@ const PinSelectList = memo(function PinSelectList({
 	));
 });
 
+
+
 const PinSection = memo(function PinSection({
 	profileIndex,
 	pressedPin,
+	customTheme,
+	hasCustomTheme,
+	onLedColorChange,
+	onToggleCustomTheme,
+	onSaveTheme,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
+	customTheme?: Record<string, { normal: string; pressed: string }>;
+	hasCustomTheme?: boolean;
+	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
+	onToggleCustomTheme?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onSaveTheme?: () => Promise<boolean>;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -294,12 +307,13 @@ const PinSection = memo(function PinSection({
 		e.stopPropagation();
 		try {
 			await saveProfiles();
+			if (onSaveTheme) await onSaveTheme();
 			updateUsedPins();
 			setSaveMessage(t('Common:saved-success-message'));
 		} catch (error) {
 			setSaveMessage(t('Common:saved-error-message'));
 		}
-	}, []);
+	}, [onSaveTheme]);
 
 	const { svgContent, pinElements, loading, svgMode } = useBoardSVG();
 	const svgPinSet = useMemo(
@@ -414,6 +428,8 @@ const PinSection = memo(function PinSection({
 									onPinClick={handlePinClick}
 									highlightedPin={pressedPin}
 									dirtyPins={dirtyPins}
+									customTheme={customTheme}
+									hasCustomTheme={hasCustomTheme}
 								/>
 							) : (
 								<div className="alert alert-info">
@@ -429,6 +445,9 @@ const PinSection = memo(function PinSection({
 								currentCustomDpadMask={currentPinData?.customDpadMask ?? 0}
 								onClose={handleModalClose}
 								onAssign={handlePinAssign}
+								customTheme={customTheme}
+								hasCustomTheme={hasCustomTheme}
+								onLedColorChange={onLedColorChange}
 							/>
 
 							{pinElements.length > 0 && pinElements.length < 30 && (
@@ -465,7 +484,7 @@ const PinSection = memo(function PinSection({
 						</div>
 					)}
 
-					<div className="d-flex gap-3 my-3">
+					<div className="d-flex gap-3 my-3 align-items-center">
 						<CaptureButton
 							labels={Object.values(buttonNames)}
 							onChange={(label, pin) =>
@@ -490,6 +509,16 @@ const PinSection = memo(function PinSection({
 								{t(`PinMapping:profile-copy-base`)}
 							</Button>
 						)}
+						<div className="ms-auto d-flex align-items-center gap-2">
+							<Form.Check
+								type="switch"
+								id="hasCustomTheme"
+								label="Custom LED Theme"
+								checked={hasCustomTheme}
+								onChange={onToggleCustomTheme}
+								reverse
+							/>
+						</div>
 						<Button type="submit">{t('Common:button-save-label')}</Button>
 					</div>
 					{saveMessage && <Alert variant="info">{saveMessage}</Alert>}
@@ -498,6 +527,23 @@ const PinSection = memo(function PinSection({
 		</>
 	);
 });
+
+const defaultCustomTheme = Object.keys(BUTTONS.gp2040)
+	?.filter((p) => p !== 'label' && p !== 'value')
+	.reduce((a, p) => {
+		a[p] = { normal: '#000000', pressed: '#000000' };
+		return a;
+	}, {});
+
+defaultCustomTheme['ALL'] = { normal: '#000000', pressed: '#000000' };
+defaultCustomTheme['GRADIENT NORMAL'] = {
+	normal: '#00ffff',
+	pressed: '#ff00ff',
+};
+defaultCustomTheme['GRADIENT PRESSED'] = {
+	normal: '#ff00ff',
+	pressed: '#00ffff',
+};
 
 export default function PinMapping() {
 	const fetchProfiles = useProfilesStore((state) => state.fetchProfiles);
@@ -508,9 +554,57 @@ export default function PinMapping() {
 	const [pressedPin, setPressedPin] = useState<number | null>(null);
 	const { t } = useTranslation('');
 
+	const [customTheme, setCustomTheme] = useState({ ...defaultCustomTheme });
+	const [hasCustomTheme, setHasCustomTheme] = useState(false);
+
+	const { setLoading } = useContext(AppContext);
+
 	useEffect(() => {
 		fetchProfiles();
+		async function fetchTheme() {
+			const data = await WebApi.getCustomTheme(setLoading);
+			if (data) {
+				setHasCustomTheme(data.hasCustomTheme);
+				if (!data.customTheme['ALL'])
+					data.customTheme['ALL'] = { normal: '#000000', pressed: '#000000' };
+				if (!data.customTheme['GRADIENT NORMAL'])
+					data.customTheme['GRADIENT NORMAL'] = {
+						normal: '#00ffff',
+						pressed: '#ff00ff',
+					};
+				if (!data.customTheme['GRADIENT PRESSED'])
+					data.customTheme['GRADIENT PRESSED'] = {
+						normal: '#00ffff',
+						pressed: '#ff00ff',
+					};
+				setCustomTheme(data.customTheme);
+			}
+		}
+		fetchTheme();
 	}, []);
+
+	const handleLedColorChange = useCallback(
+		(buttonName: string, colors: { normal: string; pressed: string }) => {
+			setCustomTheme((prev) => ({ ...prev, [buttonName]: colors }));
+		},
+		[],
+	);
+
+	const toggleCustomTheme = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+		setHasCustomTheme(e.target.checked);
+	}, []);
+
+	const submitTheme = useCallback(async () => {
+		const leds = { ...customTheme };
+		delete leds['ALL'];
+		delete leds['GRADIENT NORMAL'];
+		delete leds['GRADIENT PRESSED'];
+		const success = await WebApi.setCustomTheme({
+			hasCustomTheme,
+			customTheme: leds,
+		});
+		return success;
+	}, [customTheme, hasCustomTheme]);
 
 	return (
 		<Tab.Container defaultActiveKey="profile-0">
@@ -566,7 +660,15 @@ export default function PinMapping() {
 					<Tab.Content>
 						{profiles.map((_, index) => (
 							<Tab.Pane key={`profile-${index}`} eventKey={`profile-${index}`}>
-								<PinSection profileIndex={index} pressedPin={pressedPin} />
+								<PinSection
+									profileIndex={index}
+									pressedPin={pressedPin}
+									customTheme={customTheme}
+									hasCustomTheme={hasCustomTheme}
+									onLedColorChange={handleLedColorChange}
+									onToggleCustomTheme={toggleCustomTheme}
+									onSaveTheme={submitTheme}
+								/>
 							</Tab.Pane>
 						))}
 					</Tab.Content>

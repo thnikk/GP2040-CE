@@ -265,6 +265,11 @@ void NeoPicoLEDAddon::process()
         as.HandleEvent(action);
     }
 
+    if (as.options.baseAnimationIndex != lastMode) {
+        as.SetMode(as.options.baseAnimationIndex);
+        lastMode = as.options.baseAnimationIndex;
+    }
+
     uint32_t buttonState = gamepad->state.dpad << 16 | gamepad->state.buttons;
     vector<Pixel> pressed;
     for (auto row : matrix.pixels)
@@ -653,6 +658,7 @@ void NeoPicoLEDAddon::configureLEDs()
     as.SetOptions(animationOptions);
     as.SetMatrix(matrix);
     as.SetMode(as.options.baseAnimationIndex);
+    lastMode = as.options.baseAnimationIndex;
 }
 
 AnimationHotkey animationHotkeys(Gamepad *gamepad)

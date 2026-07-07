@@ -98,13 +98,6 @@ const Navigation = () => {
 						<NavDropdown.Item
 							as={NavLink}
 							eventKey={eventKey++}
-							to="/custom-theme"
-						>
-							{t('Navigation:custom-theme-label')}
-						</NavDropdown.Item>
-						<NavDropdown.Item
-							as={NavLink}
-							eventKey={eventKey++}
 							to="/display-config"
 						>
 							{t('Navigation:display-config-label')}

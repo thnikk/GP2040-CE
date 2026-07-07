@@ -46,6 +46,11 @@ The Waveshare RP2040-Zero includes an on-board LED and this addon sets the color
 #### Custom colors via remapping page
 I'd like to be able to change the per-profile colors from the pin remapping page.
 
+### Revamped web config
+Currently, you're able to configure just about anything via the web config. This is nice for making custom boards with a pi pico, but much less so if not actively harmful for a pre-made board. There are a few settings that can break the firmware and require a flash nuke to reset the configuration, and I don't want these settings to be present in the web config at all.
+
+I'd also like to not have to point to any documentation for configuration. It should be simple enough or include any necessary info directly in the web config.
+
 ## Features
 
 - Select from 13 input modes including X-Input, Nintendo Switch, Playstation 4/5, Xbox One, D-Input, and Keyboard

@@ -1101,6 +1101,7 @@ std::string setCustomTheme()
     readDoc(pressCooldown, doc, "buttonPressColorCooldownTimeInMs");
     options.buttonPressColorCooldownTimeInMs = pressCooldown;
 
+    options.baseAnimationIndex = static_cast<uint8_t>(AnimationEffects::EFFECT_CUSTOM_THEME);
     AnimationStation::SetOptions(options);
     Storage::getInstance().save(true);
 
