@@ -50,6 +50,8 @@ struct __attribute__ ((__packed__)) AnimationOptions
   uint8_t brightness;
   uint8_t staticColorIndex;
   uint8_t buttonColorIndex;
+  uint32_t staticColorNormal;
+  uint32_t staticColorPressed;
   int16_t chaseCycleTime;
   int16_t rainbowCycleTime;
   uint8_t themeIndex;

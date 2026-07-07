@@ -327,29 +327,28 @@ async function setLedOptions(options) {
 async function getCustomTheme(setLoading) {
 	setLoading(true);
 
-	try {
-		const response = await Http.get(`${baseUrl}/api/getCustomTheme`);
-		setLoading(false);
+		try {
+			const response = await Http.get(`${baseUrl}/api/getCustomTheme`);
+			setLoading(false);
 
-		let data = {
-			hasCustomTheme: response.data.enabled,
-			animationMode: response.data.animationMode ?? 0,
-			themeIndex: response.data.themeIndex ?? 0,
-			customTheme: {},
-		};
+			let data = {
+				hasCustomTheme: response.data.enabled,
+				animationMode: response.data.animationMode ?? 0,
+				themeIndex: response.data.themeIndex ?? 0,
+				customTheme: {},
+				staticColorNormal: response.data.staticColorNormal ? rgbIntToHex(response.data.staticColorNormal) : null,
+				staticColorPressed: response.data.staticColorPressed ? rgbIntToHex(response.data.staticColorPressed) : null,
+			};
 
-		// Transform ARGB int value to hex for easy use on frontend
-		Object.keys(response.data)
-			.filter((p) => p !== 'enabled' && p !== 'animationMode' && p !== 'themeIndex')
-			.forEach((button) => {
-				data.customTheme[button] = {
-					normal: rgbIntToHex(response.data[button].u),
-					pressed: rgbIntToHex(response.data[button].d),
-				};
-			});
-
-		console.log(data);
-		return data;
+			// Transform ARGB int value to hex for easy use on frontend
+			Object.keys(response.data)
+				.filter((p) => p !== 'enabled' && p !== 'animationMode' && p !== 'themeIndex' && p !== 'staticColorNormal' && p !== 'staticColorPressed')
+				.forEach((button) => {
+					data.customTheme[button] = {
+						normal: rgbIntToHex(response.data[button].u),
+						pressed: rgbIntToHex(response.data[button].d),
+					};
+				});
 	} catch (error) {
 		setLoading(false);
 		console.error(error);
@@ -361,6 +360,8 @@ async function setCustomTheme(customThemeOptions) {
 		enabled: customThemeOptions.hasCustomTheme,
 		animationMode: customThemeOptions.animationMode ?? 0,
 		themeIndex: customThemeOptions.themeIndex ?? 0,
+		staticColorNormal: customThemeOptions.staticColorNormal ? hexToInt(customThemeOptions.staticColorNormal.replace('#', '')) : 0,
+		staticColorPressed: customThemeOptions.staticColorPressed ? hexToInt(customThemeOptions.staticColorPressed.replace('#', '')) : 0,
 	};
 
 	// Transform RGB hex values to ARGB int before sending back to API

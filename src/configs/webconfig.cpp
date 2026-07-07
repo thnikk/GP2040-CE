@@ -1060,6 +1060,13 @@ std::string setCustomTheme()
     };
 
     readDoc(options.hasCustomTheme, doc, "enabled");
+
+    uint32_t staticNormal = 0;
+    uint32_t staticPressed = 0;
+    readDoc(staticNormal, doc, "staticColorNormal");
+    readDoc(staticPressed, doc, "staticColorPressed");
+    options.staticColorNormal = staticNormal;
+    options.staticColorPressed = staticPressed;
     options.customThemeUp 			= readDocDefaultToZero("Up", "u");
     options.customThemeDown 		= readDocDefaultToZero("Down", "u");
     options.customThemeLeft			= readDocDefaultToZero("Left", "u");
@@ -1123,6 +1130,8 @@ std::string getCustomTheme()
     const AnimationOptions& options = AnimationStation::options;
 
     writeDoc(doc, "enabled", options.hasCustomTheme);
+    writeDoc(doc, "staticColorNormal", options.staticColorNormal);
+    writeDoc(doc, "staticColorPressed", options.staticColorPressed);
     writeDoc(doc, "Up", "u", options.customThemeUp);
     writeDoc(doc, "Up", "d", options.customThemeUpPressed);
     writeDoc(doc, "Down", "u", options.customThemeDown);

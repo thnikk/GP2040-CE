@@ -15,7 +15,9 @@ import {
 	Form,
 	FormCheck,
 	Nav,
+	Overlay,
 	OverlayTrigger,
+	Popover,
 	Row,
 	Tab,
 	Tooltip,
@@ -40,6 +42,8 @@ import WebApi from '../Services/WebApi';
 import './PinMapping.scss';
 import { MultiValue, SingleValue } from 'react-select';
 import InfoCircle from '../Icons/InfoCircle';
+import { SketchPicker } from '@hello-pangea/color-picker';
+import LEDColors from '../Data/LEDColors';
 
 type OptionType = {
 	label: string;
@@ -292,6 +296,7 @@ const PinSection = memo(function PinSection({
 	hasCustomTheme,
 	onLedColorChange,
 	onSaveTheme,
+	staticColorNormal,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
@@ -301,6 +306,7 @@ const PinSection = memo(function PinSection({
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSaveTheme?: () => Promise<boolean>;
+	staticColorNormal?: string;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -443,6 +449,7 @@ const PinSection = memo(function PinSection({
 								customTheme={customTheme}
 								animationMode={animationMode}
 								themeIndex={themeIndex}
+								staticColorNormal={staticColorNormal}
 							/>
 							) : (
 								<div className="alert alert-info">
@@ -556,10 +563,15 @@ export default function PinMapping() {
 
 	const [pressedPin, setPressedPin] = useState<number | null>(null);
 	const { t } = useTranslation('');
+	const { savedColors, setSavedColors } = useContext(AppContext);
 
 	const [customTheme, setCustomTheme] = useState({ ...defaultCustomTheme });
 	const [animationMode, setAnimationMode] = useState(0);
 	const [themeIndex, setThemeIndex] = useState(0);
+	const [staticColorNormal, setStaticColorNormal] = useState('#ff0000');
+	const [staticColorPressed, setStaticColorPressed] = useState('#ffffff');
+	const [staticColorPickerTarget, setStaticColorPickerTarget] = useState<HTMLElement | null>(null);
+	const [staticColorPickerType, setStaticColorPickerType] = useState<'normal' | 'pressed'>('normal');
 
 	const { setLoading } = useContext(AppContext);
 
@@ -570,6 +582,8 @@ export default function PinMapping() {
 			if (data) {
 				setAnimationMode(data.animationMode);
 				setThemeIndex(data.themeIndex);
+				if (data.staticColorNormal) setStaticColorNormal(data.staticColorNormal);
+				if (data.staticColorPressed) setStaticColorPressed(data.staticColorPressed);
 				if (!data.customTheme['ALL'])
 					data.customTheme['ALL'] = { normal: '#000000', pressed: '#000000' };
 				if (!data.customTheme['GRADIENT NORMAL'])
@@ -603,6 +617,19 @@ export default function PinMapping() {
 		setThemeIndex(Number(e.target.value));
 	}, []);
 
+	const handleStaticColorSwatchClick = useCallback((e: React.MouseEvent<HTMLElement>, type: 'normal' | 'pressed') => {
+		setStaticColorPickerTarget(e.currentTarget);
+		setStaticColorPickerType(type);
+	}, []);
+
+	const handleStaticColorChange = useCallback((c: { hex: string }) => {
+		if (staticColorPickerType === 'normal') {
+			setStaticColorNormal(c.hex);
+		} else {
+			setStaticColorPressed(c.hex);
+		}
+	}, [staticColorPickerType]);
+
 	const submitTheme = useCallback(async () => {
 		const leds = { ...customTheme };
 		delete leds['ALL'];
@@ -613,9 +640,11 @@ export default function PinMapping() {
 			customTheme: leds,
 			animationMode,
 			themeIndex,
+			staticColorNormal,
+			staticColorPressed,
 		});
 		return success;
-	}, [customTheme, animationMode, themeIndex]);
+	}, [customTheme, animationMode, themeIndex, staticColorNormal, staticColorPressed]);
 
 	const hasCustomTheme = animationMode === 4;
 
@@ -651,6 +680,74 @@ export default function PinMapping() {
 									</option>
 								))}
 							</Form.Select>
+						</div>
+					)}
+					{animationMode === 0 && (
+						<div className="d-flex align-items-center gap-3">
+							<div
+								className="led-color-swatch"
+								style={{ backgroundColor: staticColorNormal }}
+								onClick={(e) => handleStaticColorSwatchClick(e, 'normal')}
+								role="button"
+								tabIndex={0}
+								onKeyDown={(e) => { if (e.key === 'Enter') handleStaticColorSwatchClick(e as any, 'normal'); }}
+							>
+								<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
+							</div>
+							<div
+								className="led-color-swatch"
+								style={{ backgroundColor: staticColorPressed }}
+								onClick={(e) => handleStaticColorSwatchClick(e, 'pressed')}
+								role="button"
+								tabIndex={0}
+								onKeyDown={(e) => { if (e.key === 'Enter') handleStaticColorSwatchClick(e as any, 'pressed'); }}
+							>
+								<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
+							</div>
+							<Overlay
+								show={staticColorPickerTarget !== null}
+								target={staticColorPickerTarget}
+								placement="auto"
+								popperConfig={{ strategy: 'fixed' }}
+								rootClose
+								onHide={() => setStaticColorPickerTarget(null)}
+							>
+								<Popover onClick={(e) => e.stopPropagation()} style={{ zIndex: 9999 }}>
+									<Popover.Body>
+										<SketchPicker
+											color={staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed}
+											onChange={(c) => handleStaticColorChange(c)}
+											disableAlpha={true}
+											presetColors={[
+												...LEDColors.map((c) => ({ title: c.name, color: c.value })),
+												...savedColors.map((c) => ({ title: c, color: c })),
+											]}
+											width={180}
+										/>
+										<div className="d-flex justify-content-between mt-2">
+											<Button size="sm" onClick={() => {
+												const color = staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed;
+												if (color && color !== '#000000' && !savedColors.includes(color)) {
+													setSavedColors([...savedColors, color]);
+												}
+											}}>
+												{t('Common:button-save-color-label')}
+											</Button>
+											<Button size="sm" variant="outline-danger" onClick={() => {
+												const color = staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed;
+												const idx = savedColors.indexOf(color);
+												if (idx >= 0) {
+													const newColors = [...savedColors];
+													newColors.splice(idx, 1);
+													setSavedColors(newColors);
+												}
+											}}>
+												{t('Common:button-delete-color-label')}
+											</Button>
+										</div>
+									</Popover.Body>
+								</Popover>
+							</Overlay>
 						</div>
 					)}
 				</div>
@@ -717,6 +814,7 @@ export default function PinMapping() {
 								hasCustomTheme={hasCustomTheme}
 								onLedColorChange={handleLedColorChange}
 								onSaveTheme={submitTheme}
+								staticColorNormal={staticColorNormal}
 							/>
 								</Tab.Pane>
 							))}

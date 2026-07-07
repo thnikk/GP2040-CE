@@ -42,6 +42,7 @@ type BoardSVGProps = {
 	customTheme?: Record<string, { normal: string; pressed: string }>;
 	animationMode?: number;
 	themeIndex?: number;
+	staticColorNormal?: string;
 };
 
 const ACTION_LABELS: Record<PinActionValues, string> = {
@@ -157,8 +158,12 @@ function getLedColor(
 	animationMode: number,
 	themeIndex: number,
 	customTheme?: Record<string, { normal: string; pressed: string }>,
+	staticColorNormal?: string,
 ): string {
 	if (!btnKey) return '';
+	if (animationMode === 0 && staticColorNormal) {
+		return staticColorNormal;
+	}
 	if (animationMode === 4 && customTheme && customTheme[btnKey]) {
 		return customTheme[btnKey].normal;
 	}
@@ -181,6 +186,7 @@ export default function BoardSVG({
 	customTheme,
 	animationMode = 0,
 	themeIndex = 0,
+	staticColorNormal,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels } = useContext(AppContext);
@@ -304,7 +310,7 @@ export default function BoardSVG({
 
 			const isHighlighted = highlightedPin !== null && highlightedPin === pinNumber;
 
-			const ledColor = getLedColor(btnKey, animationMode, themeIndex, customTheme);
+			const ledColor = getLedColor(btnKey, animationMode, themeIndex, customTheme, staticColorNormal);
 
 	        shapes.forEach((shape, shapeIndex) => {
 	            const svgEl = shape as HTMLElement;
