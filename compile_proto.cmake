@@ -22,17 +22,23 @@ function (compile_proto)
 	set(PROTO_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto)
 	set(PROTO_OUTPUT_DIR ${PROTO_OUTPUT_DIR} PARENT_SCOPE)
 
+	# Tell nanopb to use a temp directory for pb2 regeneration instead of
+	# writing to the source tree (which may be read-only in Docker).
+	set(NANOPB_PB2_TEMP_DIR "${CMAKE_CURRENT_BINARY_DIR}/nanopb_pb2_temp")
+
 	add_custom_command(
 		DEPENDS ${VENV_FILE} ${NANOPB_GENERATOR} ${CMAKE_SOURCE_DIR}/proto/enums.proto ${CMAKE_SOURCE_DIR}/proto/config.proto ${CMAKE_SOURCE_DIR}/lib/nanopb/generator/proto/nanopb.proto
 		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${PROTO_OUTPUT_DIR}
-		COMMAND ${VENV_BIN_DIR}/python ${NANOPB_GENERATOR}
+		COMMAND ${CMAKE_COMMAND} -E env NANOPB_PB2_TEMP_DIR=${NANOPB_PB2_TEMP_DIR}
+			${VENV_BIN_DIR}/python ${NANOPB_GENERATOR}
 			-q
 			-D ${PROTO_OUTPUT_DIR}
 			-I ${CMAKE_SOURCE_DIR}/proto
 			-I ${CMAKE_SOURCE_DIR}/lib/nanopb/generator/proto
 			${CMAKE_SOURCE_DIR}/proto/enums.proto
-		COMMAND ${VENV_BIN_DIR}/python ${NANOPB_GENERATOR}
+		COMMAND ${CMAKE_COMMAND} -E env NANOPB_PB2_TEMP_DIR=${NANOPB_PB2_TEMP_DIR}
+			${VENV_BIN_DIR}/python ${NANOPB_GENERATOR}
 			-q
 			-D ${PROTO_OUTPUT_DIR}
 			-I ${CMAKE_SOURCE_DIR}/proto
