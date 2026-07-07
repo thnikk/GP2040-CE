@@ -1,3 +1,14 @@
+## Fork
+This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes are for broader compatibility, so I wanted my own fork for changes that are more specific to my controllers.
+
+### Fork-specific features
+
+#### Button remapping with SVGs
+Instead of using pin remapping, a board SVG can be used to define pins for their positions on the board and that will be displayed on the pin remapping page of the web config instead of the list of pins. This is a lot more intuitive for remapping.
+
+#### Board LED addon
+The Waveshare RP2040-Zero includes an on-board LED and this addon sets the color based on the input mode.
+
 <p align="center">
   <a href="https://gp2040-ce.info">
     <img alt="GP2040-CE" src="https://raw.githubusercontent.com/OpenStickCommunity/Site/main/docs/assets/images/gp2040-ce-logo.png" />
