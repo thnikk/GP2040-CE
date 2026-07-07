@@ -84,6 +84,13 @@ const Navigation = () => {
 						<NavDropdown.Item
 							as={NavLink}
 							eventKey={eventKey++}
+							to="/button-layout"
+						>
+							{t('Navigation:button-layout-label')}
+						</NavDropdown.Item>
+						<NavDropdown.Item
+							as={NavLink}
+							eventKey={eventKey++}
 							to="/led-config"
 						>
 							{t('Navigation:led-config-label')}

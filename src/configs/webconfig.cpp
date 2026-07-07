@@ -441,11 +441,15 @@ std::string getUsedPins()
 std::string setDisplayOptions(DisplayOptions& displayOptions)
 {
     DynamicJsonDocument doc = get_post_data();
+    Config& config = Storage::getInstance().getConfig();
     readDoc(displayOptions.enabled, doc, "enabled");
     readDoc(displayOptions.flip, doc, "flipDisplay");
     readDoc(displayOptions.invert, doc, "invertDisplay");
-    readDoc(displayOptions.buttonLayout, doc, "buttonLayout");
-    readDoc(displayOptions.buttonLayoutRight, doc, "buttonLayoutRight");
+    // Forward buttonLayout writes to shared config
+    readDoc(config.buttonLayout, doc, "buttonLayout");
+    readDoc(config.buttonLayoutRight, doc, "buttonLayoutRight");
+    displayOptions.buttonLayout = config.buttonLayout;
+    displayOptions.buttonLayoutRight = config.buttonLayoutRight;
     readDoc(displayOptions.splashMode, doc, "splashMode");
     readDoc(displayOptions.splashChoice, doc, "splashChoice");
     readDoc(displayOptions.splashDuration, doc, "splashDuration");
@@ -494,12 +498,13 @@ std::string setPreviewDisplayOptions()
 std::string getDisplayOptions() // Manually set Document Attributes for the display
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
+    const Config& config = Storage::getInstance().getConfig();
     const DisplayOptions& displayOptions = Storage::getInstance().getDisplayOptions();
     writeDoc(doc, "enabled", displayOptions.enabled ? 1 : 0);
     writeDoc(doc, "flipDisplay", displayOptions.flip);
     writeDoc(doc, "invertDisplay", displayOptions.invert ? 1 : 0);
-    writeDoc(doc, "buttonLayout", displayOptions.buttonLayout);
-    writeDoc(doc, "buttonLayoutRight", displayOptions.buttonLayoutRight);
+    writeDoc(doc, "buttonLayout", config.buttonLayout);
+    writeDoc(doc, "buttonLayoutRight", config.buttonLayoutRight);
     writeDoc(doc, "splashMode", displayOptions.splashMode);
     writeDoc(doc, "splashChoice", displayOptions.splashChoice);
     writeDoc(doc, "splashDuration", displayOptions.splashDuration);
@@ -816,9 +821,12 @@ std::string setLedOptions()
     };
 
     LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
+    Config& config = Storage::getInstance().getConfig();
     docToPin(ledOptions.dataPin, doc, "dataPin");
     readDoc(ledOptions.ledFormat, doc, "ledFormat");
-    readDoc(ledOptions.ledLayout, doc, "ledLayout");
+    // Forward ledLayout writes to shared config
+    readDoc(config.buttonLayout, doc, "ledLayout");
+    ledOptions.ledLayout = config.buttonLayout;
     readDoc(ledOptions.ledsPerButton, doc, "ledsPerButton");
     readDoc(ledOptions.brightnessMaximum, doc, "brightnessMaximum");
     readDoc(ledOptions.brightnessSteps, doc, "brightnessSteps");
@@ -864,9 +872,10 @@ std::string getLedOptions()
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
     const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
+    const Config& config = Storage::getInstance().getConfig();
     writeDoc(doc, "dataPin", cleanPin(ledOptions.dataPin));
     writeDoc(doc, "ledFormat", ledOptions.ledFormat);
-    writeDoc(doc, "ledLayout", ledOptions.ledLayout);
+    writeDoc(doc, "ledLayout", config.buttonLayout);
     writeDoc(doc, "ledsPerButton", ledOptions.ledsPerButton);
     writeDoc(doc, "brightnessMaximum", ledOptions.brightnessMaximum);
     writeDoc(doc, "brightnessSteps", ledOptions.brightnessSteps);
@@ -935,9 +944,33 @@ std::string getButtonLayoutDefs()
     return serialize_json(doc);
 }
 
+std::string setButtonLayout()
+{
+    DynamicJsonDocument doc = get_post_data();
+    Config& config = Storage::getInstance().getConfig();
+    readDoc(config.buttonLayout, doc, "buttonLayout");
+    readDoc(config.buttonLayoutRight, doc, "buttonLayoutRight");
+    // Back-populate deprecated fields for addons that still read them
+    Storage::getInstance().getDisplayOptions().buttonLayout = config.buttonLayout;
+    Storage::getInstance().getDisplayOptions().buttonLayoutRight = config.buttonLayoutRight;
+    Storage::getInstance().getLedOptions().ledLayout = config.buttonLayout;
+    Storage::getInstance().save(true);
+    return serialize_json(doc);
+}
+
+std::string getButtonLayout()
+{
+    DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
+    const Config& config = Storage::getInstance().getConfig();
+    writeDoc(doc, "buttonLayout", config.buttonLayout);
+    writeDoc(doc, "buttonLayoutRight", config.buttonLayoutRight);
+    return serialize_json(doc);
+}
+
 std::string getButtonLayouts()
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
+    const Config& config = Storage::getInstance().getConfig();
     const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
     const DisplayOptions& displayOptions = Storage::getInstance().getDisplayOptions();
     uint16_t elementCtr = 0;
@@ -945,7 +978,7 @@ std::string getButtonLayouts()
     LayoutManager::LayoutList layoutA = LayoutManager::getInstance().getLayoutA();
     LayoutManager::LayoutList layoutB = LayoutManager::getInstance().getLayoutB();
 
-    writeDoc(doc, "ledLayout", "id", ledOptions.ledLayout);
+    writeDoc(doc, "ledLayout", "id", config.buttonLayout);
     writeDoc(doc, "ledLayout", "indexUp", ledOptions.indexUp);
     writeDoc(doc, "ledLayout", "indexDown", ledOptions.indexDown);
     writeDoc(doc, "ledLayout", "indexLeft", ledOptions.indexLeft);
@@ -965,7 +998,7 @@ std::string getButtonLayouts()
     writeDoc(doc, "ledLayout", "indexA1", ledOptions.indexA1);
     writeDoc(doc, "ledLayout", "indexA2", ledOptions.indexA2);
 
-    writeDoc(doc, "displayLayouts", "buttonLayoutId", displayOptions.buttonLayout);
+    writeDoc(doc, "displayLayouts", "buttonLayoutId", config.buttonLayout);
     for (elementCtr = 0; elementCtr < layoutA.size(); elementCtr++) {
         DynamicJsonDocument ele(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
 
@@ -984,7 +1017,7 @@ std::string getButtonLayouts()
         writeDoc(doc, "displayLayouts", "buttonLayout", std::to_string(elementCtr), ele);
     }
 
-    writeDoc(doc, "displayLayouts", "buttonLayoutRightId", displayOptions.buttonLayoutRight);
+    writeDoc(doc, "displayLayouts", "buttonLayoutRightId", config.buttonLayoutRight);
     for (elementCtr = 0; elementCtr < layoutB.size(); elementCtr++) {
         DynamicJsonDocument ele(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
 
@@ -2374,6 +2407,8 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/getDisplayOptions", getDisplayOptions },
     { "/api/getGamepadOptions", getGamepadOptions },
     { "/api/getButtonLayoutDefs", getButtonLayoutDefs },
+    { "/api/setButtonLayout", setButtonLayout },
+    { "/api/getButtonLayout", getButtonLayout },
     { "/api/getButtonLayouts", getButtonLayouts },
     { "/api/getLedOptions", getLedOptions },
     { "/api/getPinMappings", getPinMappings },

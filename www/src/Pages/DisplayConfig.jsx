@@ -49,8 +49,6 @@ const defaultValues = {
 	enabled: false,
 	flipDisplay: false,
 	invertDisplay: false,
-	buttonLayout: 0,
-	buttonLayoutRight: 3,
 	buttonLayoutOrientation: 0,
 	splashDuration: 0,
 	splashMode: 3,
@@ -103,8 +101,6 @@ const schema = yup.object().shape({
 		.label('Flip Display'),
 	invertDisplay: yup.number().label('Invert Display'),
 	turnOffWhenSuspended: yup.number().label('Turn Off When Suspended'),
-	buttonLayout: buttonLayoutSchema,
-	buttonLayoutRight: buttonLayoutRightSchema,
 	buttonLayoutOrientation: yup.number().label('Layout Reversed'),
 	splashMode: yup
 		.number()
@@ -189,10 +185,6 @@ const FormContext = () => {
 				values.flipDisplay = parseInt(values.flipDisplay);
 			if (!!values.invertDisplay)
 				values.invertDisplay = parseInt(values.invertDisplay);
-			if (!!values.buttonLayout)
-				values.buttonLayout = parseInt(values.buttonLayout);
-			if (!!values.buttonLayoutRight)
-				values.buttonLayoutRight = parseInt(values.buttonLayoutRight);
 			if (!!values.splashMode) values.splashMode = parseInt(values.splashMode);
 			if (!!values.splashChoice)
 				values.splashChoice = parseInt(values.splashChoice);
@@ -427,50 +419,6 @@ export default function DisplayConfigPage() {
 											>
 												<h1>{t('DisplayConfig:section.button-layout-header')}</h1>
 												<Row className="mb-4">
-													<FormSelect
-														label={t('DisplayConfig:form.button-layout-label')}
-														name="buttonLayout"
-														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
-														value={values.buttonLayout}
-														error={errors.buttonLayout}
-														isInvalid={errors.buttonLayout}
-														onChange={handleChange}
-													>
-														{Object.keys(buttonLayoutDefinitions.buttonLayout).map(
-															(o, i) => (
-																<option
-																	key={`buttonLayout-option-${i}`}
-																	value={buttonLayoutDefinitions.buttonLayout[o]}
-																>
-																	{t(`LayoutConfig:layouts.left.${o}`)}
-																</option>
-															),
-														)}
-													</FormSelect>
-													<FormSelect
-														label={t(
-															'DisplayConfig:form.button-layout-right-label',
-														)}
-														name="buttonLayoutRight"
-														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
-														value={values.buttonLayoutRight}
-														error={errors.buttonLayoutRight}
-														isInvalid={errors.buttonLayoutRight}
-														onChange={handleChange}
-													>
-														{Object.keys(
-															buttonLayoutDefinitions.buttonLayoutRight,
-														).map((o, i) => (
-															<option
-																key={`buttonLayoutRight-option-${i}`}
-																value={buttonLayoutDefinitions.buttonLayoutRight[o]}
-															>
-																{t(`LayoutConfig:layouts.right.${o}`)}
-															</option>
-														))}
-													</FormSelect>
 													<FormSelect
 														label={t('DisplayConfig:form.button-layout-orientation')}
 														name="buttonLayoutOrientation"

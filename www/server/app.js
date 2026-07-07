@@ -814,6 +814,14 @@ app.get('/api/abortGetHeldPins', async (req, res) => {
 	return res.send();
 });
 
+app.get('/api/getButtonLayout', (req, res) => {
+	return res.send({
+		buttonLayout: 0,
+		buttonLayoutRight: 0,
+		buttonLayoutOrientation: 0,
+	});
+});
+
 app.post('/api/*', (req, res) => {
 	console.log(req.body);
 	return res.send(req.body);

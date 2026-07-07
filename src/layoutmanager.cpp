@@ -4,8 +4,9 @@
 #include "enums.pb.h"
 
 LayoutManager::LayoutList LayoutManager::getLayoutA() {
+    const Config& config = Storage::getInstance().getConfig();
     const DisplayOptions& options = Storage::getInstance().getDisplayOptions();
-    uint16_t layoutLeft = options.buttonLayout;
+    uint16_t layoutLeft = config.buttonLayout;
     if (options.buttonLayoutOrientation != BUTTON_ORIENTATION_DEFAULT) {
         uint16_t layoutRight = options.buttonLayoutRight;
         LayoutManager::LayoutList rightLayout = getRightLayout(layoutRight);
@@ -20,10 +21,11 @@ LayoutManager::LayoutList LayoutManager::getLayoutA() {
 }
 
 LayoutManager::LayoutList LayoutManager::getLayoutB() {
+    const Config& config = Storage::getInstance().getConfig();
     const DisplayOptions& options = Storage::getInstance().getDisplayOptions();
-    uint16_t layoutRight = options.buttonLayoutRight;
+    uint16_t layoutRight = config.buttonLayoutRight;
     if (options.buttonLayoutOrientation != BUTTON_ORIENTATION_DEFAULT) {
-        uint16_t layoutLeft = options.buttonLayout;
+        uint16_t layoutLeft = config.buttonLayout;
         LayoutManager::LayoutList leftLayout = getLeftLayout(layoutLeft);
         if (options.buttonLayoutOrientation == BUTTON_ORIENTATION_SWITCHED) {
             return adjustByOffset(leftLayout, 64);
@@ -36,12 +38,12 @@ LayoutManager::LayoutList LayoutManager::getLayoutB() {
 }
 
 std::string LayoutManager::getLayoutAName() {
-    uint16_t layoutLeft = Storage::getInstance().getDisplayOptions().buttonLayout;
+    uint16_t layoutLeft = Storage::getInstance().getConfig().buttonLayout;
     return getButtonLayoutName((ButtonLayout)layoutLeft);
 }
 
 std::string LayoutManager::getLayoutBName() {
-    uint16_t layoutRight = Storage::getInstance().getDisplayOptions().buttonLayoutRight;
+    uint16_t layoutRight = Storage::getInstance().getConfig().buttonLayoutRight;
     return getButtonLayoutRightName((ButtonLayoutRight)layoutRight);
 }
 

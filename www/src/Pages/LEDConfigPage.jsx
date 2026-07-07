@@ -28,12 +28,6 @@ const LED_FORMATS = [
 	{ label: 'RGBW', value: 3 },
 ];
 
-const BUTTON_LAYOUTS = [
-	{ label: '8-Button Layout', value: 0 },
-	{ label: 'Stickless Layout', value: 1 },
-	{ label: 'WASD Layout', value: 2 },
-];
-
 const PLED_LABELS = [
 	{ 0: 'PLED #1 Pin', 1: 'PLED #1 Index' },
 	{ 0: 'PLED #2 Pin', 1: 'PLED #2 Index' },
@@ -94,10 +88,9 @@ const schema = yup.object().shape({
 	ledLayout: yup
 		.number()
 		.required()
-		.positive()
 		.integer()
 		.min(0)
-		.max(2)
+		.max(33)
 		.label('LED Layout'),
 	ledsPerButton: yup
 		.number()
@@ -366,24 +359,11 @@ export default function LEDConfigPage() {
 									</option>
 								))}
 							</FormSelect>
-							<FormSelect
-								label={t('LedConfig:rgb.led-layout-label')}
+							<input
+								type="hidden"
 								name="ledLayout"
-								className="form-select-sm"
-								groupClassName="col-sm-4 mb-3"
 								value={values.ledLayout}
-								error={errors.ledLayout}
-								isInvalid={errors.ledLayout}
-								onChange={(e) =>
-									setFieldValue('ledLayout', parseInt(e.target.value))
-								}
-							>
-								{BUTTON_LAYOUTS.map((o, i) => (
-									<option key={`ledLayout-option-${i}`} value={o.value}>
-										{o.label}
-									</option>
-								))}
-							</FormSelect>
+							/>
 						</Row>
 						<Row>
 							<FormControl

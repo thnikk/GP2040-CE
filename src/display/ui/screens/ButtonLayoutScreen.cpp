@@ -39,8 +39,8 @@ void ButtonLayoutScreen::init() {
 	bannerDisplay = true;
     prevProfileNumber = -1;
 
-    prevLayoutLeft = Storage::getInstance().getDisplayOptions().buttonLayout;
-    prevLayoutRight = Storage::getInstance().getDisplayOptions().buttonLayoutRight;
+    prevLayoutLeft = Storage::getInstance().getConfig().buttonLayout;
+    prevLayoutRight = Storage::getInstance().getConfig().buttonLayoutRight;
     prevLeftOptions = Storage::getInstance().getDisplayOptions().buttonLayoutCustomOptions.paramsLeft;
     prevRightOptions = Storage::getInstance().getDisplayOptions().buttonLayoutCustomOptions.paramsRight;
     prevOrientation = Storage::getInstance().getDisplayOptions().buttonLayoutOrientation;
@@ -89,8 +89,8 @@ int8_t ButtonLayoutScreen::update() {
 
     // Check if we've updated button layouts while in config mode
     if (configMode) {
-        uint8_t layoutLeft = Storage::getInstance().getDisplayOptions().buttonLayout;
-        uint8_t layoutRight = Storage::getInstance().getDisplayOptions().buttonLayoutRight;
+        uint8_t layoutLeft = Storage::getInstance().getConfig().buttonLayout;
+        uint8_t layoutRight = Storage::getInstance().getConfig().buttonLayoutRight;
         uint8_t buttonLayoutOrientation = Storage::getInstance().getDisplayOptions().buttonLayoutOrientation;
         bool inputHistoryEnabled = Storage::getInstance().getDisplayOptions().inputHistoryEnabled;
         if ((prevLayoutLeft != layoutLeft) || (prevLayoutRight != layoutRight) || (isInputHistoryEnabled != inputHistoryEnabled) || compareCustomLayouts() || (prevOrientation != buttonLayoutOrientation)) {

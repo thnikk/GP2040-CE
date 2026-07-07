@@ -410,8 +410,22 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.displayOptions, deprecatedI2cSCLPin, -1);
     INIT_UNSET_PROPERTY(config.displayOptions, deprecatedI2cAddress, DISPLAY_I2C_ADDR);
     INIT_UNSET_PROPERTY(config.displayOptions, deprecatedI2cSpeed, I2C_SPEED);
-    INIT_UNSET_PROPERTY(config.displayOptions, buttonLayout, BUTTON_LAYOUT);
-    INIT_UNSET_PROPERTY(config.displayOptions, buttonLayoutRight, BUTTON_LAYOUT_RIGHT);
+    // Migrate deprecated per-addon buttonLayout fields to shared config fields
+    if (!config.has_buttonLayout && config.displayOptions.has_buttonLayout)
+    {
+        config.buttonLayout = config.displayOptions.buttonLayout;
+        config.has_buttonLayout = true;
+    }
+    if (!config.has_buttonLayoutRight && config.displayOptions.has_buttonLayoutRight)
+    {
+        config.buttonLayoutRight = config.displayOptions.buttonLayoutRight;
+        config.has_buttonLayoutRight = true;
+    }
+    INIT_UNSET_PROPERTY(config, buttonLayout, BUTTON_LAYOUT);
+    INIT_UNSET_PROPERTY(config, buttonLayoutRight, BUTTON_LAYOUT_RIGHT);
+
+    INIT_UNSET_PROPERTY(config.displayOptions, buttonLayout, config.buttonLayout);
+    INIT_UNSET_PROPERTY(config.displayOptions, buttonLayoutRight, config.buttonLayoutRight);
     INIT_UNSET_PROPERTY(config.displayOptions, turnOffWhenSuspended, DISPLAY_TURN_OFF_WHEN_SUSPENDED);
     INIT_UNSET_PROPERTY(config.displayOptions, inputMode, 1);
     INIT_UNSET_PROPERTY(config.displayOptions, turboMode, 1);
@@ -477,10 +491,17 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(peripheralOptions.blockUSB0, order, USB_PERIPHERAL_PIN_ORDER);
     INIT_UNSET_PROPERTY(peripheralOptions.blockUSB0, enable5v, USB_PERIPHERAL_PIN_5V);
 
+    // Migrate deprecated ledOptions.ledLayout to shared config.buttonLayout
+    if (!config.has_buttonLayout && config.ledOptions.has_ledLayout)
+    {
+        config.buttonLayout = config.ledOptions.ledLayout;
+        config.has_buttonLayout = true;
+    }
+
     // ledOptions
     INIT_UNSET_PROPERTY(config.ledOptions, dataPin, BOARD_LEDS_PIN);
     INIT_UNSET_PROPERTY(config.ledOptions, ledFormat, static_cast<LEDFormat_Proto>(LED_FORMAT));
-    INIT_UNSET_PROPERTY(config.ledOptions, ledLayout, BUTTON_LAYOUT);
+    INIT_UNSET_PROPERTY(config.ledOptions, ledLayout, config.buttonLayout);
     INIT_UNSET_PROPERTY(config.ledOptions, ledsPerButton, LEDS_PER_PIXEL);
     INIT_UNSET_PROPERTY(config.ledOptions, brightnessMaximum, LED_BRIGHTNESS_MAXIMUM);
     INIT_UNSET_PROPERTY(config.ledOptions, brightnessSteps, LED_BRIGHTNESS_STEPS);

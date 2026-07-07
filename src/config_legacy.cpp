@@ -810,11 +810,15 @@ bool ConfigUtils::fromLegacyStorage(Config& config)
         SET_PROPERTY(displayOptions, deprecatedI2cSpeed, legacyBoardOptions.i2cSpeed);
         if (isValidButtonLayout(legacyBoardOptions.buttonLayout))
         {
-            SET_PROPERTY(displayOptions, buttonLayout, static_cast<ButtonLayout>(legacyBoardOptions.buttonLayout));
+            ButtonLayout layout = static_cast<ButtonLayout>(legacyBoardOptions.buttonLayout);
+            SET_PROPERTY(config, buttonLayout, layout);
+            SET_PROPERTY(displayOptions, buttonLayout, layout);
         }
         if (isValidButtonLayoutRight(legacyBoardOptions.buttonLayoutRight))
         {
-            SET_PROPERTY(displayOptions, buttonLayoutRight, static_cast<ButtonLayoutRight>(legacyBoardOptions.buttonLayoutRight));
+            ButtonLayoutRight layoutRight = static_cast<ButtonLayoutRight>(legacyBoardOptions.buttonLayoutRight);
+            SET_PROPERTY(config, buttonLayoutRight, layoutRight);
+            SET_PROPERTY(displayOptions, buttonLayoutRight, layoutRight);
         }
 
         const ConfigLegacy::ButtonLayoutParams& legacyParams = legacyBoardOptions.buttonLayoutCustomOptions.params;

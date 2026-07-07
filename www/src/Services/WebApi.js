@@ -393,6 +393,29 @@ async function getButtonLayoutDefs() {
 	}
 }
 
+async function getButtonLayout() {
+	try {
+		const response = await Http.get(`${baseUrl}/api/getButtonLayout`);
+
+		return response.data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+async function setButtonLayout(data) {
+	try {
+		const response = await Http.post(
+			`${baseUrl}/api/setButtonLayout`,
+			data,
+		);
+
+		return response.data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
 async function getPinMappings() {
 	try {
 		const { data } = await Http.get(`${baseUrl}/api/getPinMappings`);
@@ -707,6 +730,8 @@ export default {
 	setReactiveLEDs,
 	getButtonLayouts,
 	getButtonLayoutDefs,
+	getButtonLayout,
+	setButtonLayout,
 	getSplashImage,
 	setSplashImage,
 	getUsedPins,

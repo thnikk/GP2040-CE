@@ -1,5 +1,6 @@
 export default {
 	'add-ons-label': 'Add-Ons Configuration',
+	'button-layout-label': 'Button Layout Configuration',
 	'backup-label': 'Data Backup and Restoration',
 	'config-label': 'Configuration',
 	'custom-theme-label': 'Custom LED Theme',

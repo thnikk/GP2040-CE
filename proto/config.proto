@@ -237,8 +237,8 @@ message DisplayOptions
     optional int32 deprecatedI2cAddress = 5 [deprecated = true];
     optional int32 deprecatedI2cSpeed = 6 [deprecated = true];
 
-    optional ButtonLayout buttonLayout = 7;
-    optional ButtonLayoutRight buttonLayoutRight = 8;
+    optional ButtonLayout buttonLayout = 7 [deprecated = true];
+    optional ButtonLayoutRight buttonLayoutRight = 8 [deprecated = true];
     optional ButtonLayoutCustomOptions buttonLayoutCustomOptions = 9;
 
     optional SplashMode splashMode = 10;
@@ -273,7 +273,7 @@ message LEDOptions
 {
     optional int32 dataPin = 1;
     optional LEDFormat_Proto ledFormat = 2;
-    optional ButtonLayout ledLayout = 3;
+    optional ButtonLayout ledLayout = 3 [deprecated = true];
     optional uint32 ledsPerButton = 4;
     optional uint32 brightnessMaximum = 5;
     optional uint32 brightnessSteps = 6;
@@ -883,4 +883,6 @@ message Config
     optional GpioMappings gpioMappings = 13;
     optional MigrationHistory migrations = 14;
     optional PeripheralOptions peripheralOptions = 15;
+    optional ButtonLayout buttonLayout = 16;
+    optional ButtonLayoutRight buttonLayoutRight = 17;
 }

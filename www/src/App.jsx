@@ -17,6 +17,7 @@ import AddonsConfigPage from './Pages/AddonsConfigPage';
 import BackupPage from './Pages/BackupPage';
 import PlaygroundPage from './Pages/PlaygroundPage';
 import InputMacroAddonPage from './Pages/InputMacroAddonPage';
+import ButtonLayoutConfigPage from './Pages/ButtonLayoutConfigPage';
 
 import './App.scss';
 
@@ -30,6 +31,7 @@ const App = () => {
 						<Route path="/" element={<HomePage />} />
 						<Route path="/settings" element={<SettingsPage />} />
 						<Route path="/pin-mapping" element={<PinMappingPage />} />
+						<Route path="/button-layout" element={<ButtonLayoutConfigPage />} />
 						<Route
 							path="/peripheral-mapping"
 							element={<PeripheralMappingPage />}

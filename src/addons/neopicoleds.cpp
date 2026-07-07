@@ -625,9 +625,10 @@ uint8_t NeoPicoLEDAddon::setupButtonPositions()
 void NeoPicoLEDAddon::configureLEDs()
 {
     const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
+    const Config& config = Storage::getInstance().getConfig();
     const TurboOptions& turboOptions = Storage::getInstance().getAddonOptions().turboOptions;
     uint8_t buttonCount = setupButtonPositions();
-    vector<vector<Pixel>> pixels = createLEDLayout(static_cast<ButtonLayout>(ledOptions.ledLayout), ledOptions.ledsPerButton, buttonCount);
+    vector<vector<Pixel>> pixels = createLEDLayout(static_cast<ButtonLayout>(config.buttonLayout), ledOptions.ledsPerButton, buttonCount);
     matrix.setup(pixels, ledOptions.ledsPerButton);
     ledCount = matrix.getLedCount();
     if (ledOptions.pledType == PLED_TYPE_RGB && PLED_COUNT > 0)
