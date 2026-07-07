@@ -948,11 +948,13 @@ std::string setButtonLayout()
 {
     DynamicJsonDocument doc = get_post_data();
     Config& config = Storage::getInstance().getConfig();
+    DisplayOptions& displayOptions = Storage::getInstance().getDisplayOptions();
     readDoc(config.buttonLayout, doc, "buttonLayout");
     readDoc(config.buttonLayoutRight, doc, "buttonLayoutRight");
+    readDoc(displayOptions.buttonLayoutOrientation, doc, "buttonLayoutOrientation");
     // Back-populate deprecated fields for addons that still read them
-    Storage::getInstance().getDisplayOptions().buttonLayout = config.buttonLayout;
-    Storage::getInstance().getDisplayOptions().buttonLayoutRight = config.buttonLayoutRight;
+    displayOptions.buttonLayout = config.buttonLayout;
+    displayOptions.buttonLayoutRight = config.buttonLayoutRight;
     Storage::getInstance().getLedOptions().ledLayout = config.buttonLayout;
     Storage::getInstance().save(true);
     return serialize_json(doc);
@@ -962,8 +964,10 @@ std::string getButtonLayout()
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
     const Config& config = Storage::getInstance().getConfig();
+    const DisplayOptions& displayOptions = Storage::getInstance().getDisplayOptions();
     writeDoc(doc, "buttonLayout", config.buttonLayout);
     writeDoc(doc, "buttonLayoutRight", config.buttonLayoutRight);
+    writeDoc(doc, "buttonLayoutOrientation", displayOptions.buttonLayoutOrientation);
     return serialize_json(doc);
 }
 

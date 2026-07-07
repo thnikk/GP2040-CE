@@ -64,6 +64,7 @@ export default function ButtonLayoutConfigPage() {
 		const data = {
 			buttonLayout: parseInt(values.buttonLayout),
 			buttonLayoutRight: parseInt(values.buttonLayoutRight),
+			buttonLayoutOrientation: parseInt(values.buttonLayoutOrientation),
 		};
 
 		const success = await WebApi.setButtonLayout(data);
