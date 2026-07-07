@@ -331,11 +331,16 @@ async function getCustomTheme(setLoading) {
 		const response = await Http.get(`${baseUrl}/api/getCustomTheme`);
 		setLoading(false);
 
-		let data = { hasCustomTheme: response.data.enabled, customTheme: {} };
+		let data = {
+			hasCustomTheme: response.data.enabled,
+			animationMode: response.data.animationMode ?? 0,
+			themeIndex: response.data.themeIndex ?? 0,
+			customTheme: {},
+		};
 
 		// Transform ARGB int value to hex for easy use on frontend
 		Object.keys(response.data)
-			.filter((p) => p !== 'enabled')
+			.filter((p) => p !== 'enabled' && p !== 'animationMode' && p !== 'themeIndex')
 			.forEach((button) => {
 				data.customTheme[button] = {
 					normal: rgbIntToHex(response.data[button].u),
@@ -352,7 +357,11 @@ async function getCustomTheme(setLoading) {
 }
 
 async function setCustomTheme(customThemeOptions) {
-	let options = { enabled: customThemeOptions.hasCustomTheme };
+	let options = {
+		enabled: customThemeOptions.hasCustomTheme,
+		animationMode: customThemeOptions.animationMode ?? 0,
+		themeIndex: customThemeOptions.themeIndex ?? 0,
+	};
 
 	// Transform RGB hex values to ARGB int before sending back to API
 	Object.keys(customThemeOptions.customTheme).forEach((p) => {

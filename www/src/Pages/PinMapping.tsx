@@ -6,7 +6,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { NavLink } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import {
 	Alert,
@@ -21,7 +20,7 @@ import {
 	Tab,
 	Tooltip,
 } from 'react-bootstrap';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import invert from 'lodash/invert';
 import omit from 'lodash/omit';
 
@@ -262,13 +261,34 @@ const PinSelectList = memo(function PinSelectList({
 
 
 
+const ANIMATION_MODES = [
+	{ value: 0, labelKey: 'animation-mode-0' },
+	{ value: 1, labelKey: 'animation-mode-1' },
+	{ value: 2, labelKey: 'animation-mode-2' },
+	{ value: 3, labelKey: 'animation-mode-3' },
+	{ value: 4, labelKey: 'animation-mode-4' },
+];
+
+const STATIC_THEMES = [
+	'static-rainbow', 'xbox', 'xbox-all',
+	'super-famicom', 'super-famicom-all',
+	'playstation', 'playstation-all',
+	'neo-geo', 'neo-geo-curved', 'neo-geo-modern',
+	'six-button-fighter', 'six-button-fighter-plus',
+	'street-fighter-2', 'tekken',
+	'guilty-gear-type-a', 'guilty-gear-type-b', 'guilty-gear-type-c',
+	'guilty-gear-type-d', 'guilty-gear-type-e',
+	'fightboard', 'springboard',
+];
+
+const themeLabelKey = (index: number) => `CustomTheme:static-theme-${STATIC_THEMES[index]}`;
+
 const PinSection = memo(function PinSection({
 	profileIndex,
 	pressedPin,
 	customTheme,
 	hasCustomTheme,
 	onLedColorChange,
-	onToggleCustomTheme,
 	onSaveTheme,
 }: {
 	profileIndex: number;
@@ -276,7 +296,6 @@ const PinSection = memo(function PinSection({
 	customTheme?: Record<string, { normal: string; pressed: string }>;
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
-	onToggleCustomTheme?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	onSaveTheme?: () => Promise<boolean>;
 }) {
 	const { t } = useTranslation('');
@@ -365,17 +384,6 @@ const PinSection = memo(function PinSection({
 
 	return (
 		<>
-			<div className="alert alert-warning">
-				<Trans ns="PinMapping" i18nKey="alert-text">
-					Mapping buttons to pins that aren&apos;t connected or available can
-					leave the device in non-functional state. To clear the invalid
-					configuration go to the{' '}
-					<NavLink to="/reset-settings">Reset Settings</NavLink> page.
-				</Trans>
-				<br />
-				<br />
-				{t(`PinMapping:profile-pins-warning`)}
-			</div>
 			<Section
 				title={t('PinMapping:profile-pin-mapping-title', {
 					profileLabel,
@@ -421,16 +429,16 @@ const PinSection = memo(function PinSection({
 									<span className="spinner-border" />
 								</div>
 							) : svgContent ? (
-								<BoardSVG
-									svgContent={svgContent}
-									pinElements={pinElements}
-									profileIndex={profileIndex}
-									onPinClick={handlePinClick}
-									highlightedPin={pressedPin}
-									dirtyPins={dirtyPins}
-									customTheme={customTheme}
-									hasCustomTheme={hasCustomTheme}
-								/>
+							<BoardSVG
+								svgContent={svgContent}
+								pinElements={pinElements}
+								profileIndex={profileIndex}
+								onPinClick={handlePinClick}
+								highlightedPin={pressedPin}
+								dirtyPins={dirtyPins}
+								customTheme={customTheme}
+								hasCustomTheme={hasCustomTheme}
+							/>
 							) : (
 								<div className="alert alert-info">
 									{t('PinMapping:no-svg-available')}
@@ -509,17 +517,7 @@ const PinSection = memo(function PinSection({
 								{t(`PinMapping:profile-copy-base`)}
 							</Button>
 						)}
-						<div className="ms-auto d-flex align-items-center gap-2">
-							<Form.Check
-								type="switch"
-								id="hasCustomTheme"
-								label="Custom LED Theme"
-								checked={hasCustomTheme}
-								onChange={onToggleCustomTheme}
-								reverse
-							/>
-						</div>
-						<Button type="submit">{t('Common:button-save-label')}</Button>
+						<Button type="submit" className="ms-auto">{t('Common:button-save-label')}</Button>
 					</div>
 					{saveMessage && <Alert variant="info">{saveMessage}</Alert>}
 				</Form>
@@ -555,7 +553,8 @@ export default function PinMapping() {
 	const { t } = useTranslation('');
 
 	const [customTheme, setCustomTheme] = useState({ ...defaultCustomTheme });
-	const [hasCustomTheme, setHasCustomTheme] = useState(false);
+	const [animationMode, setAnimationMode] = useState(0);
+	const [themeIndex, setThemeIndex] = useState(0);
 
 	const { setLoading } = useContext(AppContext);
 
@@ -564,7 +563,8 @@ export default function PinMapping() {
 		async function fetchTheme() {
 			const data = await WebApi.getCustomTheme(setLoading);
 			if (data) {
-				setHasCustomTheme(data.hasCustomTheme);
+				setAnimationMode(data.animationMode);
+				setThemeIndex(data.themeIndex);
 				if (!data.customTheme['ALL'])
 					data.customTheme['ALL'] = { normal: '#000000', pressed: '#000000' };
 				if (!data.customTheme['GRADIENT NORMAL'])
@@ -590,8 +590,12 @@ export default function PinMapping() {
 		[],
 	);
 
-	const toggleCustomTheme = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-		setHasCustomTheme(e.target.checked);
+	const handleAnimationModeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+		setAnimationMode(Number(e.target.value));
+	}, []);
+
+	const handleThemeIndexChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+		setThemeIndex(Number(e.target.value));
 	}, []);
 
 	const submitTheme = useCallback(async () => {
@@ -600,80 +604,119 @@ export default function PinMapping() {
 		delete leds['GRADIENT NORMAL'];
 		delete leds['GRADIENT PRESSED'];
 		const success = await WebApi.setCustomTheme({
-			hasCustomTheme,
+			hasCustomTheme: animationMode === 4,
 			customTheme: leds,
+			animationMode,
+			themeIndex,
 		});
 		return success;
-	}, [customTheme, hasCustomTheme]);
+	}, [customTheme, animationMode, themeIndex]);
+
+	const hasCustomTheme = animationMode === 4;
 
 	return (
-		<Tab.Container defaultActiveKey="profile-0">
-			<Row>
-				<Col md={3}>
-					{loadingProfiles && (
-						<div className="d-flex justify-content-center">
-							<span className="spinner-border" />
-						</div>
-					)}
-					<Nav variant="pills" className="flex-column">
-						{profiles.map(({ profileLabel, enabled }, index) => (
-							<Nav.Item key={`profile-${index}`}>
-								<Nav.Link eventKey={`profile-${index}`}>
-									{profileLabel ||
-										t('PinMapping:profile-label-default', {
-											profileNumber: index + 1,
-										})}
-
-									{!enabled && index > 0 && (
-										<span>{t('PinMapping:profile-disabled')}</span>
-									)}
-								</Nav.Link>
-							</Nav.Item>
-						))}
-						{profiles.length !== MAX_PROFILES && (
-							<Button
-								type="button"
-								className="mt-1"
-								variant="outline"
-								onClick={addProfile}
-							>
-								{t('PinMapping:profile-add-button')}
-							</Button>
-						)}
-					</Nav>
-					<hr />
-					<p className="text-center">{t('PinMapping:sub-header-text')}</p>
-					<div className="d-flex justify-content-center pb-3">
-						<CaptureButton
-							buttonLabel={t('PinMapping:pin-viewer')}
-							labels={['']}
-							onChange={(_, pin) => setPressedPin(pin)}
-						/>
+		<>
+			<Section title={t('CustomTheme:header-text')}>
+				<div className="d-flex align-items-center gap-3 flex-wrap">
+					<div className="d-flex align-items-center gap-2">
+						<Form.Label className="mb-0">{t('CustomTheme:animation-label')}</Form.Label>
+						<Form.Select
+							value={animationMode}
+							onChange={handleAnimationModeChange}
+							style={{ width: 'auto' }}
+						>
+							{ANIMATION_MODES.map(({ value, labelKey }) => (
+								<option key={value} value={value}>
+									{t(`CustomTheme:${labelKey}`)}
+								</option>
+							))}
+						</Form.Select>
 					</div>
-					{pressedPin !== null && (
-						<div className="alert alert-info mt-3">
-							<strong>{t('PinMapping:pin-pressed', { pressedPin })}</strong>
+					{animationMode === 3 && (
+						<div className="d-flex align-items-center gap-2">
+							<Form.Label className="mb-0">{t('CustomTheme:preset-label')}</Form.Label>
+							<Form.Select
+								value={themeIndex}
+								onChange={handleThemeIndexChange}
+								style={{ width: 'auto' }}
+							>
+								{STATIC_THEMES.map((_, index) => (
+									<option key={index} value={index}>
+										{t(themeLabelKey(index))}
+									</option>
+								))}
+							</Form.Select>
 						</div>
 					)}
-				</Col>
-				<Col md={9}>
-					<Tab.Content>
-						{profiles.map((_, index) => (
-							<Tab.Pane key={`profile-${index}`} eventKey={`profile-${index}`}>
+				</div>
+			</Section>
+			<Tab.Container defaultActiveKey="profile-0">
+				<Row>
+					<Col md={3}>
+						{loadingProfiles && (
+							<div className="d-flex justify-content-center">
+								<span className="spinner-border" />
+							</div>
+						)}
+						<Nav variant="pills" className="flex-column">
+							{profiles.map(({ profileLabel, enabled }, index) => (
+								<Nav.Item key={`profile-${index}`}>
+									<Nav.Link eventKey={`profile-${index}`}>
+										{profileLabel ||
+											t('PinMapping:profile-label-default', {
+												profileNumber: index + 1,
+											})}
+
+										{!enabled && index > 0 && (
+											<span>{t('PinMapping:profile-disabled')}</span>
+										)}
+									</Nav.Link>
+								</Nav.Item>
+							))}
+							{profiles.length !== MAX_PROFILES && (
+								<Button
+									type="button"
+									className="mt-1"
+									variant="outline"
+									onClick={addProfile}
+								>
+									{t('PinMapping:profile-add-button')}
+								</Button>
+							)}
+						</Nav>
+						<hr />
+						<p className="text-center">{t('PinMapping:sub-header-text')}</p>
+						<div className="d-flex justify-content-center pb-3">
+							<CaptureButton
+								buttonLabel={t('PinMapping:pin-viewer')}
+								labels={['']}
+								onChange={(_, pin) => setPressedPin(pin)}
+							/>
+						</div>
+						{pressedPin !== null && (
+							<div className="alert alert-info mt-3">
+								<strong>{t('PinMapping:pin-pressed', { pressedPin })}</strong>
+							</div>
+						)}
+					</Col>
+					<Col md={9}>
+						<Tab.Content>
+							{profiles.map((_, index) => (
+								<Tab.Pane key={`profile-${index}`} eventKey={`profile-${index}`}>
 								<PinSection
 									profileIndex={index}
 									pressedPin={pressedPin}
 									customTheme={customTheme}
 									hasCustomTheme={hasCustomTheme}
 									onLedColorChange={handleLedColorChange}
-									onToggleCustomTheme={toggleCustomTheme}
 									onSaveTheme={submitTheme}
 								/>
-							</Tab.Pane>
-						))}
-					</Tab.Content>
-				</Col>
-			</Row>
-		</Tab.Container>
+								</Tab.Pane>
+							))}
+						</Tab.Content>
+					</Col>
+				</Row>
+			</Tab.Container>
+		</>
 	);
 }
