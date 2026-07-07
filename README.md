@@ -41,6 +41,11 @@ Instead of using pin remapping, a board SVG can be used to define pins for their
 #### Board LED addon
 The Waveshare RP2040-Zero includes an on-board LED and this addon sets the color based on the input mode.
 
+### Planned features
+
+#### Custom colors via remapping page
+I'd like to be able to change the per-profile colors from the pin remapping page.
+
 ## Features
 
 - Select from 13 input modes including X-Input, Nintendo Switch, Playstation 4/5, Xbox One, D-Input, and Keyboard
