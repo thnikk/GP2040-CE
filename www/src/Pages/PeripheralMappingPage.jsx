@@ -68,8 +68,9 @@ export default function PeripheralMappingPage() {
 	const { setButtonLabels, usedPins } = useContext(AppContext);
 	const [saveMessage, setSaveMessage] = useState('');
 
+	const board = boards[import.meta.env.VITE_GP2040_BOARD] || boards.pico;
 	let allPins = [
-		...Array(boards[import.meta.env.VITE_GP2040_BOARD].maxPin + 1).keys(),
+		...Array(board.maxPin + 1).keys(),
 	];
 	const pinLookup = (pinList) => {
 		return pinList && pinList.length > 0 ? pinList : allPins;

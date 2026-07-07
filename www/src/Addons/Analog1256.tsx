@@ -63,8 +63,9 @@ const Analog1256 = ({ values, errors, handleChange, handleCheckbox }) => {
 				hwcs: true,
 			});
 
+		const board = boards[import.meta.env.VITE_GP2040_BOARD] || boards.pico;
 		const availablePins = [
-			...Array(boards[import.meta.env.VITE_GP2040_BOARD].maxPin + 1).keys(),
+			...Array(board.maxPin + 1).keys(),
 		].filter((p) => (usedPins || []).indexOf(p) === -1); // Filter out used pins
 
 		csPins.push(...availablePins.map((pin) => ({ pin, hwcs: false })));
