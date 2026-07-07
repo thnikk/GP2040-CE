@@ -10,6 +10,7 @@
 #include "class/hid/hid.h"
 
 #define BOARD_CONFIG_LABEL "fightboard-v3-m"
+#define BOARD_SVG
 
 // Boot-hold input mode overrides: holding B1 (A) selects XInput,
 // holding B2 (B) selects Switch. This matches the board's silkscreen
