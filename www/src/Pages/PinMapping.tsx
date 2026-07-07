@@ -295,7 +295,6 @@ const PinSection = memo(function PinSection({
 	themeIndex,
 	hasCustomTheme,
 	onLedColorChange,
-	onSaveTheme,
 	staticColorNormal,
 }: {
 	profileIndex: number;
@@ -305,7 +304,6 @@ const PinSection = memo(function PinSection({
 	themeIndex?: number;
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
-	onSaveTheme?: () => Promise<boolean>;
 	staticColorNormal?: string;
 }) {
 	const { t } = useTranslation('');
@@ -336,13 +334,12 @@ const PinSection = memo(function PinSection({
 		e.stopPropagation();
 		try {
 			await saveProfiles();
-			if (onSaveTheme) await onSaveTheme();
 			updateUsedPins();
 			setSaveMessage(t('Common:saved-success-message'));
 		} catch (error) {
 			setSaveMessage(t('Common:saved-error-message'));
 		}
-	}, [onSaveTheme]);
+	}, [saveProfiles, updateUsedPins, t]);
 
 	const { svgContent, pinElements, loading, svgMode } = useBoardSVG();
 	const svgPinSet = useMemo(
@@ -572,6 +569,7 @@ export default function PinMapping() {
 	const [staticColorPressed, setStaticColorPressed] = useState('#ffffff');
 	const [staticColorPickerTarget, setStaticColorPickerTarget] = useState<HTMLElement | null>(null);
 	const [staticColorPickerType, setStaticColorPickerType] = useState<'normal' | 'pressed'>('normal');
+	const [themeSaveMessage, setThemeSaveMessage] = useState('');
 
 	const { setLoading } = useContext(AppContext);
 
@@ -645,6 +643,15 @@ export default function PinMapping() {
 		});
 		return success;
 	}, [customTheme, animationMode, themeIndex, staticColorNormal, staticColorPressed]);
+
+	const handleThemeSave = useCallback(async () => {
+		const success = await submitTheme();
+		if (success) {
+			setThemeSaveMessage(t('Common:saved-success-message'));
+		} else {
+			setThemeSaveMessage(t('Common:saved-error-message'));
+		}
+	}, [submitTheme, t]);
 
 	const hasCustomTheme = animationMode === 4;
 
@@ -754,6 +761,10 @@ export default function PinMapping() {
 						</div>
 					)}
 				</div>
+				<div className="d-flex align-items-center gap-3 mt-3">
+					<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
+					{themeSaveMessage && <Alert variant="info" className="mb-0">{themeSaveMessage}</Alert>}
+				</div>
 			</Section>
 			<Tab.Container defaultActiveKey="profile-0">
 				<Row>
@@ -816,7 +827,6 @@ export default function PinMapping() {
 								themeIndex={themeIndex}
 								hasCustomTheme={hasCustomTheme}
 								onLedColorChange={handleLedColorChange}
-								onSaveTheme={submitTheme}
 								staticColorNormal={staticColorNormal}
 							/>
 								</Tab.Pane>

@@ -38,6 +38,7 @@ export default {
 	'has-custom-theme-label': 'Enable',
 	'normal-label': 'Normal',
 	'pressed-label': 'Pressed',
+	'custom-theme-colors': 'Custom theme colors',
 	'no-led-for-action': 'No LED configuration available for this action type.',
 	'modal-title': 'Confirm Clear Custom Theme',
 	'modal-body':

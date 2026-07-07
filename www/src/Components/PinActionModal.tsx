@@ -259,7 +259,7 @@ export default function PinActionModal({
 		<Modal show={show} onHide={onClose} centered size="lg">
 			<Modal.Header closeButton>
 				<Modal.Title>
-					{t('PinMapping:assign-action-title', { pin: `GP${pinNumber}` })}
+					{t('PinMapping:pin-header-label')} {pinNumber}
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
@@ -276,7 +276,7 @@ export default function PinActionModal({
 				{showLedSection && (
 					<div className="mt-4 border-top pt-3">
 						<Form.Label className="fw-bold">
-							{t('CustomTheme:led-layout-label')} — {buttonNames[buttonName!] || buttonName}
+							{t('CustomTheme:custom-theme-colors')}
 						</Form.Label>
 						<div className="d-flex gap-3">
 							<div
