@@ -2,12 +2,13 @@ name: CMake
 
 on:
   push:
-    branches: [ "v0.7.10" ]
-  pull_request:
-    branches: [ "v0.7.10" ]
-#  pull_request_target:
-#    branches: [ "main" ]
+    tags: [ 'v*' ]
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Version tag (e.g., v1.0.0) - optional for builds'
+        required: false
+        type: string
 
 env:
   BUILD_TYPE: Release
@@ -55,6 +56,20 @@ jobs:
       id: git_hash
       shell: bash
       run: echo "SHORT_SHA=$(git describe --always --abbrev=7)" >> $GITHUB_OUTPUT
+
+    - name: Set version from tag
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.tag_name }}" ]; then
+          TAG="${{ github.event.inputs.tag_name }}"
+        elif [ "${{ github.event_name }}" = "push" ]; then
+          TAG="${GITHUB_REF#refs/tags/}"
+        else
+          TAG=""
+        fi
+        if [ -n "$TAG" ]; then
+          sed -i "s/^set(GIT_REPO_VERSION \".*\")/set(GIT_REPO_VERSION \"$TAG\")/" CMakeLists.txt
+        fi
       #End Global Setup
 
     - name: Pico Build Configure CMake
@@ -85,3 +100,69 @@ jobs:
         name: elf - ${{ steps.git_hash.outputs.SHORT_SHA }}
         path: ${{github.workspace}}/build/GP2040-CE_*_${{ matrix.GP2040_BOARDCONFIG }}.elf
         if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: |
+      startsWith(github.ref, 'refs/tags/') ||
+      (github.event_name == 'workflow_dispatch' &&
+       github.event.inputs.tag_name != '')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4.1.2
+        with:
+          path: ./artifacts
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag_name }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          TAG_NAME="${{ steps.version.outputs.tag }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 "${TAG_NAME}^" 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            echo "## Changes since ${PREV_TAG}" > notes.md
+            echo "" >> notes.md
+            git log ${PREV_TAG}..${TAG_NAME} --pretty=format:"* %s (%h)" >> notes.md
+          else
+            echo "## Initial Release" > notes.md
+          fi
+
+      - name: Check if pre-release
+        id: prerelease
+        run: |
+          TAG_NAME="${{ steps.version.outputs.tag }}"
+          if echo "$TAG_NAME" | grep -qE '(alpha|beta|rc|pre)'; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ steps.version.outputs.tag }}
+          body_path: notes.md
+          files: |
+            ./artifacts/**/*.uf2
+            ./artifacts/**/*.elf
+          prerelease: ${{ steps.prerelease.outputs.is_prerelease }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
