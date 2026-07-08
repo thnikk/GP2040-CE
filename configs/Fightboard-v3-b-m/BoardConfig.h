@@ -69,6 +69,17 @@
 #define KEY_BUTTON_A2   HID_KEY_F2            // A2     | ~      | Capture | ~        | 14     | ~      |
 #define KEY_BUTTON_FN   -1                    // Hotkey Function                                        |
 
+// Hotkeys
+#define HOTKEY_08_BUTTONS_MASK 3072  // L3+R3
+#define HOTKEY_08_DPAD_MASK 4        // Left
+#define HOTKEY_08_AUX_MASK 0
+#define HOTKEY_08_ACTION 42          // HOTKEY_PREVIOUS_PROFILE
+
+#define HOTKEY_09_BUTTONS_MASK 3072  // L3+R3
+#define HOTKEY_09_DPAD_MASK 8        // Right
+#define HOTKEY_09_AUX_MASK 0
+#define HOTKEY_09_ACTION 35          // HOTKEY_NEXT_PROFILE
+
 // #define BOARD_LEDS_PIN 29
 // #define LED_BRIGHTNESS_MAXIMUM 100
 // #define LED_BRIGHTNESS_STEPS 5
