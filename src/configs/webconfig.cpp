@@ -12,6 +12,9 @@
 #include "config_utils.h"
 #include "types.h"
 #include "version.h"
+#include "gamepad/GamepadState.h"
+#include "Effects/CustomTheme.hpp"
+#include "Effects/CustomThemePressed.hpp"
 
 #include <cstring>
 #include <string>
@@ -70,6 +73,22 @@ template <typename T, typename K0, typename K1, typename K2>
 static void __attribute__((noinline)) readDoc(T& var, const DynamicJsonDocument& doc, const K0& key0, const K1& key1, const K2& key2)
 {
     var = doc[key0][key1][key2];
+}
+
+// Don't inline this function, we do not want to consume stack space in the calling function
+template <typename T, typename K>
+static void __attribute__((noinline)) readDocIfPresent(T& var, const DynamicJsonDocument& doc, const K& key)
+{
+    if (doc[key] != nullptr)
+        var = doc[key];
+}
+
+// Don't inline this function, we do not want to consume stack space in the calling function
+template <typename T, typename K0, typename K1>
+static void __attribute__((noinline)) readDocIfPresent(T& var, const DynamicJsonDocument& doc, const K0& key0, const K1& key1)
+{
+    if (doc[key0] != nullptr && doc[key0][key1] != nullptr)
+        var = doc[key0][key1];
 }
 
 // Don't inline this function, we do not want to consume stack space in the calling function
@@ -1049,77 +1068,108 @@ std::string setCustomTheme()
 
     AnimationOptions options = AnimationStation::options;
 
-    const auto readDocDefaultToZero = [&](const char* key0, const char* key1) -> uint32_t
-    {
-        uint32_t result = 0;
-        if (hasValue(doc, key0, key1))
-        {
-            readDoc(result, doc, key0, key1);
-        }
-        return result;
-    };
+#define READ_OPTION(field, ...) do { \
+    auto _v = options.field; \
+    readDocIfPresent(_v, doc, __VA_ARGS__); \
+    options.field = _v; \
+} while(0)
 
-    readDoc(options.hasCustomTheme, doc, "enabled");
+    READ_OPTION(hasCustomTheme, "enabled");
+    READ_OPTION(staticColorNormal, "staticColorNormal");
+    READ_OPTION(staticColorPressed, "staticColorPressed");
 
-    uint32_t staticNormal = 0;
-    uint32_t staticPressed = 0;
-    readDoc(staticNormal, doc, "staticColorNormal");
-    readDoc(staticPressed, doc, "staticColorPressed");
-    options.staticColorNormal = staticNormal;
-    options.staticColorPressed = staticPressed;
-    options.customThemeUp 			= readDocDefaultToZero("Up", "u");
-    options.customThemeDown 		= readDocDefaultToZero("Down", "u");
-    options.customThemeLeft			= readDocDefaultToZero("Left", "u");
-    options.customThemeRight		= readDocDefaultToZero("Right", "u");
-    options.customThemeB1			= readDocDefaultToZero("B1", "u");
-    options.customThemeB2			= readDocDefaultToZero("B2", "u");
-    options.customThemeB3			= readDocDefaultToZero("B3", "u");
-    options.customThemeB4			= readDocDefaultToZero("B4", "u");
-    options.customThemeL1			= readDocDefaultToZero("L1", "u");
-    options.customThemeR1			= readDocDefaultToZero("R1", "u");
-    options.customThemeL2			= readDocDefaultToZero("L2", "u");
-    options.customThemeR2			= readDocDefaultToZero("R2", "u");
-    options.customThemeS1			= readDocDefaultToZero("S1", "u");
-    options.customThemeS2			= readDocDefaultToZero("S2", "u");
-    options.customThemeL3			= readDocDefaultToZero("L3", "u");
-    options.customThemeR3			= readDocDefaultToZero("R3", "u");
-    options.customThemeA1			= readDocDefaultToZero("A1", "u");
-    options.customThemeA2			= readDocDefaultToZero("A2", "u");
-    options.customThemeUpPressed	= readDocDefaultToZero("Up", "d");
-    options.customThemeDownPressed	= readDocDefaultToZero("Down", "d");
-    options.customThemeLeftPressed	= readDocDefaultToZero("Left", "d");
-    options.customThemeRightPressed	= readDocDefaultToZero("Right", "d");
-    options.customThemeB1Pressed	= readDocDefaultToZero("B1", "d");
-    options.customThemeB2Pressed	= readDocDefaultToZero("B2", "d");
-    options.customThemeB3Pressed	= readDocDefaultToZero("B3", "d");
-    options.customThemeB4Pressed	= readDocDefaultToZero("B4", "d");
-    options.customThemeL1Pressed	= readDocDefaultToZero("L1", "d");
-    options.customThemeR1Pressed	= readDocDefaultToZero("R1", "d");
-    options.customThemeL2Pressed	= readDocDefaultToZero("L2", "d");
-    options.customThemeR2Pressed	= readDocDefaultToZero("R2", "d");
-    options.customThemeS1Pressed	= readDocDefaultToZero("S1", "d");
-    options.customThemeS2Pressed	= readDocDefaultToZero("S2", "d");
-    options.customThemeL3Pressed	= readDocDefaultToZero("L3", "d");
-    options.customThemeR3Pressed	= readDocDefaultToZero("R3", "d");
-    options.customThemeA1Pressed	= readDocDefaultToZero("A1", "d");
-    options.customThemeA2Pressed	= readDocDefaultToZero("A2", "d");
+    READ_OPTION(customThemeUp, "Up", "u");
+    READ_OPTION(customThemeDown, "Down", "u");
+    READ_OPTION(customThemeLeft, "Left", "u");
+    READ_OPTION(customThemeRight, "Right", "u");
+    READ_OPTION(customThemeB1, "B1", "u");
+    READ_OPTION(customThemeB2, "B2", "u");
+    READ_OPTION(customThemeB3, "B3", "u");
+    READ_OPTION(customThemeB4, "B4", "u");
+    READ_OPTION(customThemeL1, "L1", "u");
+    READ_OPTION(customThemeR1, "R1", "u");
+    READ_OPTION(customThemeL2, "L2", "u");
+    READ_OPTION(customThemeR2, "R2", "u");
+    READ_OPTION(customThemeS1, "S1", "u");
+    READ_OPTION(customThemeS2, "S2", "u");
+    READ_OPTION(customThemeL3, "L3", "u");
+    READ_OPTION(customThemeR3, "R3", "u");
+    READ_OPTION(customThemeA1, "A1", "u");
+    READ_OPTION(customThemeA2, "A2", "u");
+    READ_OPTION(customThemeUpPressed, "Up", "d");
+    READ_OPTION(customThemeDownPressed, "Down", "d");
+    READ_OPTION(customThemeLeftPressed, "Left", "d");
+    READ_OPTION(customThemeRightPressed, "Right", "d");
+    READ_OPTION(customThemeB1Pressed, "B1", "d");
+    READ_OPTION(customThemeB2Pressed, "B2", "d");
+    READ_OPTION(customThemeB3Pressed, "B3", "d");
+    READ_OPTION(customThemeB4Pressed, "B4", "d");
+    READ_OPTION(customThemeL1Pressed, "L1", "d");
+    READ_OPTION(customThemeL2Pressed, "L2", "d");
+    READ_OPTION(customThemeR1Pressed, "R1", "d");
+    READ_OPTION(customThemeR2Pressed, "R2", "d");
+    READ_OPTION(customThemeS1Pressed, "S1", "d");
+    READ_OPTION(customThemeS2Pressed, "S2", "d");
+    READ_OPTION(customThemeL3Pressed, "L3", "d");
+    READ_OPTION(customThemeR3Pressed, "R3", "d");
+    READ_OPTION(customThemeA1Pressed, "A1", "d");
+    READ_OPTION(customThemeA2Pressed, "A2", "d");
 
-    uint32_t pressCooldown = 0;
-    readDoc(pressCooldown, doc, "buttonPressColorCooldownTimeInMs");
-    options.buttonPressColorCooldownTimeInMs = pressCooldown;
-
-    uint8_t animationMode = 0;
-    readDoc(animationMode, doc, "animationMode");
-    options.baseAnimationIndex = animationMode;
-    if (animationMode == static_cast<uint8_t>(AnimationEffects::EFFECT_CUSTOM_THEME))
+    READ_OPTION(buttonPressColorCooldownTimeInMs, "buttonPressColorCooldownTimeInMs");
+    READ_OPTION(baseAnimationIndex, "animationMode");
+    if (options.baseAnimationIndex == static_cast<uint8_t>(AnimationEffects::EFFECT_CUSTOM_THEME))
         options.hasCustomTheme = true;
 
-    uint8_t themeIndex = 0;
-    readDoc(themeIndex, doc, "themeIndex");
-    options.themeIndex = themeIndex;
+    READ_OPTION(themeIndex, "themeIndex");
+
+#undef READ_OPTION
 
     AnimationStation::SetOptions(options);
     Storage::getInstance().save(true);
+
+    {
+        std::map<uint32_t, RGB> theme;
+        theme[GAMEPAD_MASK_DU] = RGB(options.customThemeUp);
+        theme[GAMEPAD_MASK_DD] = RGB(options.customThemeDown);
+        theme[GAMEPAD_MASK_DL] = RGB(options.customThemeLeft);
+        theme[GAMEPAD_MASK_DR] = RGB(options.customThemeRight);
+        theme[GAMEPAD_MASK_B1] = RGB(options.customThemeB1);
+        theme[GAMEPAD_MASK_B2] = RGB(options.customThemeB2);
+        theme[GAMEPAD_MASK_B3] = RGB(options.customThemeB3);
+        theme[GAMEPAD_MASK_B4] = RGB(options.customThemeB4);
+        theme[GAMEPAD_MASK_L1] = RGB(options.customThemeL1);
+        theme[GAMEPAD_MASK_R1] = RGB(options.customThemeR1);
+        theme[GAMEPAD_MASK_L2] = RGB(options.customThemeL2);
+        theme[GAMEPAD_MASK_R2] = RGB(options.customThemeR2);
+        theme[GAMEPAD_MASK_S1] = RGB(options.customThemeS1);
+        theme[GAMEPAD_MASK_S2] = RGB(options.customThemeS2);
+        theme[GAMEPAD_MASK_A1] = RGB(options.customThemeA1);
+        theme[GAMEPAD_MASK_A2] = RGB(options.customThemeA2);
+        theme[GAMEPAD_MASK_L3] = RGB(options.customThemeL3);
+        theme[GAMEPAD_MASK_R3] = RGB(options.customThemeR3);
+        CustomTheme::SetCustomTheme(theme);
+
+        std::map<uint32_t, RGB> pressed;
+        pressed[GAMEPAD_MASK_DU] = RGB(options.customThemeUpPressed);
+        pressed[GAMEPAD_MASK_DD] = RGB(options.customThemeDownPressed);
+        pressed[GAMEPAD_MASK_DL] = RGB(options.customThemeLeftPressed);
+        pressed[GAMEPAD_MASK_DR] = RGB(options.customThemeRightPressed);
+        pressed[GAMEPAD_MASK_B1] = RGB(options.customThemeB1Pressed);
+        pressed[GAMEPAD_MASK_B2] = RGB(options.customThemeB2Pressed);
+        pressed[GAMEPAD_MASK_B3] = RGB(options.customThemeB3Pressed);
+        pressed[GAMEPAD_MASK_B4] = RGB(options.customThemeB4Pressed);
+        pressed[GAMEPAD_MASK_L1] = RGB(options.customThemeL1Pressed);
+        pressed[GAMEPAD_MASK_R1] = RGB(options.customThemeR1Pressed);
+        pressed[GAMEPAD_MASK_L2] = RGB(options.customThemeL2Pressed);
+        pressed[GAMEPAD_MASK_R2] = RGB(options.customThemeR2Pressed);
+        pressed[GAMEPAD_MASK_S1] = RGB(options.customThemeS1Pressed);
+        pressed[GAMEPAD_MASK_S2] = RGB(options.customThemeS2Pressed);
+        pressed[GAMEPAD_MASK_A1] = RGB(options.customThemeA1Pressed);
+        pressed[GAMEPAD_MASK_A2] = RGB(options.customThemeA2Pressed);
+        pressed[GAMEPAD_MASK_L3] = RGB(options.customThemeL3Pressed);
+        pressed[GAMEPAD_MASK_R3] = RGB(options.customThemeR3Pressed);
+        CustomThemePressed::SetCustomTheme(pressed);
+    }
 
     return serialize_json(doc);
 }

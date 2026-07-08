@@ -295,6 +295,7 @@ const PinSection = memo(function PinSection({
 	themeIndex,
 	hasCustomTheme,
 	onLedColorChange,
+	onSavePinColors,
 	staticColorNormal,
 }: {
 	profileIndex: number;
@@ -304,6 +305,7 @@ const PinSection = memo(function PinSection({
 	themeIndex?: number;
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
+	onSavePinColors?: () => Promise<boolean>;
 	staticColorNormal?: string;
 }) {
 	const { t } = useTranslation('');
@@ -334,12 +336,13 @@ const PinSection = memo(function PinSection({
 		e.stopPropagation();
 		try {
 			await saveProfiles();
+			if (onSavePinColors) await onSavePinColors();
 			updateUsedPins();
 			setSaveMessage(t('Common:saved-success-message'));
 		} catch (error) {
 			setSaveMessage(t('Common:saved-error-message'));
 		}
-	}, [saveProfiles, updateUsedPins, t]);
+	}, [saveProfiles, onSavePinColors, updateUsedPins, t]);
 
 	const { svgContent, pinElements, loading, svgMode } = useBoardSVG();
 	const svgPinSet = useMemo(
@@ -465,6 +468,7 @@ const PinSection = memo(function PinSection({
 								customTheme={customTheme}
 								hasCustomTheme={hasCustomTheme}
 								onLedColorChange={onLedColorChange}
+								onSaveColor={onSavePinColors}
 							/>
 
 							{pinElements.length > 0 && pinElements.length < 30 && (
@@ -653,6 +657,14 @@ export default function PinMapping() {
 		}
 	}, [submitTheme, t]);
 
+	const savePinColors = useCallback(async () => {
+		const leds = { ...customTheme };
+		delete leds['ALL'];
+		delete leds['GRADIENT NORMAL'];
+		delete leds['GRADIENT PRESSED'];
+		return WebApi.setCustomTheme({ customTheme: leds });
+	}, [customTheme]);
+
 	const hasCustomTheme = animationMode === 4;
 
 	return (
@@ -827,6 +839,7 @@ export default function PinMapping() {
 								themeIndex={themeIndex}
 								hasCustomTheme={hasCustomTheme}
 								onLedColorChange={handleLedColorChange}
+								onSavePinColors={savePinColors}
 								staticColorNormal={staticColorNormal}
 							/>
 								</Tab.Pane>

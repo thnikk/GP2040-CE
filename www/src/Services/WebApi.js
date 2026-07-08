@@ -359,21 +359,28 @@ async function getCustomTheme(setLoading) {
 }
 
 async function setCustomTheme(customThemeOptions) {
-	let options = {
-		enabled: customThemeOptions.hasCustomTheme,
-		animationMode: customThemeOptions.animationMode ?? 0,
-		themeIndex: customThemeOptions.themeIndex ?? 0,
-		staticColorNormal: customThemeOptions.staticColorNormal ? hexToInt(customThemeOptions.staticColorNormal.replace('#', '')) : 0,
-		staticColorPressed: customThemeOptions.staticColorPressed ? hexToInt(customThemeOptions.staticColorPressed.replace('#', '')) : 0,
-	};
+	let options = {};
+
+	if (customThemeOptions.hasCustomTheme !== undefined)
+		options.enabled = customThemeOptions.hasCustomTheme;
+	if (customThemeOptions.animationMode !== undefined)
+		options.animationMode = customThemeOptions.animationMode;
+	if (customThemeOptions.themeIndex !== undefined)
+		options.themeIndex = customThemeOptions.themeIndex;
+	if (customThemeOptions.staticColorNormal)
+		options.staticColorNormal = hexToInt(customThemeOptions.staticColorNormal.replace('#', ''));
+	if (customThemeOptions.staticColorPressed)
+		options.staticColorPressed = hexToInt(customThemeOptions.staticColorPressed.replace('#', ''));
 
 	// Transform RGB hex values to ARGB int before sending back to API
-	Object.keys(customThemeOptions.customTheme).forEach((p) => {
-		options[p] = {
-			u: hexToInt(customThemeOptions.customTheme[p].normal.replace('#', '')),
-			d: hexToInt(customThemeOptions.customTheme[p].pressed.replace('#', '')),
-		};
-	});
+	if (customThemeOptions.customTheme) {
+		Object.keys(customThemeOptions.customTheme).forEach((p) => {
+			options[p] = {
+				u: hexToInt(customThemeOptions.customTheme[p].normal.replace('#', '')),
+				d: hexToInt(customThemeOptions.customTheme[p].pressed.replace('#', '')),
+			};
+		});
+	}
 
 	return Http.post(`${baseUrl}/api/setCustomTheme`, sanitizeRequest(options))
 		.then((response) => {

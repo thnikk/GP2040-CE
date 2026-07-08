@@ -36,6 +36,7 @@ type PinActionModalProps = {
 	customTheme?: Record<string, { normal: string; pressed: string }>;
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
+	onSaveColor?: () => void;
 };
 
 const disabledOptions = [
@@ -87,6 +88,7 @@ export default function PinActionModal({
 	customTheme,
 	hasCustomTheme,
 	onLedColorChange,
+	onSaveColor,
 }: PinActionModalProps) {
 	const { t } = useTranslation('');
 	const { buttonLabels, savedColors, setSavedColors } = useContext(AppContext);
@@ -215,8 +217,9 @@ export default function PinActionModal({
 
 	const handleSave = useCallback(() => {
 		onAssign(pinNumber!, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask);
+		onSaveColor?.();
 		onClose();
-	}, [pinNumber, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, onAssign, onClose]);
+	}, [pinNumber, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, onAssign, onSaveColor, onClose]);
 
 	const isAssignable = pendingAction !== BUTTON_ACTIONS.NONE || currentAction !== BUTTON_ACTIONS.NONE;
 
