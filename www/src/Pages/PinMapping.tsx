@@ -604,8 +604,8 @@ export default function PinMapping() {
 		}
 		fetchTheme();
 		async function fetchLedOptions() {
-			const options = await WebApi.getLedOptions();
-			setLedsEnabled(options.dataPin > -1);
+			const options = await WebApi.getLedOptions(setLoading);
+			setLedsEnabled(options?.dataPin > -1);
 		}
 		fetchLedOptions();
 	}, []);
