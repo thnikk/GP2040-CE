@@ -574,6 +574,7 @@ export default function PinMapping() {
 	const [staticColorPickerTarget, setStaticColorPickerTarget] = useState<HTMLElement | null>(null);
 	const [staticColorPickerType, setStaticColorPickerType] = useState<'normal' | 'pressed'>('normal');
 	const [themeSaveMessage, setThemeSaveMessage] = useState('');
+	const [ledsEnabled, setLedsEnabled] = useState(false);
 
 	const { setLoading } = useContext(AppContext);
 
@@ -602,6 +603,11 @@ export default function PinMapping() {
 			}
 		}
 		fetchTheme();
+		async function fetchLedOptions() {
+			const options = await WebApi.getLedOptions();
+			setLedsEnabled(options.dataPin > -1);
+		}
+		fetchLedOptions();
 	}, []);
 
 	const handleLedColorChange = useCallback(
@@ -669,115 +675,117 @@ export default function PinMapping() {
 
 	return (
 		<>
-			<Section title={t('CustomTheme:header-text')}>
-				<div className="d-flex align-items-center gap-3 flex-wrap">
-					<div className="d-flex align-items-center gap-2">
-						<Form.Label className="mb-0">{t('CustomTheme:animation-label')}</Form.Label>
-						<Form.Select
-							value={animationMode}
-							onChange={handleAnimationModeChange}
-							style={{ width: 'auto' }}
-						>
-							{ANIMATION_MODES.map(({ value, labelKey }) => (
-								<option key={value} value={value}>
-									{t(`CustomTheme:${labelKey}`)}
-								</option>
-							))}
-						</Form.Select>
-					</div>
-					{animationMode === 3 && (
+			{ledsEnabled && (
+				<Section title={t('CustomTheme:header-text')}>
+					<div className="d-flex align-items-center gap-3 flex-wrap">
 						<div className="d-flex align-items-center gap-2">
-							<Form.Label className="mb-0">{t('CustomTheme:preset-label')}</Form.Label>
+							<Form.Label className="mb-0">{t('CustomTheme:animation-label')}</Form.Label>
 							<Form.Select
-								value={themeIndex}
-								onChange={handleThemeIndexChange}
+								value={animationMode}
+								onChange={handleAnimationModeChange}
 								style={{ width: 'auto' }}
 							>
-								{STATIC_THEMES.map((_, index) => (
-									<option key={index} value={index}>
-										{t(themeLabelKey(index))}
+								{ANIMATION_MODES.map(({ value, labelKey }) => (
+									<option key={value} value={value}>
+										{t(`CustomTheme:${labelKey}`)}
 									</option>
 								))}
 							</Form.Select>
 						</div>
-					)}
-					{animationMode === 0 && (
-						<div className="d-flex align-items-center gap-3">
-							<div
-								className="led-color-swatch"
-								style={{ backgroundColor: staticColorNormal }}
-								onClick={(e) => handleStaticColorSwatchClick(e, 'normal')}
-								role="button"
-								tabIndex={0}
-								onKeyDown={(e) => { if (e.key === 'Enter') handleStaticColorSwatchClick(e as any, 'normal'); }}
-							>
-								<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
+						{animationMode === 3 && (
+							<div className="d-flex align-items-center gap-2">
+								<Form.Label className="mb-0">{t('CustomTheme:preset-label')}</Form.Label>
+								<Form.Select
+									value={themeIndex}
+									onChange={handleThemeIndexChange}
+									style={{ width: 'auto' }}
+								>
+									{STATIC_THEMES.map((_, index) => (
+										<option key={index} value={index}>
+											{t(themeLabelKey(index))}
+										</option>
+									))}
+								</Form.Select>
 							</div>
-							<div
-								className="led-color-swatch"
-								style={{ backgroundColor: staticColorPressed }}
-								onClick={(e) => handleStaticColorSwatchClick(e, 'pressed')}
-								role="button"
-								tabIndex={0}
-								onKeyDown={(e) => { if (e.key === 'Enter') handleStaticColorSwatchClick(e as any, 'pressed'); }}
-							>
-								<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
+						)}
+						{animationMode === 0 && (
+							<div className="d-flex align-items-center gap-3">
+								<div
+									className="led-color-swatch"
+									style={{ backgroundColor: staticColorNormal }}
+									onClick={(e) => handleStaticColorSwatchClick(e, 'normal')}
+									role="button"
+									tabIndex={0}
+									onKeyDown={(e) => { if (e.key === 'Enter') handleStaticColorSwatchClick(e as any, 'normal'); }}
+								>
+									<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
+								</div>
+								<div
+									className="led-color-swatch"
+									style={{ backgroundColor: staticColorPressed }}
+									onClick={(e) => handleStaticColorSwatchClick(e, 'pressed')}
+									role="button"
+									tabIndex={0}
+									onKeyDown={(e) => { if (e.key === 'Enter') handleStaticColorSwatchClick(e as any, 'pressed'); }}
+								>
+									<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
+								</div>
+								<Overlay
+									show={staticColorPickerTarget !== null}
+									target={staticColorPickerTarget}
+									placement="bottom"
+									popperConfig={{
+										strategy: 'fixed',
+										modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+									}}
+									rootClose
+									onHide={() => setStaticColorPickerTarget(null)}
+								>
+									<Popover onClick={(e) => e.stopPropagation()} style={{ zIndex: 9999 }}>
+										<Popover.Body>
+											<SketchPicker
+												color={staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed}
+												onChange={(c) => handleStaticColorChange(c)}
+												disableAlpha={true}
+												presetColors={[
+													...LEDColors.map((c) => ({ title: c.name, color: c.value })),
+													...savedColors.map((c) => ({ title: c, color: c })),
+												]}
+												width={180}
+											/>
+											<div className="d-flex justify-content-between mt-2">
+												<Button size="sm" onClick={() => {
+													const color = staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed;
+													if (color && color !== '#000000' && !savedColors.includes(color)) {
+														setSavedColors([...savedColors, color]);
+													}
+												}}>
+													{t('Common:button-save-color-label')}
+												</Button>
+												<Button size="sm" variant="outline-danger" onClick={() => {
+													const color = staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed;
+													const idx = savedColors.indexOf(color);
+													if (idx >= 0) {
+														const newColors = [...savedColors];
+														newColors.splice(idx, 1);
+														setSavedColors(newColors);
+													}
+												}}>
+													{t('Common:button-delete-color-label')}
+												</Button>
+											</div>
+										</Popover.Body>
+									</Popover>
+								</Overlay>
 							</div>
-							<Overlay
-								show={staticColorPickerTarget !== null}
-								target={staticColorPickerTarget}
-								placement="bottom"
-								popperConfig={{
-									strategy: 'fixed',
-									modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
-								}}
-								rootClose
-								onHide={() => setStaticColorPickerTarget(null)}
-							>
-								<Popover onClick={(e) => e.stopPropagation()} style={{ zIndex: 9999 }}>
-									<Popover.Body>
-										<SketchPicker
-											color={staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed}
-											onChange={(c) => handleStaticColorChange(c)}
-											disableAlpha={true}
-											presetColors={[
-												...LEDColors.map((c) => ({ title: c.name, color: c.value })),
-												...savedColors.map((c) => ({ title: c, color: c })),
-											]}
-											width={180}
-										/>
-										<div className="d-flex justify-content-between mt-2">
-											<Button size="sm" onClick={() => {
-												const color = staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed;
-												if (color && color !== '#000000' && !savedColors.includes(color)) {
-													setSavedColors([...savedColors, color]);
-												}
-											}}>
-												{t('Common:button-save-color-label')}
-											</Button>
-											<Button size="sm" variant="outline-danger" onClick={() => {
-												const color = staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed;
-												const idx = savedColors.indexOf(color);
-												if (idx >= 0) {
-													const newColors = [...savedColors];
-													newColors.splice(idx, 1);
-													setSavedColors(newColors);
-												}
-											}}>
-												{t('Common:button-delete-color-label')}
-											</Button>
-										</div>
-									</Popover.Body>
-								</Popover>
-							</Overlay>
+						)}
+						<div className="d-flex align-items-center gap-3 ms-auto">
+							<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
+							{themeSaveMessage && <Alert variant="info" className="mb-0">{themeSaveMessage}</Alert>}
 						</div>
-					)}
-					<div className="d-flex align-items-center gap-3 ms-auto">
-						<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
-						{themeSaveMessage && <Alert variant="info" className="mb-0">{themeSaveMessage}</Alert>}
 					</div>
-				</div>
-			</Section>
+				</Section>
+			)}
 			<Tab.Container defaultActiveKey="profile-0">
 				<Row>
 					<Col md={3}>
@@ -834,13 +842,13 @@ export default function PinMapping() {
 							<PinSection
 								profileIndex={index}
 								pressedPin={pressedPin}
-								customTheme={customTheme}
-								animationMode={animationMode}
-								themeIndex={themeIndex}
-								hasCustomTheme={hasCustomTheme}
-								onLedColorChange={handleLedColorChange}
-								onSavePinColors={savePinColors}
-								staticColorNormal={staticColorNormal}
+								customTheme={ledsEnabled ? customTheme : undefined}
+								animationMode={ledsEnabled ? animationMode : undefined}
+								themeIndex={ledsEnabled ? themeIndex : undefined}
+								hasCustomTheme={ledsEnabled ? hasCustomTheme : undefined}
+								onLedColorChange={ledsEnabled ? handleLedColorChange : undefined}
+								onSavePinColors={ledsEnabled ? savePinColors : undefined}
+								staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
 							/>
 								</Tab.Pane>
 							))}

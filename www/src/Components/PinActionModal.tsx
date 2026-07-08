@@ -256,7 +256,7 @@ export default function PinActionModal({
 		setSavedColors(newColors);
 	}, [selectedColor, savedColors, setSavedColors]);
 
-	const showLedSection = isButtonPress && !disabled;
+	const showLedSection = isButtonPress && !disabled && !!onLedColorChange;
 
 	return (
 		<Modal show={show} onHide={onClose} centered size="lg">
