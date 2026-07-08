@@ -297,6 +297,7 @@ const PinSection = memo(function PinSection({
 	onLedColorChange,
 	onSavePinColors,
 	staticColorNormal,
+	inputMode,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
@@ -307,6 +308,7 @@ const PinSection = memo(function PinSection({
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSavePinColors?: () => Promise<boolean>;
 	staticColorNormal?: string;
+	inputMode?: number;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -450,6 +452,7 @@ const PinSection = memo(function PinSection({
 								animationMode={animationMode}
 								themeIndex={themeIndex}
 								staticColorNormal={staticColorNormal}
+								inputMode={inputMode}
 							/>
 							) : (
 								<div className="alert alert-info">
@@ -575,6 +578,7 @@ export default function PinMapping() {
 	const [staticColorPickerType, setStaticColorPickerType] = useState<'normal' | 'pressed'>('normal');
 	const [themeSaveMessage, setThemeSaveMessage] = useState('');
 	const [ledsEnabled, setLedsEnabled] = useState(false);
+	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
 
 	const { setLoading } = useContext(AppContext);
 
@@ -605,7 +609,9 @@ export default function PinMapping() {
 		fetchTheme();
 		async function fetchLedOptions() {
 			const options = await WebApi.getLedOptions(setLoading);
+			const gamepadOptions = await WebApi.getGamepadOptions(setLoading);
 			setLedsEnabled(options?.dataPin > -1);
+			setInputMode(gamepadOptions?.inputMode);
 		}
 		fetchLedOptions();
 	}, []);
@@ -849,6 +855,7 @@ export default function PinMapping() {
 								onLedColorChange={ledsEnabled ? handleLedColorChange : undefined}
 								onSavePinColors={ledsEnabled ? savePinColors : undefined}
 								staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
+								inputMode={inputMode}
 							/>
 								</Tab.Pane>
 							))}

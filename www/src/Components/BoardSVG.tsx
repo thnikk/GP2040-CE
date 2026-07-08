@@ -32,6 +32,24 @@ const STATIC_THEME_COLORS: Record<string, string>[] = [
 	{ Up: '#ffffff', Down: '#ffffff', Left: '#ffffff', Right: '#ffffff', B1: '#00ff00', B2: '#ff0000', B3: '#0000ff', B4: '#ffff00', L1: '#00ffff', L2: '#0000ff', R1: '#ff00ff', R2: '#8000ff' }, // Springboard
 ];
 
+const INPUT_MODE_COLORS: Record<number, string> = {
+	0: '#00FF00',  // XInput
+	1: '#FF0000',  // Switch
+	2: '#0000FF',  // PS3
+	3: '#FFFF00',  // Keyboard
+	4: '#0000FF',  // PS4
+	5: '#00FF00',  // XBone
+	6: '#00FFFF',  // MD Mini
+	7: '#FF8000',  // NeoGeo
+	8: '#FF00FF',  // PCE Mini
+	9: '#FF8000',  // Egret
+	10: '#FF8000', // Astro
+	11: '#0000FF', // PS Classic
+	12: '#00FF00', // Xbox Original
+	13: '#0000FF', // PS5
+	14: '#FFFFFF', // Generic
+};
+
 type BoardSVGProps = {
 	svgContent: string;
 	pinElements: { id: string; pinNumber: number }[];
@@ -43,6 +61,7 @@ type BoardSVGProps = {
 	animationMode?: number;
 	themeIndex?: number;
 	staticColorNormal?: string;
+	inputMode?: number;
 };
 
 const ACTION_LABELS: Record<PinActionValues, string> = {
@@ -187,6 +206,7 @@ export default function BoardSVG({
 	animationMode = 0,
 	themeIndex = 0,
 	staticColorNormal,
+	inputMode,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels } = useContext(AppContext);
@@ -391,6 +411,18 @@ export default function BoardSVG({
 	useEffect(() => {
 		updateLabels();
 	});
+
+	useEffect(() => {
+		if (!containerRef.current) return;
+		const ledEl = containerRef.current.querySelector('#board-led') as HTMLElement | null;
+		if (!ledEl) return;
+		const color = inputMode !== undefined ? INPUT_MODE_COLORS[inputMode] : undefined;
+		if (color) {
+			ledEl.style.setProperty('fill', color, 'important');
+		} else {
+			ledEl.style.removeProperty('fill');
+		}
+	}, [inputMode]);
 
 	const processedSvg = useMemo(() => prepareSvg(svgContent), [svgContent]);
 
