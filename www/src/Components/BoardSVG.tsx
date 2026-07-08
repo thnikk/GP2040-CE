@@ -292,7 +292,7 @@ export default function BoardSVG({
 			}
 
 			const actionKey = invert(BUTTON_ACTIONS)[action];
-			const btnKey = actionKey?.split('BUTTON_PRESS_')?.pop();
+			const btnKey = ACTION_LABELS[action] || actionKey?.split('BUTTON_PRESS_')?.pop();
 
 			let displayLabel = '';
 			if (action === BUTTON_ACTIONS.NONE) {
