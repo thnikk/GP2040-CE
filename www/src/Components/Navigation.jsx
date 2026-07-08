@@ -63,17 +63,13 @@ const Navigation = () => {
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav className="me-auto nav-menu">
+					<Nav.Link as={NavLink} to="/layout" eventKey={eventKey++}>
+						{t('Navigation:layout-label')}
+					</Nav.Link>
 					<Nav.Link as={NavLink} to="/settings" eventKey={eventKey++}>
 						{t('Navigation:settings-label')}
 					</Nav.Link>
 					<NavDropdown title={t('Navigation:config-label')}>
-						<NavDropdown.Item
-							as={NavLink}
-							eventKey={eventKey++}
-							to="/pin-mapping"
-						>
-							{t('Navigation:pin-mapping-label')}
-						</NavDropdown.Item>
 						<NavDropdown.Item
 							as={NavLink}
 							eventKey={eventKey++}

@@ -1684,7 +1684,7 @@ export default function SettingsPage() {
 															ns="SettingsPage"
 															i18nKey="hotkey-settings-sub-header"
 															components={{
-																link_pinmap: <NavLink to="/pin-mapping" />,
+																link_pinmap: <NavLink to="/layout" />,
 															}}
 														/>
 													</div>

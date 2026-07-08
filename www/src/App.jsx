@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import { AppContextProvider } from './Contexts/AppContext';
 
@@ -30,7 +30,8 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<HomePage />} />
 						<Route path="/settings" element={<SettingsPage />} />
-						<Route path="/pin-mapping" element={<PinMappingPage />} />
+						<Route path="/layout" element={<PinMappingPage />} />
+						<Route path="/pin-mapping" element={<Navigate to="/layout" replace />} />
 						<Route path="/button-layout" element={<ButtonLayoutConfigPage />} />
 						<Route
 							path="/peripheral-mapping"
