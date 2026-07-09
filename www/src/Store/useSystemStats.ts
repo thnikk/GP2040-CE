@@ -75,6 +75,9 @@ const useSystemStats = create<State & Actions>()((set) => ({
 				)?.browser_download_url ||
 				`https://github.com/OpenStickCommunity/GP2040-CE/releases/tag/${latestRelease.data.tag_name}`;
 
+			const boardName = firmwareVersion.boardConfig?.split('-')[0];
+			if (boardName) document.title = `${boardName} Config`;
+
 			set({
 				currentVersion: firmwareVersion.version,
 				latestVersion: latestRelease.tag_name,
