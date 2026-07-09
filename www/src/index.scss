@@ -41,15 +41,21 @@ input.form-control {
 	}
 }
 
-button {
+button,
+.btn {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	flex: 0 0 auto;
+	border-radius: 999px;
 
 	svg {
 		transform: translateY(-0.125rem);
 	}
+}
+
+.nav-pills .nav-link {
+	border-radius: 999px;
 }
 
 // Fix for invalid inputs showing valid style after calling `form.checkValidity()`
@@ -64,11 +70,17 @@ button {
 
 .card {
 	border-color: $primary;
+	border-radius: 1.25rem;
 }
 
 .card-header {
 	background-color: $primary;
 	color: $white;
+	border-radius: 1.25rem 1.25rem 0 0;
+}
+
+.card-header:first-child {
+	border-radius: 1.25rem 1.25rem 0 0;
 }
 
 .popover {
