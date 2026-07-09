@@ -54,7 +54,7 @@ const Navigation = () => {
 			<Navbar.Brand title={`GP2040-CE ${t('Navigation:home-label')}`}>
 				<Nav.Link as={NavLink} to="/" eventKey={eventKey++}>
 					<img
-						src="images/logo.png"
+						src="images/logo.svg"
 						className="title-logo"
 						alt="GP2040-CE logo"
 					/>
