@@ -52,12 +52,13 @@ $enable-cssgrid: true;
 		--bs-btn-color: #{$nord0};
 	}
 	nav.navbar {
-		background-color: transparent;
+		background-color: #{$body-bg-dark};
 	}
 }
 
 * {
 	font-size: 16px;
+	--bs-navbar-nav-link-padding-x: 20px;
 }
 
 .me-auto {
@@ -79,6 +80,10 @@ h1 {
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
+}
+
+.form-select {
+	border-radius: 999px;
 }
 
 input.form-control {
@@ -108,6 +113,14 @@ nav.navbar {
 	box-shadow: none;
 }
 
+.title-logo {
+	margin: 0.25rem 0rem;
+}
+
+nav.navbar .navbar-brand {
+	margin: 0rem 2rem;
+}
+
 .navbar-nav .nav-link {
 	padding-left: 20px;
 	padding-right: 20px;
@@ -131,6 +144,7 @@ nav.navbar {
 
 .card {
 	border-radius: 1.25rem;
+	margin-bottom: 20px;
 }
 
 .card-header {
