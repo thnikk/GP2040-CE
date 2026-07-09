@@ -58,8 +58,14 @@ const useSystemStats = create<State & Actions>()((set) => ({
 		set({ loading: true });
 
 		try {
-			const [firmwareVersion, memoryReport, latestRelease] = await Promise.all([
-				fetch(`${baseUrl}/api/getFirmwareVersion`).then((res) => res.json()),
+			const firmwareVersion = await fetch(
+				`${baseUrl}/api/getFirmwareVersion`,
+			).then((res) => res.json());
+
+			const boardName = firmwareVersion.boardConfig?.split('-')[0];
+			if (boardName) document.title = `${boardName} Config`;
+
+			const [memoryReport, latestRelease] = await Promise.all([
 				fetch(`${baseUrl}/api/getMemoryReport`).then((res) => res.json()),
 				fetch(
 					'https://api.github.com/repos/OpenStickCommunity/GP2040-CE/releases/latest',
@@ -74,9 +80,6 @@ const useSystemStats = create<State & Actions>()((set) => ({
 							?.toLowerCase() === firmwareVersion.boardConfig.toLowerCase(),
 				)?.browser_download_url ||
 				`https://github.com/OpenStickCommunity/GP2040-CE/releases/tag/${latestRelease.data.tag_name}`;
-
-			const boardName = firmwareVersion.boardConfig?.split('-')[0];
-			if (boardName) document.title = `${boardName} Config`;
 
 			set({
 				currentVersion: firmwareVersion.version,

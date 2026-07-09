@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProgressBar } from 'react-bootstrap';
 
@@ -13,13 +13,8 @@ export default function HomePage() {
 		currentVersion,
 		boardConfigProperties,
 		memoryReport,
-		getSystemStats,
 		loading,
 	} = useSystemStats();
-
-	useEffect(() => {
-		getSystemStats();
-	}, []);
 
 	if (loading) {
 		return (

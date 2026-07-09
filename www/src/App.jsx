@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import { AppContextProvider } from './Contexts/AppContext';
 
+import useSystemStats from './Store/useSystemStats';
 import Navigation from './Components/Navigation';
 
 import HomePage from './Pages/HomePage';
@@ -22,6 +23,12 @@ import ButtonLayoutConfigPage from './Pages/ButtonLayoutConfigPage';
 import './App.scss';
 
 const App = () => {
+	const { getSystemStats } = useSystemStats();
+
+	useEffect(() => {
+		getSystemStats();
+	}, []);
+
 	return (
 		<AppContextProvider>
 			<Router>
