@@ -1,11 +1,31 @@
-$gp-primary: #ec008c;
+$gp-primary: #d8dee9;
+
+$nord0: #2e3440;
+$nord1: #3b4252;
+$nord2: #434c5e;
+$nord3: #4c566a;
+$nord4: #d8dee9;
+$nord5: #e5e9f0;
+$nord6: #eceff4;
+$nord7: #8fbcbb;
+$nord8: #88c0d0;
+$nord9: #81a1c1;
+$nord10: #5e81ac;
+$nord11: #bf616a;
+$nord12: #d08770;
+$nord13: #ebcb8b;
+$nord14: #a3be8c;
+$nord15: #b48ead;
+$bg-body: #1c1f26;
 
 // Override default variables before the import
 $primary: #495057;
 $danger: #7b2d26;
 
-$body-color-dark: #e3e3e3;
-$body-bg-dark: #1b1b1d;
+$body-color-dark: #d8dee9;
+$body-bg-dark: #1c1f26;
+$card-cap-bg-dark: $nord3;
+$card-bg-dark: $nord2;
 
 $navbar-light-hover-color: $gp-primary;
 $navbar-light-active-color: $gp-primary;
@@ -14,8 +34,34 @@ $enable-cssgrid: true;
 
 @import "~bootstrap/scss/bootstrap";
 
+[data-bs-theme="dark"] {
+	* {
+		--bs-card-bg: #{$nord0};
+		--bs-card-cap-bg: #{$nord1};
+		--bs-nav-pills-link-active-bg: #{$nord1};
+		--bs-table-bg: transparent;
+	}
+	.btn-primary {
+		--bs-btn-bg: #{$nord3};
+	}
+	.btn-secondary {
+		--bs-btn-bg: #{$nord1};
+	}
+	.btn-success {
+		--bs-btn-bg: #{$nord14};
+		--bs-btn-color: #{$nord0};
+	}
+	nav.navbar {
+		background-color: transparent;
+	}
+}
+
 * {
 	font-size: 16px;
+}
+
+.me-auto {
+	gap: 10px;
 }
 
 body {
@@ -58,6 +104,21 @@ button,
 	border-radius: 999px;
 }
 
+nav.navbar {
+	box-shadow: none;
+}
+
+.navbar-nav .nav-link {
+	padding-left: 20px;
+	padding-right: 20px;
+	border-radius: 999px;
+	border: 1px solid transparent
+}
+.navbar-nav .nav-link.active {
+	border: 1px solid #{$nord3};
+	background-color: #{$nord2};
+}
+
 // Fix for invalid inputs showing valid style after calling `form.checkValidity()`
 .was-validated .form-control.is-invalid {
 	border-color: $danger;
@@ -69,13 +130,10 @@ button,
 }
 
 .card {
-	border-color: $primary;
 	border-radius: 1.25rem;
 }
 
 .card-header {
-	background-color: $primary;
-	color: $white;
 	border-radius: 1.25rem 1.25rem 0 0;
 }
 
