@@ -65,7 +65,7 @@ const FormContext = () => {
 };
 
 export default function PeripheralMappingPage() {
-	const { setButtonLabels, usedPins } = useContext(AppContext);
+	const { usedPins } = useContext(AppContext);
 	const [saveMessage, setSaveMessage] = useState('');
 
 	const board = boards[import.meta.env.VITE_GP2040_BOARD] || boards.pico;

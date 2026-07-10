@@ -1,11 +1,7 @@
-import React, { useContext, useState } from 'react';
-import { Nav, NavDropdown, Navbar, Button, Modal } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Nav, Navbar, Button, Modal } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AppContext } from '../Contexts/AppContext';
-import FormSelect from './FormSelect';
-import { saveButtonLabels } from '../Services/Storage';
-import { BUTTONS } from '../Data/Buttons';
 import './Navigation.scss';
 import WebApi from '../Services/WebApi';
 import ColorScheme from './ColorScheme';
@@ -18,8 +14,6 @@ const BOOT_MODES = {
 };
 
 const Navigation = () => {
-	const { buttonLabels, setButtonLabels } = useContext(AppContext);
-
 	const [show, setShow] = useState(false);
 	const [isRebooting, setIsRebooting] = useState(null); // null because we want the button to assume untouched state
 
@@ -36,11 +30,6 @@ const Navigation = () => {
 		setIsRebooting(bootMode);
 		await WebApi.reboot(bootMode);
 		setIsRebooting(-1);
-	};
-
-	const updateButtonLabels = (e) => {
-		saveButtonLabels(e.target.value);
-		setButtonLabels({ buttonLabelType: e.target.value });
 	};
 
 	const { t } = useTranslation('');
@@ -199,23 +188,6 @@ const Navigation = () => {
 					</Button>
 					<ColorScheme />
 					<LanguageSelector />
-					<div className="navbar-label-select">
-						<FormSelect
-							name="buttonLabels"
-							className="form-select"
-							value={buttonLabels.buttonLabelType}
-							onChange={updateButtonLabels}
-						>
-							{Object.keys(BUTTONS).map((b, i) => (
-								<option
-									key={`button-label-option-${i}`}
-									value={BUTTONS[b].value}
-								>
-									{BUTTONS[b].label}
-								</option>
-							))}
-						</FormSelect>
-					</div>
 					<a
 						href="https://github.com/thnikk/GP2040-CE"
 						target="_blank"

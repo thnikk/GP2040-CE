@@ -456,7 +456,7 @@ const schema = yup.object().shape({
 	usbProductID: yup.string().label('USB Product ID').validateUSBHexID(),
 });
 
-const FormContext = ({ setButtonLabels, setKeyMappings }) => {
+const FormContext = ({ setButtonLabels, setInputMode, setKeyMappings }) => {
 	const { values, setValues } = useFormikContext();
 	const { setLoading } = useContext(AppContext);
 
@@ -464,6 +464,7 @@ const FormContext = ({ setButtonLabels, setKeyMappings }) => {
 		async function fetchData() {
 			const options = await WebApi.getGamepadOptions(setLoading);
 			setValues(options);
+			setInputMode(options.inputMode);
 			setButtonLabels({
 				swapTpShareLabels:
 					options.switchTpShareForDs4 === 1 && options.inputMode === 4,
@@ -492,6 +493,7 @@ const FormContext = ({ setButtonLabels, setKeyMappings }) => {
 		if (!!values.ps4ControllerIDMode)
 			values.ps4ControllerIDMode = parseInt(values.ps4ControllerIDMode);
 
+		setInputMode(values.inputMode);
 		setButtonLabels({
 			swapTpShareLabels:
 				values.switchTpShareForDs4 === 1 && values.inputMode === 4,
@@ -516,6 +518,7 @@ export default function SettingsPage() {
 	const {
 		buttonLabels,
 		setButtonLabels,
+		setInputMode,
 		getAvailablePeripherals,
 		updatePeripherals,
 	} = useContext(AppContext);
@@ -1912,6 +1915,7 @@ export default function SettingsPage() {
 							</Tab.Container>
 							<FormContext
 								setButtonLabels={setButtonLabels}
+								setInputMode={setInputMode}
 								setKeyMappings={setKeyMappings}
 							/>
 						</Form>

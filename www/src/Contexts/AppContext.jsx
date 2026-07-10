@@ -96,20 +96,45 @@ yup.addMethod(yup.NumberSchema, 'checkUsedPins', function () {
 
 const parseBoolean = (bool) => String(bool).toLowerCase() === 'true';
 
+const inputModeToLabelType = (inputMode) => {
+	switch (inputMode) {
+		case 0:
+		case 5:
+			return 'xinput';
+		case 1:
+			return 'switch';
+		case 2:
+			return 'ps3';
+		case 4:
+		case 13:
+			return 'ps4';
+		case 3:
+		case 14:
+		default:
+			return 'gp2040';
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+			return 'arcade';
+	}
+};
+
 export const AppContextProvider = ({ children, ...props }) => {
-	const localValue = localStorage.getItem('buttonLabelType') || 'gp2040';
 	const localValue2 =
 		parseBoolean(localStorage.getItem('swapTpShareLabels')) || false;
+	const [inputMode, setInputMode] = useState(0);
 	const [buttonLabels, _setButtonLabels] = useState({
 		swapTpShareLabels: localValue2,
-		buttonLabelType: localValue,
+		buttonLabelType: inputModeToLabelType(0),
 	});
 	const setButtonLabels = ({
 		buttonLabelType: newType,
 		swapTpShareLabels: newSwap,
 	}) => {
-		console.log('buttonLabelType is', newType);
-		newType && localStorage.setItem('buttonLabelType', newType);
 		newSwap !== undefined &&
 			localStorage.setItem('swapTpShareLabels', parseBoolean(newSwap));
 		_setButtonLabels(({ buttonLabelType, swapTpShareLabels }) => ({
@@ -119,6 +144,27 @@ export const AppContextProvider = ({ children, ...props }) => {
 			),
 		}));
 	};
+
+	useEffect(() => {
+		_setButtonLabels((prev) => ({
+			...prev,
+			buttonLabelType: inputModeToLabelType(inputMode),
+		}));
+	}, [inputMode]);
+
+	useEffect(() => {
+		async function fetchInputMode() {
+			try {
+				const options = await WebApi.getGamepadOptions(setLoading);
+				if (options?.inputMode !== undefined) {
+					setInputMode(options.inputMode);
+				}
+			} catch {
+				// input mode fetch failed, use default
+			}
+		}
+		fetchInputMode();
+	}, []);
 
 	const [savedColors, _setSavedColors] = useState(
 		localStorage.getItem('savedColors')
@@ -296,6 +342,7 @@ export const AppContextProvider = ({ children, ...props }) => {
 			{...props}
 			value={{
 				buttonLabels,
+				inputMode,
 				gradientNormalColor1,
 				gradientNormalColor2,
 				gradientPressedColor1,
@@ -307,6 +354,7 @@ export const AppContextProvider = ({ children, ...props }) => {
 				expansionPins,
 				getSelectedPeripheral,
 				setButtonLabels,
+				setInputMode,
 				setGradientNormalColor1,
 				setGradientNormalColor2,
 				setGradientPressedColor1,
