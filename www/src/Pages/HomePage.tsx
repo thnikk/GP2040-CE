@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ProgressBar } from 'react-bootstrap';
+import { Alert, ProgressBar } from 'react-bootstrap';
 
 import useSystemStats from '../Store/useSystemStats';
 import Section from '../Components/Section';
@@ -14,6 +14,8 @@ export default function HomePage() {
 		boardConfigProperties,
 		memoryReport,
 		loading,
+		error,
+		getSystemStats,
 	} = useSystemStats();
 
 	if (loading) {
@@ -29,6 +31,18 @@ export default function HomePage() {
 		<div>
 			<h1>{t('HomePage:header-text')}</h1>
 			<p>{t('HomePage:sub-header-text')}</p>
+			{error && (
+				<Alert variant="danger" className="d-flex align-items-center justify-content-between">
+					<span>{t('Common:error-text', { defaultValue: 'Failed to load system stats' })}</span>
+					<button
+						type="button"
+						className="btn btn-outline-danger btn-sm"
+						onClick={getSystemStats}
+					>
+						{t('Common:retry-text', { defaultValue: 'Retry' })}
+					</button>
+				</Alert>
+			)}
 			<Section title={t('HomePage:system-stats-header-text')}>
 				<div>
 					<strong className="system-text">{t('HomePage:version-text')}</strong>

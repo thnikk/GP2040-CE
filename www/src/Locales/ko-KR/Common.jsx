@@ -26,4 +26,6 @@ export default {
 	'lock-macro': '매크로 잠금',
 	'lock-buttons': '버튼 잠금',
 	'loading-text': '불러오는 중...',
+	'error-text': '시스템 통계를 불러오지 못했습니다',
+	'retry-text': '재시도',
 };

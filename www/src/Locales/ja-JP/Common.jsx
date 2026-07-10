@@ -26,4 +26,6 @@ export default {
 	'lock-macro': 'マクロをロック',
 	'lock-buttons': 'ボタンをロック',
 	'loading-text': '読込中...',
+	'error-text': 'システム統計の読み込みに失敗しました',
+	'retry-text': '再試行',
 };

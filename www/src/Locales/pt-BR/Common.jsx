@@ -25,4 +25,6 @@ export default {
 	'lock-rgb-led': 'Travar LED RGB',
 	'lock-buttons': 'Travar Botões',
 	'loading-text': 'Carregando...',
+	'error-text': 'Falha ao carregar estatísticas do sistema',
+	'retry-text': 'Repetir',
 };

@@ -26,4 +26,6 @@ export default {
 	'lock-macro': 'Lock Macro',
 	'lock-buttons': 'Lock Buttons',
 	'loading-text': 'Loading...',
+	'error-text': 'Failed to load system stats',
+	'retry-text': 'Retry',
 };

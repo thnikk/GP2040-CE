@@ -26,4 +26,6 @@ export default {
 	'lock-macro': 'Makro Sperren',
 	'lock-buttons': 'Tasten Sperren',
 	'loading-text': 'Laden...',
+	'error-text': 'Systemstatistiken konnten nicht geladen werden',
+	'retry-text': 'Wiederholen',
 };

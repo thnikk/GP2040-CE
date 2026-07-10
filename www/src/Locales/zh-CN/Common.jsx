@@ -26,4 +26,6 @@ export default {
 	'lock-macro': '锁定宏',
 	'lock-buttons': '锁定按键',
 	'loading-text': '加载中...',
+	'error-text': '系统统计信息加载失败',
+	'retry-text': '重试',
 };

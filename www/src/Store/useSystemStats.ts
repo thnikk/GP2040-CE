@@ -68,9 +68,12 @@ const useSystemStats = create<State & Actions>()((set) => ({
 			const [memoryReport, latestRelease] = await Promise.all([
 				fetch(`${baseUrl}/api/getMemoryReport`).then((res) => res.json()),
 				fetch(
-					'https://api.github.com/repos/OpenStickCommunity/GP2040-CE/releases/latest',
+					'https://api.github.com/repos/thnikk/GP2040-CE/releases/latest',
 				).then((res) => res.json()),
 			]);
+
+			console.log('getFirmwareVersion response:', firmwareVersion);
+			console.log('getMemoryReport response:', memoryReport);
 			const latestDownloadUrl =
 				latestRelease.assets?.find(
 					({ name }) =>
@@ -79,7 +82,7 @@ const useSystemStats = create<State & Actions>()((set) => ({
 							?.replace('.uf2', '')
 							?.toLowerCase() === firmwareVersion.boardConfig.toLowerCase(),
 				)?.browser_download_url ||
-				`https://github.com/OpenStickCommunity/GP2040-CE/releases/tag/${latestRelease.data.tag_name}`;
+				`https://github.com/thnikk/GP2040-CE/releases/tag/${latestRelease.tag_name}`;
 
 			set({
 				currentVersion: firmwareVersion.version,
@@ -108,6 +111,7 @@ const useSystemStats = create<State & Actions>()((set) => ({
 				loading: false,
 			});
 		} catch (error) {
+			console.error('getSystemStats error:', error);
 			set({ error: true, loading: false });
 		}
 	},

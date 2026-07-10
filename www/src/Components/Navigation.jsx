@@ -169,7 +169,7 @@ const Navigation = () => {
 							{t('Navigation:docs-label')}
 						</NavDropdown.Item>
 						<NavDropdown.Item
-							href="https://github.com/OpenStickCommunity/GP2040-CE"
+							href="https://github.com/thnikk/GP2040-CE"
 							target="_blank"
 						>
 							{t('Navigation:github-label')}
