@@ -1370,6 +1370,16 @@ export default function SettingsPage() {
 		swapTpShareLabels,
 	);
 
+	const getSelectedButtonLabel = (maskValue) => {
+		const option = BUTTON_MASKS_OPTIONS.find(
+			(opt) => opt.value === maskValue,
+		);
+		if (!option) return '';
+		return option.label in currentButtonLabels
+			? currentButtonLabels[option.label]
+			: option.label;
+	};
+
 	const getKeyMappingForButton = (button) => keyMappings[button];
 
 	const { t } = useTranslation('');
@@ -1752,6 +1762,9 @@ export default function SettingsPage() {
 																				<Form.Select
 																					name={`${o}.buttonsMask`}
 																					className="form-select-sm sm-1"
+																					style={{
+																						width: `${Math.max(getSelectedButtonLabel(values[o]?.buttonsMask & mask.value).length + 8, 6)}ch`,
+																					}}
 																					value={
 																						values[o] &&
 																						values[o]?.buttonsMask & mask.value
@@ -1793,6 +1806,9 @@ export default function SettingsPage() {
 																	<Form.Select
 																		name={`${o}.buttonsMask`}
 																		className="form-select-sm sm-1"
+																		style={{
+																			width: `${Math.max(getSelectedButtonLabel(0).length + 8, 6)}ch`,
+																		}}
 																		value={0}
 																		onChange={(e) => {
 																			setFieldValue(
@@ -1819,6 +1835,9 @@ export default function SettingsPage() {
 																	<Form.Select
 																		name={`${o}.action`}
 																		className="form-select-sm"
+																		style={{
+																			width: `${Math.max((translatedHotkeyActions.find(a => a.value === (values[o]?.action ?? 0))?.label || '').length + 8, 6)}ch`,
+																		}}
 																		value={values[o] && values[o]?.action}
 																		onChange={handleChange}
 																		isInvalid={errors[o] && errors[o]?.action}
