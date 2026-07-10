@@ -108,118 +108,59 @@ app.get('/api/getSplashImage', (req, res) => {
 	return res.send(data);
 });
 
+let gamepadOptionsStore = null;
+
 app.get('/api/getGamepadOptions', (req, res) => {
-	return res.send({
-		dpadMode: 0,
-		inputMode: 4,
-		socdMode: 2,
-		switchTpShareForDs4: 0,
-		forcedSetupMode: 0,
-		lockHotkeys: 0,
-		fourWayMode: 0,
-		fnButtonPin: -1,
-		profileNumber: 1,
-		debounceDelay: 5,
-		inputModeB1: 1,
-		inputModeB2: 0,
-		inputModeB3: 2,
-		inputModeB4: 4,
-		inputModeL1: -1,
-		inputModeL2: -1,
-		inputModeR1: -1,
-		inputModeR2: 3,
-		ps4AuthType: 0,
-		ps5AuthType: 0,
-		xinputAuthType: 0,
-		ps4ControllerIDMode: 0,
-		usbDescOverride: 0,
-		usbDescProduct: 'GP2040-CE (Custom)',
-		usbDescManufacturer: 'Open Stick Community',
-		usbDescVersion: '1.0',
-		usbOverrideID: 0,
-		usbVendorID: '10C4',
-		usbProductID: '82C0',
-		hotkey01: {
-			auxMask: 32768,
-			buttonsMask: 66304,
-			action: 4,
-		},
-		hotkey02: {
-			auxMask: 0,
-			buttonsMask: 131840,
-			action: 1,
-		},
-		hotkey03: {
-			auxMask: 0,
-			buttonsMask: 262912,
-			action: 2,
-		},
-		hotkey04: {
-			auxMask: 0,
-			buttonsMask: 525056,
-			action: 3,
-		},
-		hotkey05: {
-			auxMask: 0,
-			buttonsMask: 70144,
-			action: 6,
-		},
-		hotkey06: {
-			auxMask: 0,
-			buttonsMask: 135680,
-			action: 7,
-		},
-		hotkey07: {
-			auxMask: 0,
-			buttonsMask: 266752,
-			action: 8,
-		},
-		hotkey08: {
-			auxMask: 0,
-			buttonsMask: 528896,
-			action: 10,
-		},
-		hotkey09: {
-			auxMask: 0,
-			buttonsMask: 0,
-			action: 0,
-		},
-		hotkey10: {
-			auxMask: 0,
-			buttonsMask: 0,
-			action: 0,
-		},
-		hotkey11: {
-			auxMask: 0,
-			buttonsMask: 0,
-			action: 0,
-		},
-		hotkey12: {
-			auxMask: 0,
-			buttonsMask: 0,
-			action: 0,
-		},
-		hotkey13: {
-			auxMask: 0,
-			buttonsMask: 0,
-			action: 0,
-		},
-		hotkey14: {
-			auxMask: 0,
-			buttonsMask: 0,
-			action: 0,
-		},
-		hotkey15: {
-			auxMask: 0,
-			buttonsMask: 0,
-			action: 0,
-		},
-		hotkey16: {
-			auxMask: 0,
-			buttonsMask: 0,
-			action: 0,
-		},
-	});
+	if (!gamepadOptionsStore) {
+		gamepadOptionsStore = {
+			dpadMode: 0,
+			inputMode: 4,
+			socdMode: 2,
+			switchTpShareForDs4: 0,
+			forcedSetupMode: 0,
+			lockHotkeys: 0,
+			fourWayMode: 0,
+			fnButtonPin: -1,
+			profileNumber: 1,
+			debounceDelay: 5,
+			inputModeB1: 1,
+			inputModeB2: 0,
+			inputModeB3: 2,
+			inputModeB4: 4,
+			inputModeL1: -1,
+			inputModeL2: -1,
+			inputModeR1: -1,
+			inputModeR2: 3,
+			ps4AuthType: 0,
+			ps5AuthType: 0,
+			xinputAuthType: 0,
+			ps4ControllerIDMode: 0,
+			usbDescOverride: 0,
+			usbDescProduct: 'GP2040-CE (Custom)',
+			usbDescManufacturer: 'Open Stick Community',
+			usbDescVersion: '1.0',
+			usbOverrideID: 0,
+			usbVendorID: '10C4',
+			usbProductID: '82C0',
+			hotkey01: { auxMask: 32768, buttonsMask: 66304, action: 4 },
+			hotkey02: { auxMask: 0, buttonsMask: 131840, action: 1 },
+			hotkey03: { auxMask: 0, buttonsMask: 262912, action: 2 },
+			hotkey04: { auxMask: 0, buttonsMask: 525056, action: 3 },
+			hotkey05: { auxMask: 0, buttonsMask: 70144, action: 6 },
+			hotkey06: { auxMask: 0, buttonsMask: 135680, action: 7 },
+			hotkey07: { auxMask: 0, buttonsMask: 266752, action: 8 },
+			hotkey08: { auxMask: 0, buttonsMask: 528896, action: 10 },
+			hotkey09: { auxMask: 0, buttonsMask: 0, action: 0 },
+			hotkey10: { auxMask: 0, buttonsMask: 0, action: 0 },
+			hotkey11: { auxMask: 0, buttonsMask: 0, action: 0 },
+			hotkey12: { auxMask: 0, buttonsMask: 0, action: 0 },
+			hotkey13: { auxMask: 0, buttonsMask: 0, action: 0 },
+			hotkey14: { auxMask: 0, buttonsMask: 0, action: 0 },
+			hotkey15: { auxMask: 0, buttonsMask: 0, action: 0 },
+			hotkey16: { auxMask: 0, buttonsMask: 0, action: 0 },
+		};
+	}
+	return res.send(gamepadOptionsStore);
 });
 
 app.get('/api/getLedOptions', (req, res) => {
@@ -830,7 +771,9 @@ app.get('/api/getButtonLayout', (req, res) => {
 });
 
 app.post('/api/*', (req, res) => {
-	console.log(req.body);
+	if (req.path === '/api/setGamepadOptions' && gamepadOptionsStore) {
+		Object.assign(gamepadOptionsStore, req.body);
+	}
 	return res.send(req.body);
 });
 
