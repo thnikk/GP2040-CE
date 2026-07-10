@@ -61,7 +61,7 @@ const ProfileLabel = memo(function ProfileLabel({
 	);
 
 	return (
-		<div className="pin-grid">
+		<div className="pin-grid profile-label-grid">
 			<Form.Label>{t('PinMapping:profile-label-title')}</Form.Label>
 			<Form.Control
 				type="text"
@@ -248,7 +248,6 @@ const PinSection = memo(function PinSection({
 							</div>
 						)}
 					</div>
-					<hr />
 
 					{svgMode ? (
 						<div className="board-svg-wrapper">
@@ -297,7 +296,7 @@ const PinSection = memo(function PinSection({
 						</div>
 					)}
 
-					<div className="d-flex gap-3 my-3 align-items-center">
+					<div className="d-flex gap-3 mt-3 align-items-center">
 						{profileIndex > 0 && (
 							<Button onClick={() => copyBaseProfile(profileIndex)}>
 								{t(`PinMapping:profile-copy-base`)}

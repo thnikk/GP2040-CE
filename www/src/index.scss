@@ -92,6 +92,7 @@ code {
 }
 
 input.form-control {
+	border-radius: 999px;
 	:focus {
 		color: inherit;
 	}
