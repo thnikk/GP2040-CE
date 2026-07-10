@@ -11,7 +11,6 @@ import {
 	Alert,
 	Button,
 	Col,
-	Collapse,
 	Form,
 	FormCheck,
 	Nav,
@@ -23,101 +22,24 @@ import {
 	Tooltip,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import invert from 'lodash/invert';
 import omit from 'lodash/omit';
 
 import { AppContext } from '../Contexts/AppContext';
 import useProfilesStore, { MAX_PROFILES } from '../Store/useProfilesStore';
 
 import Section from '../Components/Section';
-import CustomSelect from '../Components/CustomSelect';
+import PinSelectList from '../Components/PinSelectList';
 import BoardSVG from '../Components/BoardSVG';
 import PinActionModal from '../Components/PinActionModal';
 
-import { BUTTONS, BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../Data/Buttons';
+import { BUTTONS, getButtonLabels } from '../Data/Buttons';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { useBoardSVG } from '../hooks/useBoardSVG';
 import WebApi from '../Services/WebApi';
 import './PinMapping.scss';
-import { MultiValue, SingleValue } from 'react-select';
 import InfoCircle from '../Icons/InfoCircle';
 import { SketchPicker } from '@hello-pangea/color-picker';
 import LEDColors from '../Data/LEDColors';
-
-type OptionType = {
-	label: string;
-	value: PinActionValues;
-	type: string;
-	customButtonMask: number;
-	customDpadMask: number;
-};
-
-const disabledOptions = [
-	BUTTON_ACTIONS.RESERVED,
-	BUTTON_ACTIONS.ASSIGNED_TO_ADDON,
-];
-
-const getMask = (maskArr, key) =>
-	maskArr.find(
-		({ label }) => label?.toUpperCase() === key.split('BUTTON_PRESS_')?.pop(),
-	);
-
-const isNonSelectable = (action) =>
-	[
-		BUTTON_ACTIONS.NONE,
-		BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO,
-		...disabledOptions,
-	].includes(action);
-
-const isDisabled = (action) => disabledOptions.includes(action);
-
-const options = Object.entries(BUTTON_ACTIONS)
-	.filter(([, value]) => !isNonSelectable(value))
-	.map(([key, value]) => {
-		const buttonMask = getMask(BUTTON_MASKS, key);
-		const dpadMask = getMask(DPAD_MASKS, key);
-
-		return {
-			label: key,
-			value,
-			type: buttonMask
-				? 'customButtonMask'
-				: dpadMask
-					? 'customDpadMask'
-					: 'action',
-			customButtonMask: buttonMask?.value || 0,
-			customDpadMask: dpadMask?.value || 0,
-		};
-	});
-
-const groupedOptions = [
-	{
-		label: 'Buttons',
-		options: options.filter(({ type }) => type !== 'action'),
-	},
-	{
-		label: 'Actions',
-		options: options.filter(({ type }) => type === 'action'),
-	},
-];
-
-const getMultiValue = (pinData) => {
-	if (pinData.action === BUTTON_ACTIONS.NONE) return;
-	if (isDisabled(pinData.action)) {
-		const actionKey = invert(BUTTON_ACTIONS)[pinData.action];
-		return [{ label: actionKey, ...pinData }];
-	}
-
-	return pinData.action === BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO
-		? options.filter(
-				({ type, customButtonMask, customDpadMask }) =>
-					(pinData.customButtonMask & customButtonMask &&
-						type === 'customButtonMask') ||
-					(pinData.customDpadMask & customDpadMask &&
-						type === 'customDpadMask'),
-			)
-		: options.filter((option) => option.value === pinData.action);
-};
 
 const ProfileLabel = memo(function ProfileLabel({
 	profileIndex,
@@ -156,111 +78,7 @@ const ProfileLabel = memo(function ProfileLabel({
 	);
 });
 
-const PinSelectList = memo(function PinSelectList({
-	profileIndex,
-	excludePins,
-}: {
-	profileIndex: number;
-	excludePins?: Set<number>;
-}) {
-	const setProfilePin = useProfilesStore((state) => state.setProfilePin);
 
-	const pins = useProfilesStore(
-		useShallow((state) =>
-			omit(state.profiles[profileIndex], ['profileLabel', 'enabled']),
-		),
-	);
-	const { t } = useTranslation('');
-	const { buttonLabels } = useContext(AppContext);
-	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
-	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
-	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
-
-	const onChange = useCallback(
-		(pin: string) =>
-			(selected: MultiValue<OptionType> | SingleValue<OptionType>) => {
-				if (!selected || (Array.isArray(selected) && !selected.length)) {
-					setProfilePin(profileIndex, pin, {
-						action: BUTTON_ACTIONS.NONE,
-						customButtonMask: 0,
-						customDpadMask: 0,
-					});
-				} else if (Array.isArray(selected) && selected.length > 1) {
-					const lastSelected = selected[selected.length - 1];
-					if (lastSelected.type === 'action') {
-						setProfilePin(profileIndex, pin, {
-							action: lastSelected.value,
-							customButtonMask: 0,
-							customDpadMask: 0,
-						});
-					} else {
-						setProfilePin(
-							profileIndex,
-							pin,
-							selected.reduce(
-								(masks, option) => ({
-									...masks,
-									customButtonMask:
-										option.type === 'customButtonMask'
-											? masks.customButtonMask ^ option.customButtonMask
-											: masks.customButtonMask,
-									customDpadMask:
-										option.type === 'customDpadMask'
-											? masks.customDpadMask ^ option.customDpadMask
-											: masks.customDpadMask,
-								}),
-								{
-									action: BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO,
-									customButtonMask: 0,
-									customDpadMask: 0,
-								},
-							),
-						);
-					}
-				} else {
-					setProfilePin(profileIndex, pin, {
-						action: selected[0].value,
-						customButtonMask: 0,
-						customDpadMask: 0,
-					});
-				}
-			},
-		[],
-	);
-
-	const getOptionLabel = useCallback(
-		(option: OptionType) => {
-			const labelKey = option.label?.split('BUTTON_PRESS_')?.pop();
-			return (
-				(labelKey && buttonNames[labelKey]) ||
-				t(`PinMapping:actions.${option.label}`)
-			);
-		},
-		[buttonNames],
-	);
-	const pinEntries = Object.entries(pins).filter(([pin]) => {
-		if (!excludePins) return true;
-		const num = parseInt(pin.replace('pin', ''), 10);
-		return !excludePins.has(num);
-	});
-
-	return pinEntries.map(([pin, pinData], index) => (
-		<div key={`select-${index}`} className="d-flex align-items-center">
-			<div className="d-flex flex-shrink-0" style={{ width: '4rem' }}>
-				<label>{pin.toUpperCase()}</label>
-			</div>
-			<CustomSelect
-				isClearable
-				isMulti={!isDisabled(pinData.action)}
-				options={groupedOptions}
-				isDisabled={isDisabled(pinData.action)}
-				getOptionLabel={getOptionLabel}
-				onChange={onChange(pin)}
-				value={getMultiValue(pinData)}
-			/>
-		</div>
-	));
-});
 
 
 
@@ -351,7 +169,6 @@ const PinSection = memo(function PinSection({
 		[pinElements],
 	);
 	const [modalPin, setModalPin] = useState<number | null>(null);
-	const [extraPinsOpen, setExtraPinsOpen] = useState(false);
 
 	const profilePins = useProfilesStore(
 		useShallow((state) => {
@@ -473,33 +290,6 @@ const PinSection = memo(function PinSection({
 								onSaveColor={onSavePinColors}
 							/>
 
-							{pinElements.length > 0 && pinElements.length < 30 && (
-								<>
-									<hr />
-									<div
-										className="collapsible-heading"
-										onClick={() => setExtraPinsOpen(!extraPinsOpen)}
-										role="button"
-										tabIndex={0}
-										onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExtraPinsOpen(!extraPinsOpen); }}
-										aria-controls="extra-pins-collapse"
-										aria-expanded={extraPinsOpen}
-									>
-										<span>{extraPinsOpen ? '▲' : '▼'}</span>
-										{t('PinMapping:unmapped-pins-title')}
-									</div>
-									<Collapse in={extraPinsOpen}>
-										<div id="extra-pins-collapse">
-											<div className="pin-grid gap-3 mt-3">
-												<PinSelectList
-													profileIndex={profileIndex}
-													excludePins={svgPinSet}
-												/>
-											</div>
-										</div>
-									</Collapse>
-								</>
-							)}
 						</div>
 					) : (
 						<div className="pin-grid gap-3 mt-3">

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Button, Form, Modal, Nav, Row, Col, Tab } from 'react-bootstrap';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Alert, Button, Form, Modal, Nav, Row, Col, Tab } from 'react-bootstrap';
 import { Formik, useFormikContext } from 'formik';
 import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
@@ -12,11 +12,13 @@ import { AppContext } from '../Contexts/AppContext';
 
 import ContextualHelpOverlay from '../Components/ContextualHelpOverlay';
 import KeyboardMapper from '../Components/KeyboardMapper';
+import PinSelectList from '../Components/PinSelectList';
 import Section from '../Components/Section';
 import WebApi, { baseButtonMappings } from '../Services/WebApi';
 import { BUTTON_MASKS_OPTIONS, getButtonLabels } from '../Data/Buttons';
 
 import { hexToInt } from '../Services/Utilities';
+import { useBoardSVG } from '../hooks/useBoardSVG';
 
 import './SettingsPage.scss';
 
@@ -520,18 +522,36 @@ export default function SettingsPage() {
 
 	const fetchProfiles = useProfilesStore((state) => state.fetchProfiles);
 	const profiles = useProfilesStore((state) => state.profiles);
+	const saveProfiles = useProfilesStore((state) => state.saveProfiles);
 
 	useEffect(() => {
 		fetchProfiles();
 		updatePeripherals();
 	}, []);
 
+	const { pinElements } = useBoardSVG();
+	const svgPinSet = useMemo(
+		() => new Set(pinElements.map((p) => p.pinNumber)),
+		[pinElements],
+	);
+
 	const [saveMessage, setSaveMessage] = useState('');
+	const [extraPinsSaveMessage, setExtraPinsSaveMessage] = useState('');
 	const [warning, setWarning] = useState({ show: false, acceptText: '' });
 	const [validated, setValidated] = useState(false);
 	const [keyMappings, setKeyMappings] = useState(baseButtonMappings);
 
 	const [message, setMessage] = useState(null);
+
+	const handleExtraPinsSave = async () => {
+		const success = await saveProfiles();
+		setExtraPinsSaveMessage(
+			success
+				? t('Common:saved-success-message')
+				: t('Common:saved-error-message'),
+		);
+	};
+
 	const [PS4Key, setPS4Key] = useState();
 	const [PS4Serial, setPS4Serial] = useState();
 	const [PS4Signature, setPS4Signature] = useState();
@@ -1395,6 +1415,11 @@ export default function SettingsPage() {
 													{t('SettingsPage:hotkey-settings-label')}
 												</Nav.Link>
 											</Nav.Item>
+											<Nav.Item>
+												<Nav.Link eventKey="extrapins">
+													Extra pins
+												</Nav.Link>
+											</Nav.Item>
 										</Nav>
 									</Col>
 									<Col md={9}>
@@ -1862,6 +1887,22 @@ export default function SettingsPage() {
 													</Button>
 													{saveMessage ? (
 														<span className="alert">{saveMessage}</span>
+													) : null}
+												</Section>
+											</Tab.Pane>
+											<Tab.Pane eventKey="extrapins">
+												<Section title="Extra pins">
+													<Alert variant="info">
+														These pins are accessible on the back of the RP2040-Zero via the small surface-mount pads.
+													</Alert>
+													<div className="pin-grid gap-3 mt-3">
+														<PinSelectList profileIndex={0} excludePins={svgPinSet} />
+													</div>
+													<Button onClick={handleExtraPinsSave}>
+														{t('Common:button-save-label')}
+													</Button>
+													{extraPinsSaveMessage ? (
+														<span className="alert">{extraPinsSaveMessage}</span>
 													) : null}
 												</Section>
 											</Tab.Pane>
