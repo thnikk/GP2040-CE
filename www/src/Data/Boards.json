@@ -6,5 +6,13 @@
 		"invalidPins": [],
 		"hasBoardSvg": false,
 		"svgPath": ""
+	},
+	"fightboard-v3": {
+		"minPin": 0,
+		"maxPin": 29,
+		"analogPins": [26, 27, 28],
+		"invalidPins": [],
+		"hasBoardSvg": true,
+		"svgPath": "/boards/fightboard-v3.svg"
 	}
 }

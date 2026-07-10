@@ -13,15 +13,18 @@ import { DEFAULT_KEYBOARD_MAPPING } from '../src/Data/Keyboard.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const { pico: picoController } = JSON.parse(
+const controllers = JSON.parse(
 	readFileSync(path.resolve(__dirname, '../src/Data/Controllers.json'), 'utf8'),
 );
+
+const boardId = (process.env.VITE_GP2040_BOARD || 'pico').toLowerCase();
+const controller = controllers[boardId] || controllers.pico;
 
 // Structure pin mappings to include masks and profile label
 const createPinMappings = ({ profileLabel = 'Profile' }) => {
 	let pinMappings = { profileLabel, enabled: true };
 
-	for (const [key, value] of Object.entries(picoController)) {
+	for (const [key, value] of Object.entries(controller)) {
 		pinMappings[key] = {
 			action: value,
 			customButtonMask: 0,
@@ -30,6 +33,8 @@ const createPinMappings = ({ profileLabel = 'Profile' }) => {
 	}
 	return pinMappings;
 };
+
+const boardLabel = boardId === 'pico' ? 'Pico' : controllers[boardId] ? boardId : 'Pico';
 
 const port = process.env.PORT || 8080;
 
@@ -42,7 +47,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/getUsedPins', (req, res) => {
-	return res.send({ usedPins: Object.values(picoController) });
+	return res.send({ usedPins: Object.values(controller) });
 });
 
 app.get('/api/resetSettings', (req, res) => {
@@ -245,7 +250,7 @@ app.get('/api/getLedOptions', (req, res) => {
 			A1: null,
 			A2: null,
 		},
-		usedPins: Object.values(picoController),
+		usedPins: Object.values(controller),
 		pledType: 1,
 		pledPin1: 12,
 		pledPin2: 13,
@@ -551,7 +556,7 @@ app.get('/api/getAddonsOptions', (req, res) => {
 		DRV8833RumbleAddonEnabled: 1,
 		ReactiveLEDAddonEnabled: 1,
 		GamepadUSBHostAddonEnabled: 1,
-		usedPins: Object.values(picoController),
+		usedPins: Object.values(controller),
 	});
 });
 
@@ -666,9 +671,9 @@ app.get('/api/getMacroAddonOptions', (req, res) => {
 
 app.get('/api/getFirmwareVersion', (req, res) => {
 	return res.send({
-		boardConfigLabel: 'Pico',
-		boardConfigFileName: `GP2040_local-dev-server_Pico`,
-		boardConfig: 'Pico',
+		boardConfigLabel: boardLabel,
+		boardConfigFileName: `GP2040_local-dev-server_${boardLabel}`,
+		boardConfig: boardLabel,
 		version: 'local-dev-server',
 	});
 });
