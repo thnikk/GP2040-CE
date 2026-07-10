@@ -31,7 +31,6 @@ import useProfilesStore, { MAX_PROFILES } from '../Store/useProfilesStore';
 
 import Section from '../Components/Section';
 import CustomSelect from '../Components/CustomSelect';
-import CaptureButton from '../Components/CaptureButton';
 import BoardSVG from '../Components/BoardSVG';
 import PinActionModal from '../Components/PinActionModal';
 
@@ -509,25 +508,6 @@ const PinSection = memo(function PinSection({
 					)}
 
 					<div className="d-flex gap-3 my-3 align-items-center">
-						<CaptureButton
-							labels={Object.values(buttonNames)}
-							onChange={(label, pin) =>
-								setProfilePin(
-									profileIndex,
-									pin < 10 ? `pin0${pin}` : `pin${pin}`,
-									{
-										action:
-											BUTTON_ACTIONS[
-												`BUTTON_PRESS_${invert(buttonNames)[
-													label
-												].toUpperCase()}`
-											],
-										customButtonMask: 0,
-										customDpadMask: 0,
-									},
-								)
-							}
-						/>
 						{profileIndex > 0 && (
 							<Button onClick={() => copyBaseProfile(profileIndex)}>
 								{t(`PinMapping:profile-copy-base`)}
@@ -826,15 +806,6 @@ export default function PinMapping() {
 								</Button>
 							)}
 						</Nav>
-						<hr />
-						<p className="text-center">{t('PinMapping:sub-header-text')}</p>
-						<div className="d-flex justify-content-center pb-3">
-							<CaptureButton
-								buttonLabel={t('PinMapping:pin-viewer')}
-								labels={['']}
-								onChange={(_, pin) => setPressedPin(pin)}
-							/>
-						</div>
 						{pressedPin !== null && (
 							<div className="alert alert-info mt-3">
 								<strong>{t('PinMapping:pin-pressed', { pressedPin })}</strong>
