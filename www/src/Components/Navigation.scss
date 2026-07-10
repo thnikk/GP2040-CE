@@ -31,6 +31,17 @@ nav.navbar {
 	.reset-settings-link {
 		color: #ff0000;
 	}
+
+	.navbar-nav .nav-link,
+	.navbar-actions {
+		.btn,
+		.dropdown-toggle,
+		.form-select {
+			height: 40px;
+			display: inline-flex;
+			align-items: center;
+		}
+	}
 }
 [data-bs-theme="dark"] {
 	nav.navbar {
