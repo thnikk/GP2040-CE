@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Nav, NavDropdown, Navbar, Button, Modal } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../Contexts/AppContext';
 import FormSelect from './FormSelect';
@@ -44,6 +44,7 @@ const Navigation = () => {
 	};
 
 	const { t } = useTranslation('');
+	const location = useLocation();
 
 	// eventKey prop is required on NavLink components in order for mobile menu
 	// to autoclose, so just auto increment as we build the menu
@@ -62,8 +63,8 @@ const Navigation = () => {
 			</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
-				<Nav className="me-auto nav-menu">
-					<Nav.Link as={NavLink} to="/layout" eventKey={eventKey++}>
+				<Nav className="me-auto nav-menu" activeKey={location.pathname}>
+					<Nav.Link as={NavLink} to="/layout" eventKey="/layout">
 						<span style={{ display: 'inline-flex', alignItems: 'center' }}>
 							<svg
 								viewBox="0 0 640 384"
@@ -75,7 +76,7 @@ const Navigation = () => {
 							{t('Navigation:layout-label')}
 						</span>
 					</Nav.Link>
-					<Nav.Link as={NavLink} to="/settings" eventKey={eventKey++}>
+					<Nav.Link as={NavLink} to="/settings" eventKey="/settings">
 						<span style={{ display: 'inline-flex', alignItems: 'center' }}>
 							<svg
 								viewBox="0 0 512 512"
