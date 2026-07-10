@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Form, Modal, Nav, Row, Col, Tab } from 'react-bootstrap';
 import { Formik, useFormikContext } from 'formik';
-import { NavLink } from 'react-router-dom';
+
 import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
 import JSEncrypt from 'jsencrypt';
@@ -1707,20 +1707,6 @@ export default function SettingsPage() {
 												<Section
 													title={t('SettingsPage:hotkey-settings-label')}
 												>
-													<div className="mb-3">
-														<Trans
-															ns="SettingsPage"
-															i18nKey="hotkey-settings-sub-header"
-															components={{
-																link_pinmap: <NavLink to="/layout" />,
-															}}
-														/>
-													</div>
-													{values.fnButtonPin === -1 && (
-														<div className="alert alert-warning">
-															{t('SettingsPage:hotkey-settings-warning')}
-														</div>
-													)}
 													<div
 														id="Hotkeys"
 														hidden={values.lockHotkeys}
@@ -1731,6 +1717,8 @@ export default function SettingsPage() {
 																key={`hotkey-${i}-base`}
 																className={`row row-gap-2 align-items-center gx-2`}
 															>
+																{values.fnButtonPin !== -1 && (
+																<>
 																<Col
 																	sm="auto"
 																	className="d-flex align-items-center"
@@ -1740,7 +1728,6 @@ export default function SettingsPage() {
 																		label="Fn"
 																		type="switch"
 																		className="text my-auto"
-																		disabled={values.fnButtonPin === -1}
 																		checked={values[o] && !!values[o]?.auxMask}
 																		onChange={(e) => {
 																			setFieldValue(
@@ -1755,6 +1742,8 @@ export default function SettingsPage() {
 																	</Form.Control.Feedback>
 																</Col>
 																<Col sm="auto">+</Col>
+																</>
+																)}
 																{BUTTON_MASKS_OPTIONS.map((mask) =>
 																	values[o] &&
 																	values[o]?.buttonsMask & mask.value ? (

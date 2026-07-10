@@ -34,10 +34,6 @@ export default {
 	'profile-label': 'Profil',
 	'debounce-delay-label': 'Entprellverzögerung in Millisekunden',
 	'hotkey-settings-label': 'Hotkey Einstellungen',
-	'hotkey-settings-sub-header':
-		'Der Schieberegler <strong>Fn</strong> bietet eine zuweisbare Funktionstaste auf der <link_pinmap>Pin-Zuweisungen</link_pinmap>-Seite. Durch Auswahl der <strong>Fn</strong>-Schieberegleroption muss die Funktionstaste zusammen mit den ausgewählten Hotkey-Einstellungen gehalten werden.<br />Wählen Sie außerdem <strong>None</strong> aus dem Dropdown-Menü, um einer Taste keine Zuordnung zuzuweisen.',
-	'hotkey-settings-warning':
-		'Funktionstaste ist nicht zugewiesen. Der Fn Schieberegler wird deaktiviert.',
 	'hotkey-actions': {
 		'no-action': 'Keine Aktion',
 		'dpad-digital': 'Dpad Digital',

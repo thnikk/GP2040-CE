@@ -81,9 +81,6 @@ export default {
 	'xinput-mode-text':
 		'<span>补充信息：</span>Xinput 可以在没有认证的情况下在PC上运行。如果您想在 Xbox 360 上使用它，请选择USB验证并连接合适的加密狗。',
 	'hotkey-settings-label': '快捷键设置',
-	'hotkey-settings-sub-header':
-		'<strong>Fn</strong> 组合映射在<link_pinmap>引脚映射</link_pinmap>页面提供了一个可映射的Function按键。 要选择 <strong>Fn</strong> 组合映射选项，请同时按住 Function 按键和其他快捷键。<br />此外, 可从下拉列表中选择 <strong>None</strong> 以取消分配按钮',
-	'hotkey-settings-warning': 'Function 按键未映射引脚时，Fn 组合映射将会被禁用',
 	'hotkey-actions': {
 		'no-action': '无',
 		'dpad-digital': '十字键模式',
