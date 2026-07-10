@@ -114,6 +114,12 @@
 #define BOARD_LEDS_RGB_FORMAT LED_FORMAT_RGB
 #define BOARD_LEDS_RGB_BRIGHTNESS 16
 
+// Boot-hold input mode overrides:
+// holding B1 (A) selects XInput,
+// holding B2 (B) selects Switch.
+#define DEFAULT_INPUT_MODE_B1 INPUT_MODE_XINPUT
+#define DEFAULT_INPUT_MODE_B2 INPUT_MODE_SWITCH
+
 #define HAS_I2C_DISPLAY 1
 #define I2C1_ENABLED 1
 #define I2C1_PIN_SDA 10
