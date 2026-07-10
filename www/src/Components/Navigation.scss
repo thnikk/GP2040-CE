@@ -26,6 +26,16 @@ nav.navbar {
 		.dropdown-menu {
 			position: absolute;
 		}
+
+		.btn,
+		.dropdown-toggle {
+			&:hover,
+			&:active,
+			&.active {
+				background-color: var(--bs-btn-bg);
+				color: var(--bs-btn-color);
+			}
+		}
 	}
 
 	.reset-settings-link {
@@ -40,6 +50,22 @@ nav.navbar {
 			height: 40px;
 			display: inline-flex;
 			align-items: center;
+		}
+	}
+
+	.navbar-nav .nav-link,
+	.navbar-actions .btn,
+	.navbar-actions .dropdown-toggle,
+	.navbar-label-select .form-select {
+		border: 1px solid transparent;
+
+		&:hover,
+		&:active {
+			border-color: rgba(255, 255, 255, 0.2);
+		}
+
+		&.active {
+			border-color: transparent;
 		}
 	}
 }
