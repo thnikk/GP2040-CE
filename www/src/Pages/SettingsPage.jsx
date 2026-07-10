@@ -1514,7 +1514,7 @@ export default function SettingsPage() {
 																{errors.dpadMode}
 															</Form.Control.Feedback>
 														</Col>
-														<Col sm={3}>
+														<Col sm={6}>
 															<Form.Check
 																label={t(
 																	'SettingsPage:4-way-joystick-mode-label',
