@@ -54,6 +54,11 @@ $enable-cssgrid: true;
 	nav.navbar {
 		background-color: #{$body-bg-dark};
 	}
+	.navbar-label-select .form-select {
+		background-color: #{$nord1};
+		border: 1px solid #{$nord3};
+		color: white; // needed for readability on dark bg
+	}
 }
 
 * {
