@@ -825,7 +825,7 @@ export default function SettingsPage() {
 		);
 		return (
 			<>
-				<div>{t('SettingsPage:ps4-mode-explanation-text')}</div>
+				<div className="alert alert-info">{t('SettingsPage:ps4-mode-explanation-text')}</div>
 				<Form.Check
 					label={t('SettingsPage:input-mode-extra-label')}
 					type="switch"
@@ -969,7 +969,7 @@ export default function SettingsPage() {
 		);
 		return (
 			<>
-				<div>{t('SettingsPage:ps5-mode-explanation-text')}</div>
+				<div className="alert alert-info">{t('SettingsPage:ps5-mode-explanation-text')}</div>
 				<Form.Check
 					label={t('SettingsPage:input-mode-extra-label')}
 					type="switch"
@@ -1203,11 +1203,13 @@ export default function SettingsPage() {
 
 	const xboneModeSpecifics = (values, errors, setFieldValue, handleChange) => {
 		return (
-			<Trans
-				ns="SettingsPage"
-				i18nKey="xbone-mode-text"
-				components={{ span: <span className="text-success" /> }}
-			/>
+			<div className="alert alert-info">
+				<Trans
+					ns="SettingsPage"
+					i18nKey="xbone-mode-text"
+					components={{ span: <span className="text-success" /> }}
+				/>
+			</div>
 		);
 	};
 
@@ -1556,7 +1558,7 @@ export default function SettingsPage() {
 															{errors.socdMode}
 														</Form.Control.Feedback>
 													</div>
-													<p>{t('SettingsPage:socd-cleaning-mode-note')}</p>
+													<div className="alert alert-info">{t('SettingsPage:socd-cleaning-mode-note')}</div>
 													<div className="d-flex flex-column gap-1">
 														<Form.Label>
 															{t('SettingsPage:forced-setup-mode-label')}
@@ -1839,26 +1841,30 @@ export default function SettingsPage() {
 																</Form.Control.Feedback>
 															</div>
 														))}
-													<Form.Check
-														label={t('SettingsPage:lock-hotkeys-label')}
-														type="switch"
-														id="LockHotkeys"
-														reverse
-														isInvalid={false}
-														checked={Boolean(values.lockHotkeys)}
-														onChange={(e) => {
-															setFieldValue(
-																'lockHotkeys',
-																e.target.checked ? 1 : 0,
-															);
-														}}
-													/>
-													<Button type="submit">
-														{t('Common:button-save-label')}
-													</Button>
-													{saveMessage ? (
-														<span className="alert">{saveMessage}</span>
-													) : null}
+													<div className="d-flex justify-content-between align-items-center gap-1">
+														<Form.Check
+															label={t('SettingsPage:lock-hotkeys-label')}
+															type="switch"
+															id="LockHotkeys"
+															reverse
+															isInvalid={false}
+															checked={Boolean(values.lockHotkeys)}
+															onChange={(e) => {
+																setFieldValue(
+																	'lockHotkeys',
+																	e.target.checked ? 1 : 0,
+																);
+															}}
+														/>
+														<div className="d-flex align-items-center gap-1">
+															<Button type="submit">
+																{t('Common:button-save-label')}
+															</Button>
+															{saveMessage ? (
+																<span className="alert">{saveMessage}</span>
+															) : null}
+														</div>
+													</div>
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="extrapins">

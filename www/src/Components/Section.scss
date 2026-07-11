@@ -13,6 +13,10 @@
 	margin-bottom: 0;
 }
 
+.card-body > .btn {
+	align-self: flex-end;
+}
+
 .loading .spinner-border {
 	height: 6rem;
 	width: 6rem;

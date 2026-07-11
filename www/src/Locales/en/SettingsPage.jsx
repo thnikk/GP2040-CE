@@ -47,7 +47,7 @@ export default {
 	},
 	'socd-cleaning-mode-label': 'SOCD Cleaning Mode',
 	'socd-cleaning-mode-note':
-		'Note: PS4, PS3, Nintendo Switch, and mini series modes do not support setting SOCD Cleaning to Off and will default to Neutral SOCD Cleaning mode.',
+		'PS4, PS3, Nintendo Switch, and mini series modes do not support setting SOCD Cleaning to Off and will default to Neutral SOCD Cleaning mode.',
 	'socd-cleaning-mode-options': {
 		'up-priority': 'Up Priority',
 		neutral: 'Neutral',
@@ -77,7 +77,7 @@ export default {
 	'ps5-usb-host-mode-text':
 		'<span>INFO:</span> Please ensure USB Peripheral is enabled and a PS5 compatible USB device is plugged in.',
 	'xbone-mode-text':
-		'<span>INFO:</span> Xbox One requires a USB host connection and USB dongle to properly authenticate in Xbox One mode.',
+		'Xbox One requires a USB host connection and USB dongle to properly authenticate in Xbox One mode.',
 	'xinput-mode-text':
 		'Xinput mode works on platforms with Xinput support, such as PC and Android.',
 	'xinput-mode-auth-text':
