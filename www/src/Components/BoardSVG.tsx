@@ -270,7 +270,7 @@ export default function BoardSVG({
 				labelEl.setAttribute('class', 'pin-action-label');
 				labelEl.setAttribute('text-anchor', 'middle');
 				labelEl.setAttribute('dominant-baseline', 'central');
-				labelEl.setAttribute('font-family', 'monospace');
+				labelEl.setAttribute('font-family', '"Nunito", monospace');
 				labelEl.setAttribute('font-size', '11');
 				labelEl.setAttribute('font-weight', 'bold');
 				labelEl.setAttribute('fill', '#000000');
