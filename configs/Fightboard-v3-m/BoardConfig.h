@@ -37,8 +37,8 @@
 #define GPIO_PIN_08 GpioAction::BUTTON_PRESS_L3     // L3     | LS     | LS      | L3       | 11     | LS     |
 #define GPIO_PIN_04 GpioAction::BUTTON_PRESS_R3     // R3     | RS     | RS      | R3       | 12     | RS     |
 #define GPIO_PIN_06 GpioAction::BUTTON_PRESS_A1     // A1     | Guide  | Home    | PS       | 13     | ~      |
-#define GPIO_PIN_17 GpioAction::BUTTON_PRESS_A2     // A2     | ~      | Capture | ~        | 14     | ~      |
 
+// Set physical pin to open webconfig
 #define PIN_WEBCONFIG 5
 
 // Setting GPIO pins to assigned by add-on
@@ -99,10 +99,6 @@
 #define LEDS_BUTTON_B2   6
 #define LEDS_BUTTON_R2   5
 #define LEDS_BUTTON_L2   4
-// #define LEDS_BUTTON_A1   12
-// #define LEDS_BUTTON_L3   13
-// #define LEDS_BUTTON_R3   14
-// #define LEDS_BUTTON_A2   15
 
 // Onboard WS2812 RGB LED (GPIO16) - shows the active input mode as a
 // color. Runs alongside the per-switch LEDs above (BOARD_LEDS_PIN),
@@ -125,8 +121,6 @@
 #define I2C1_PIN_SDA 10
 #define I2C1_PIN_SCL 11
 
-// #define BUTTON_LAYOUT BUTTON_LAYOUT_FIGHTBOARD_MIRRORED
-// #define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_FIGHTBOARD_STICK_MIRRORED
 #define BUTTON_LAYOUT BUTTON_LAYOUT_BOARD_DEFINED_A
 #define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_BOARD_DEFINED_B
 
@@ -155,10 +149,6 @@
 	{GP_ELEMENT_DIR_BUTTON, {111, 42, 8, 8, 1, 1, GAMEPAD_MASK_DOWN,  GP_SHAPE_ELLIPSE}},\
 	{GP_ELEMENT_DIR_BUTTON, {130, 39, 8, 8, 1, 1, GAMEPAD_MASK_RIGHT, GP_SHAPE_ELLIPSE}},\
 }
-
-// #define LEDS_BASE_ANIMATION_INDEX 0
-// #define LEDS_STATIC_COLOR_INDEX 1
-// #define LEDS_BUTTON_COLOR_INDEX 0
 
 #define LEDS_BASE_ANIMATION_INDEX 3
 #define LEDS_THEME_INDEX 19

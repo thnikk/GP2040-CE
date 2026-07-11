@@ -31,15 +31,9 @@
 #define GPIO_PIN_09 GpioAction::BUTTON_PRESS_L3     // L3     | LS     | LS      | L3       | 11     | LS     |
 #define GPIO_PIN_13 GpioAction::BUTTON_PRESS_R3     // R3     | RS     | RS      | R3       | 12     | RS     |
 #define GPIO_PIN_11 GpioAction::BUTTON_PRESS_A1     // A1     | Guide  | Home    | PS       | 13     | ~      |
-#define GPIO_PIN_17 GpioAction::BUTTON_PRESS_A2     // A2     | ~      | Capture | ~        | 14     | ~      |
 
+// Set physical pin to open webconfig
 #define PIN_WEBCONFIG 12
-
-// Setting GPIO pins to assigned by add-on
-//
-// #define GPIO_PIN_00 GpioAction::ASSIGNED_TO_ADDON
-// #define GPIO_PIN_14 GpioAction::ASSIGNED_TO_ADDON
-// #define GPIO_PIN_15 GpioAction::ASSIGNED_TO_ADDON
 
 // Keyboard Mapping Configuration
 //                                            // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
@@ -80,29 +74,6 @@
 #define HOTKEY_09_AUX_MASK 0
 #define HOTKEY_09_ACTION 35          // HOTKEY_NEXT_PROFILE
 
-// #define BOARD_LEDS_PIN 00
-// #define LED_BRIGHTNESS_MAXIMUM 100
-// #define LED_BRIGHTNESS_STEPS 5
-// #define LED_FORMAT LED_FORMAT_GRB
-// #define LEDS_PER_PIXEL 1
-
-// #define LEDS_DPAD_LEFT   10
-// #define LEDS_DPAD_DOWN   9
-// #define LEDS_DPAD_RIGHT  8
-// #define LEDS_DPAD_UP     11
-// #define LEDS_BUTTON_B3   0
-// #define LEDS_BUTTON_B4   1
-// #define LEDS_BUTTON_R1   2
-// #define LEDS_BUTTON_L1   3
-// #define LEDS_BUTTON_B1   7
-// #define LEDS_BUTTON_B2   6
-// #define LEDS_BUTTON_R2   5
-// #define LEDS_BUTTON_L2   4
-// #define LEDS_BUTTON_A1   12
-// #define LEDS_BUTTON_L3   13
-// #define LEDS_BUTTON_R3   14
-// #define LEDS_BUTTON_A2   15
-
 // Onboard WS2812 RGB LED (GPIO16) - shows the active input mode as a
 // color. NOTE: this onboard chip is wired RGB, not the GRB used by
 // the per-switch chain on other Fightboard variants - color order
@@ -114,11 +85,7 @@
 
 #define HAS_I2C_DISPLAY 0
 #define I2C1_ENABLED 0
-//#define I2C1_PIN_SDA 14
-//#define I2C1_PIN_SCL 15
 
-// #define BUTTON_LAYOUT BUTTON_LAYOUT_FIGHTBOARD_STICK
-// #define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_FIGHTBOARD
 #define BUTTON_LAYOUT BUTTON_LAYOUT_BOARD_DEFINED_A
 #define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_BOARD_DEFINED_B
 
@@ -144,19 +111,6 @@
     {GP_ELEMENT_BTN_BUTTON, { 122,  50, 4, 4, 1, 1, GAMEPAD_MASK_S2, GP_SHAPE_ELLIPSE}},\
     {GP_ELEMENT_BTN_BUTTON, { 134,  50, 4, 4, 1, 1, GAMEPAD_MASK_R3, GP_SHAPE_ELLIPSE}}\
 }
-
-// #define LEDS_BASE_ANIMATION_INDEX 0
-// #define LEDS_STATIC_COLOR_INDEX 1
-// #define LEDS_BUTTON_COLOR_INDEX 0
-
-// #define LEDS_BASE_ANIMATION_INDEX 3
-// #define LEDS_THEME_INDEX 19
-// #define LEDS_BUTTON_COLOR_INDEX 0
-// #define LEDS_BRIGHTNESS 2
-
-// #define INPUT_HISTORY_ENABLED 1
-// #define DISPLAY_SAVER_TIMEOUT 60000
-// #define DISPLAY_SAVER_MODE DISPLAY_SAVER_SNOW
 
 #define SPLASH_MODE SPLASH_MODE_STATIC
 #define SPLASH_DURATION 3000

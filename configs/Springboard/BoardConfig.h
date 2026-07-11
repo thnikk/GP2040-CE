@@ -31,8 +31,8 @@
 #define GPIO_PIN_12 GpioAction::BUTTON_PRESS_L3     // L3     | LS     | LS      | L3       | 11     | LS     |
 #define GPIO_PIN_09 GpioAction::BUTTON_PRESS_R3     // R3     | RS     | RS      | R3       | 12     | RS     |
 #define GPIO_PIN_01 GpioAction::BUTTON_PRESS_A1     // A1     | Guide  | Home    | PS       | 13     | ~      |
-#define GPIO_PIN_21 GpioAction::BUTTON_PRESS_A2     // A2     | ~      | Capture | ~        | 14     | ~      |
 
+// Set physical pin to open webconfig
 #define PIN_WEBCONFIG 8
 
 // Setting GPIO pins to assigned by add-on
@@ -61,7 +61,6 @@
 #define KEY_BUTTON_R3   HID_KEY_MINUS         // R3     | RS     | RS      | R3       | 12     | RS     |
 #define KEY_BUTTON_A1   HID_KEY_9             // A1     | Guide  | Home    | PS       | 13     | ~      |
 #define KEY_BUTTON_A2   HID_KEY_F2            // A2     | ~      | Capture | ~        | 14     | ~      |
-#define KEY_BUTTON_FN   -1                    // Hotkey Function                                        |
 
 // Hotkeys
 #define HOTKEY_08_BUTTONS_MASK 3072  // L3+R3
@@ -93,10 +92,6 @@
 #define LEDS_BUTTON_R2   2
 #define LEDS_BUTTON_B4   1
 #define LEDS_BUTTON_R1   0
-#define LEDS_BUTTON_A1   12
-#define LEDS_BUTTON_L3   13
-#define LEDS_BUTTON_R3   14
-#define LEDS_BUTTON_A2   15
 
 #define HAS_I2C_DISPLAY 1
 #define I2C1_ENABLED 1
