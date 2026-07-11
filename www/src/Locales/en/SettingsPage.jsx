@@ -60,7 +60,7 @@ export default {
 	'ps4-mode-explanation-text':
 		'PS4 mode allows GP2040-CE to run as an authenticated PS4 controller.',
 	'ps4-mode-warning-text':
-		'<span>⏳ WARNING ⏳:</span> PS4 will timeout after 8 minutes without authentication.',
+		'PS4 will timeout after 8 minutes without authentication.',
 	'ps4-usb-host-mode-text':
 		'<span>INFO:</span> Please ensure USB Peripheral is enabled and a PS4 compatible USB device is plugged in.',
 	'ps4-id-mode-label': 'Identification Mode',
@@ -73,13 +73,15 @@ export default {
 	'ps5-mode-explanation-text':
 		'PS5 mode allows GP2040-CE to run as an authenticated PS5 compatible arcade stick.',
 	'ps5-mode-warning-text':
-		'<span>⏳ WARNING ⏳:</span> PS5 will timeout after 8 minutes without authentication.',
+		'PS5 will timeout after 8 minutes without authentication.',
 	'ps5-usb-host-mode-text':
 		'<span>INFO:</span> Please ensure USB Peripheral is enabled and a PS5 compatible USB device is plugged in.',
 	'xbone-mode-text':
 		'<span>INFO:</span> Xbox One requires a USB host connection and USB dongle to properly authenticate in Xbox One mode.',
 	'xinput-mode-text':
-		'<span>INFO:</span> Xinput will work on a PC without any authentication.  If you would like to on a Xbox 360 please choose USB authentication and attach an appropriate dongle.',
+		'Xinput mode works on platforms with Xinput support, such as PC and Android.',
+	'xinput-mode-auth-text':
+		'To use on Xbox 360, select USB authentication and attach an Xbox 360 controller dongle.',
 	'hotkey-settings-label': 'Hotkey Settings',
 	'hotkey-actions': {
 		'no-action': 'No Action',

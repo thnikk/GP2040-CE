@@ -749,7 +749,15 @@ export default function SettingsPage() {
 		value,
 		error,
 		handleChange,
+		usbEnabled = true,
 	) => {
+		const isOptionEnabled = (authType) => !(authType === 'usb' && !usbEnabled);
+		const hasNonNoneEnabled = inputMode.authentication.some(
+			(a) => a !== 'none' && isOptionEnabled(a),
+		);
+
+		if (!hasNonNoneEnabled) return null;
+
 		return (
 			<Row className="mb-3">
 				<Col sm={4}>
@@ -769,6 +777,7 @@ export default function SettingsPage() {
 								<option
 									key={`button-${name}-option-${o.value}`}
 									value={o.value}
+									disabled={!isOptionEnabled(authType)}
 								>
 									{
 										translatedInputModeAuthentications.find(
@@ -820,6 +829,10 @@ export default function SettingsPage() {
 		handleChange,
 		inputMode,
 	) => {
+		const usbEnabled = getAvailablePeripherals('usb') !== false;
+		const showAuth = inputMode.authentication.some(
+			(a) => a !== 'none' && !(a === 'usb' && !usbEnabled),
+		);
 		return (
 			<div className="row mb-3">
 				<Row className="mb-3">
@@ -868,26 +881,28 @@ export default function SettingsPage() {
 						</Form.Select>
 					</Col>
 				</Row>
-				{generateAuthSelection(
+				{showAuth && generateAuthSelection(
 					inputMode,
 					t('SettingsPage:auth-settings-label'),
 					'ps4AuthType',
 					values.ps4AuthType,
 					errors.ps4AuthType,
 					handleChange,
+					usbEnabled,
 				)}
-				{values.ps4AuthType === 0 && (
+				{showAuth && values.ps4AuthType === 0 && (
 					<Row className="mb-3">
 						<Col sm={10}>
-							<Trans
-								ns="SettingsPage"
-								i18nKey="ps4-mode-warning-text"
-								components={{ span: <span className="text-warning" /> }}
-							/>
+							<div className="alert alert-warning mb-0">
+								<Trans
+									ns="SettingsPage"
+									i18nKey="ps4-mode-warning-text"
+								/>
+							</div>
 						</Col>
 					</Row>
 				)}
-				{values.ps4AuthType === 1 && (
+				{showAuth && values.ps4AuthType === 1 && (
 					<Row className="mb-3">
 						<Row className="mb-3">
 							<Col sm={5}>
@@ -961,7 +976,7 @@ export default function SettingsPage() {
 						</Row>
 					</Row>
 				)}
-				{values.ps4AuthType === 2 && (
+				{showAuth && usbEnabled && values.ps4AuthType === 2 && (
 					<Row className="mb-3">
 						<Col sm={10}>
 							<Trans
@@ -983,6 +998,10 @@ export default function SettingsPage() {
 		handleChange,
 		inputMode,
 	) => {
+		const usbEnabled = getAvailablePeripherals('usb') !== false;
+		const showAuth = inputMode.authentication.some(
+			(a) => a !== 'none' && !(a === 'usb' && !usbEnabled),
+		);
 		return (
 			<div className="row mb-3">
 				<Row className="mb-3">
@@ -1031,26 +1050,28 @@ export default function SettingsPage() {
 						</Form.Select>
 					</Col>
 				</Row>
-				{generateAuthSelection(
+				{showAuth && generateAuthSelection(
 					inputMode,
 					t('SettingsPage:auth-settings-label'),
 					'ps5AuthType',
 					values.ps5AuthType,
 					errors.ps5AuthType,
 					handleChange,
+					usbEnabled,
 				)}
 				{values.ps5AuthType === 0 && (
 					<Row className="mb-3">
 						<Col sm={10}>
-							<Trans
-								ns="SettingsPage"
-								i18nKey="ps5-mode-warning-text"
-								components={{ span: <span className="text-warning" /> }}
-							/>
+							<div className="alert alert-warning mb-0">
+								<Trans
+									ns="SettingsPage"
+									i18nKey="ps5-mode-warning-text"
+								/>
+							</div>
 						</Col>
 					</Row>
 				)}
-				{values.ps5AuthType === 2 && (
+				{showAuth && usbEnabled && values.ps5AuthType === 2 && (
 					<Row className="mb-3">
 						<Col sm={10}>
 							<Trans
@@ -1208,23 +1229,38 @@ export default function SettingsPage() {
 		handleChange,
 		inputMode,
 	) => {
+		const usbEnabled = getAvailablePeripherals('usb') !== false;
+		const showAuth = inputMode.authentication.some(
+			(a) => a !== 'none' && !(a === 'usb' && !usbEnabled),
+		);
 		return (
 			<div className="row mb-3">
-				{generateAuthSelection(
+				{showAuth && generateAuthSelection(
 					inputMode,
 					t('SettingsPage:auth-settings-label'),
 					'xinputAuthType',
 					values.xinputAuthType,
 					errors.xinputAuthType,
 					handleChange,
+					usbEnabled,
 				)}
 				<Row className="mb-3">
 					<Col sm={10}>
-						<Trans
-							ns="SettingsPage"
-							i18nKey="xinput-mode-text"
-							components={{ span: <span className="text-success" /> }}
-						/>
+						<div className="alert alert-info mb-0">
+							<Trans
+								ns="SettingsPage"
+								i18nKey="xinput-mode-text"
+							/>
+							{showAuth && (
+								<>
+									<br />
+									<Trans
+										ns="SettingsPage"
+										i18nKey="xinput-mode-auth-text"
+									/>
+								</>
+							)}
+						</div>
 					</Col>
 				</Row>
 				{usbOverride(values, errors, setFieldValue, handleChange)}
