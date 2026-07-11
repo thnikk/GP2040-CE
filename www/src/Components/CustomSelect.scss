@@ -63,6 +63,11 @@
 }
 
 [data-bs-theme="dark"] {
+	.react-select__control {
+		&.react-select__control {
+			background-color: #1c1f26;
+		}
+	}
 	.react-select__indicators .react-select__indicator {
 		color: inherit;
 		&:hover {

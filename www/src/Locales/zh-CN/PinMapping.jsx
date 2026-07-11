@@ -8,7 +8,7 @@ export default {
 	'pin-header-label': '引脚',
 	'profile-label-title': '档案名称',
 	'profile-label-description': '最多16个字符。允许使用字母、数字和空格。',
-	'profile-pin-mapping-title': '{{profileLabel}} - 引脚映射',
+	'profile-pin-mapping-title': '{{profileLabel}}',
 	'profile-label-default': 'Profile {{profileNumber}}',
 	'profile-add-button': '+ 新增档案',
 	'profile-disabled': ' - (禁用)',

@@ -9,7 +9,7 @@ export default {
 	'profile-label-title': 'Profile name',
 	'profile-label-description':
 		'Max 16 characters. Letters, numbers, and spaces allowed.',
-	'profile-pin-mapping-title': '{{profileLabel}} - Pin Mapping',
+	'profile-pin-mapping-title': '{{profileLabel}}',
 	'profile-label-default': 'Profile {{profileNumber}}',
 	'profile-add-button': '+ Add Profile',
 	'profile-disabled': ' - (Disabled)',

@@ -9,7 +9,7 @@ export default {
 	'profile-label-title': '프로필 이름',
 	'profile-label-description':
 		'최대 16자(영문)로 문자, 숫자, 공백을 사용할 수 있습니다.',
-	'profile-pin-mapping-title': '프로필 {{profileLabel}} - 핀 매핑',
+	'profile-pin-mapping-title': '{{profileLabel}}',
 	'profile-label-default': '프로필 {{profileNumber}}',
 	'profile-add-button': '+ 프로필 추가',
 	'profile-disabled': ' - (사용안함)',

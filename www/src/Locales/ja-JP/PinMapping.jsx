@@ -9,7 +9,7 @@ export default {
 
 	'profile-label-title': 'プロファイル名',
 	'profile-label-description': '最大１６文字。半角英数とスペースのみ。',
-	'profile-pin-mapping-title': '{{profileLabel}} - 端子割当',
+	'profile-pin-mapping-title': '{{profileLabel}}',
 	'profile-label-default': 'プロファイル {{profileNumber}}',
 	'profile-add-button': '+ プロファイル追加',
 	'profile-disabled': ' - (無効)',
