@@ -1479,12 +1479,14 @@ export default function SettingsPage() {
 														handleChange,
 														translatedInputModeAuthentications,
 													)}
-													<Button type="submit">
-														{t('Common:button-save-label')}
-													</Button>
-													{saveMessage ? (
-														<span className="alert">{saveMessage}</span>
-													) : null}
+													<div className="d-flex gap-2 align-self-end">
+														{saveMessage ? (
+															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>
+														) : null}
+														<Button type="submit">
+															{t('Common:button-save-label')}
+														</Button>
+													</div>
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="gamepad">
@@ -1625,12 +1627,14 @@ export default function SettingsPage() {
 															max={5000}
 														/>
 													</div>
-													<Button type="submit">
-														{t('Common:button-save-label')}
-													</Button>
-													{saveMessage ? (
-														<span className="alert">{saveMessage}</span>
-													) : null}
+													<div className="d-flex gap-2 align-self-end">
+														{saveMessage ? (
+															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>
+														) : null}
+														<Button type="submit">
+															{t('Common:button-save-label')}
+														</Button>
+													</div>
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="bootmode">
@@ -1685,12 +1689,14 @@ export default function SettingsPage() {
 															</Form.Control.Feedback>
 														</div>
 													))}
-													<Button type="submit">
-														{t('Common:button-save-label')}
-													</Button>
-													{saveMessage ? (
-														<span className="alert">{saveMessage}</span>
-													) : null}
+													<div className="d-flex gap-2 align-self-end">
+														{saveMessage ? (
+															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>
+														) : null}
+														<Button type="submit">
+															{t('Common:button-save-label')}
+														</Button>
+													</div>
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="hotkey">
@@ -1856,13 +1862,13 @@ export default function SettingsPage() {
 																);
 															}}
 														/>
-														<div className="d-flex align-items-center gap-1">
+														<div className="d-flex align-items-stretch gap-1">
+															{saveMessage ? (
+																<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>
+															) : null}
 															<Button type="submit">
 																{t('Common:button-save-label')}
 															</Button>
-															{saveMessage ? (
-																<span className="alert">{saveMessage}</span>
-															) : null}
 														</div>
 													</div>
 												</Section>
@@ -1873,12 +1879,14 @@ export default function SettingsPage() {
 														These pins are accessible on the back of the RP2040-Zero via the small surface-mount pads.
 													</Alert>
 													<PinSelectList profileIndex={0} excludePins={svgPinSet} />
-													<Button onClick={handleExtraPinsSave}>
-														{t('Common:button-save-label')}
-													</Button>
-													{extraPinsSaveMessage ? (
-														<span className="alert">{extraPinsSaveMessage}</span>
-													) : null}
+													<div className="d-flex gap-2 align-self-end">
+														{extraPinsSaveMessage ? (
+															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{extraPinsSaveMessage}</Alert>
+														) : null}
+														<Button onClick={handleExtraPinsSave}>
+															{t('Common:button-save-label')}
+														</Button>
+													</div>
 												</Section>
 											</Tab.Pane>
 										</Tab.Content>

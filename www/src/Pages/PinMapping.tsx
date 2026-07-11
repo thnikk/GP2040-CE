@@ -296,14 +296,16 @@ const PinSection = memo(function PinSection({
 						</div>
 					)}
 
-					<div className="d-flex gap-3 mt-3 align-items-center">
+					<div className="d-flex gap-3 mt-3 align-items-stretch">
 						{profileIndex > 0 && (
 							<Button onClick={() => copyBaseProfile(profileIndex)}>
 								{t(`PinMapping:profile-copy-base`)}
 							</Button>
 						)}
-						{saveMessage && <Alert variant="info" className="mb-0">{saveMessage}</Alert>}
-						<Button type="submit" className="ms-auto">{t('Common:button-save-label')}</Button>
+						<div className="d-flex gap-3 align-items-stretch ms-auto">
+							{saveMessage && <Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>}
+							<Button type="submit">{t('Common:button-save-label')}</Button>
+						</div>
 					</div>
 				</Form>
 			</Section>
@@ -554,8 +556,8 @@ export default function PinMapping() {
 								</Overlay>
 							</div>
 						)}
-						<div className="d-flex align-items-center gap-3 ms-auto">
-							{themeSaveMessage && <Alert variant="info" className="mb-0">{themeSaveMessage}</Alert>}
+						<div className="d-flex align-items-stretch gap-3 ms-auto">
+							{themeSaveMessage && <Alert variant="success" className="mb-0 d-flex align-items-center py-0">{themeSaveMessage}</Alert>}
 							<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
 						</div>
 					</div>
