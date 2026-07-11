@@ -152,7 +152,7 @@ function prepareSvg(svg: string): string {
 	return svg.replace(
 		/<svg([^>]*)>/,
 		(match, attrs) => {
-			const cleaned = attrs
+			let cleaned = attrs
 				.replace(/\s+width="[^"]*"/g, '')
 				.replace(/\s+height="[^"]*"/g, '');
 			if (!cleaned.includes('viewBox')) {

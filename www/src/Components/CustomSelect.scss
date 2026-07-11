@@ -34,8 +34,17 @@
 	}
 	.react-select__multi-value {
 		background-color: var(--bs-secondary-bg);
+		border-radius: 999px;
 		.react-select__multi-value__label {
 			color: inherit;
+			padding: 0rem 0.5rem;
+		}
+		.react-select__multi-value__remove {
+			&:hover {
+				background-color: var(--bs-danger);
+				color: white;
+				border-radius: 999px;
+			}
 		}
 	}
 }

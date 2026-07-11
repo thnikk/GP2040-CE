@@ -17,6 +17,7 @@ $nord13: #ebcb8b;
 $nord14: #a3be8c;
 $nord15: #b48ead;
 $bg-body: #1c1f26;
+$fg-body: #d8dee9;
 
 // Override default variables before the import
 $primary: #495057;
@@ -42,6 +43,7 @@ $form-switch-width: 3.5em;
 		--bs-card-cap-bg: #{$nord1};
 		--bs-nav-pills-link-active-bg: #{$nord1};
 		--bs-table-bg: transparent;
+		--bs-nav-link-color: #{$fg-body};
 	}
 	.btn-primary {
 		--bs-btn-bg: #{$nord3};
