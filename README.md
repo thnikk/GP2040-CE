@@ -35,21 +35,16 @@ This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes ar
 
 ### Fork-specific features
 
+![Web Config Screenshot](assets/web-config.png)
+
 #### Button remapping with SVGs
 Instead of using pin remapping, a board SVG can be used to define pins for their positions on the board and that will be displayed on the pin remapping page of the web config instead of the list of pins. This is a lot more intuitive for remapping.
 
 #### Board LED addon
 The Waveshare RP2040-Zero includes an on-board LED and this addon sets the color based on the input mode.
 
-### Planned features
-
-#### Custom colors via remapping page
-I'd like to be able to change the per-profile colors from the pin remapping page.
-
-### Revamped web config
-Currently, you're able to configure just about anything via the web config. This is nice for making custom boards with a pi pico, but much less so if not actively harmful for a pre-made board. There are a few settings that can break the firmware and require a flash nuke to reset the configuration, and I don't want these settings to be present in the web config at all.
-
-I'd also like to not have to point to any documentation for configuration. It should be simple enough or include any necessary info directly in the web config.
+#### Revamped Web Config
+The new config is designed for easy configuration of supported boards.
 
 ## Features
 
