@@ -33,9 +33,9 @@ Full documentation can be found at [https://gp2040-ce.info](https://gp2040-ce.in
 ## Fork
 This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes are for broader compatibility, so I wanted my own fork for changes that are more specific to my controllers.
 
-### Fork-specific features
-
 ![Web Config Screenshot](assets/web-config.png)
+
+### Fork-specific features
 
 #### Button remapping with SVGs
 Instead of using pin remapping, a board SVG can be used to define pins for their positions on the board and that will be displayed on the pin remapping page of the web config instead of the list of pins. This is a lot more intuitive for remapping.
