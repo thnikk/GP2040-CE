@@ -316,6 +316,17 @@ const INPUT_MODES_BINDS = [
 	{ value: 'R2' },
 ];
 
+const LABEL_TO_ACTION = {
+	Up: 1, Down: 2, Left: 3, Right: 4,
+	B1: 5, B2: 6, B3: 7, B4: 8,
+	L1: 9, R1: 10, L2: 11, R2: 12,
+	S1: 13, S2: 14, L3: 17, R3: 18,
+	A1: 15, A2: 16, A3: 41, A4: 42,
+	E1: 43, E2: 44, E3: 45, E4: 46,
+	E5: 47, E6: 48, E7: 49, E8: 50,
+	E9: 51, E10: 52, E11: 53, E12: 54,
+};
+
 const hotkeySchema = {
 	action: yup
 		.number()
@@ -536,6 +547,32 @@ export default function SettingsPage() {
 	const svgPinSet = useMemo(
 		() => new Set(pinElements.map((p) => p.pinNumber)),
 		[pinElements],
+	);
+
+	const mappedButtonLabels = useMemo(() => {
+		if (!profiles.length) return null;
+		const baseProfile = profiles[0];
+		if (!baseProfile) return null;
+		const mapped = new Set();
+		for (const pinKey of Object.keys(baseProfile)) {
+			if (!pinKey.startsWith('pin')) continue;
+			const action = baseProfile[pinKey].action;
+			const label = Object.keys(LABEL_TO_ACTION).find(
+				(k) => LABEL_TO_ACTION[k] === action,
+			);
+			if (label) mapped.add(label);
+		}
+		return mapped;
+	}, [profiles]);
+
+	const filteredButtonOptions = useMemo(
+		() =>
+			!mappedButtonLabels
+				? BUTTON_MASKS_OPTIONS
+				: BUTTON_MASKS_OPTIONS.filter(
+						(opt) => opt.value === 0 || mappedButtonLabels.has(opt.label),
+					),
+		[mappedButtonLabels],
 	);
 
 	const [saveMessage, setSaveMessage] = useState('');
@@ -1784,16 +1821,16 @@ export default function SettingsPage() {
 																						);
 																					}}
 																				>
-																					{BUTTON_MASKS_OPTIONS.map((o, i2) => (
-																						<option
-																							key={`hotkey-${i}-button${i2}`}
-																							value={o.value}
-																						>
-																							{o.label in currentButtonLabels
-																								? currentButtonLabels[o.label]
-																								: o.label}
-																						</option>
-																					))}
+																				{filteredButtonOptions.map((o, i2) => (
+																					<option
+																						key={`hotkey-${i}-button${i2}`}
+																						value={o.value}
+																					>
+																						{o.label in currentButtonLabels
+																							? currentButtonLabels[o.label]
+																							: o.label}
+																					</option>
+																				))}
 																				</Form.Select>
 																			</Col>
 																			<Col sm="auto">+</Col>
@@ -1818,7 +1855,7 @@ export default function SettingsPage() {
 																			);
 																		}}
 																	>
-																		{BUTTON_MASKS_OPTIONS.map((o, i2) => (
+																		{filteredButtonOptions.map((o, i2) => (
 																			<option
 																				key={`hotkey-${i}-buttonZero-${i2}`}
 																				value={o.value}
