@@ -149,6 +149,11 @@ const PinSection = memo(function PinSection({
 	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
 
 	const [saveMessage, setSaveMessage] = useState('');
+	useEffect(() => {
+		if (!saveMessage) return;
+		const t = setTimeout(() => setSaveMessage(''), 3000);
+		return () => clearTimeout(t);
+	}, [saveMessage, setSaveMessage]);
 
 	const handleSubmit = useCallback(async (e) => {
 		e.preventDefault();
@@ -348,6 +353,11 @@ export default function PinMapping() {
 	const [staticColorPickerTarget, setStaticColorPickerTarget] = useState<HTMLElement | null>(null);
 	const [staticColorPickerType, setStaticColorPickerType] = useState<'normal' | 'pressed'>('normal');
 	const [themeSaveMessage, setThemeSaveMessage] = useState('');
+	useEffect(() => {
+		if (!themeSaveMessage) return;
+		const t = setTimeout(() => setThemeSaveMessage(''), 3000);
+		return () => clearTimeout(t);
+	}, [themeSaveMessage, setThemeSaveMessage]);
 	const [ledsEnabled, setLedsEnabled] = useState(false);
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
 

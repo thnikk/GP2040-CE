@@ -576,7 +576,18 @@ export default function SettingsPage() {
 	);
 
 	const [saveMessage, setSaveMessage] = useState('');
+	useEffect(() => {
+		if (!saveMessage) return;
+		const t = setTimeout(() => setSaveMessage(''), 3000);
+		return () => clearTimeout(t);
+	}, [saveMessage, setSaveMessage]);
+
 	const [extraPinsSaveMessage, setExtraPinsSaveMessage] = useState('');
+	useEffect(() => {
+		if (!extraPinsSaveMessage) return;
+		const t = setTimeout(() => setExtraPinsSaveMessage(''), 3000);
+		return () => clearTimeout(t);
+	}, [extraPinsSaveMessage, setExtraPinsSaveMessage]);
 	const [warning, setWarning] = useState({ show: false, acceptText: '' });
 	const [validated, setValidated] = useState(false);
 	const [keyMappings, setKeyMappings] = useState(baseButtonMappings);
