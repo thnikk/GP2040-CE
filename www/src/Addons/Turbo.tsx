@@ -149,12 +149,12 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 	return (
 		<Section title={t('AddonsConfig:turbo-header-text')}>
 			<div id="TurboInputOptions" hidden={!values.TurboInputEnabled}>
-				<Row className="mb-3">
+				<Row>
                     <FormSelect
                         label={t('AddonsConfig:turbo-led-type-label')}
                         name="turboLedType"
                         className="form-select-sm"
-                        groupClassName="col-sm-2 mb-3"
+                        groupClassName="col-sm-2"
                         value={values.turboLedType}
                         error={errors.turboLedType}
                         isInvalid={errors.turboLedType}
@@ -178,7 +178,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 						name="turboPinLED"
                         hidden={parseInt(values.turboLedType) !== 0}
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.turboPinLED}
 						error={errors.turboPinLED}
 						isInvalid={errors.turboPinLED}
@@ -192,7 +192,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
                         hidden={parseInt(values.turboLedType) !== 1}
                         label={t('AddonsConfig:turbo-led-index-label')}
                         className="form-control-sm"
-                        groupClassName="col-sm-2 mb-3"
+                        groupClassName="col-sm-2"
                         value={values.turboLedIndex}
                         error={errors.turboLedIndex}
                         isInvalid={errors.turboLedIndex}
@@ -206,7 +206,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
                         hidden={parseInt(values.turboLedType) !== 1}
                         name="turboLedColor"
                         className="form-control-sm"
-                        groupClassName="col-sm-2 mb-3"
+                        groupClassName="col-sm-2"
                         value={values.turboLedColor}
                         error={errors.turboLedColor}
                         isInvalid={errors.turboLedColor}
@@ -231,13 +231,13 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
                         target={colorPickerTarget}
                     ></ColorPicker>
                 </Row>
-                <Row className="mb-3">
+                <Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:turbo-shot-count-label')}
 						name="turboShotCount"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.turboShotCount}
 						error={errors.turboShotCount}
 						isInvalid={Boolean(errors.turboShotCount)}
@@ -249,7 +249,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 						label={t('AddonsConfig:turbo-shmup-dial-pin-label')}
 						name="pinShmupDial"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.pinShmupDial}
 						error={errors.pinShmupDial}
 						isInvalid={errors.pinShmupDial}
@@ -258,7 +258,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 						<AnalogPinOptions />
 					</FormSelect>
                 </Row>
-                <Row className="mb-3">
+                <Row>
 					<FormCheck
 						label={t('AddonsConfig:turbo-shmup-mode-label')}
 						type="switch"
@@ -272,12 +272,12 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 						}}
 					/>
 					<div id="ShmupOptions" hidden={!values.shmupMode}>
-						<Row className="mb-3">
+						<Row>
 							<FormSelect
 								label={t('AddonsConfig:turbo-shmup-always-on-1-label')}
 								name="shmupAlwaysOn1"
 								className="form-select-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.shmupAlwaysOn1}
 								error={errors.shmupAlwaysOn1}
 								isInvalid={errors.shmupAlwaysOn1}
@@ -293,7 +293,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-always-on-2-label')}
 								name="shmupAlwaysOn2"
 								className="form-select-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.shmupAlwaysOn2}
 								error={errors.shmupAlwaysOn2}
 								isInvalid={errors.shmupAlwaysOn2}
@@ -309,7 +309,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-always-on-3-label')}
 								name="shmupAlwaysOn3"
 								className="form-select-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.shmupAlwaysOn3}
 								error={errors.shmupAlwaysOn3}
 								isInvalid={errors.shmupAlwaysOn3}
@@ -325,7 +325,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-always-on-4-label')}
 								name="shmupAlwaysOn4"
 								className="form-select-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.shmupAlwaysOn4}
 								error={errors.shmupAlwaysOn4}
 								isInvalid={errors.shmupAlwaysOn4}
@@ -338,13 +338,13 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								))}
 							</FormSelect>
 						</Row>
-						<Row className="mb-3">
+						<Row>
 							<FormControl
 								type="number"
 								label={t('AddonsConfig:turbo-shmup-button-1-label')}
 								name="pinShmupBtn1"
 								className="form-control-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.pinShmupBtn1}
 								error={errors.pinShmupBtn1}
 								isInvalid={errors.pinShmupBtn1}
@@ -357,7 +357,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-button-2-label')}
 								name="pinShmupBtn2"
 								className="form-control-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.pinShmupBtn2}
 								error={errors.pinShmupBtn2}
 								isInvalid={errors.pinShmupBtn2}
@@ -370,7 +370,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-button-3-label')}
 								name="pinShmupBtn3"
 								className="form-control-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.pinShmupBtn3}
 								error={errors.pinShmupBtn3}
 								isInvalid={errors.pinShmupBtn3}
@@ -383,7 +383,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-button-4-label')}
 								name="pinShmupBtn4"
 								className="form-control-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.pinShmupBtn4}
 								error={errors.pinShmupBtn4}
 								isInvalid={errors.pinShmupBtn4}
@@ -392,12 +392,12 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								max={29}
 							/>
 						</Row>
-						<Row className="mb-3">
+						<Row>
 							<FormSelect
 								label={t('AddonsConfig:turbo-shmup-button-mask-1-label')}
 								name="shmupBtnMask1"
 								className="form-select-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.shmupBtnMask1}
 								error={errors.shmupBtnMask1}
 								isInvalid={errors.shmupBtnMask1}
@@ -413,7 +413,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-button-mask-2-label')}
 								name="shmupBtnMask2"
 								className="form-select-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.shmupBtnMask2}
 								error={errors.shmupBtnMask2}
 								isInvalid={errors.shmupBtnMask2}
@@ -429,7 +429,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-button-mask-3-label')}
 								name="shmupBtnMask3"
 								className="form-select-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.shmupBtnMask3}
 								error={errors.shmupBtnMask3}
 								isInvalid={errors.shmupBtnMask3}
@@ -445,7 +445,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 								label={t('AddonsConfig:turbo-shmup-button-mask-4-label')}
 								name="shmupBtnMask4"
 								className="form-select-sm"
-								groupClassName="col-sm-3 mb-3"
+								groupClassName="col-sm-3"
 								value={values.shmupBtnMask4}
 								error={errors.shmupBtnMask4}
 								isInvalid={errors.shmupBtnMask4}
@@ -462,7 +462,7 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
 							label={t('AddonsConfig:turbo-shmup-mix-mode-label')}
 							name="shmupMixMode"
 							className="form-select-sm"
-							groupClassName="col-sm-3 mb-3"
+							groupClassName="col-sm-3"
 							value={values.shmupMixMode}
 							error={errors.shmupMixMode}
 							isInvalid={errors.shmupMixMode}

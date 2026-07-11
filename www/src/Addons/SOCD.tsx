@@ -31,7 +31,7 @@ const SOCD = ({ values, errors, handleChange, handleCheckbox }) => {
 			title={t('AddonsConfig:socd-cleaning-mode-selection-slider-header-text')}
 		>
 			<div id="SliderSOCDInputOptions" hidden={!values.SliderSOCDInputEnabled}>
-				<Row className="mb-3">
+				<Row>
 					<p>
 						{t(
 							'AddonsConfig:socd-cleaning-mode-selection-slider-sub-header-text',
@@ -45,7 +45,7 @@ const SOCD = ({ values, errors, handleChange, handleCheckbox }) => {
 						)}
 						name="sliderSOCDModeDefault"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.sliderSOCDModeDefault}
 						error={errors.sliderSOCDModeDefault}
 						isInvalid={errors.sliderSOCDModeDefault}

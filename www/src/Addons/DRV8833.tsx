@@ -60,13 +60,13 @@ const DRV8833Rumble = ({ values, errors, handleChange, handleCheckbox }) => {
 				id="DRV8833RumbleAddonOptions"
 				hidden={!values.DRV8833RumbleAddonEnabled}
 			>
-				<Row className="mb-3">
+				<Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:drv8833-rumble-left-motor-pin-label')}
 						name="drv8833RumbleLeftMotorPin"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.drv8833RumbleLeftMotorPin}
 						error={errors.drv8833RumbleLeftMotorPin}
 						isInvalid={errors.drv8833RumbleLeftMotorPin}
@@ -79,7 +79,7 @@ const DRV8833Rumble = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:drv8833-rumble-right-motor-pin-label')}
 						name="drv8833RumbleRightMotorPin"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.drv8833RumbleRightMotorPin}
 						error={errors.drv8833RumbleRightMotorPin}
 						isInvalid={errors.drv8833RumbleRightMotorPin}
@@ -92,7 +92,7 @@ const DRV8833Rumble = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:drv8833-rumble-motor-sleep-pin-label')}
 						name="drv8833RumbleMotorSleepPin"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.drv8833RumbleMotorSleepPin}
 						error={errors.drv8833RumbleMotorSleepPin}
 						isInvalid={errors.drv8833RumbleMotorSleepPin}
@@ -105,7 +105,7 @@ const DRV8833Rumble = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:drv8833-rumble-pwm-frequency-label')}
 						name="drv8833RumblePWMFrequency"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.drv8833RumblePWMFrequency}
 						error={errors.drv8833RumblePWMFrequency}
 						isInvalid={errors.drv8833RumblePWMFrequency}
@@ -118,7 +118,7 @@ const DRV8833Rumble = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:drv8833-rumble-duty-min-label')}
 						name="drv8833RumbleDutyMin"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.drv8833RumbleDutyMin}
 						error={errors.drv8833RumbleDutyMin}
 						isInvalid={errors.drv8833RumbleDutyMin}
@@ -131,7 +131,7 @@ const DRV8833Rumble = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:drv8833-rumble-duty-max-label')}
 						name="drv8833RumbleDutyMax"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.drv8833RumbleDutyMax}
 						error={errors.drv8833RumbleDutyMax}
 						isInvalid={errors.drv8833RumbleDutyMax}

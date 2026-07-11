@@ -93,7 +93,7 @@ const Keyboard = ({
 					!(values.KeyboardHostAddonEnabled && getAvailablePeripherals('usb'))
 				}
 			>
-				<Row className="mb-3">
+				<Row>
 					<p>{t('AddonsConfig:keyboard-host-sub-header-text')}</p>
 					<div className="mb-2">
 						<KeyboardMapper
@@ -104,7 +104,7 @@ const Keyboard = ({
 						/>
 					</div>
 				</Row>
-				<Row className="mb-3">
+				<Row>
 					<p>{t('AddonsConfig:keyboard-host-mouse-header-text')}</p>
 					<div className="col-sm-12 col-md-6 col-lg-2 mb-2">
 						<FormSelect

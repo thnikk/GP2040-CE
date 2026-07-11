@@ -44,7 +44,7 @@ const FocusMode = ({
 	return (
 		<Section title={t('AddonsConfig:focus-mode-header-text')}>
 			<div id="FocusModeAddonOptions" hidden={!values.FocusModeAddonEnabled}>
-				<Row className="mb-3">
+				<Row>
 					<div className="col-sm-3">
 						<FormCheck
 							label={t('Common:lock-macro')}
@@ -83,7 +83,7 @@ const FocusMode = ({
 										key={`focusModeButtonLockMask-${mask.label}`}
 										name="focusModeButtonLockMask"
 										className="form-select-sm"
-										groupClassName="col-sm-3 mb-3"
+										groupClassName="col-sm-3"
 										value={values.focusModeButtonLockMask & mask.value}
 										error={errors.focusModeButtonLockMask}
 										isInvalid={errors.focusModeButtonLockMask}
@@ -109,7 +109,7 @@ const FocusMode = ({
 						<FormSelect
 							name="focusModeButtonLockMask"
 							className="form-select-sm"
-							groupClassName="col-sm-3 mb-3"
+							groupClassName="col-sm-3"
 							value={0}
 							error={errors.focusModeButtonLockMask}
 							isInvalid={errors.focusModeButtonLockMask}

@@ -39,7 +39,7 @@ const Bootsel = ({ values, errors, handleChange, handleCheckbox }) => {
 					label={t('AddonsConfig:bootsel-button-pin-label')}
 					name="bootselButtonMap"
 					className="form-select-sm"
-					groupClassName="col-sm-3 mb-3"
+					groupClassName="col-sm-3"
 					value={values.bootselButtonMap}
 					error={errors.bootselButtonMap}
 					isInvalid={errors.bootselButtonMap}

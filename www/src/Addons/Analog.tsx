@@ -141,12 +141,12 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						pins: availableAnalogPins.join(', '),
 					})}
 				</p>
-				<Row className="mb-3">
+				<Row>
 					<FormSelect
 						label={t('AddonsConfig:analog-adc-1-pin-x-label')}
 						name="analogAdc1PinX"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analogAdc1PinX}
 						error={errors.analogAdc1PinX}
 						isInvalid={errors.analogAdc1PinX}
@@ -158,7 +158,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog-adc-1-pin-y-label')}
 						name="analogAdc1PinY"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analogAdc1PinY}
 						error={errors.analogAdc1PinY}
 						isInvalid={errors.analogAdc1PinY}
@@ -170,7 +170,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog-adc-1-mode-label')}
 						name="analogAdc1Mode"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analogAdc1Mode}
 						error={errors.analogAdc1Mode}
 						isInvalid={errors.analogAdc1Mode}
@@ -186,7 +186,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog-adc-1-invert-label')}
 						name="analogAdc1Invert"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analogAdc1Invert}
 						error={errors.analogAdc1Invert}
 						isInvalid={errors.analogAdc1Invert}
@@ -202,12 +202,12 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						))}
 					</FormSelect>
 				</Row>
-				<Row className="mb-3">
+				<Row>
 					<FormSelect
 						label={t('AddonsConfig:analog-adc-2-pin-x-label')}
 						name="analogAdc2PinX"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analogAdc2PinX}
 						error={errors.analogAdc2PinX}
 						isInvalid={errors.analogAdc2PinX}
@@ -219,7 +219,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog-adc-2-pin-y-label')}
 						name="analogAdc2PinY"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analogAdc2PinY}
 						error={errors.analogAdc2PinY}
 						isInvalid={errors.analogAdc2PinY}
@@ -231,7 +231,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog-adc-2-mode-label')}
 						name="analogAdc2Mode"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analogAdc2Mode}
 						error={errors.analogAdc2Mode}
 						isInvalid={errors.analogAdc2Mode}
@@ -247,7 +247,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog-adc-2-invert-label')}
 						name="analogAdc2Invert"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analogAdc2Invert}
 						error={errors.analogAdc2Invert}
 						isInvalid={errors.analogAdc2Invert}
@@ -263,13 +263,13 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						))}
 					</FormSelect>
 				</Row>
-				<Row className="mb-3">
+				<Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:inner-deadzone-size')}
 						name="inner_deadzone"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.inner_deadzone}
 						error={errors.inner_deadzone}
 						isInvalid={errors.inner_deadzone}
@@ -282,7 +282,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:outer-deadzone-size')}
 						name="outer_deadzone"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.outer_deadzone}
 						error={errors.outer_deadzone}
 						isInvalid={errors.outer_deadzone}
@@ -296,7 +296,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog-error-label')}
 						name="analog_error"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analog_error}
 						onChange={handleChange}
 					>
@@ -312,7 +312,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:smoothing-factor')}
 						name="smoothing_factor"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.smoothing_factor}
 						error={errors.smoothing_factor}
 						isInvalid={errors.smoothing_factor}

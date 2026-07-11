@@ -318,7 +318,7 @@ export default function DisplayConfigPage() {
 										<Tabs
 											defaultActiveKey="defaultHardwareOptions"
 											id="displayConfigTabs"
-											className="mb-3 pb-0"
+											className="pb-0"
 											fill
 										>
 											<Tab
@@ -331,7 +331,7 @@ export default function DisplayConfigPage() {
 														label={t('Common:switch-enabled')}
 														name="enabled"
 														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.enabled}
 														error={errors.enabled}
 														isInvalid={errors.enabled}
@@ -355,7 +355,7 @@ export default function DisplayConfigPage() {
 														label={t('DisplayConfig:form.flip-display-label')}
 														name="flipDisplay"
 														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.flipDisplay}
 														error={errors.flipDisplay}
 														isInvalid={errors.flipDisplay}
@@ -374,7 +374,7 @@ export default function DisplayConfigPage() {
 														label={t('DisplayConfig:form.invert-display-label')}
 														name="invertDisplay"
 														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.invertDisplay}
 														error={errors.invertDisplay}
 														isInvalid={errors.invertDisplay}
@@ -389,7 +389,7 @@ export default function DisplayConfigPage() {
 															</option>
 														))}
 													</FormSelect>
-													<div className="col-sm-3 mb-3">
+													<div className="col-sm-3">
 														<label className="form-label">
 															{t('DisplayConfig:form.power-management-header')}
 														</label>
@@ -423,7 +423,7 @@ export default function DisplayConfigPage() {
 														label={t('DisplayConfig:form.button-layout-orientation')}
 														name="buttonLayoutOrientation"
 														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.buttonLayoutOrientation}
 														error={errors.buttonLayoutOrientation}
 														isInvalid={errors.buttonLayoutOrientation}
@@ -440,7 +440,7 @@ export default function DisplayConfigPage() {
 													</FormSelect>
 												</Row>
 												{isButtonLayoutCustom(values) && (
-													<Row className="mb-3">
+													<Row>
 														<FormLabel>
 															{t('DisplayConfig:form.button-layout-custom-header')}
 														</FormLabel>
@@ -639,7 +639,7 @@ export default function DisplayConfigPage() {
 												)}
 												<h1>{t('DisplayConfig:section.status-layout-header')}</h1>
 												<Row className="mb-4">
-													<div className="col-sm-2 mb-3">
+													<div className="col-sm-2">
 														<Form.Check
 															label={t(
 																'DisplayConfig:form.status-header.input-mode',
@@ -657,7 +657,7 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2 mb-3">
+													<div className="col-sm-2">
 														<Form.Check
 															label={t(
 																'DisplayConfig:form.status-header.turbo-mode',
@@ -675,7 +675,7 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2 mb-3">
+													<div className="col-sm-2">
 														<Form.Check
 															label={t(
 																'DisplayConfig:form.status-header.dpad-mode',
@@ -693,7 +693,7 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2 mb-3">
+													<div className="col-sm-2">
 														<Form.Check
 															label={t(
 																'DisplayConfig:form.status-header.socd-mode',
@@ -711,7 +711,7 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2 mb-3">
+													<div className="col-sm-2">
 														<Form.Check
 															label={t(
 																'DisplayConfig:form.status-header.macro-mode',
@@ -729,7 +729,7 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2 mb-3">
+													<div className="col-sm-2">
 														<Form.Check
 															label={t(
 																'DisplayConfig:form.status-header.profile-mode',
@@ -750,7 +750,7 @@ export default function DisplayConfigPage() {
 												</Row>
 												<h1>{t('DisplayConfig:section.history-layout-header')}</h1>
 												<Row className="mb-4">
-													<div className="col-sm-2 mb-3">
+													<div className="col-sm-2">
 														<label></label>
 														<Form.Check
 															label={t(
@@ -774,7 +774,7 @@ export default function DisplayConfigPage() {
 														label={t('AddonsConfig:input-history-length-label')}
 														name="inputHistoryLength"
 														className="form-control-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.inputHistoryLength}
 														error={errors.inputHistoryLength}
 														isInvalid={errors.inputHistoryLength}
@@ -787,7 +787,7 @@ export default function DisplayConfigPage() {
 														label={t('AddonsConfig:input-history-col-label')}
 														name="inputHistoryCol"
 														className="form-control-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.inputHistoryCol}
 														error={errors.inputHistoryCol}
 														isInvalid={errors.inputHistoryCol}
@@ -800,7 +800,7 @@ export default function DisplayConfigPage() {
 														label={t('AddonsConfig:input-history-row-label')}
 														name="inputHistoryRow"
 														className="form-control-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.inputHistoryRow}
 														error={errors.inputHistoryRow}
 														isInvalid={errors.inputHistoryRow}
@@ -820,7 +820,7 @@ export default function DisplayConfigPage() {
 														label={t('DisplayConfig:form.splash-mode-label')}
 														name="splashMode"
 														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.splashMode}
 														error={errors.splashMode}
 														isInvalid={errors.splashMode}
@@ -840,7 +840,7 @@ export default function DisplayConfigPage() {
 														label={t('DisplayConfig:form.splash-duration-label')}
 														name="splashDuration"
 														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.splashDuration}
 														error={errors.splashDuration}
 														isInvalid={errors.splashDuration}
@@ -848,12 +848,12 @@ export default function DisplayConfigPage() {
 														min={0}
 													/>
 												</Row>
-												<Row className="mb-3">
+												<Row>
 													<FormSelect
 														label={t('DisplayConfig:form.screen-saver-mode-label')}
 														name="displaySaverMode"
 														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.displaySaverMode}
 														error={errors.displaySaverMode}
 														isInvalid={errors.displaySaverMode}
@@ -875,7 +875,7 @@ export default function DisplayConfigPage() {
 														)}
 														name="displaySaverTimeout"
 														className="form-select-sm"
-														groupClassName="col-sm-3 mb-3"
+														groupClassName="col-sm-3"
 														value={values.displaySaverTimeout}
 														error={errors.displaySaverTimeout}
 														isInvalid={errors.displaySaverTimeout}

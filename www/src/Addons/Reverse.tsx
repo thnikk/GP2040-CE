@@ -39,13 +39,13 @@ const Reverse = ({ values, errors, handleChange, handleCheckbox }) => {
 	return (
 		<Section title={t('AddonsConfig:input-reverse-header-text')}>
 			<div id="ReverseInputOptions" hidden={!values.ReverseInputEnabled}>
-				<Row className="mb-3">
+				<Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:input-reverse-led-pin-label')}
 						name="reversePinLED"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.reversePinLED}
 						error={errors.reversePinLED}
 						isInvalid={errors.reversePinLED}
@@ -54,12 +54,12 @@ const Reverse = ({ values, errors, handleChange, handleCheckbox }) => {
 						max={29}
 					/>
 				</Row>
-				<Row className="mb-3">
+				<Row>
 					<FormSelect
 						label={t('AddonsConfig:input-reverse-action-up-label')}
 						name="reverseActionUp"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.reverseActionUp}
 						error={errors.reverseActionUp}
 						isInvalid={errors.reverseActionUp}
@@ -75,7 +75,7 @@ const Reverse = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:input-reverse-action-down-label')}
 						name="reverseActionDown"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.reverseActionDown}
 						error={errors.reverseActionDown}
 						isInvalid={errors.reverseActionDown}
@@ -91,7 +91,7 @@ const Reverse = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:input-reverse-action-left-label')}
 						name="reverseActionLeft"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.reverseActionLeft}
 						error={errors.reverseActionLeft}
 						isInvalid={errors.reverseActionLeft}
@@ -107,7 +107,7 @@ const Reverse = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:input-reverse-action-right-label')}
 						name="reverseActionRight"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.reverseActionRight}
 						error={errors.reverseActionRight}
 						isInvalid={errors.reverseActionRight}

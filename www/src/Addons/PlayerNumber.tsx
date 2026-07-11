@@ -35,13 +35,13 @@ const PlayerNumber = ({ values, errors, handleChange, handleCheckbox }) => {
 					<p>{t('AddonsConfig:player-number-sub-header-text')}</p>
 				</Alert>
 
-				<Row className="mb-3">
+				<Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:player-number-label')}
 						name="playerNumber"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.playerNumber}
 						error={errors.playerNumber}
 						isInvalid={errors.playerNumber}

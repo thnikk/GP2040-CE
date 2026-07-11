@@ -242,7 +242,7 @@ export default function BackupPage() {
 		<>
 			<Section title={t('BackupPage:save-header-text')}>
 				<Col>
-					<Form.Group className={'row mb-3'}>
+					<Form.Group className="row">
 						<div className={'col-sm-4'}>
 							{Object.entries(API_BINDING).map((api) => (
 								<Form.Check
@@ -286,7 +286,7 @@ export default function BackupPage() {
 					{t(`BackupPage:pin-version-warning-text`)}
 				</div>
 				<Col>
-					<Form.Group className={'row mb-3'}>
+					<Form.Group className="row">
 						<div className={'col-sm-4'}>
 							{Object.entries(API_BINDING).map((api) => (
 								<Form.Check

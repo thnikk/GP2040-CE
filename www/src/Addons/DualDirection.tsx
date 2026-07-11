@@ -49,13 +49,13 @@ const DualDirection = ({ values, errors, handleChange, handleCheckbox }) => {
 				id="DualDirectionalInputOptions"
 				hidden={!values.DualDirectionalInputEnabled}
 			>
-				<Row className="mb-3">
+				<Row>
 					<p>{t('AddonsConfig:pin-config-moved-to-core-text')}</p>
 					<FormSelect
 						label={t('AddonsConfig:dual-directional-input-dpad-mode-label')}
 						name="dualDirDpadMode"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.dualDirDpadMode}
 						error={errors.dualDirDpadMode}
 						isInvalid={errors.dualDirDpadMode}
@@ -75,7 +75,7 @@ const DualDirection = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:dual-directional-input-combine-mode-label')}
 						name="dualDirCombineMode"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.dualDirCombineMode}
 						error={errors.dualDirCombineMode}
 						isInvalid={errors.dualDirCombineMode}

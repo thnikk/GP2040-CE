@@ -103,7 +103,7 @@ export default function ButtonLayoutConfigPage() {
 								label={t('DisplayConfig:form.button-layout-label')}
 								name="buttonLayout"
 								className="form-select-sm"
-								groupClassName="col-sm-4 mb-3"
+								groupClassName="col-sm-4"
 								value={values.buttonLayout}
 								error={errors.buttonLayout}
 								isInvalid={errors.buttonLayout}
@@ -124,7 +124,7 @@ export default function ButtonLayoutConfigPage() {
 								label={t('DisplayConfig:form.button-layout-right-label')}
 								name="buttonLayoutRight"
 								className="form-select-sm"
-								groupClassName="col-sm-4 mb-3"
+								groupClassName="col-sm-4"
 								value={values.buttonLayoutRight}
 								error={errors.buttonLayoutRight}
 								isInvalid={errors.buttonLayoutRight}
@@ -148,7 +148,7 @@ export default function ButtonLayoutConfigPage() {
 								label={t('DisplayConfig:form.button-layout-orientation')}
 								name="buttonLayoutOrientation"
 								className="form-select-sm"
-								groupClassName="col-sm-4 mb-3"
+								groupClassName="col-sm-4"
 								value={values.buttonLayoutOrientation}
 								error={errors.buttonLayoutOrientation}
 								isInvalid={errors.buttonLayoutOrientation}

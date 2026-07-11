@@ -358,11 +358,11 @@ const Wii = ({
 						</p>
 					</Trans>
 				</Row>
-				<Row className="mb-3">
+				<Row>
 					<Tabs
 						defaultActiveKey={`wii${WII_EXTENSION_CONTROLS[0].id}Config`}
 						id="wiiControllerConfig"
-						className="mb-3"
+						
 						fill
 					>
 						{WII_EXTENSION_CONTROLS.map((controlObj, controlID) => (
@@ -371,7 +371,7 @@ const Wii = ({
 								eventKey={`wii${controlObj.id}Config`}
 								title={t(`WiiAddon:controller-${controlObj.id.toLowerCase()}`)}
 							>
-								<Row className="mb-3">
+								<Row>
 									{controlObj.inputs.digital?.length > 0 ? (
 										<h1>{t('WiiAddon:section-digital')}</h1>
 									) : (
@@ -522,8 +522,8 @@ const Wii = ({
 						))}
 					</Tabs>
 				</Row>
-				<Row className="mb-3">
-					<div className="col-sm-3 mb-3">
+				<Row>
+					<div className="col-sm-3">
 						<Button type="button" onClick={saveWiiOptions}>
 							{t('WiiAddon:button-save')}
 						</Button>

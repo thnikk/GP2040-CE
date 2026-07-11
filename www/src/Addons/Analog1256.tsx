@@ -88,13 +88,13 @@ const Analog1256 = ({ values, errors, handleChange, handleCheckbox }) => {
 				id="Analog1256InputOptions"
 				hidden={!(values.Analog1256Enabled && getAvailablePeripherals('spi'))}
 			>
-				<Row className="mb-3">
+				<Row>
 					{getAvailablePeripherals('spi') ? (
 						<FormSelect
 							label={t('AddonsConfig:analog1256-block-label')}
 							name="analog1256Block"
 							className="form-select-sm"
-							groupClassName="col-sm-3 mb-3"
+							groupClassName="col-sm-3"
 							value={values.analog1256Block}
 							error={errors.analog1256Block}
 							isInvalid={errors.analog1256Block}
@@ -113,7 +113,7 @@ const Analog1256 = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog1256-cs-pin')}
 						name="analog1256CsPin"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analog1256CsPin}
 						error={errors.analog1256CsPin}
 						isInvalid={errors.analog1256CsPin}
@@ -130,7 +130,7 @@ const Analog1256 = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog1256-drdy-pin')}
 						name="analog1256DrdyPin"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analog1256DrdyPin}
 						error={errors.analog1256DrdyPin}
 						isInvalid={errors.analog1256DrdyPin}
@@ -141,7 +141,7 @@ const Analog1256 = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:analog1256-analog-max')}
 						name="analog1256AnalogMax"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.analog1256AnalogMax}
 						error={errors.analog1256AnalogMax}
 						isInvalid={errors.analog1256AnalogMax}

@@ -35,13 +35,13 @@ const SNES = ({ values, errors, handleChange, handleCheckbox }) => {
 						<p>NES: D-Pad Supported. B = B1, A = B2, Select = S1, Start = S2</p>
 					</Trans>
 				</Row>
-				<Row className="mb-3">
+				<Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:snes-extension-clock-pin-label')}
 						name="snesPadClockPin"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.snesPadClockPin}
 						error={errors.snesPadClockPin}
 						isInvalid={errors.snesPadClockPin}
@@ -54,7 +54,7 @@ const SNES = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:snes-extension-latch-pin-label')}
 						name="snesPadLatchPin"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.snesPadLatchPin}
 						error={errors.snesPadLatchPin}
 						isInvalid={errors.snesPadLatchPin}
@@ -67,7 +67,7 @@ const SNES = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:snes-extension-data-pin-label')}
 						name="snesPadDataPin"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.snesPadDataPin}
 						error={errors.snesPadDataPin}
 						isInvalid={errors.snesPadDataPin}

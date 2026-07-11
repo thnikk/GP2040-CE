@@ -66,13 +66,13 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 	return (
 		<Section title={t('AddonsConfig:tilt-header-text')}>
 			<div id="TiltOptions" hidden={!values.TiltInputEnabled}>
-				<Row className="mb-3">
+				<Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:tilt-1-factor-left-x-label')}
 						name="factorTilt1LeftX"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.factorTilt1LeftX}
 						error={errors.factorTilt1LeftX}
 						isInvalid={errors.factorTilt1LeftX}
@@ -85,7 +85,7 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:tilt-1-factor-left-y-label')}
 						name="factorTilt1LeftY"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.factorTilt1LeftY}
 						error={errors.factorTilt1LeftY}
 						isInvalid={errors.factorTilt1LeftY}
@@ -98,7 +98,7 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:tilt-1-factor-right-x-label')}
 						name="factorTilt1RightX"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.factorTilt1RightX}
 						error={errors.factorTilt1RightX}
 						isInvalid={errors.factorTilt1RightX}
@@ -111,7 +111,7 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:tilt-1-factor-right-y-label')}
 						name="factorTilt1RightY"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.factorTilt1RightY}
 						error={errors.factorTilt1RightY}
 						isInvalid={errors.factorTilt1RightY}
@@ -120,13 +120,13 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 						max={200}
 					/>
 				</Row>
-				<Row className="mb-3">
+				<Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:tilt-2-factor-left-x-label')}
 						name="factorTilt2LeftX"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.factorTilt2LeftX}
 						error={errors.factorTilt2LeftX}
 						isInvalid={errors.factorTilt2LeftX}
@@ -139,7 +139,7 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:tilt-2-factor-left-y-label')}
 						name="factorTilt2LeftY"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.factorTilt2LeftY}
 						error={errors.factorTilt2LeftY}
 						isInvalid={errors.factorTilt2LeftY}
@@ -152,7 +152,7 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:tilt-2-factor-right-x-label')}
 						name="factorTilt2RightX"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.factorTilt2RightX}
 						error={errors.factorTilt2RightX}
 						isInvalid={errors.factorTilt2RightX}
@@ -165,7 +165,7 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:tilt-2-factor-right-y-label')}
 						name="factorTilt2RightY"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.factorTilt2RightY}
 						error={errors.factorTilt2RightY}
 						isInvalid={errors.factorTilt2RightY}
@@ -174,12 +174,12 @@ const Tilt = ({ values, errors, handleChange, handleCheckbox }) => {
 						max={200}
 					/>
 				</Row>
-				<Row className="mb-3">
+				<Row>
 					<FormSelect
 						label={t('AddonsConfig:tilt-socd-mode-label')}
 						name="tiltSOCDMode"
 						className="form-select-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.tiltSOCDMode}
 						error={errors.tiltSOCDMode}
 						isInvalid={errors.tiltSOCDMode}

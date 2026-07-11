@@ -156,7 +156,7 @@ export default function PeripheralMappingPage() {
 								{PERIPHERAL_DEVICES.map((peripheral, i) => (
 									<Form.Group
 										key={`peripheral-${peripheral.value}`}
-										className="row mb-3"
+										className="row"
 									>
 										<Form.Label>
 											{t(`PeripheralMapping:${peripheral.label}-label`)}
@@ -175,7 +175,7 @@ export default function PeripheralMappingPage() {
 										{peripheral.blocks.map((block, i) => (
 											<div
 												key={`peripheral${peripheral.value}block${block.value}`}
-												className="row mb-3"
+												className="row"
 											>
 												<div className="col-sm-auto">
 													<FormCheck

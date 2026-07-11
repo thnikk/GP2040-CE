@@ -90,7 +90,7 @@ const ReactiveLED = ({ values, errors, handleChange, handleCheckbox }) => {
 				id="ReactiveLEDEnabledOptions"
 				hidden={!values.ReactiveLEDAddonEnabled}
 			>
-				<Row className="mb-3">
+				<Row>
 					{reactiveLEDs?.length > 0
 						? reactiveLEDs.map((o, i) => (
 								<div className="col card mb-1 me-1" key={`reactiveLED${i}`}>
@@ -102,7 +102,7 @@ const ReactiveLED = ({ values, errors, handleChange, handleCheckbox }) => {
 										label={t('ReactiveLED:led-pin-label')}
 										name={`led${i}Pin`}
 										className="form-control-sm"
-										groupClassName="mb-3"
+										
 										value={reactiveLEDs[i].pin}
 										onChange={(e) =>
 											setSelectedLEDs((c) =>
@@ -116,7 +116,7 @@ const ReactiveLED = ({ values, errors, handleChange, handleCheckbox }) => {
 										label={t('ReactiveLED:led-action-label')}
 										name={`led${i}Action`}
 										className="form-select-sm"
-										groupClassName="mb-3"
+										
 										value={reactiveLEDs[i].action}
 										onChange={(e) =>
 											setSelectedLEDs((c) =>
@@ -141,7 +141,7 @@ const ReactiveLED = ({ values, errors, handleChange, handleCheckbox }) => {
 										label={t('ReactiveLED:led-mode-up-label')}
 										name={`led${i}ModeUp`}
 										className="form-select-sm"
-										groupClassName="mb-3"
+										
 										value={reactiveLEDs[i].modeUp}
 										onChange={(e) =>
 											setSelectedLEDs((c) =>
@@ -162,7 +162,7 @@ const ReactiveLED = ({ values, errors, handleChange, handleCheckbox }) => {
 										label={t('ReactiveLED:led-mode-down-label')}
 										name={`led${i}ModeDown`}
 										className="form-select-sm"
-										groupClassName="mb-3"
+										
 										value={reactiveLEDs[i].modeDown}
 										onChange={(e) =>
 											setSelectedLEDs((c) =>
@@ -188,8 +188,8 @@ const ReactiveLED = ({ values, errors, handleChange, handleCheckbox }) => {
 							))
 						: ''}
 				</Row>
-				<Row className="mb-3">
-					<div className="col-sm-3 mb-3">
+				<Row>
+					<div className="col-sm-3">
 						<Button type="button" onClick={saveLEDSettings}>
 							{t('ReactiveLED:button-save')}
 						</Button>

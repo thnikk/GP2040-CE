@@ -115,7 +115,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 	return (
 		<Section title={t('Rotary:header-text')}>
 			<div id="RotaryAddonEnabledOptions" hidden={!values.RotaryAddonEnabled}>
-				<Row className="mb-3">
+				<Row>
 					<div className="col-3">
 						<label>{t('Rotary:encoder-one-label')}</label>
 						<FormCheck
@@ -136,7 +136,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-pin-a-label')}
 								name="encoderOnePinA"
 								className="form-control-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderOnePinA}
 								error={errors.encoderOnePinA}
 								isInvalid={errors.encoderOnePinA}
@@ -149,7 +149,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-pin-b-label')}
 								name="encoderOnePinB"
 								className="form-control-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderOnePinB}
 								error={errors.encoderOnePinB}
 								isInvalid={errors.encoderOnePinB}
@@ -162,7 +162,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-ppr-label')}
 								name="encoderOnePPR"
 								className="form-control-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderOnePPR}
 								error={errors.encoderOnePPR}
 								isInvalid={errors.encoderOnePPR}
@@ -175,7 +175,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-multiplier-label')}
 								name="encoderOneMultiplier"
 								className="form-select-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderOneMultiplier}
 								error={errors.encoderOneMultiplier}
 								isInvalid={errors.encoderOneMultiplier}
@@ -188,7 +188,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-reset-after-label')}
 								name="encoderOneResetAfter"
 								className="form-control-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderOneResetAfter}
 								error={errors.encoderOneResetAfter}
 								isInvalid={errors.encoderOneResetAfter}
@@ -200,7 +200,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-mode-label')}
 								name="encoderOneMode"
 								className="form-select-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderOneMode}
 								error={errors.encoderOneMode}
 								isInvalid={errors.encoderOneMode}
@@ -246,7 +246,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-pin-a-label')}
 								name="encoderTwoPinA"
 								className="form-control-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderTwoPinA}
 								error={errors.encoderTwoPinA}
 								isInvalid={errors.encoderTwoPinA}
@@ -259,7 +259,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-pin-b-label')}
 								name="encoderTwoPinB"
 								className="form-control-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderTwoPinB}
 								error={errors.encoderTwoPinB}
 								isInvalid={errors.encoderTwoPinB}
@@ -272,7 +272,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-ppr-label')}
 								name="encoderTwoPPR"
 								className="form-control-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderTwoPPR}
 								error={errors.encoderTwoPPR}
 								isInvalid={errors.encoderTwoPPR}
@@ -285,7 +285,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-multiplier-label')}
 								name="encoderTwoMultiplier"
 								className="form-select-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderTwoMultiplier}
 								error={errors.encoderTwoMultiplier}
 								isInvalid={errors.encoderTwoMultiplier}
@@ -298,7 +298,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-reset-after-label')}
 								name="encoderTwoResetAfter"
 								className="form-control-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderTwoResetAfter}
 								error={errors.encoderTwoResetAfter}
 								isInvalid={errors.encoderTwoResetAfter}
@@ -310,7 +310,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								label={t('Rotary:encoder-mode-label')}
 								name="encoderTwoMode"
 								className="form-select-sm"
-								groupClassName="mb-3"
+								
 								value={values.encoderTwoMode}
 								error={errors.encoderTwoMode}
 								isInvalid={errors.encoderTwoMode}

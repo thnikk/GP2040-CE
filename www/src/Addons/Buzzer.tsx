@@ -41,13 +41,13 @@ const Buzzer = ({ values, errors, handleChange, handleCheckbox }) => {
 				id="BuzzerSpeakerAddonOptions"
 				hidden={!values.BuzzerSpeakerAddonEnabled}
 			>
-				<Row className="mb-3">
+				<Row>
 					<FormControl
 						type="number"
 						label={t('AddonsConfig:buzzer-speaker-pin-label')}
 						name="buzzerPin"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.buzzerPin}
 						error={errors.buzzerPin}
 						isInvalid={errors.buzzerPin}
@@ -60,7 +60,7 @@ const Buzzer = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:buzzer-speaker-enable-pin-label')}
 						name="buzzerEnablePin"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.buzzerEnablePin}
 						error={errors.buzzerEnablePin}
 						isInvalid={errors.buzzerEnablePin}
@@ -73,7 +73,7 @@ const Buzzer = ({ values, errors, handleChange, handleCheckbox }) => {
 						label={t('AddonsConfig:buzzer-speaker-volume-label')}
 						name="buzzerVolume"
 						className="form-control-sm"
-						groupClassName="col-sm-3 mb-3"
+						groupClassName="col-sm-3"
 						value={values.buzzerVolume}
 						error={errors.buzzerVolume}
 						isInvalid={errors.buzzerVolume}

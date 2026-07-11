@@ -333,7 +333,7 @@ export default function LEDConfigPage() {
 								label={t('LedConfig:rgb.data-pin-label')}
 								name="dataPin"
 								className="form-control-sm"
-								groupClassName="col-sm-4 mb-3"
+								groupClassName="col-sm-4"
 								value={values.dataPin}
 								error={errors.dataPin}
 								isInvalid={errors.dataPin}
@@ -345,7 +345,7 @@ export default function LEDConfigPage() {
 								label={t('LedConfig:rgb.led-format-label')}
 								name="ledFormat"
 								className="form-select-sm"
-								groupClassName="col-sm-4 mb-3"
+								groupClassName="col-sm-4"
 								value={values.ledFormat}
 								error={errors.ledFormat}
 								isInvalid={errors.ledFormat}
@@ -371,7 +371,7 @@ export default function LEDConfigPage() {
 								label={t('LedConfig:rgb.leds-per-button-label')}
 								name="ledsPerButton"
 								className="form-control-sm"
-								groupClassName="col-sm-4 mb-3"
+								groupClassName="col-sm-4"
 								value={values.ledsPerButton}
 								error={errors.ledsPerButton}
 								isInvalid={errors.ledsPerButton}
@@ -383,7 +383,7 @@ export default function LEDConfigPage() {
 								label={t('LedConfig:rgb.led-brightness-maximum-label')}
 								name="brightnessMaximum"
 								className="form-control-sm"
-								groupClassName="col-sm-4 mb-3"
+								groupClassName="col-sm-4"
 								value={values.brightnessMaximum}
 								error={errors.brightnessMaximum}
 								isInvalid={errors.brightnessMaximum}
@@ -396,7 +396,7 @@ export default function LEDConfigPage() {
 								label={t('LedConfig:rgb.led-brightness-steps-label')}
 								name="brightnessSteps"
 								className="form-control-sm"
-								groupClassName="col-sm-4 mb-3"
+								groupClassName="col-sm-4"
 								value={values.brightnessSteps}
 								error={errors.brightnessSteps}
 								isInvalid={errors.brightnessSteps}
@@ -447,7 +447,7 @@ export default function LEDConfigPage() {
 									label={t('LedConfig:player.pled-type-label')}
 									name="pledType"
 									className="form-select-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledType}
 									error={errors.pledType}
 									isInvalid={errors.pledType}
@@ -471,7 +471,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 0}
 									label={PLED_LABELS[0][values.pledType]}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledPin1}
 									error={errors.pledPin1}
 									isInvalid={errors.pledPin1}
@@ -486,7 +486,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 0}
 									label={PLED_LABELS[1][values.pledType]}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledPin2}
 									error={errors.pledPin2}
 									isInvalid={errors.pledPin2}
@@ -501,7 +501,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 0}
 									label={PLED_LABELS[2][values.pledType]}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledPin3}
 									error={errors.pledPin3}
 									isInvalid={errors.pledPin3}
@@ -516,7 +516,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 0}
 									label={PLED_LABELS[3][values.pledType]}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledPin4}
 									error={errors.pledPin4}
 									isInvalid={errors.pledPin4}
@@ -531,7 +531,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 1}
 									label={PLED_LABELS[0][values.pledType]}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledIndex1}
 									error={errors.pledIndex1}
 									isInvalid={errors.pledIndex1}
@@ -546,7 +546,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 1}
 									label={PLED_LABELS[1][values.pledType]}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledIndex2}
 									error={errors.pledIndex2}
 									isInvalid={errors.pledIndex2}
@@ -561,7 +561,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 1}
 									label={PLED_LABELS[2][values.pledType]}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledIndex3}
 									error={errors.pledIndex3}
 									isInvalid={errors.pledIndex3}
@@ -576,7 +576,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 1}
 									label={PLED_LABELS[3][values.pledType]}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledIndex4}
 									error={errors.pledIndex4}
 									isInvalid={errors.pledIndex4}
@@ -590,7 +590,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.pledType) !== 1}
 									name="pledColor"
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.pledColor}
 									error={errors.pledColor}
 									isInvalid={errors.pledColor}
@@ -614,7 +614,7 @@ export default function LEDConfigPage() {
 									show={showPicker}
 									target={colorPickerTarget}
 								></ColorPicker>
-								<div className="col-sm-3 mb-3">
+								<div className="col-sm-3">
 									<Form.Check
 										label={t('LedConfig:turn-off-when-suspended')}
 										type="switch"
@@ -653,7 +653,7 @@ export default function LEDConfigPage() {
 									label={t('LedConfig:case.case-type-label')}
 									name="caseRGBType"
 									className="form-select-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.caseRGBType}
 									error={errors.caseRGBType}
 									isInvalid={errors.caseRGBType}
@@ -674,7 +674,7 @@ export default function LEDConfigPage() {
                                     hidden={parseInt(values.caseRGBType) === -1}
 									label={t('LedConfig:case.case-index-label')}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.caseRGBIndex}
 									error={errors.caseRGBIndex}
 									isInvalid={errors.caseRGBIndex}
@@ -689,7 +689,7 @@ export default function LEDConfigPage() {
                                     hidden={parseInt(values.caseRGBType) === -1}
 									label={t('LedConfig:case.case-count-label')}
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.caseRGBCount}
 									error={errors.caseRGBCount}
 									isInvalid={errors.caseRGBCount}
@@ -703,7 +703,7 @@ export default function LEDConfigPage() {
 									hidden={parseInt(values.caseRGBType) !== 0}
 									name="caseRGBColor"
 									className="form-control-sm"
-									groupClassName="col-sm-2 mb-3"
+									groupClassName="col-sm-2"
 									value={values.caseRGBColor}
 									error={errors.caseRGBColor}
 									isInvalid={errors.caseRGBColor}

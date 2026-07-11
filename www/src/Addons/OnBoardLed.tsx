@@ -42,7 +42,7 @@ const OnBoardLed = ({ values, errors, handleChange, handleCheckbox }) => {
 					label={t('AddonsConfig:on-board-led-mode-label')}
 					name="onBoardLedMode"
 					className="form-select-sm"
-					groupClassName="col-sm-4 mb-3"
+					groupClassName="col-sm-4"
 					value={values.onBoardLedMode}
 					error={errors.onBoardLedMode}
 					isInvalid={errors.onBoardLedMode}
