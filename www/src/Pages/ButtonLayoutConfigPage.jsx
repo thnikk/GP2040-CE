@@ -167,8 +167,10 @@ export default function ButtonLayoutConfigPage() {
 							</FormSelect>
 						</Row>
 					</Section>
-					<Button type="submit">{t('Common:button-save-label')}</Button>
-					{saveMessage ? <span className="alert">{saveMessage}</span> : null}
+					<div className="d-flex align-items-center gap-2">
+						{saveMessage ? <span className="alert alert-success mb-0 py-1">{saveMessage}</span> : null}
+						<Button type="submit">{t('Common:button-save-label')}</Button>
+					</div>
 					<FormContext setButtonLayoutDefs={setButtonLayoutDefs} />
 				</Form>
 			)}
