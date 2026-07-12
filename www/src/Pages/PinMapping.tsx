@@ -116,7 +116,6 @@ const PinSection = memo(function PinSection({
 	staticColorNormal,
 	inputMode,
 	ledButtonMap,
-	splashImage,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
@@ -129,7 +128,6 @@ const PinSection = memo(function PinSection({
 	staticColorNormal?: string;
 	inputMode?: number;
 	ledButtonMap?: Record<string, number | null>;
-	splashImage?: number[];
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -278,7 +276,6 @@ const PinSection = memo(function PinSection({
 								staticColorNormal={staticColorNormal}
 								inputMode={inputMode}
 								ledButtonMap={ledButtonMap}
-								splashImage={splashImage}
 							/>
 							) : (
 								<div className="alert alert-info">
@@ -367,7 +364,6 @@ export default function PinMapping() {
 	const [ledsEnabled, setLedsEnabled] = useState(false);
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
 	const [ledButtonMap, setLedButtonMap] = useState<Record<string, number | null> | undefined>(undefined);
-	const [splashImage, setSplashImage] = useState<number[] | undefined>(undefined);
 
 	const { setLoading } = useContext(AppContext);
 
@@ -404,11 +400,6 @@ export default function PinMapping() {
 			setInputMode(gamepadOptions?.inputMode);
 		}
 		fetchLedOptions();
-		async function fetchSplashImage() {
-			const data = await WebApi.getSplashImage();
-			if (data?.splashImage) setSplashImage(data.splashImage);
-		}
-		fetchSplashImage();
 	}, []);
 
 	const handleLedColorChange = useCallback(
@@ -633,7 +624,6 @@ export default function PinMapping() {
 								staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
 								inputMode={inputMode}
 								ledButtonMap={ledButtonMap}
-								splashImage={splashImage}
 							/>
 								</Tab.Pane>
 							))}
