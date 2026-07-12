@@ -202,9 +202,9 @@ const PinSection = memo(function PinSection({
 	}, []);
 
 	const handlePinAssign = useCallback(
-		(pinNumber: number, action: PinActionValues, customButtonMask: number, customDpadMask: number) => {
+		(pinNumber: number, action: PinActionValues, customButtonMask: number, customDpadMask: number, keyboardKeycode: number) => {
 			const pinKey = pinNumber < 10 ? `pin0${pinNumber}` : `pin${pinNumber}`;
-			setProfilePin(profileIndex, pinKey, { action, customButtonMask, customDpadMask });
+			setProfilePin(profileIndex, pinKey, { action, customButtonMask, customDpadMask, keyboardKeycode });
 		},
 		[profileIndex],
 	);
@@ -279,6 +279,7 @@ const PinSection = memo(function PinSection({
 						currentAction={currentPinData?.action ?? BUTTON_ACTIONS.NONE}
 						currentCustomButtonMask={currentPinData?.customButtonMask ?? 0}
 						currentCustomDpadMask={currentPinData?.customDpadMask ?? 0}
+						currentKeyboardKeycode={currentPinData?.keyboardKeycode ?? 0}
 						onClose={handleModalClose}
 						onAssign={handlePinAssign}
 						customTheme={customTheme}
@@ -286,6 +287,7 @@ const PinSection = memo(function PinSection({
 						onLedColorChange={onLedColorChange}
 						onSaveColor={onSavePinColors}
 						ledButtonMap={ledButtonMap}
+						inputMode={inputMode}
 					/>
 
 				</div>

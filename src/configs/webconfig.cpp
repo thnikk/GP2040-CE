@@ -609,6 +609,7 @@ std::string setProfileOptions()
                 profileOptions.gpioMappingsSets[altsIndex].pins[pin].action = (GpioAction)alt[pinName]["action"];
                 profileOptions.gpioMappingsSets[altsIndex].pins[pin].customButtonMask = (uint32_t)alt[pinName]["customButtonMask"];
                 profileOptions.gpioMappingsSets[altsIndex].pins[pin].customDpadMask = (uint32_t)alt[pinName]["customDpadMask"];
+                profileOptions.gpioMappingsSets[altsIndex].pins[pin].keyboardKeycode = (uint32_t)alt[pinName]["keyboardKeycode"];
             } else if ((coreMappings.pins[pin].action == GpioAction::RESERVED &&
                         (GpioAction)alt[pinName]["action"] == GpioAction::RESERVED) ||
                     (coreMappings.pins[pin].action == GpioAction::ASSIGNED_TO_ADDON &&
@@ -640,6 +641,7 @@ std::string getProfileOptions()
         writeDoc(doc, "alternativePinMappings", item, key, "action", value.action);
         writeDoc(doc, "alternativePinMappings", item, key, "customButtonMask", value.customButtonMask);
         writeDoc(doc, "alternativePinMappings", item, key, "customDpadMask", value.customDpadMask);
+        writeDoc(doc, "alternativePinMappings", item, key, "keyboardKeycode", value.keyboardKeycode);
     };
 
     ProfileOptions& profileOptions = Storage::getInstance().getProfileOptions();
@@ -1242,6 +1244,7 @@ std::string setPinMappings()
             gpioMappings.pins[pin].action = (GpioAction)doc[pinName]["action"];
             gpioMappings.pins[pin].customButtonMask = (uint32_t)doc[pinName]["customButtonMask"];
             gpioMappings.pins[pin].customDpadMask = (uint32_t)doc[pinName]["customDpadMask"];
+            gpioMappings.pins[pin].keyboardKeycode = (uint32_t)doc[pinName]["keyboardKeycode"];
         }
     }
     size_t profileLabelSize = sizeof(gpioMappings.profileLabel);
@@ -1265,6 +1268,7 @@ std::string getPinMappings()
         writeDoc(doc, key, "action", value.action);
         writeDoc(doc, key, "customButtonMask", value.customButtonMask);
         writeDoc(doc, key, "customDpadMask", value.customDpadMask);
+        writeDoc(doc, key, "keyboardKeycode", value.keyboardKeycode);
     };
 
     writePinDoc("pin00", gpioMappings.pins[0]);

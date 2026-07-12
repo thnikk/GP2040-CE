@@ -2,6 +2,7 @@
 #include "storagemanager.h"
 #include "drivers/shared/driverhelper.h"
 #include "drivers/hid/HIDDescriptors.h"
+#include "types.h"
 
 #include "eventmanager.h"
 
@@ -59,39 +60,85 @@ uint8_t KeyboardDriver::getMultimedia(uint8_t code) {
 
 void KeyboardDriver::process(Gamepad * gamepad) {
 	const KeyboardMapping& keyboardMapping = Storage::getInstance().getKeyboardMapping();
+	GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
 	releaseAllKeys();
-	if(gamepad->pressedUp())     { pressKey(keyboardMapping.keyDpadUp); }
-	if(gamepad->pressedDown())   { pressKey(keyboardMapping.keyDpadDown); }
-	if(gamepad->pressedLeft())	{ pressKey(keyboardMapping.keyDpadLeft); }
-	if(gamepad->pressedRight()) 	{ pressKey(keyboardMapping.keyDpadRight); }
-	if(gamepad->pressedB1()) 	{ pressKey(keyboardMapping.keyButtonB1); }
-	if(gamepad->pressedB2()) 	{ pressKey(keyboardMapping.keyButtonB2); }
-	if(gamepad->pressedB3()) 	{ pressKey(keyboardMapping.keyButtonB3); }
-	if(gamepad->pressedB4()) 	{ pressKey(keyboardMapping.keyButtonB4); }
-	if(gamepad->pressedL1()) 	{ pressKey(keyboardMapping.keyButtonL1); }
-	if(gamepad->pressedR1()) 	{ pressKey(keyboardMapping.keyButtonR1); }
-	if(gamepad->pressedL2()) 	{ pressKey(keyboardMapping.keyButtonL2); }
-	if(gamepad->pressedR2()) 	{ pressKey(keyboardMapping.keyButtonR2); }
-	if(gamepad->pressedS1()) 	{ pressKey(keyboardMapping.keyButtonS1); }
-	if(gamepad->pressedS2()) 	{ pressKey(keyboardMapping.keyButtonS2); }
-	if(gamepad->pressedL3()) 	{ pressKey(keyboardMapping.keyButtonL3); }
-	if(gamepad->pressedR3()) 	{ pressKey(keyboardMapping.keyButtonR3); }
-	if(gamepad->pressedA1()) 	{ pressKey(keyboardMapping.keyButtonA1); }
-	if(gamepad->pressedA2()) 	{ pressKey(keyboardMapping.keyButtonA2); }
-	if(gamepad->pressedA3()) 	{ pressKey(keyboardMapping.keyButtonA3); }
-	if(gamepad->pressedA4()) 	{ pressKey(keyboardMapping.keyButtonA4); }
-	if(gamepad->pressedE1()) 	{ pressKey(keyboardMapping.keyButtonE1); }
-	if(gamepad->pressedE2()) 	{ pressKey(keyboardMapping.keyButtonE2); }
-	if(gamepad->pressedE3()) 	{ pressKey(keyboardMapping.keyButtonE3); }
-	if(gamepad->pressedE4()) 	{ pressKey(keyboardMapping.keyButtonE4); }
-	if(gamepad->pressedE5()) 	{ pressKey(keyboardMapping.keyButtonE5); }
-	if(gamepad->pressedE6()) 	{ pressKey(keyboardMapping.keyButtonE6); }
-	if(gamepad->pressedE7()) 	{ pressKey(keyboardMapping.keyButtonE7); }
-	if(gamepad->pressedE8()) 	{ pressKey(keyboardMapping.keyButtonE8); }
-	if(gamepad->pressedE9()) 	{ pressKey(keyboardMapping.keyButtonE9); }
-	if(gamepad->pressedE10()) 	{ pressKey(keyboardMapping.keyButtonE10); }
-	if(gamepad->pressedE11()) 	{ pressKey(keyboardMapping.keyButtonE11); }
-	if(gamepad->pressedE12()) 	{ pressKey(keyboardMapping.keyButtonE12); }
+
+	uint32_t perPinButtonMask = 0;
+	uint8_t perPinDpadMask = 0;
+
+	for (Pin_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
+		uint8_t keycode = pinMappings[pin].keyboardKeycode;
+		if (keycode == 0) continue;
+
+		switch (pinMappings[pin].action) {
+			case BUTTON_PRESS_UP:    if (gamepad->pressedUp())    { pressKey(keycode); perPinDpadMask |= GAMEPAD_MASK_UP; } break;
+			case BUTTON_PRESS_DOWN:  if (gamepad->pressedDown())  { pressKey(keycode); perPinDpadMask |= GAMEPAD_MASK_DOWN; } break;
+			case BUTTON_PRESS_LEFT:  if (gamepad->pressedLeft())  { pressKey(keycode); perPinDpadMask |= GAMEPAD_MASK_LEFT; } break;
+			case BUTTON_PRESS_RIGHT: if (gamepad->pressedRight()) { pressKey(keycode); perPinDpadMask |= GAMEPAD_MASK_RIGHT; } break;
+			case BUTTON_PRESS_B1:    if (gamepad->pressedB1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_B1; } break;
+			case BUTTON_PRESS_B2:    if (gamepad->pressedB2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_B2; } break;
+			case BUTTON_PRESS_B3:    if (gamepad->pressedB3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_B3; } break;
+			case BUTTON_PRESS_B4:    if (gamepad->pressedB4())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_B4; } break;
+			case BUTTON_PRESS_L1:    if (gamepad->pressedL1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_L1; } break;
+			case BUTTON_PRESS_R1:    if (gamepad->pressedR1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_R1; } break;
+			case BUTTON_PRESS_L2:    if (gamepad->pressedL2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_L2; } break;
+			case BUTTON_PRESS_R2:    if (gamepad->pressedR2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_R2; } break;
+			case BUTTON_PRESS_S1:    if (gamepad->pressedS1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_S1; } break;
+			case BUTTON_PRESS_S2:    if (gamepad->pressedS2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_S2; } break;
+			case BUTTON_PRESS_L3:    if (gamepad->pressedL3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_L3; } break;
+			case BUTTON_PRESS_R3:    if (gamepad->pressedR3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_R3; } break;
+			case BUTTON_PRESS_A1:    if (gamepad->pressedA1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_A1; } break;
+			case BUTTON_PRESS_A2:    if (gamepad->pressedA2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_A2; } break;
+			case BUTTON_PRESS_A3:    if (gamepad->pressedA3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_A3; } break;
+			case BUTTON_PRESS_A4:    if (gamepad->pressedA4())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_A4; } break;
+			case BUTTON_PRESS_E1:    if (gamepad->pressedE1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E1; } break;
+			case BUTTON_PRESS_E2:    if (gamepad->pressedE2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E2; } break;
+			case BUTTON_PRESS_E3:    if (gamepad->pressedE3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E3; } break;
+			case BUTTON_PRESS_E4:    if (gamepad->pressedE4())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E4; } break;
+			case BUTTON_PRESS_E5:    if (gamepad->pressedE5())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E5; } break;
+			case BUTTON_PRESS_E6:    if (gamepad->pressedE6())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E6; } break;
+			case BUTTON_PRESS_E7:    if (gamepad->pressedE7())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E7; } break;
+			case BUTTON_PRESS_E8:    if (gamepad->pressedE8())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E8; } break;
+			case BUTTON_PRESS_E9:    if (gamepad->pressedE9())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E9; } break;
+			case BUTTON_PRESS_E10:   if (gamepad->pressedE10())   { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E10; } break;
+			case BUTTON_PRESS_E11:   if (gamepad->pressedE11())   { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E11; } break;
+			case BUTTON_PRESS_E12:   if (gamepad->pressedE12())   { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E12; } break;
+			default: break;
+		}
+	}
+
+	if (!(perPinDpadMask & GAMEPAD_MASK_UP) && gamepad->pressedUp())     { pressKey(keyboardMapping.keyDpadUp); }
+	if (!(perPinDpadMask & GAMEPAD_MASK_DOWN) && gamepad->pressedDown())   { pressKey(keyboardMapping.keyDpadDown); }
+	if (!(perPinDpadMask & GAMEPAD_MASK_LEFT) && gamepad->pressedLeft())	{ pressKey(keyboardMapping.keyDpadLeft); }
+	if (!(perPinDpadMask & GAMEPAD_MASK_RIGHT) && gamepad->pressedRight()) 	{ pressKey(keyboardMapping.keyDpadRight); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_B1) && gamepad->pressedB1()) 	{ pressKey(keyboardMapping.keyButtonB1); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_B2) && gamepad->pressedB2()) 	{ pressKey(keyboardMapping.keyButtonB2); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_B3) && gamepad->pressedB3()) 	{ pressKey(keyboardMapping.keyButtonB3); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_B4) && gamepad->pressedB4()) 	{ pressKey(keyboardMapping.keyButtonB4); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_L1) && gamepad->pressedL1()) 	{ pressKey(keyboardMapping.keyButtonL1); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_R1) && gamepad->pressedR1()) 	{ pressKey(keyboardMapping.keyButtonR1); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_L2) && gamepad->pressedL2()) 	{ pressKey(keyboardMapping.keyButtonL2); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_R2) && gamepad->pressedR2()) 	{ pressKey(keyboardMapping.keyButtonR2); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_S1) && gamepad->pressedS1()) 	{ pressKey(keyboardMapping.keyButtonS1); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_S2) && gamepad->pressedS2()) 	{ pressKey(keyboardMapping.keyButtonS2); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_L3) && gamepad->pressedL3()) 	{ pressKey(keyboardMapping.keyButtonL3); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_R3) && gamepad->pressedR3()) 	{ pressKey(keyboardMapping.keyButtonR3); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_A1) && gamepad->pressedA1()) 	{ pressKey(keyboardMapping.keyButtonA1); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_A2) && gamepad->pressedA2()) 	{ pressKey(keyboardMapping.keyButtonA2); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_A3) && gamepad->pressedA3()) 	{ pressKey(keyboardMapping.keyButtonA3); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_A4) && gamepad->pressedA4()) 	{ pressKey(keyboardMapping.keyButtonA4); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E1) && gamepad->pressedE1()) 	{ pressKey(keyboardMapping.keyButtonE1); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E2) && gamepad->pressedE2()) 	{ pressKey(keyboardMapping.keyButtonE2); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E3) && gamepad->pressedE3()) 	{ pressKey(keyboardMapping.keyButtonE3); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E4) && gamepad->pressedE4()) 	{ pressKey(keyboardMapping.keyButtonE4); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E5) && gamepad->pressedE5()) 	{ pressKey(keyboardMapping.keyButtonE5); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E6) && gamepad->pressedE6()) 	{ pressKey(keyboardMapping.keyButtonE6); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E7) && gamepad->pressedE7()) 	{ pressKey(keyboardMapping.keyButtonE7); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E8) && gamepad->pressedE8()) 	{ pressKey(keyboardMapping.keyButtonE8); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E9) && gamepad->pressedE9()) 	{ pressKey(keyboardMapping.keyButtonE9); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E10) && gamepad->pressedE10()) 	{ pressKey(keyboardMapping.keyButtonE10); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E11) && gamepad->pressedE11()) 	{ pressKey(keyboardMapping.keyButtonE11); }
+	if (!(perPinButtonMask & GAMEPAD_MASK_E12) && gamepad->pressedE12()) 	{ pressKey(keyboardMapping.keyButtonE12); }
 
     if( volumeChange > 0 ) {
         pressKey(KEYBOARD_MULTIMEDIA_VOLUME_UP);

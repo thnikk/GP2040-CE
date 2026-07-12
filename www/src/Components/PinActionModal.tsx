@@ -9,6 +9,7 @@ import CustomSelect from './CustomSelect';
 import { AppContext } from '../Contexts/AppContext';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../Data/Buttons';
+import { KEY_CODES } from '../Data/Keyboard';
 import LEDColors from '../Data/LEDColors';
 import { MultiValue, SingleValue } from 'react-select';
 
@@ -26,18 +27,21 @@ type PinActionModalProps = {
 	currentAction: PinActionValues;
 	currentCustomButtonMask: number;
 	currentCustomDpadMask: number;
+	currentKeyboardKeycode: number;
 	onClose: () => void;
 	onAssign: (
 		pinNumber: number,
 		action: PinActionValues,
 		customButtonMask: number,
 		customDpadMask: number,
+		keyboardKeycode: number,
 	) => void;
 	customTheme?: Record<string, { normal: string; pressed: string }>;
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSaveColor?: () => void;
 	ledButtonMap?: Record<string, number | null>;
+	inputMode?: number;
 };
 
 const disabledOptions = [
@@ -84,6 +88,7 @@ export default function PinActionModal({
 	currentAction,
 	currentCustomButtonMask,
 	currentCustomDpadMask,
+	currentKeyboardKeycode,
 	onClose,
 	onAssign,
 	customTheme,
@@ -91,12 +96,14 @@ export default function PinActionModal({
 	onLedColorChange,
 	onSaveColor,
 	ledButtonMap,
+	inputMode,
 }: PinActionModalProps) {
 	const { t } = useTranslation('');
 	const { buttonLabels, savedColors, setSavedColors } = useContext(AppContext);
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
 	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
+	const isKeyboardMode = inputMode === 3;
 
 	const options = useMemo(buildOptions, []);
 	const groupedOptions = useMemo(
@@ -116,6 +123,7 @@ export default function PinActionModal({
 	const [pendingAction, setPendingAction] = useState<PinActionValues>(currentAction);
 	const [pendingCustomButtonMask, setPendingCustomButtonMask] = useState(currentCustomButtonMask);
 	const [pendingCustomDpadMask, setPendingCustomDpadMask] = useState(currentCustomDpadMask);
+	const [pendingKeyboardKeycode, setPendingKeyboardKeycode] = useState(currentKeyboardKeycode);
 	const [pickerVisible, setPickerVisible] = useState(false);
 	const [pickerColorType, setPickerColorType] = useState<'normal' | 'pressed'>('normal');
 	const [ledOverlayTarget, setLedOverlayTarget] = useState<HTMLElement | null>(null);
@@ -125,9 +133,10 @@ export default function PinActionModal({
 			setPendingAction(currentAction);
 			setPendingCustomButtonMask(currentCustomButtonMask);
 			setPendingCustomDpadMask(currentCustomDpadMask);
+			setPendingKeyboardKeycode(currentKeyboardKeycode);
 			setPickerVisible(false);
 		}
-	}, [show, currentAction, currentCustomButtonMask, currentCustomDpadMask]);
+	}, [show, currentAction, currentCustomButtonMask, currentCustomDpadMask, currentKeyboardKeycode]);
 
 	const disabled = disabledOptions.includes(pendingAction);
 
@@ -217,11 +226,15 @@ export default function PinActionModal({
 		[],
 	);
 
+	const handleKeyChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+		setPendingKeyboardKeycode(Number(e.target.value));
+	}, []);
+
 	const handleSave = useCallback(() => {
-		onAssign(pinNumber!, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask);
+		onAssign(pinNumber!, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, pendingKeyboardKeycode);
 		onSaveColor?.();
 		onClose();
-	}, [pinNumber, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, onAssign, onSaveColor, onClose]);
+	}, [pinNumber, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, pendingKeyboardKeycode, onAssign, onSaveColor, onClose]);
 
 	const isAssignable = pendingAction !== BUTTON_ACTIONS.NONE || currentAction !== BUTTON_ACTIONS.NONE;
 
@@ -278,6 +291,23 @@ export default function PinActionModal({
 					value={getMultiValue()}
 					autoFocus
 				/>
+				<div className="mt-3">
+					<Form.Label className="fw-bold">
+						{t('PinMapping:keyboard-key-label')}
+						{!isKeyboardMode && (
+							<small className="text-muted ms-2">
+								({t('PinMapping:keyboard-mode-only')})
+							</small>
+						)}
+					</Form.Label>
+					<Form.Select value={pendingKeyboardKeycode} onChange={handleKeyChange}>
+						{KEY_CODES.map(({ label, value }) => (
+							<option key={value} value={value}>
+								{label}
+							</option>
+						))}
+					</Form.Select>
+				</div>
 				{showLedSection && (
 					<div className="mt-4 border-top pt-3">
 						<Form.Label className="fw-bold">

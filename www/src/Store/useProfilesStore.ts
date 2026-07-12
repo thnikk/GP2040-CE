@@ -12,6 +12,7 @@ type CustomMasks = {
 
 export type MaskPayload = {
 	action: PinActionValues;
+	keyboardKeycode: number;
 } & CustomMasks;
 
 export type PinsType = {
@@ -78,13 +79,25 @@ const INITIAL_STATE: State = {
 	loadingProfiles: false,
 };
 
+const normalizePinData = (profile: PinsType): PinsType => {
+	const normalized = { ...profile };
+	for (let i = 0; i < 30; i++) {
+		const key = `pin${i.toString().padStart(2, '0')}`;
+		const pin = (normalized as Record<string, unknown>)[key] as MaskPayload | undefined;
+		if (pin) {
+			(normalized as Record<string, unknown>)[key] = { ...pin, keyboardKeycode: pin.keyboardKeycode ?? 0 };
+		}
+	}
+	return normalized;
+};
+
 const useProfilesStore = create<State & Actions>()((set, get) => ({
 	...INITIAL_STATE,
 	fetchProfiles: async () => {
 		set({ loadingProfiles: true });
 
-		const baseProfile = await WebApi.getPinMappings();
-		const profiles = await WebApi.getProfileOptions();
+		const baseProfile = normalizePinData(await WebApi.getPinMappings());
+		const profiles = (await WebApi.getProfileOptions()).map(normalizePinData);
 		const allProfiles = [baseProfile, ...profiles];
 
 		while (allProfiles.length < MAX_PROFILES) {
@@ -118,7 +131,7 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 	setProfilePin: (
 		profileIndex,
 		pin,
-		{ action, customButtonMask = 0, customDpadMask = 0 },
+		{ action, customButtonMask = 0, customDpadMask = 0, keyboardKeycode = 0 },
 	) =>
 		set((state) => {
 			const profiles = [...state.profiles];
@@ -128,6 +141,7 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 					action,
 					customButtonMask,
 					customDpadMask,
+					keyboardKeycode,
 				},
 			};
 			return { profiles };
