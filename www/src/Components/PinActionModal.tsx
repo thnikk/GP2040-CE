@@ -389,14 +389,6 @@ export default function PinActionModal({
 				)}
 				{activeTab === 'keyboard' && (
 					<div className="pin-action-section">
-						<Form.Label className="fw-bold">
-							{t('PinMapping:keyboard-key-label')}
-							{!isKeyboardMode && (
-								<small className="text-muted ms-2">
-									({t('PinMapping:keyboard-mode-only')})
-								</small>
-							)}
-						</Form.Label>
 						<CustomSelect
 							isMulti
 							options={keyboardOptions}
