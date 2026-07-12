@@ -79,7 +79,8 @@ const buildOptions = () =>
 const getButtonNameFromAction = (action: PinActionValues): string | null => {
 	const actionKey = invert(BUTTON_ACTIONS)[action];
 	const btnKey = actionKey?.split('BUTTON_PRESS_')?.pop();
-	return btnKey || null;
+	if (!btnKey) return null;
+	return btnKey.charAt(0).toUpperCase() + btnKey.slice(1).toLowerCase();
 };
 
 export default function PinActionModal({
