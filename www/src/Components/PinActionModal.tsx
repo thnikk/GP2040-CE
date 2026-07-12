@@ -13,6 +13,11 @@ import { KEY_CODES } from '../Data/Keyboard';
 import LEDColors from '../Data/LEDColors';
 import { MultiValue, SingleValue } from 'react-select';
 
+const MODIFIER_MIN = 0xe0;
+const MODIFIER_MAX = 0xe7;
+
+const isModifierKey = (value: number) => value >= MODIFIER_MIN && value <= MODIFIER_MAX;
+
 type OptionType = {
 	label: string;
 	value: PinActionValues;
@@ -28,6 +33,7 @@ type PinActionModalProps = {
 	currentCustomButtonMask: number;
 	currentCustomDpadMask: number;
 	currentKeyboardKeycode: number;
+	currentKeyboardModifierMask: number;
 	onClose: () => void;
 	onAssign: (
 		pinNumber: number,
@@ -35,6 +41,7 @@ type PinActionModalProps = {
 		customButtonMask: number,
 		customDpadMask: number,
 		keyboardKeycode: number,
+		keyboardModifierMask: number,
 	) => void;
 	customTheme?: Record<string, { normal: string; pressed: string }>;
 	hasCustomTheme?: boolean;
@@ -90,6 +97,7 @@ export default function PinActionModal({
 	currentCustomButtonMask,
 	currentCustomDpadMask,
 	currentKeyboardKeycode,
+	currentKeyboardModifierMask,
 	onClose,
 	onAssign,
 	customTheme,
@@ -125,6 +133,7 @@ export default function PinActionModal({
 	const [pendingCustomButtonMask, setPendingCustomButtonMask] = useState(currentCustomButtonMask);
 	const [pendingCustomDpadMask, setPendingCustomDpadMask] = useState(currentCustomDpadMask);
 	const [pendingKeyboardKeycode, setPendingKeyboardKeycode] = useState(currentKeyboardKeycode);
+	const [pendingKeyboardModifierMask, setPendingKeyboardModifierMask] = useState(currentKeyboardModifierMask);
 	const [pickerVisible, setPickerVisible] = useState(false);
 	const [pickerColorType, setPickerColorType] = useState<'normal' | 'pressed'>('normal');
 	const [ledOverlayTarget, setLedOverlayTarget] = useState<HTMLElement | null>(null);
@@ -135,9 +144,10 @@ export default function PinActionModal({
 			setPendingCustomButtonMask(currentCustomButtonMask);
 			setPendingCustomDpadMask(currentCustomDpadMask);
 			setPendingKeyboardKeycode(currentKeyboardKeycode);
+			setPendingKeyboardModifierMask(currentKeyboardModifierMask);
 			setPickerVisible(false);
 		}
-	}, [show, currentAction, currentCustomButtonMask, currentCustomDpadMask, currentKeyboardKeycode]);
+	}, [show, currentAction, currentCustomButtonMask, currentCustomDpadMask, currentKeyboardKeycode, currentKeyboardModifierMask]);
 
 	const disabled = disabledOptions.includes(pendingAction);
 
@@ -227,15 +237,58 @@ export default function PinActionModal({
 		[],
 	);
 
-	const handleKeyChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-		setPendingKeyboardKeycode(Number(e.target.value));
-	}, []);
+	const keyboardOptions = useMemo(() => {
+		if (pendingKeyboardKeycode === 0 || isModifierKey(pendingKeyboardKeycode))
+			return KEY_CODES;
+		return KEY_CODES.filter(
+			(k) => k.value === pendingKeyboardKeycode || isModifierKey(k.value),
+		);
+	}, [pendingKeyboardKeycode]);
+
+	const keyboardValue = useMemo(() => {
+		const selected = [];
+		if (pendingKeyboardKeycode > 0)
+			selected.push({
+				label: KEY_CODES.find((k) => k.value === pendingKeyboardKeycode)?.label ?? 'None',
+				value: pendingKeyboardKeycode,
+			});
+		for (let i = 0; i < 8; i++) {
+			const modValue = MODIFIER_MIN + i;
+			if (pendingKeyboardModifierMask & (1 << i)) {
+				const mod = KEY_CODES.find((k) => k.value === modValue);
+				if (mod) selected.push({ label: mod.label, value: modValue });
+			}
+		}
+		return selected;
+	}, [pendingKeyboardKeycode, pendingKeyboardModifierMask]);
+
+	const handleKeyboardChange = useCallback(
+		(selected: MultiValue<{ label: string; value: number }> | SingleValue<{ label: string; value: number }>) => {
+			if (!selected || (Array.isArray(selected) && !selected.length)) {
+				setPendingKeyboardKeycode(0);
+				setPendingKeyboardModifierMask(0);
+				return;
+			}
+			const items = Array.isArray(selected) ? selected : [selected];
+			let keycode = 0;
+			let modMask = 0;
+			for (const item of items) {
+				if (isModifierKey(item.value))
+					modMask |= 1 << (item.value - MODIFIER_MIN);
+				else
+					keycode = item.value;
+			}
+			setPendingKeyboardKeycode(keycode);
+			setPendingKeyboardModifierMask(modMask);
+		},
+		[],
+	);
 
 	const handleSave = useCallback(() => {
-		onAssign(pinNumber!, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, pendingKeyboardKeycode);
+		onAssign(pinNumber!, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, pendingKeyboardKeycode, pendingKeyboardModifierMask);
 		onSaveColor?.();
 		onClose();
-	}, [pinNumber, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, pendingKeyboardKeycode, onAssign, onSaveColor, onClose]);
+	}, [pinNumber, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, pendingKeyboardKeycode, pendingKeyboardModifierMask, onAssign, onSaveColor, onClose]);
 
 	const isAssignable = pendingAction !== BUTTON_ACTIONS.NONE || currentAction !== BUTTON_ACTIONS.NONE;
 
@@ -301,13 +354,13 @@ export default function PinActionModal({
 							</small>
 						)}
 					</Form.Label>
-					<Form.Select value={pendingKeyboardKeycode} onChange={handleKeyChange}>
-						{KEY_CODES.map(({ label, value }) => (
-							<option key={value} value={value}>
-								{label}
-							</option>
-						))}
-					</Form.Select>
+					<CustomSelect
+						isMulti
+						options={keyboardOptions}
+						onChange={handleKeyboardChange}
+						value={keyboardValue}
+						getOptionLabel={(o: { label: string }) => o.label}
+					/>
 				</div>
 				{showLedSection && (
 					<div className="mt-4 border-top pt-3">

@@ -13,6 +13,7 @@ type CustomMasks = {
 export type MaskPayload = {
 	action: PinActionValues;
 	keyboardKeycode: number;
+	keyboardModifierMask: number;
 } & CustomMasks;
 
 export type PinsType = {
@@ -85,7 +86,7 @@ const normalizePinData = (profile: PinsType): PinsType => {
 		const key = `pin${i.toString().padStart(2, '0')}`;
 		const pin = (normalized as Record<string, unknown>)[key] as MaskPayload | undefined;
 		if (pin) {
-			(normalized as Record<string, unknown>)[key] = { ...pin, keyboardKeycode: pin.keyboardKeycode ?? 0 };
+			(normalized as Record<string, unknown>)[key] = { ...pin, keyboardKeycode: pin.keyboardKeycode ?? 0, keyboardModifierMask: pin.keyboardModifierMask ?? 0 };
 		}
 	}
 	return normalized;
@@ -131,7 +132,7 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 	setProfilePin: (
 		profileIndex,
 		pin,
-		{ action, customButtonMask = 0, customDpadMask = 0, keyboardKeycode = 0 },
+		{ action, customButtonMask = 0, customDpadMask = 0, keyboardKeycode = 0, keyboardModifierMask = 0 },
 	) =>
 		set((state) => {
 			const profiles = [...state.profiles];
@@ -142,6 +143,7 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 					customButtonMask,
 					customDpadMask,
 					keyboardKeycode,
+					keyboardModifierMask,
 				},
 			};
 			return { profiles };

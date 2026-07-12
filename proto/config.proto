@@ -195,6 +195,7 @@ message GpioMappingInfo
     optional uint32 customDpadMask = 3;
     optional uint32 customButtonMask = 4;
     optional uint32 keyboardKeycode = 5;
+    optional uint32 keyboardModifierMask = 6;
 }
 
 message GpioMappings

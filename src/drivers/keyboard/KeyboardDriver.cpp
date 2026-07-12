@@ -66,45 +66,63 @@ void KeyboardDriver::process(Gamepad * gamepad) {
 	uint32_t perPinButtonMask = 0;
 	uint8_t perPinDpadMask = 0;
 
+	const uint8_t modifierKeys[8] = {
+		HID_KEY_CONTROL_LEFT, HID_KEY_SHIFT_LEFT, HID_KEY_ALT_LEFT, HID_KEY_GUI_LEFT,
+		HID_KEY_CONTROL_RIGHT, HID_KEY_SHIFT_RIGHT, HID_KEY_ALT_RIGHT, HID_KEY_GUI_RIGHT,
+	};
+
 	for (Pin_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
 		uint8_t keycode = pinMappings[pin].keyboardKeycode;
 		if (keycode == 0) continue;
 
+		uint8_t modifierMask = pinMappings[pin].keyboardModifierMask;
+
+		auto applyModifiers = [&]() {
+			for (uint8_t i = 0; i < 8; i++) {
+				if (modifierMask & (1 << i))
+					pressKey(modifierKeys[i]);
+			}
+		};
+
+#define MOD_CASE(action, gamepad_call, mask_field, mask_value) \
+	case action: if (gamepad->gamepad_call) { pressKey(keycode); applyModifiers(); mask_field |= mask_value; } break
+
 		switch (pinMappings[pin].action) {
-			case BUTTON_PRESS_UP:    if (gamepad->pressedUp())    { pressKey(keycode); perPinDpadMask |= GAMEPAD_MASK_UP; } break;
-			case BUTTON_PRESS_DOWN:  if (gamepad->pressedDown())  { pressKey(keycode); perPinDpadMask |= GAMEPAD_MASK_DOWN; } break;
-			case BUTTON_PRESS_LEFT:  if (gamepad->pressedLeft())  { pressKey(keycode); perPinDpadMask |= GAMEPAD_MASK_LEFT; } break;
-			case BUTTON_PRESS_RIGHT: if (gamepad->pressedRight()) { pressKey(keycode); perPinDpadMask |= GAMEPAD_MASK_RIGHT; } break;
-			case BUTTON_PRESS_B1:    if (gamepad->pressedB1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_B1; } break;
-			case BUTTON_PRESS_B2:    if (gamepad->pressedB2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_B2; } break;
-			case BUTTON_PRESS_B3:    if (gamepad->pressedB3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_B3; } break;
-			case BUTTON_PRESS_B4:    if (gamepad->pressedB4())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_B4; } break;
-			case BUTTON_PRESS_L1:    if (gamepad->pressedL1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_L1; } break;
-			case BUTTON_PRESS_R1:    if (gamepad->pressedR1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_R1; } break;
-			case BUTTON_PRESS_L2:    if (gamepad->pressedL2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_L2; } break;
-			case BUTTON_PRESS_R2:    if (gamepad->pressedR2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_R2; } break;
-			case BUTTON_PRESS_S1:    if (gamepad->pressedS1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_S1; } break;
-			case BUTTON_PRESS_S2:    if (gamepad->pressedS2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_S2; } break;
-			case BUTTON_PRESS_L3:    if (gamepad->pressedL3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_L3; } break;
-			case BUTTON_PRESS_R3:    if (gamepad->pressedR3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_R3; } break;
-			case BUTTON_PRESS_A1:    if (gamepad->pressedA1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_A1; } break;
-			case BUTTON_PRESS_A2:    if (gamepad->pressedA2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_A2; } break;
-			case BUTTON_PRESS_A3:    if (gamepad->pressedA3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_A3; } break;
-			case BUTTON_PRESS_A4:    if (gamepad->pressedA4())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_A4; } break;
-			case BUTTON_PRESS_E1:    if (gamepad->pressedE1())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E1; } break;
-			case BUTTON_PRESS_E2:    if (gamepad->pressedE2())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E2; } break;
-			case BUTTON_PRESS_E3:    if (gamepad->pressedE3())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E3; } break;
-			case BUTTON_PRESS_E4:    if (gamepad->pressedE4())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E4; } break;
-			case BUTTON_PRESS_E5:    if (gamepad->pressedE5())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E5; } break;
-			case BUTTON_PRESS_E6:    if (gamepad->pressedE6())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E6; } break;
-			case BUTTON_PRESS_E7:    if (gamepad->pressedE7())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E7; } break;
-			case BUTTON_PRESS_E8:    if (gamepad->pressedE8())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E8; } break;
-			case BUTTON_PRESS_E9:    if (gamepad->pressedE9())    { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E9; } break;
-			case BUTTON_PRESS_E10:   if (gamepad->pressedE10())   { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E10; } break;
-			case BUTTON_PRESS_E11:   if (gamepad->pressedE11())   { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E11; } break;
-			case BUTTON_PRESS_E12:   if (gamepad->pressedE12())   { pressKey(keycode); perPinButtonMask |= GAMEPAD_MASK_E12; } break;
+			MOD_CASE(BUTTON_PRESS_UP,    pressedUp(),    perPinDpadMask, GAMEPAD_MASK_UP);
+			MOD_CASE(BUTTON_PRESS_DOWN,  pressedDown(),  perPinDpadMask, GAMEPAD_MASK_DOWN);
+			MOD_CASE(BUTTON_PRESS_LEFT,  pressedLeft(),  perPinDpadMask, GAMEPAD_MASK_LEFT);
+			MOD_CASE(BUTTON_PRESS_RIGHT, pressedRight(), perPinDpadMask, GAMEPAD_MASK_RIGHT);
+			MOD_CASE(BUTTON_PRESS_B1,    pressedB1(),    perPinButtonMask, GAMEPAD_MASK_B1);
+			MOD_CASE(BUTTON_PRESS_B2,    pressedB2(),    perPinButtonMask, GAMEPAD_MASK_B2);
+			MOD_CASE(BUTTON_PRESS_B3,    pressedB3(),    perPinButtonMask, GAMEPAD_MASK_B3);
+			MOD_CASE(BUTTON_PRESS_B4,    pressedB4(),    perPinButtonMask, GAMEPAD_MASK_B4);
+			MOD_CASE(BUTTON_PRESS_L1,    pressedL1(),    perPinButtonMask, GAMEPAD_MASK_L1);
+			MOD_CASE(BUTTON_PRESS_R1,    pressedR1(),    perPinButtonMask, GAMEPAD_MASK_R1);
+			MOD_CASE(BUTTON_PRESS_L2,    pressedL2(),    perPinButtonMask, GAMEPAD_MASK_L2);
+			MOD_CASE(BUTTON_PRESS_R2,    pressedR2(),    perPinButtonMask, GAMEPAD_MASK_R2);
+			MOD_CASE(BUTTON_PRESS_S1,    pressedS1(),    perPinButtonMask, GAMEPAD_MASK_S1);
+			MOD_CASE(BUTTON_PRESS_S2,    pressedS2(),    perPinButtonMask, GAMEPAD_MASK_S2);
+			MOD_CASE(BUTTON_PRESS_L3,    pressedL3(),    perPinButtonMask, GAMEPAD_MASK_L3);
+			MOD_CASE(BUTTON_PRESS_R3,    pressedR3(),    perPinButtonMask, GAMEPAD_MASK_R3);
+			MOD_CASE(BUTTON_PRESS_A1,    pressedA1(),    perPinButtonMask, GAMEPAD_MASK_A1);
+			MOD_CASE(BUTTON_PRESS_A2,    pressedA2(),    perPinButtonMask, GAMEPAD_MASK_A2);
+			MOD_CASE(BUTTON_PRESS_A3,    pressedA3(),    perPinButtonMask, GAMEPAD_MASK_A3);
+			MOD_CASE(BUTTON_PRESS_A4,    pressedA4(),    perPinButtonMask, GAMEPAD_MASK_A4);
+			MOD_CASE(BUTTON_PRESS_E1,    pressedE1(),    perPinButtonMask, GAMEPAD_MASK_E1);
+			MOD_CASE(BUTTON_PRESS_E2,    pressedE2(),    perPinButtonMask, GAMEPAD_MASK_E2);
+			MOD_CASE(BUTTON_PRESS_E3,    pressedE3(),    perPinButtonMask, GAMEPAD_MASK_E3);
+			MOD_CASE(BUTTON_PRESS_E4,    pressedE4(),    perPinButtonMask, GAMEPAD_MASK_E4);
+			MOD_CASE(BUTTON_PRESS_E5,    pressedE5(),    perPinButtonMask, GAMEPAD_MASK_E5);
+			MOD_CASE(BUTTON_PRESS_E6,    pressedE6(),    perPinButtonMask, GAMEPAD_MASK_E6);
+			MOD_CASE(BUTTON_PRESS_E7,    pressedE7(),    perPinButtonMask, GAMEPAD_MASK_E7);
+			MOD_CASE(BUTTON_PRESS_E8,    pressedE8(),    perPinButtonMask, GAMEPAD_MASK_E8);
+			MOD_CASE(BUTTON_PRESS_E9,    pressedE9(),    perPinButtonMask, GAMEPAD_MASK_E9);
+			MOD_CASE(BUTTON_PRESS_E10,   pressedE10(),   perPinButtonMask, GAMEPAD_MASK_E10);
+			MOD_CASE(BUTTON_PRESS_E11,   pressedE11(),   perPinButtonMask, GAMEPAD_MASK_E11);
+			MOD_CASE(BUTTON_PRESS_E12,   pressedE12(),   perPinButtonMask, GAMEPAD_MASK_E12);
 			default: break;
 		}
+#undef MOD_CASE
 	}
 
 	if (!(perPinDpadMask & GAMEPAD_MASK_UP) && gamepad->pressedUp())     { pressKey(keyboardMapping.keyDpadUp); }
