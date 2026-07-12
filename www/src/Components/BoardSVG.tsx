@@ -7,6 +7,7 @@ import { AppContext } from '../Contexts/AppContext';
 import useProfilesStore from '../Store/useProfilesStore';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { getButtonLabels } from '../Data/Buttons';
+import { KEY_CODES } from '../Data/Keyboard';
 
 const STATIC_THEME_COLORS: Record<string, string>[] = [
 	{}, // Static Rainbow — computed per-button
@@ -148,6 +149,16 @@ const ACTION_LABELS: Record<PinActionValues, string> = {
 const SHAPE_TAGS = new Set([
 	'path', 'rect', 'circle', 'ellipse', 'polygon', 'polyline', 'line',
 ]);
+
+const MODIFIER_MIN = 0xe0;
+
+const MODIFIER_SHORT: Record<number, string> = {
+	0xe0: 'Ctrl', 0xe1: 'Shift', 0xe2: 'Alt', 0xe3: 'Win',
+	0xe4: 'Ctrl', 0xe5: 'Shift', 0xe6: 'Alt', 0xe7: 'Win',
+};
+
+const keyCodeLabel = (code: number): string =>
+	KEY_CODES.find((k) => k.value === code)?.label || '';
 
 function prepareSvg(svg: string): string {
 	return svg.replace(
@@ -298,19 +309,36 @@ export default function BoardSVG({
 			const actionKey = invert(BUTTON_ACTIONS)[action];
 			const btnKey = ACTION_LABELS[action] || actionKey?.split('BUTTON_PRESS_')?.pop();
 
-			let displayLabel = '';
-			if (action === BUTTON_ACTIONS.NONE) {
-				displayLabel = '';
-			} else if (action === BUTTON_ACTIONS.RESERVED || action === BUTTON_ACTIONS.ASSIGNED_TO_ADDON) {
-				displayLabel = ACTION_LABELS[action] || '';
-			} else {
-				displayLabel = (btnKey && buttonNames[btnKey]) || ACTION_LABELS[action] || actionKey || '';
+			const isKeyboardMode = inputMode === 3;
+			const keyboardKeycode = pinData?.keyboardKeycode ?? 0;
+			const keyboardModifierMask = pinData?.keyboardModifierMask ?? 0;
+
+			let keyboardLines: string[] | null = null;
+			if (isKeyboardMode && keyboardKeycode > 0) {
+				keyboardLines = [];
+				for (let i = 0; i < 8; i++) {
+					if (keyboardModifierMask & (1 << i))
+						keyboardLines.push(MODIFIER_SHORT[MODIFIER_MIN + i] || '');
+				}
+				if (keyboardKeycode < MODIFIER_MIN)
+					keyboardLines.push(keyCodeLabel(keyboardKeycode));
 			}
-			labelEl.textContent = displayLabel;
+
+			if (!keyboardLines) {
+				let displayLabel = '';
+				if (action === BUTTON_ACTIONS.NONE) {
+					displayLabel = '';
+				} else if (action === BUTTON_ACTIONS.RESERVED || action === BUTTON_ACTIONS.ASSIGNED_TO_ADDON) {
+					displayLabel = ACTION_LABELS[action] || '';
+				} else {
+					displayLabel = (btnKey && buttonNames[btnKey]) || ACTION_LABELS[action] || actionKey || '';
+				}
+				labelEl.textContent = displayLabel;
+				labelEl.style.setProperty('font-size', '11px', 'important');
+			}
 
 			const buttonEl = isShape ? (el as Element) : shapes[0];
 			const buttonRect = (buttonEl as Element).getBoundingClientRect();
-			const labelRect = labelEl.getBoundingClientRect();
 			const svgRoot = el.ownerSVGElement as SVGSVGElement;
 			const screenCTM = svgRoot.getScreenCTM();
 
@@ -323,11 +351,36 @@ export default function BoardSVG({
 				cx = pt.x;
 				cy = pt.y;
 			}
-			labelEl.setAttribute('x', String(cx));
-			labelEl.setAttribute('y', String(cy));
 
-			if (labelRect.width > buttonRect.width * 0.85) {
-				labelEl.setAttribute('transform', `rotate(-25, ${cx}, ${cy})`);
+			if (keyboardLines) {
+				const svgNs = 'http://www.w3.org/2000/svg';
+				while (labelEl.firstChild) labelEl.removeChild(labelEl.firstChild);
+				labelEl.removeAttribute('x');
+				labelEl.removeAttribute('y');
+				const fontSize = 12;
+				const lineHeight = 16;
+				const totalLines = keyboardLines.length;
+				keyboardLines.forEach((line, idx) => {
+					const tspan = document.createElementNS(svgNs, 'tspan');
+					tspan.textContent = line;
+					tspan.setAttribute('x', String(cx));
+					tspan.setAttribute('y', String(cy + (idx - (totalLines - 1) / 2) * lineHeight));
+					tspan.setAttribute('text-anchor', 'middle');
+					tspan.style.setProperty('font-size', `${fontSize}px`, 'important');
+					labelEl.appendChild(tspan);
+				});
+			} else {
+				labelEl.setAttribute('x', String(cx));
+				labelEl.setAttribute('y', String(cy));
+			}
+
+			if (!keyboardLines) {
+				const labelRect = labelEl.getBoundingClientRect();
+				if (labelRect.width > buttonRect.width * 0.85) {
+					labelEl.setAttribute('transform', `rotate(-25, ${cx}, ${cy})`);
+				} else if (labelEl.hasAttribute('transform')) {
+					labelEl.removeAttribute('transform');
+				}
 			} else if (labelEl.hasAttribute('transform')) {
 				labelEl.removeAttribute('transform');
 			}
@@ -389,7 +442,7 @@ export default function BoardSVG({
 	            }
 	        });
 		});
-	}, [pinElements, pins, buttonNames, highlightedPin, dirtyPins, customTheme, animationMode, themeIndex]);
+	}, [pinElements, pins, buttonNames, highlightedPin, dirtyPins, customTheme, animationMode, themeIndex, inputMode]);
 
 	useEffect(() => {
 		if (!containerRef.current || !svgContent) return;
