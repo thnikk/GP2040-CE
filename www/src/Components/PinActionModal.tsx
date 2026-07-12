@@ -342,35 +342,33 @@ export default function PinActionModal({
 	);
 
 	return (
-		<Modal show={show} onHide={onClose} centered size="lg">
+		<Modal show={show} onHide={onClose} centered size="lg" className="pin-action-modal">
 			<Modal.Header closeButton>
 				<Modal.Title>
 					{t('PinMapping:pin-header-label')} {pinNumber}
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<div className="d-flex gap-1 mb-3 border-bottom pb-2">
-					<Button
-						variant={activeTab === 'controller' ? 'primary' : 'outline-secondary'}
-						size="sm"
+				<div className="pin-action-tabs">
+					<button
+						type="button"
+						className={`pin-action-tab${activeTab === 'controller' ? ' active' : ''}`}
 						onClick={() => setActiveTab('controller')}
-						className="d-flex align-items-center gap-1"
 					>
 						{controllerSvg}
 						{t('PinMapping:controller-tab')}
-					</Button>
-					<Button
-						variant={activeTab === 'keyboard' ? 'primary' : 'outline-secondary'}
-						size="sm"
+					</button>
+					<button
+						type="button"
+						className={`pin-action-tab${activeTab === 'keyboard' ? ' active' : ''}`}
 						onClick={() => setActiveTab('keyboard')}
-						className="d-flex align-items-center gap-1"
 					>
 						{keyboardSvg}
 						{t('PinMapping:keyboard-tab')}
-					</Button>
+					</button>
 				</div>
 				{activeTab === 'controller' && (
-					<>
+					<div className="pin-action-section">
 						<CustomSelect
 							isClearable
 							isMulti={!disabled}
@@ -386,10 +384,10 @@ export default function PinActionModal({
 								{t('CustomTheme:no-led-for-action')}
 							</div>
 						)}
-					</>
+					</div>
 				)}
 				{activeTab === 'keyboard' && (
-					<div>
+					<div className="pin-action-section">
 						<Form.Label className="fw-bold">
 							{t('PinMapping:keyboard-key-label')}
 							{!isKeyboardMode && (
@@ -409,7 +407,7 @@ export default function PinActionModal({
 					</div>
 				)}
 				{showLedSection && (
-					<div className="mt-4 border-top pt-3">
+					<div className="pin-action-section">
 						<Form.Label className="fw-bold">
 							{t('CustomTheme:custom-theme-colors')}
 						</Form.Label>
