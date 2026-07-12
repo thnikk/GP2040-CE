@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Button, Col, Form, Modal, Overlay, Popover, Row } from 'react-bootstrap';
+import { Button, Form, Modal, Overlay, Popover } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import invert from 'lodash/invert';
 import omit from 'lodash/omit';
@@ -145,9 +145,10 @@ export default function PinActionModal({
 			setPendingCustomDpadMask(currentCustomDpadMask);
 			setPendingKeyboardKeycode(currentKeyboardKeycode);
 			setPendingKeyboardModifierMask(currentKeyboardModifierMask);
+			setActiveTab(inputMode === 3 ? 'keyboard' : 'controller');
 			setPickerVisible(false);
 		}
-	}, [show, currentAction, currentCustomButtonMask, currentCustomDpadMask, currentKeyboardKeycode, currentKeyboardModifierMask]);
+	}, [show, currentAction, currentCustomButtonMask, currentCustomDpadMask, currentKeyboardKeycode, currentKeyboardModifierMask, inputMode]);
 
 	const disabled = disabledOptions.includes(pendingAction);
 
@@ -327,7 +328,7 @@ export default function PinActionModal({
 
 	const showLedSection = isButtonPress && !disabled && !!onLedColorChange && (!ledButtonMap || ledButtonMap[buttonName!] != null);
 
-	const [activeTab, setActiveTab] = useState<'controller' | 'keyboard'>('controller');
+	const [activeTab, setActiveTab] = useState<'controller' | 'keyboard'>(inputMode === 3 ? 'keyboard' : 'controller');
 
 	const controllerSvg = (
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="18" height="18" fill="currentColor">
