@@ -83,6 +83,7 @@
 		align-items: center;
 		justify-content: center;
 		transition: background 0.15s, color 0.15s;
+		border: 1px solid transparent;
 
 		&:hover {
 			background: rgba(0, 0, 0, 0.1);
@@ -90,6 +91,7 @@
 
 		&.active {
 			background: rgba(0, 0, 0, 0.3);
+			border: 1px solid rgba(255, 255, 255, 0.2);
 		}
 		&.disabled {
 			color: rgba(255, 255, 255, 0.3);
