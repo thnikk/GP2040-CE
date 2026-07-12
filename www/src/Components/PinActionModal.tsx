@@ -37,6 +37,7 @@ type PinActionModalProps = {
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSaveColor?: () => void;
+	ledButtonMap?: Record<string, number | null>;
 };
 
 const disabledOptions = [
@@ -89,6 +90,7 @@ export default function PinActionModal({
 	hasCustomTheme,
 	onLedColorChange,
 	onSaveColor,
+	ledButtonMap,
 }: PinActionModalProps) {
 	const { t } = useTranslation('');
 	const { buttonLabels, savedColors, setSavedColors } = useContext(AppContext);
@@ -256,7 +258,7 @@ export default function PinActionModal({
 		setSavedColors(newColors);
 	}, [selectedColor, savedColors, setSavedColors]);
 
-	const showLedSection = isButtonPress && !disabled && !!onLedColorChange;
+	const showLedSection = isButtonPress && !disabled && !!onLedColorChange && (!ledButtonMap || ledButtonMap[buttonName!] != null);
 
 	return (
 		<Modal show={show} onHide={onClose} centered size="lg">

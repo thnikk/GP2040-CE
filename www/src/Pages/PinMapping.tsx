@@ -115,6 +115,7 @@ const PinSection = memo(function PinSection({
 	onSavePinColors,
 	staticColorNormal,
 	inputMode,
+	ledButtonMap,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
@@ -126,6 +127,7 @@ const PinSection = memo(function PinSection({
 	onSavePinColors?: () => Promise<boolean>;
 	staticColorNormal?: string;
 	inputMode?: number;
+	ledButtonMap?: Record<string, number | null>;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -273,6 +275,7 @@ const PinSection = memo(function PinSection({
 								themeIndex={themeIndex}
 								staticColorNormal={staticColorNormal}
 								inputMode={inputMode}
+								ledButtonMap={ledButtonMap}
 							/>
 							) : (
 								<div className="alert alert-info">
@@ -292,6 +295,7 @@ const PinSection = memo(function PinSection({
 								hasCustomTheme={hasCustomTheme}
 								onLedColorChange={onLedColorChange}
 								onSaveColor={onSavePinColors}
+								ledButtonMap={ledButtonMap}
 							/>
 
 						</div>
@@ -360,6 +364,7 @@ export default function PinMapping() {
 	}, [themeSaveMessage, setThemeSaveMessage]);
 	const [ledsEnabled, setLedsEnabled] = useState(false);
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
+	const [ledButtonMap, setLedButtonMap] = useState<Record<string, number | null> | undefined>(undefined);
 
 	const { setLoading } = useContext(AppContext);
 
@@ -392,6 +397,7 @@ export default function PinMapping() {
 			const options = await WebApi.getLedOptions(setLoading);
 			const gamepadOptions = await WebApi.getGamepadOptions(setLoading);
 			setLedsEnabled(options?.dataPin > -1);
+			setLedButtonMap(options?.ledButtonMap);
 			setInputMode(gamepadOptions?.inputMode);
 		}
 		fetchLedOptions();
@@ -628,6 +634,7 @@ export default function PinMapping() {
 								onSavePinColors={ledsEnabled ? savePinColors : undefined}
 								staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
 								inputMode={inputMode}
+								ledButtonMap={ledButtonMap}
 							/>
 								</Tab.Pane>
 							))}
