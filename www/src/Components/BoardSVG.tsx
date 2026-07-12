@@ -324,7 +324,11 @@ export default function BoardSVG({
 					keyboardLines.push(keyCodeLabel(keyboardKeycode));
 			}
 
-			if (!keyboardLines) {
+			if (keyboardLines) {
+				// handled below after positioning
+			} else if (isKeyboardMode) {
+				labelEl.textContent = '';
+			} else {
 				let displayLabel = '';
 				if (action === BUTTON_ACTIONS.NONE) {
 					displayLabel = '';

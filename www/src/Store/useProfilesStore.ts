@@ -1,6 +1,15 @@
 import { create } from 'zustand';
 import WebApi from '../Services/WebApi';
-import { PinActionValues } from '../Data/Pins';
+import { PinActionValues, BUTTON_ACTIONS } from '../Data/Pins';
+import { DEFAULT_KEYBOARD_MAPPING } from '../Data/Keyboard';
+
+const ACTION_TO_DEFAULT_KEYCODE: Record<number, number> = {};
+for (const [name, keycode] of Object.entries(DEFAULT_KEYBOARD_MAPPING)) {
+	const actionKey = `BUTTON_PRESS_${name.toUpperCase()}`;
+	const actionValue = (BUTTON_ACTIONS as Record<string, number>)[actionKey];
+	if (actionValue !== undefined)
+		ACTION_TO_DEFAULT_KEYCODE[actionValue] = keycode;
+}
 
 // Max number of profiles that can be created, including the base profile
 export const MAX_PROFILES = 4;
@@ -86,7 +95,12 @@ const normalizePinData = (profile: PinsType): PinsType => {
 		const key = `pin${i.toString().padStart(2, '0')}`;
 		const pin = (normalized as Record<string, unknown>)[key] as MaskPayload | undefined;
 		if (pin) {
-			(normalized as Record<string, unknown>)[key] = { ...pin, keyboardKeycode: pin.keyboardKeycode ?? 0, keyboardModifierMask: pin.keyboardModifierMask ?? 0 };
+			const defaultKeycode = ACTION_TO_DEFAULT_KEYCODE[pin.action] ?? 0;
+			(normalized as Record<string, unknown>)[key] = {
+				...pin,
+				keyboardKeycode: pin.keyboardKeycode ?? defaultKeycode,
+				keyboardModifierMask: pin.keyboardModifierMask ?? 0,
+			};
 		}
 	}
 	return normalized;
