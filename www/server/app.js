@@ -109,12 +109,14 @@ app.get('/api/getSplashImage', (req, res) => {
 });
 
 let gamepadOptionsStore = null;
+let pinMappingsStore = null;
+let profileOptionsStore = null;
 
 app.get('/api/getGamepadOptions', (req, res) => {
-	if (!gamepadOptionsStore) {
+		if (!gamepadOptionsStore) {
 		gamepadOptionsStore = {
 			dpadMode: 0,
-			inputMode: 4,
+			inputMode: 0,
 			socdMode: 2,
 			switchTpShareForDs4: 0,
 			forcedSetupMode: 0,
@@ -238,7 +240,9 @@ app.get('/api/getCustomTheme', (req, res) => {
 });
 
 app.get('/api/getPinMappings', (req, res) => {
-	return res.send(createPinMappings({ profileLabel: 'Profile 1' }));
+	if (!pinMappingsStore)
+		pinMappingsStore = createPinMappings({ profileLabel: 'Profile 1' });
+	return res.send(pinMappingsStore);
 });
 
 app.get('/api/getPeripheralOptions', (req, res) => {
@@ -353,12 +357,14 @@ app.get('/api/getWiiControls', (req, res) =>
 );
 
 app.get('/api/getProfileOptions', (req, res) => {
-	return res.send({
-		alternativePinMappings: [
-			createPinMappings({ profileLabel: 'Profile 2' }),
-			createPinMappings({ profileLabel: 'Profile 3' }),
-		],
-	});
+	if (!profileOptionsStore)
+		profileOptionsStore = {
+			alternativePinMappings: [
+				createPinMappings({ profileLabel: 'Profile 2' }),
+				createPinMappings({ profileLabel: 'Profile 3' }),
+			],
+		};
+	return res.send(profileOptionsStore);
 });
 
 app.get('/api/getAddonsOptions', (req, res) => {
@@ -767,9 +773,14 @@ app.get('/api/getButtonLayout', (req, res) => {
 });
 
 app.post('/api/*', (req, res) => {
-	if (req.path === '/api/setGamepadOptions' && gamepadOptionsStore) {
+	if (req.path === '/api/setGamepadOptions') {
+		if (!gamepadOptionsStore) gamepadOptionsStore = {};
 		Object.assign(gamepadOptionsStore, req.body);
 	}
+	if (req.path === '/api/setPinMappings')
+		pinMappingsStore = req.body;
+	if (req.path === '/api/setProfileOptions')
+		profileOptionsStore = req.body;
 	return res.send(req.body);
 });
 
