@@ -154,7 +154,6 @@ $danger: #7b2d26;
 .pin-action-modal {
 	.modal-content {
 		border-radius: 25px;
-		overflow: hidden;
 	}
 
 	.modal-header {
@@ -162,6 +161,7 @@ $danger: #7b2d26;
 		background: rgba(0, 0, 0, 0.15);
 		border-bottom: none;
 		height: 50px;
+		border-radius: 25px 25px 0px 0px;
 
 		.modal-title {
 			font-size: 1.25rem;
