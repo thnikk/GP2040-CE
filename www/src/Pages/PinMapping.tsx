@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import omit from 'lodash/omit';
 
 import { AppContext } from '../Contexts/AppContext';
-import useProfilesStore, { MAX_PROFILES } from '../Store/useProfilesStore';
+import useProfilesStore from '../Store/useProfilesStore';
 
 import Section from '../Components/Section';
 import PinSelectList from '../Components/PinSelectList';
@@ -344,7 +344,6 @@ defaultCustomTheme['GRADIENT PRESSED'] = {
 
 export default function PinMapping() {
 	const fetchProfiles = useProfilesStore((state) => state.fetchProfiles);
-	const addProfile = useProfilesStore((state) => state.addProfile);
 	const profiles = useProfilesStore((state) => state.profiles);
 	const loadingProfiles = useProfilesStore((state) => state.loadingProfiles);
 
@@ -611,16 +610,6 @@ export default function PinMapping() {
 									</Nav.Link>
 								</Nav.Item>
 							))}
-							{profiles.length !== MAX_PROFILES && (
-								<Button
-									type="button"
-									className="mt-1"
-									variant="outline"
-									onClick={addProfile}
-								>
-									{t('PinMapping:profile-add-button')}
-								</Button>
-							)}
 						</Nav>
 						{pressedPin !== null && (
 							<div className="alert alert-info mt-3">

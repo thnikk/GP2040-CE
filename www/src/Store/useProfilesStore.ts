@@ -62,7 +62,6 @@ export type SetProfilePinType = (
 ) => void;
 
 type Actions = {
-	addProfile: () => void;
 	copyBaseProfile: (profileIndex: number) => void;
 	fetchProfiles: () => void;
 	saveProfiles: () => Promise<object>;
@@ -81,26 +80,20 @@ const INITIAL_STATE: State = {
 
 const useProfilesStore = create<State & Actions>()((set, get) => ({
 	...INITIAL_STATE,
-	addProfile: () => {
-		if (get().profiles.length < MAX_PROFILES) {
-			set((state) => ({
-				profiles: [
-					...state.profiles,
-					{
-						...state.profiles[0],
-						profileLabel: `Profile ${state.profiles.length + 1}`,
-					},
-				],
-			}));
-		}
-	},
 	fetchProfiles: async () => {
 		set({ loadingProfiles: true });
 
-		// TODO, unify baseProfile with other profiles when done in web api
 		const baseProfile = await WebApi.getPinMappings();
 		const profiles = await WebApi.getProfileOptions();
 		const allProfiles = [baseProfile, ...profiles];
+
+		while (allProfiles.length < MAX_PROFILES) {
+			allProfiles.push({
+				...JSON.parse(JSON.stringify(baseProfile)),
+				profileLabel: `Profile ${allProfiles.length + 1}`,
+				enabled: false,
+			});
+		}
 
 		set((state) => ({
 			...state,
