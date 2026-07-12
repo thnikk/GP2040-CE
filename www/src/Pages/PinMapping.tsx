@@ -10,15 +10,11 @@ import { useShallow } from 'zustand/react/shallow';
 import {
 	Alert,
 	Button,
-	Col,
 	Form,
 	FormCheck,
-	Nav,
 	Overlay,
 	OverlayTrigger,
 	Popover,
-	Row,
-	Tab,
 	Tooltip,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -218,107 +214,99 @@ const PinSection = memo(function PinSection({
 		: null;
 
 	return (
-		<>
-			<Section
-				title={t('PinMapping:profile-pin-mapping-title', {
-					profileLabel,
-				})}
-			>
-				<Form onSubmit={handleSubmit}>
-					<div className="d-flex justify-content-between">
-						<ProfileLabel profileIndex={profileIndex} />
-						{profileIndex > 0 && (
-							<div className="d-flex">
-								<FormCheck
-									size={3}
-									label={
-										<OverlayTrigger
-											overlay={
-												<Tooltip>
-													{t('PinMapping:profile-enabled-tooltip')}
-												</Tooltip>
-											}
-										>
-											<div className="d-flex gap-1">
-												<label>{t('Common:switch-enabled')} </label>
-												<InfoCircle />
-											</div>
-										</OverlayTrigger>
+		<Form onSubmit={handleSubmit}>
+			<div className="d-flex justify-content-between">
+				<ProfileLabel profileIndex={profileIndex} />
+				{profileIndex > 0 && (
+					<div className="d-flex">
+						<FormCheck
+							size={3}
+							label={
+								<OverlayTrigger
+									overlay={
+										<Tooltip>
+											{t('PinMapping:profile-enabled-tooltip')}
+										</Tooltip>
 									}
-									type="switch"
-									reverse
-									checked={enabled}
-									onChange={() => {
-										toggleProfileEnabled(profileIndex);
-									}}
-								/>
-							</div>
-						)}
+								>
+									<div className="d-flex gap-1">
+										<label>{t('Common:switch-enabled')} </label>
+										<InfoCircle />
+									</div>
+								</OverlayTrigger>
+							}
+							type="switch"
+							reverse
+							checked={enabled}
+							onChange={() => {
+								toggleProfileEnabled(profileIndex);
+							}}
+						/>
 					</div>
+				)}
+			</div>
 
-					{svgMode ? (
-						<div className="board-svg-wrapper">
-							{loading ? (
-								<div className="d-flex justify-content-center p-5">
-									<span className="spinner-border" />
-								</div>
-							) : svgContent ? (
-						<BoardSVG
-								svgContent={svgContent}
-								pinElements={pinElements}
-								profileIndex={profileIndex}
-								onPinClick={handlePinClick}
-								highlightedPin={pressedPin}
-								dirtyPins={dirtyPins}
-								customTheme={customTheme}
-								animationMode={animationMode}
-								themeIndex={themeIndex}
-								staticColorNormal={staticColorNormal}
-								inputMode={inputMode}
-								ledButtonMap={ledButtonMap}
-							/>
-							) : (
-								<div className="alert alert-info">
-									{t('PinMapping:no-svg-available')}
-								</div>
-							)}
-
-							<PinActionModal
-								show={modalPin !== null}
-								pinNumber={modalPin}
-								currentAction={currentPinData?.action ?? BUTTON_ACTIONS.NONE}
-								currentCustomButtonMask={currentPinData?.customButtonMask ?? 0}
-								currentCustomDpadMask={currentPinData?.customDpadMask ?? 0}
-								onClose={handleModalClose}
-								onAssign={handlePinAssign}
-								customTheme={customTheme}
-								hasCustomTheme={hasCustomTheme}
-								onLedColorChange={onLedColorChange}
-								onSaveColor={onSavePinColors}
-								ledButtonMap={ledButtonMap}
-							/>
-
+			{svgMode ? (
+				<div className="board-svg-wrapper">
+					{loading ? (
+						<div className="d-flex justify-content-center p-5">
+							<span className="spinner-border" />
 						</div>
+					) : svgContent ? (
+				<BoardSVG
+						svgContent={svgContent}
+						pinElements={pinElements}
+						profileIndex={profileIndex}
+						onPinClick={handlePinClick}
+						highlightedPin={pressedPin}
+						dirtyPins={dirtyPins}
+						customTheme={customTheme}
+						animationMode={animationMode}
+						themeIndex={themeIndex}
+						staticColorNormal={staticColorNormal}
+						inputMode={inputMode}
+						ledButtonMap={ledButtonMap}
+					/>
 					) : (
-						<div className="pin-grid gap-3 mt-3">
-							<PinSelectList profileIndex={profileIndex} />
+						<div className="alert alert-info">
+							{t('PinMapping:no-svg-available')}
 						</div>
 					)}
 
-					<div className="d-flex gap-3 mt-3 align-items-stretch">
-						{profileIndex > 0 && (
-							<Button onClick={() => copyBaseProfile(profileIndex)}>
-								{t(`PinMapping:profile-copy-base`)}
-							</Button>
-						)}
-						<div className="d-flex gap-3 align-items-stretch ms-auto">
-							{saveMessage && <Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>}
-							<Button type="submit">{t('Common:button-save-label')}</Button>
-						</div>
-					</div>
-				</Form>
-			</Section>
-		</>
+					<PinActionModal
+						show={modalPin !== null}
+						pinNumber={modalPin}
+						currentAction={currentPinData?.action ?? BUTTON_ACTIONS.NONE}
+						currentCustomButtonMask={currentPinData?.customButtonMask ?? 0}
+						currentCustomDpadMask={currentPinData?.customDpadMask ?? 0}
+						onClose={handleModalClose}
+						onAssign={handlePinAssign}
+						customTheme={customTheme}
+						hasCustomTheme={hasCustomTheme}
+						onLedColorChange={onLedColorChange}
+						onSaveColor={onSavePinColors}
+						ledButtonMap={ledButtonMap}
+					/>
+
+				</div>
+			) : (
+				<div className="pin-grid gap-3 mt-3">
+					<PinSelectList profileIndex={profileIndex} />
+				</div>
+			)}
+
+			<div className="d-flex gap-3 mt-3 align-items-stretch">
+				{profileIndex > 0 && (
+					<Button onClick={() => copyBaseProfile(profileIndex)}>
+						{t(`PinMapping:profile-copy-base`)}
+					</Button>
+				)}
+				<div className="d-flex gap-3 align-items-stretch ms-auto">
+					{saveMessage && <Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>}
+					<Button type="submit">{t('Common:button-save-label')}</Button>
+				</div>
+			</div>
+		</Form>
 	);
 });
 
@@ -344,6 +332,7 @@ export default function PinMapping() {
 	const profiles = useProfilesStore((state) => state.profiles);
 	const loadingProfiles = useProfilesStore((state) => state.loadingProfiles);
 
+	const [activeProfile, setActiveProfile] = useState('profile-0');
 	const [pressedPin, setPressedPin] = useState<number | null>(null);
 	const { t } = useTranslation('');
 	const { savedColors, setSavedColors } = useContext(AppContext);
@@ -578,59 +567,55 @@ export default function PinMapping() {
 					</div>
 				</Section>
 			)}
-			<Tab.Container defaultActiveKey="profile-0">
-				<Row>
-					<Col md={3}>
-						{loadingProfiles && (
-							<div className="d-flex justify-content-center">
-								<span className="spinner-border" />
-							</div>
-						)}
-						<Nav variant="pills" className="flex-column">
-							{profiles.map(({ profileLabel, enabled }, index) => (
-								<Nav.Item key={`profile-${index}`}>
-									<Nav.Link eventKey={`profile-${index}`}>
-										{profileLabel ||
-											t('PinMapping:profile-label-default', {
-												profileNumber: index + 1,
-											})}
-
-										{!enabled && index > 0 && (
-											<span>{t('PinMapping:profile-disabled')}</span>
-										)}
-									</Nav.Link>
-								</Nav.Item>
-							))}
-						</Nav>
-						{pressedPin !== null && (
-							<div className="alert alert-info mt-3">
-								<strong>{t('PinMapping:pin-pressed', { pressedPin })}</strong>
-							</div>
-						)}
-					</Col>
-					<Col md={9}>
-						<Tab.Content>
-							{profiles.map((_, index) => (
-								<Tab.Pane key={`profile-${index}`} eventKey={`profile-${index}`}>
-							<PinSection
-								profileIndex={index}
-								pressedPin={pressedPin}
-								customTheme={ledsEnabled ? customTheme : undefined}
-								animationMode={ledsEnabled ? animationMode : undefined}
-								themeIndex={ledsEnabled ? themeIndex : undefined}
-								hasCustomTheme={ledsEnabled ? hasCustomTheme : undefined}
-								onLedColorChange={ledsEnabled ? handleLedColorChange : undefined}
-								onSavePinColors={ledsEnabled ? savePinColors : undefined}
-								staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
-								inputMode={inputMode}
-								ledButtonMap={ledButtonMap}
-							/>
-								</Tab.Pane>
-							))}
-						</Tab.Content>
-					</Col>
-				</Row>
-			</Tab.Container>
+			{loadingProfiles && (
+				<div className="d-flex justify-content-center">
+					<span className="spinner-border" />
+				</div>
+			)}
+			<div className="card">
+				<div className="card-header p-0">
+					<div className="profile-tabs">
+						{profiles.map(({ profileLabel, enabled }, index) => (
+							<button
+								key={`profile-${index}`}
+								type="button"
+								className={`profile-tab${activeProfile === `profile-${index}` ? ' active' : ''}${!enabled && index > 0 ? ' disabled' : ''}`}
+								onClick={() => setActiveProfile(`profile-${index}`)}
+							>
+								{profileLabel ||
+									t('PinMapping:profile-label-default', {
+										profileNumber: index + 1,
+									})}
+							</button>
+						))}
+					</div>
+				</div>
+				<div className="card-body">
+					{profiles.map((_, index) => (
+						activeProfile === `profile-${index}` && (
+						<PinSection
+							key={`profile-${index}`}
+							profileIndex={index}
+							pressedPin={pressedPin}
+							customTheme={ledsEnabled ? customTheme : undefined}
+							animationMode={ledsEnabled ? animationMode : undefined}
+							themeIndex={ledsEnabled ? themeIndex : undefined}
+							hasCustomTheme={ledsEnabled ? hasCustomTheme : undefined}
+							onLedColorChange={ledsEnabled ? handleLedColorChange : undefined}
+							onSavePinColors={ledsEnabled ? savePinColors : undefined}
+							staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
+							inputMode={inputMode}
+							ledButtonMap={ledButtonMap}
+						/>
+						)
+					))}
+				</div>
+			</div>
+			{pressedPin !== null && (
+				<div className="alert alert-info mt-3">
+					<strong>{t('PinMapping:pin-pressed', { pressedPin })}</strong>
+				</div>
+			)}
 		</>
 	);
 }
