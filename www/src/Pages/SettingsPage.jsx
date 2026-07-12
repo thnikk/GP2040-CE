@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Form, Modal, Nav, Row, Col, Tab } from 'react-bootstrap';
 import { Formik, useFormikContext } from 'formik';
 
@@ -11,6 +11,7 @@ import useProfilesStore from '../Store/useProfilesStore';
 import { AppContext } from '../Contexts/AppContext';
 
 import ContextualHelpOverlay from '../Components/ContextualHelpOverlay';
+import CustomSelect from '../Components/CustomSelect';
 import KeyboardMapper from '../Components/KeyboardMapper';
 import PinSelectList from '../Components/PinSelectList';
 import Section from '../Components/Section';
@@ -573,6 +574,11 @@ export default function SettingsPage() {
 						(opt) => opt.value === 0 || mappedButtonLabels.has(opt.label),
 					),
 		[mappedButtonLabels],
+	);
+
+	const hotkeyButtonOptions = useMemo(
+		() => filteredButtonOptions.filter((o) => o.value !== 0),
+		[filteredButtonOptions],
 	);
 
 	const [saveMessage, setSaveMessage] = useState('');
@@ -1377,15 +1383,13 @@ export default function SettingsPage() {
 		swapTpShareLabels,
 	);
 
-	const getSelectedButtonLabel = (maskValue) => {
-		const option = BUTTON_MASKS_OPTIONS.find(
-			(opt) => opt.value === maskValue,
-		);
-		if (!option) return '';
-		return option.label in currentButtonLabels
-			? currentButtonLabels[option.label]
-			: option.label;
-	};
+	const getHotkeyButtonLabel = useCallback(
+		(option) =>
+			option.label in currentButtonLabels
+				? currentButtonLabels[option.label]
+				: option.label,
+		[currentButtonLabels],
+	);
 
 	const getKeyMappingForButton = (button) => keyMappings[button];
 
@@ -1742,114 +1746,56 @@ export default function SettingsPage() {
 																<span>+</span>
 																</>
 																)}
-																{BUTTON_MASKS_OPTIONS.map((mask) =>
-																	values[o] &&
-																	values[o]?.buttonsMask & mask.value ? (
-																		<>
-																			<Form.Select
-																				name={`${o}.buttonsMask`}
-																				className="form-select-sm sm-1"
-																				style={{
-																					width: `${Math.max(getSelectedButtonLabel(values[o]?.buttonsMask & mask.value).length + 8, 6)}ch`,
-																				}}
-																				value={
-																					values[o] &&
-																					values[o]?.buttonsMask & mask.value
-																				}
-																				error={
-																					errors[o] || errors[o]?.buttonsMask
-																				}
-																				isInvalid={
-																					errors[o] || errors[o]?.buttonsMask
-																				}
-																				onChange={(e) => {
-																					setFieldValue(
-																						`${o}.buttonsMask`,
-																						(values[o] &&
-																							values[o]?.buttonsMask ^
-																								mask.value) | e.target.value,
-																					);
-																				}}
-																			>
-																			{filteredButtonOptions.map((o, i2) => (
-																				<option
-																					key={`hotkey-${i}-button${i2}`}
-																					value={o.value}
-																				>
-																					{o.label in currentButtonLabels
-																						? currentButtonLabels[o.label]
-																						: o.label}
-																				</option>
-																			))}
-																			</Form.Select>
-																		<span>+</span>
-																		</>
-																	) : (
-																		<></>
-																	),
-																)}
-																<Form.Select
-																	name={`${o}.buttonsMask`}
-																	className="form-select-sm sm-1"
-																	style={{
-																		width: `${Math.max(getSelectedButtonLabel(0).length + 8, 6)}ch`,
+																<CustomSelect
+																	isMulti
+																	isClearable
+																	options={hotkeyButtonOptions}
+																	getOptionLabel={getHotkeyButtonLabel}
+																	value={hotkeyButtonOptions.filter(
+																		(opt) => values[o]?.buttonsMask & opt.value,
+																	)}
+																	onChange={(selected) => {
+																		const mask = selected
+																			? selected.reduce((acc, opt) => acc | opt.value, 0)
+																			: 0;
+																		setFieldValue(`${o}.buttonsMask`, mask);
 																	}}
-																	value={0}
-																	onChange={(e) => {
-																		setFieldValue(
-																			`${o}.buttonsMask`,
-																			(values[o] && values[o]?.buttonsMask) |
-																				e.target.value,
-																		);
-																	}}
-																>
-																	{filteredButtonOptions.map((o, i2) => (
-																		<option
-																			key={`hotkey-${i}-buttonZero-${i2}`}
-																			value={o.value}
-																		>
-																			{o.label in currentButtonLabels
-																				? currentButtonLabels[o.label]
-																				: o.label}
-																		</option>
-																	))}
-																</Form.Select>
+																/>
 																<span>=</span>
-																<Form.Select
-																	name={`${o}.action`}
-																	className="form-select-sm"
-																	style={{
-																		width: `${Math.max((translatedHotkeyActions.find(a => a.value === (values[o]?.action ?? 0))?.label || '').length + 8, 6)}ch`,
-																	}}
-																	value={values[o] && values[o]?.action}
-																	onChange={handleChange}
-																	isInvalid={errors[o] && errors[o]?.action}
-																>
-																	{translatedHotkeyActions.map((o, i) => (
-																		<option
-																			key={`hotkey-action-${i}`}
-																			value={o.value}
-																		>
-																			{o.label}
-																		</option>
-																	))}
-																</Form.Select>
-																<Form.Control.Feedback type="invalid">
-																	{errors[o] && errors[o]?.action}
-																</Form.Control.Feedback>
-																{Boolean(
-																	values[o]?.buttonsMask || values[o]?.action,
-																) && (
-																	<Button
-																		size="sm"
-																		onClick={() => {
-																			setFieldValue(`${o}.action`, 0);
-																			setFieldValue(`${o}.buttonsMask`, 0);
-																		}}
+																<div className="hotkey-action-column d-flex align-items-center gap-1">
+																	<Form.Select
+																		name={`${o}.action`}
+																		className="form-select-sm"
+																		value={values[o] && values[o]?.action}
+																		onChange={handleChange}
+																		isInvalid={errors[o] && errors[o]?.action}
 																	>
-																		{'✕'}
-																	</Button>
-																)}
+																		{translatedHotkeyActions.map((o, i) => (
+																			<option
+																				key={`hotkey-action-${i}`}
+																				value={o.value}
+																			>
+																				{o.label}
+																			</option>
+																		))}
+																	</Form.Select>
+																	<Form.Control.Feedback type="invalid">
+																		{errors[o] && errors[o]?.action}
+																	</Form.Control.Feedback>
+																	{Boolean(
+																		values[o]?.buttonsMask || values[o]?.action,
+																	) && (
+																		<Button
+																			size="sm"
+																			onClick={() => {
+																				setFieldValue(`${o}.action`, 0);
+																				setFieldValue(`${o}.buttonsMask`, 0);
+																			}}
+																		>
+																			{'✕'}
+																		</Button>
+																	)}
+																</div>
 																<Form.Control.Feedback
 																	type="invalid"
 																	className={errors[o] ? 'd-block' : ''}

@@ -1,3 +1,11 @@
+.hotkey-action-column {
+	width: 210px;
+	flex-shrink: 0;
+	.form-select {
+		flex: 1;
+	}
+}
+
 [data-bs-theme="dark"] {
 	optgroup {
 		background-color: var(--bs-secondary-bg);
