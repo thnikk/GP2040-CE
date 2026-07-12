@@ -16,6 +16,7 @@ import LEDConfigPage from './Pages/LEDConfigPage';
 
 import AddonsConfigPage from './Pages/AddonsConfigPage';
 import BackupPage from './Pages/BackupPage';
+import ConfigurationPage from './Pages/ConfigurationPage';
 import PlaygroundPage from './Pages/PlaygroundPage';
 import InputMacroAddonPage from './Pages/InputMacroAddonPage';
 import ButtonLayoutConfigPage from './Pages/ButtonLayoutConfigPage';
@@ -51,6 +52,7 @@ const App = () => {
 						<Route path="/backup" element={<BackupPage />} />
 						<Route path="/playground" element={<PlaygroundPage />} />
 						<Route path="/macro" element={<InputMacroAddonPage />} />
+						<Route path="/configuration" element={<ConfigurationPage />} />
 					</Routes>
 				</div>
 			</Router>

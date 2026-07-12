@@ -18,6 +18,7 @@ import PCF8575 from './Addons/PCF8575';
 import ReactiveLED from './Addons/ReactiveLED';
 import InputMacroAddon from './InputMacroAddon';
 import LayoutConfig from './LayoutConfig';
+import ConfigurationPage from './ConfigurationPage';
 
 export default {
 	Common,
@@ -38,6 +39,7 @@ export default {
 	Rotary,
 	InputMacroAddon,
 	LayoutConfig,
+	ConfigurationPage,
 	PCF8575,
 	ReactiveLED,
 };
