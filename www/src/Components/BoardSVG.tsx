@@ -438,6 +438,12 @@ export default function BoardSVG({
 		return () => handlers.forEach((remove) => remove());
 	}, [svgContent, pinElements, onPinClick]);
 
+	const updateLabelsRef = useRef(updateLabels);
+	updateLabelsRef.current = updateLabels;
+
+	const splashImageRef = useRef(splashImage);
+	splashImageRef.current = splashImage;
+
 	useEffect(() => {
 		updateLabels();
 	});
@@ -455,6 +461,45 @@ export default function BoardSVG({
 	}, [inputMode]);
 
 	const OLED_PADDING = 4;
+
+	useEffect(() => {
+		const container = containerRef.current;
+		if (!container) return;
+
+		const applyLayout = () => {
+			updateLabelsRef.current();
+
+			const oledEl = container.querySelector('#oled') as SVGGraphicsElement | null;
+			if (!oledEl || !splashImageRef.current?.length) return;
+
+			const bbox = oledEl.getBBox();
+			if (bbox.width === 0 || bbox.height === 0) return;
+
+			const p = OLED_PADDING;
+
+			const bgEl = container.querySelector('#oled-bg');
+			if (bgEl) {
+				bgEl.setAttribute('x', String(bbox.x));
+				bgEl.setAttribute('y', String(bbox.y));
+				bgEl.setAttribute('width', String(bbox.width));
+				bgEl.setAttribute('height', String(bbox.height));
+			}
+
+			const imgEl = container.querySelector('#oled-splash');
+			if (imgEl) {
+				imgEl.setAttribute('x', String(bbox.x + p));
+				imgEl.setAttribute('y', String(bbox.y + p));
+				imgEl.setAttribute('width', String(bbox.width - 2 * p));
+				imgEl.setAttribute('height', String(bbox.height - 2 * p));
+			}
+		};
+
+		applyLayout();
+
+		const observer = new ResizeObserver(applyLayout);
+		observer.observe(container);
+		return () => observer.disconnect();
+	}, []);
 
 	useEffect(() => {
 		const container = containerRef.current;
