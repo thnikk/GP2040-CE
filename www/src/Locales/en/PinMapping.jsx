@@ -19,6 +19,8 @@ export default {
 		'Try to avoid changing the buttons and/or directions used for the switch profile hotkeys. Otherwise, it will be difficult to understand what profile is being selected!',
 	'profile-copy-base': 'Copy base profile',
 	'assign-action-title': 'Assign function to GP{{pin}}',
+	'controller-tab': 'Controller',
+	'keyboard-tab': 'Keyboard',
 	'keyboard-key-label': 'Keyboard Key',
 	'keyboard-mode-only': 'Only takes effect in keyboard mode',
 	'no-svg-available': 'No board SVG available for this device.',

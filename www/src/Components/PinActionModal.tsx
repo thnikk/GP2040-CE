@@ -327,6 +327,20 @@ export default function PinActionModal({
 
 	const showLedSection = isButtonPress && !disabled && !!onLedColorChange && (!ledButtonMap || ledButtonMap[buttonName!] != null);
 
+	const [activeTab, setActiveTab] = useState<'controller' | 'keyboard'>('controller');
+
+	const controllerSvg = (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="18" height="18" fill="currentColor">
+			<path d="M448 64c106 0 192 86 192 192S554 448 448 448l-256 0C86 448 0 362 0 256S86 64 192 64l256 0zM192 176c-13.3 0-24 10.7-24 24l0 32-32 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l32 0 0 32c0 13.3 10.7 24 24 24s24-10.7 24-24l0-32 32 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-32 0 0-32c0-13.3-10.7-24-24-24zm240 96a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm64-96a32 32 0 1 0 0 64 32 32 0 1 0 0-64z"/>
+		</svg>
+	);
+
+	const keyboardSvg = (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="18" height="18" fill="currentColor">
+			<path d="M64 64C28.7 64 0 92.7 0 128L0 384c0 35.3 28.7 64 64 64l448 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64L64 64zm16 64l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zM64 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM176 128l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zM160 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm16 80l224 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-224 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80-176c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm16 80l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80-80c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm16 80l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80-80c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm16 80l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16z"/>
+		</svg>
+	);
+
 	return (
 		<Modal show={show} onHide={onClose} centered size="lg">
 			<Modal.Header closeButton>
@@ -335,33 +349,65 @@ export default function PinActionModal({
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<CustomSelect
-					isClearable
-					isMulti={!disabled}
-					options={groupedOptions}
-					isDisabled={disabled}
-					getOptionLabel={getOptionLabel}
-					onChange={handleChange}
-					value={getMultiValue()}
-					autoFocus
-				/>
-				<div className="mt-3">
-					<Form.Label className="fw-bold">
-						{t('PinMapping:keyboard-key-label')}
-						{!isKeyboardMode && (
-							<small className="text-muted ms-2">
-								({t('PinMapping:keyboard-mode-only')})
-							</small>
-						)}
-					</Form.Label>
-					<CustomSelect
-						isMulti
-						options={keyboardOptions}
-						onChange={handleKeyboardChange}
-						value={keyboardValue}
-						getOptionLabel={(o: { label: string }) => o.label}
-					/>
+				<div className="d-flex gap-1 mb-3 border-bottom pb-2">
+					<Button
+						variant={activeTab === 'controller' ? 'primary' : 'outline-secondary'}
+						size="sm"
+						onClick={() => setActiveTab('controller')}
+						className="d-flex align-items-center gap-1"
+					>
+						{controllerSvg}
+						{t('PinMapping:controller-tab')}
+					</Button>
+					<Button
+						variant={activeTab === 'keyboard' ? 'primary' : 'outline-secondary'}
+						size="sm"
+						onClick={() => setActiveTab('keyboard')}
+						className="d-flex align-items-center gap-1"
+					>
+						{keyboardSvg}
+						{t('PinMapping:keyboard-tab')}
+					</Button>
 				</div>
+				{activeTab === 'controller' && (
+					<>
+						<CustomSelect
+							isClearable
+							isMulti={!disabled}
+							options={groupedOptions}
+							isDisabled={disabled}
+							getOptionLabel={getOptionLabel}
+							onChange={handleChange}
+							value={getMultiValue()}
+							autoFocus
+						/>
+						{hasCustomTheme && !disabled && !isButtonPress && pendingAction !== BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO && (
+							<div className="mt-3 text-muted small">
+								{t('CustomTheme:no-led-for-action')}
+							</div>
+						)}
+					</>
+				)}
+				{activeTab === 'keyboard' && (
+					<div>
+						<Form.Label className="fw-bold">
+							{t('PinMapping:keyboard-key-label')}
+							{!isKeyboardMode && (
+								<small className="text-muted ms-2">
+									({t('PinMapping:keyboard-mode-only')})
+								</small>
+							)}
+						</Form.Label>
+						<CustomSelect
+							isMulti
+							options={keyboardOptions}
+							onChange={handleKeyboardChange}
+							value={keyboardValue}
+							getOptionLabel={(o: { label: string }) => o.label}
+							autoFocus
+						/>
+					</div>
+				)}
 				{showLedSection && (
 					<div className="mt-4 border-top pt-3">
 						<Form.Label className="fw-bold">
@@ -424,11 +470,6 @@ export default function PinActionModal({
 								</Popover.Body>
 							</Popover>
 						</Overlay>
-					</div>
-				)}
-				{hasCustomTheme && !disabled && !isButtonPress && pendingAction !== BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO && (
-					<div className="mt-3 text-muted small">
-						{t('CustomTheme:no-led-for-action')}
 					</div>
 				)}
 			</Modal.Body>
