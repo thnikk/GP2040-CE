@@ -460,6 +460,8 @@ export default function BoardSVG({
 		}
 	}, [inputMode]);
 
+	const OLED_PADDING = 4;
+
 	useEffect(() => {
 		const container = containerRef.current;
 		if (!container) return;
@@ -473,6 +475,8 @@ export default function BoardSVG({
 			const bbox = oledEl.getBBox();
 			if (bbox.width === 0 || bbox.height === 0) return;
 
+			const p = OLED_PADDING;
+
 			const bgEl = container.querySelector('#oled-bg');
 			if (bgEl) {
 				bgEl.setAttribute('x', String(bbox.x));
@@ -483,10 +487,10 @@ export default function BoardSVG({
 
 			const imgEl = container.querySelector('#oled-splash');
 			if (imgEl) {
-				imgEl.setAttribute('x', String(bbox.x));
-				imgEl.setAttribute('y', String(bbox.y));
-				imgEl.setAttribute('width', String(bbox.width));
-				imgEl.setAttribute('height', String(bbox.height));
+				imgEl.setAttribute('x', String(bbox.x + p));
+				imgEl.setAttribute('y', String(bbox.y + p));
+				imgEl.setAttribute('width', String(bbox.width - 2 * p));
+				imgEl.setAttribute('height', String(bbox.height - 2 * p));
 			}
 		};
 
@@ -508,9 +512,18 @@ export default function BoardSVG({
 		if (splashImage && splashImage.length > 0) {
 			const dataUrl = splashToDataUrl(splashImage);
 			const bbox = oledEl.getBBox();
-			const cr = '5.67';
 
 			(oledEl as HTMLElement).style.setProperty('fill', 'none', 'important');
+
+			let clipPath = container.querySelector('#oled-clip');
+			if (!clipPath) {
+				clipPath = document.createElementNS(svgNs, 'clipPath');
+				clipPath.setAttribute('id', 'oled-clip');
+				const use = document.createElementNS(svgNs, 'use');
+				use.setAttribute('href', '#oled');
+				clipPath.appendChild(use);
+				oledEl.parentNode?.insertBefore(clipPath, oledEl);
+			}
 
 			let bgEl = container.querySelector('#oled-bg');
 			if (!bgEl) {
@@ -522,27 +535,27 @@ export default function BoardSVG({
 			bgEl.setAttribute('y', String(bbox.y));
 			bgEl.setAttribute('width', String(bbox.width));
 			bgEl.setAttribute('height', String(bbox.height));
-			bgEl.setAttribute('rx', cr);
-			bgEl.setAttribute('ry', cr);
 			bgEl.setAttribute('fill', '#000000');
+			bgEl.setAttribute('clip-path', 'url(#oled-clip)');
 
+			const p = OLED_PADDING;
 			let imgEl = container.querySelector('#oled-splash');
 			if (!imgEl) {
 				imgEl = document.createElementNS(svgNs, 'image');
 				imgEl.setAttribute('id', 'oled-splash');
 				oledEl.parentNode?.insertBefore(imgEl, oledEl);
 			}
-			imgEl.setAttribute('x', String(bbox.x));
-			imgEl.setAttribute('y', String(bbox.y));
-			imgEl.setAttribute('width', String(bbox.width));
-			imgEl.setAttribute('height', String(bbox.height));
-			imgEl.setAttribute('rx', cr);
-			imgEl.setAttribute('ry', cr);
+			imgEl.setAttribute('x', String(bbox.x + p));
+			imgEl.setAttribute('y', String(bbox.y + p));
+			imgEl.setAttribute('width', String(bbox.width - 2 * p));
+			imgEl.setAttribute('height', String(bbox.height - 2 * p));
 			imgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 			imgEl.setAttribute('href', dataUrl);
+			imgEl.setAttribute('clip-path', 'url(#oled-clip)');
 		} else {
 			container.querySelector('#oled-splash')?.remove();
 			container.querySelector('#oled-bg')?.remove();
+			container.querySelector('#oled-clip')?.remove();
 			(oledEl as HTMLElement).style.removeProperty('fill');
 		}
 	}, [splashImage]);
