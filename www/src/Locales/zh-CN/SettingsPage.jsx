@@ -138,6 +138,4 @@ export default {
 		'如果您在保存后重新启动到控制器模式，您将无法再访问网页配置。如果您完全理解并同意这一点，请在下方键入 "<strong>{{warningCheckText}}</strong>" 以解锁保存按钮。 点击“取消”将恢复此设置并保存。',
 	'4-way-joystick-mode-label': '4向摇杆模式',
 	'lock-hotkeys-label': '锁定快捷键',
-	'keyboard-mapping-header-text': '键盘映射',
-	'keyboard-mapping-sub-header-text': '使用下方的表格重新配置按键映射。',
 };

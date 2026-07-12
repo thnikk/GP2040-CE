@@ -84,7 +84,4 @@ export default {
 		'Wenn Sie nach dem Speichern in den Controller-Modus neu starten, haben Sie keinen Zugriff mehr auf den Web-Konfigurator. Bitte geben Sie unten "<strong>{{warningCheckText}}</strong>" ein, um die Schaltfläche "Speichern" zu entsperren, wenn Sie dies vollständig verstehen und beabsichtigen. Durch Klicken auf "Abbrechen" wird diese Einstellung rückgängig gemacht und muss dann gespeichert werden.',
 	'4-way-joystick-mode-label': '4-Wege-Joystick-Modus',
 	'lock-hotkeys-label': 'Hotkeys sperren',
-	'keyboard-mapping-header-text': 'Tastatur Zuweisung',
-	'keyboard-mapping-sub-header-text':
-		'Verwenden Sie das Formular unten, um Ihre Tasten-zu-Tasten Zuordnung neu zu konfigurieren.',
 };

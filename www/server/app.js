@@ -241,10 +241,6 @@ app.get('/api/getPinMappings', (req, res) => {
 	return res.send(createPinMappings({ profileLabel: 'Profile 1' }));
 });
 
-app.get('/api/getKeyMappings', (req, res) =>
-	res.send(mapValues(DEFAULT_KEYBOARD_MAPPING)),
-);
-
 app.get('/api/getPeripheralOptions', (req, res) => {
 	return res.send({
 		peripheral: {

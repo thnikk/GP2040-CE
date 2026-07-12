@@ -464,39 +464,6 @@ async function setProfileOptions(mappings) {
 	});
 }
 
-async function getKeyMappings(setLoading) {
-	setLoading(true);
-
-	try {
-		const response = await Http.get(`${baseUrl}/api/getKeyMappings`);
-		setLoading(false);
-
-		let mappings = { ...baseButtonMappings };
-		for (let prop of Object.keys(response.data))
-			mappings[prop].key = parseInt(response.data[prop]);
-
-		return mappings;
-	} catch (error) {
-		setLoading(false);
-		console.error(error);
-	}
-}
-
-async function setKeyMappings(mappings) {
-	let data = {};
-	Object.keys(mappings).map((button) => (data[button] = mappings[button].key));
-
-	return Http.post(`${baseUrl}/api/setKeyMappings`, sanitizeRequest(data))
-		.then((response) => {
-			console.log(response.data);
-			return true;
-		})
-		.catch((err) => {
-			console.error(err);
-			return false;
-		});
-}
-
 async function getAddonsOptions(setLoading) {
 	setLoading(true);
 
@@ -733,8 +700,6 @@ export default {
 	setPinMappings,
 	getProfileOptions,
 	setProfileOptions,
-	getKeyMappings,
-	setKeyMappings,
 	getAddonsOptions,
 	setAddonsOptions,
 	getMacroAddonOptions,

@@ -12,10 +12,9 @@ import { AppContext } from '../Contexts/AppContext';
 
 import ContextualHelpOverlay from '../Components/ContextualHelpOverlay';
 import CustomSelect from '../Components/CustomSelect';
-import KeyboardMapper from '../Components/KeyboardMapper';
 import PinSelectList from '../Components/PinSelectList';
 import Section from '../Components/Section';
-import WebApi, { baseButtonMappings } from '../Services/WebApi';
+import WebApi from '../Services/WebApi';
 import { BUTTON_MASKS_OPTIONS, getButtonLabels } from '../Data/Buttons';
 
 import { hexToInt } from '../Services/Utilities';
@@ -468,7 +467,7 @@ const schema = yup.object().shape({
 	usbProductID: yup.string().label('USB Product ID').validateUSBHexID(),
 });
 
-const FormContext = ({ setButtonLabels, setInputMode, setKeyMappings }) => {
+const FormContext = ({ setButtonLabels, setInputMode }) => {
 	const { values, setValues } = useFormikContext();
 	const { setLoading } = useContext(AppContext);
 
@@ -481,10 +480,9 @@ const FormContext = ({ setButtonLabels, setInputMode, setKeyMappings }) => {
 				swapTpShareLabels:
 					options.switchTpShareForDs4 === 1 && options.inputMode === 4,
 			});
-			setKeyMappings(await WebApi.getKeyMappings(setLoading));
 		}
 		fetchData();
-	}, [setKeyMappings, setValues]);
+	}, [setValues]);
 
 	useEffect(() => {
 		if (!!values.dpadMode) values.dpadMode = parseInt(values.dpadMode);
@@ -596,8 +594,6 @@ export default function SettingsPage() {
 	}, [extraPinsSaveMessage, setExtraPinsSaveMessage]);
 	const [warning, setWarning] = useState({ show: false, acceptText: '' });
 	const [validated, setValidated] = useState(false);
-	const [keyMappings, setKeyMappings] = useState(baseButtonMappings);
-
 	const [message, setMessage] = useState(null);
 
 	const handleExtraPinsSave = async () => {
@@ -753,12 +749,6 @@ export default function SettingsPage() {
 		},
 	];
 
-	const handleKeyChange = (value, button) => {
-		const newMappings = { ...keyMappings };
-		newMappings[button].key = value;
-		setKeyMappings(newMappings);
-	};
-
 	const generateAuthSelection = (
 		inputMode,
 		label,
@@ -805,27 +795,6 @@ export default function SettingsPage() {
 					)}
 				</Form.Select>
 			</div>
-		);
-	};
-
-	const keyboardModeSpecifics = (
-		values,
-		errors,
-		setFieldValue,
-		handleChange,
-	) => {
-		return (
-			<>
-				<div className="fs-3 fw-bold">
-					{t('SettingsPage:keyboard-mapping-header-text')}
-				</div>
-				<div>{t('SettingsPage:keyboard-mapping-sub-header-text')}</div>
-				<KeyboardMapper
-					buttonLabels={buttonLabels}
-					handleKeyChange={handleKeyChange}
-					getKeyMappingForButton={getKeyMappingForButton}
-				/>
-			</>
 		);
 	};
 
@@ -1252,13 +1221,6 @@ export default function SettingsPage() {
 
 		const inputMode = INPUT_MODES.find((o) => o.value == values.inputMode);
 		switch (inputMode.labelKey) {
-			case 'input-mode-options.keyboard':
-				return keyboardModeSpecifics(
-					values,
-					errors,
-					setFieldValue,
-					handleChange,
-				);
 			case 'input-mode-options.ps4':
 				return ps4ModeSpecifics(
 					values,
@@ -1320,8 +1282,6 @@ export default function SettingsPage() {
 	};
 
 	const onSubmit = async (values) => {
-		const isKeyboardMode = values.inputMode === 3;
-
 		const data = {
 			...values,
 			usbProductID: hexToInt(values.usbProductID || '0000'),
@@ -1331,9 +1291,6 @@ export default function SettingsPage() {
 		if (values.forcedSetupMode > 1) {
 			setWarning({ show: true, acceptText: '' });
 		} else {
-			if (isKeyboardMode) {
-				await WebApi.setKeyMappings(keyMappings);
-			}
 			await saveSettings(data);
 		}
 	};
@@ -1390,8 +1347,6 @@ export default function SettingsPage() {
 				: option.label,
 		[currentButtonLabels],
 	);
-
-	const getKeyMappingForButton = (button) => keyMappings[button];
 
 	const { t } = useTranslation('');
 
@@ -1853,7 +1808,6 @@ export default function SettingsPage() {
 							<FormContext
 								setButtonLabels={setButtonLabels}
 								setInputMode={setInputMode}
-								setKeyMappings={setKeyMappings}
 							/>
 						</Form>
 						<Modal size="lg" show={warning.show} onHide={handleWarningClose}>
