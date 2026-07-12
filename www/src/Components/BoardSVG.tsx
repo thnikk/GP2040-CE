@@ -63,6 +63,7 @@ type BoardSVGProps = {
 	staticColorNormal?: string;
 	inputMode?: number;
 	ledButtonMap?: Record<string, number | null>;
+	splashImage?: number[];
 };
 
 const ACTION_LABELS: Record<PinActionValues, string> = {
@@ -164,6 +165,30 @@ function prepareSvg(svg: string): string {
 	);
 }
 
+function splashToDataUrl(bits: number[]): string {
+	const w = 128, h = 64;
+	const canvas = document.createElement('canvas');
+	canvas.width = w;
+	canvas.height = h;
+	const ctx = canvas.getContext('2d')!;
+	const imageData = ctx.createImageData(w, h);
+	for (let row = 0; row < h; row++) {
+		for (let col = 0; col < w; col++) {
+			const byteIndex = row * 16 + Math.floor(col / 8);
+			const bitIndex = 7 - (col % 8);
+			const pixelOn = ((bits[byteIndex] ?? 0) >> bitIndex) & 1;
+			const val = pixelOn ? 255 : 0;
+			const idx = (row * w + col) * 4;
+			imageData.data[idx] = val;
+			imageData.data[idx + 1] = val;
+			imageData.data[idx + 2] = val;
+			imageData.data[idx + 3] = 255;
+		}
+	}
+	ctx.putImageData(imageData, 0, 0);
+	return canvas.toDataURL('image/png');
+}
+
 const BUTTON_ORDER = ['Up', 'Down', 'Left', 'Right', 'B1', 'B2', 'B3', 'B4', 'R1', 'R2', 'L1', 'L2', 'S1', 'S2', 'L3', 'R3', 'A1', 'A2'];
 
 function rainbowColor(btnKey: string): string {
@@ -211,6 +236,7 @@ export default function BoardSVG({
 	staticColorNormal,
 	inputMode,
 	ledButtonMap,
+	splashImage,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels } = useContext(AppContext);
@@ -427,6 +453,67 @@ export default function BoardSVG({
 			ledEl.style.removeProperty('fill');
 		}
 	}, [inputMode]);
+
+	const OLED_PADDING = 4;
+
+	useEffect(() => {
+		const container = containerRef.current;
+		if (!container) return;
+		const oledEl = container.querySelector('#oled') as SVGGraphicsElement | null;
+		if (!oledEl) return;
+
+		const svgNs = 'http://www.w3.org/2000/svg';
+
+		if (splashImage && splashImage.length > 0) {
+			const dataUrl = splashToDataUrl(splashImage);
+			const bbox = oledEl.getBBox();
+
+			(oledEl as HTMLElement).style.setProperty('fill', 'none', 'important');
+
+			let clipPath = container.querySelector('#oled-clip');
+			if (!clipPath) {
+				clipPath = document.createElementNS(svgNs, 'clipPath');
+				clipPath.setAttribute('id', 'oled-clip');
+				const use = document.createElementNS(svgNs, 'use');
+				use.setAttribute('href', '#oled');
+				clipPath.appendChild(use);
+				oledEl.parentNode?.insertBefore(clipPath, oledEl);
+			}
+
+			let bgEl = container.querySelector('#oled-bg');
+			if (!bgEl) {
+				bgEl = document.createElementNS(svgNs, 'rect');
+				bgEl.setAttribute('id', 'oled-bg');
+				oledEl.parentNode?.insertBefore(bgEl, oledEl);
+			}
+			bgEl.setAttribute('x', String(bbox.x));
+			bgEl.setAttribute('y', String(bbox.y));
+			bgEl.setAttribute('width', String(bbox.width));
+			bgEl.setAttribute('height', String(bbox.height));
+			bgEl.setAttribute('fill', '#000000');
+			bgEl.setAttribute('clip-path', 'url(#oled-clip)');
+
+			const p = OLED_PADDING;
+			let imgEl = container.querySelector('#oled-splash');
+			if (!imgEl) {
+				imgEl = document.createElementNS(svgNs, 'image');
+				imgEl.setAttribute('id', 'oled-splash');
+				oledEl.parentNode?.insertBefore(imgEl, oledEl);
+			}
+			imgEl.setAttribute('x', String(bbox.x + p));
+			imgEl.setAttribute('y', String(bbox.y + p));
+			imgEl.setAttribute('width', String(bbox.width - 2 * p));
+			imgEl.setAttribute('height', String(bbox.height - 2 * p));
+			imgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+			imgEl.setAttribute('href', dataUrl);
+			imgEl.setAttribute('clip-path', 'url(#oled-clip)');
+		} else {
+			container.querySelector('#oled-splash')?.remove();
+			container.querySelector('#oled-bg')?.remove();
+			container.querySelector('#oled-clip')?.remove();
+			(oledEl as HTMLElement).style.removeProperty('fill');
+		}
+	}, [splashImage]);
 
 	const processedSvg = useMemo(() => prepareSvg(svgContent), [svgContent]);
 
