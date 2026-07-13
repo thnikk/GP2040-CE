@@ -609,8 +609,6 @@ std::string setProfileOptions()
                 profileOptions.gpioMappingsSets[altsIndex].pins[pin].action = (GpioAction)alt[pinName]["action"];
                 profileOptions.gpioMappingsSets[altsIndex].pins[pin].customButtonMask = (uint32_t)alt[pinName]["customButtonMask"];
                 profileOptions.gpioMappingsSets[altsIndex].pins[pin].customDpadMask = (uint32_t)alt[pinName]["customDpadMask"];
-                profileOptions.gpioMappingsSets[altsIndex].pins[pin].keyboardKeycode = (uint32_t)alt[pinName]["keyboardKeycode"];
-                profileOptions.gpioMappingsSets[altsIndex].pins[pin].keyboardModifierMask = (uint32_t)alt[pinName]["keyboardModifierMask"];
             } else if ((coreMappings.pins[pin].action == GpioAction::RESERVED &&
                         (GpioAction)alt[pinName]["action"] == GpioAction::RESERVED) ||
                     (coreMappings.pins[pin].action == GpioAction::ASSIGNED_TO_ADDON &&
@@ -642,8 +640,6 @@ std::string getProfileOptions()
         writeDoc(doc, "alternativePinMappings", item, key, "action", value.action);
         writeDoc(doc, "alternativePinMappings", item, key, "customButtonMask", value.customButtonMask);
         writeDoc(doc, "alternativePinMappings", item, key, "customDpadMask", value.customDpadMask);
-        writeDoc(doc, "alternativePinMappings", item, key, "keyboardKeycode", value.keyboardKeycode);
-        writeDoc(doc, "alternativePinMappings", item, key, "keyboardModifierMask", value.keyboardModifierMask);
     };
 
     ProfileOptions& profileOptions = Storage::getInstance().getProfileOptions();
@@ -1234,6 +1230,7 @@ std::string setPinMappings()
     DynamicJsonDocument doc = get_post_data();
 
     GpioMappings& gpioMappings = Storage::getInstance().getGpioMappings();
+    Config& config = Storage::getInstance().getConfig();
 
     char pinName[6];
     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
@@ -1246,10 +1243,12 @@ std::string setPinMappings()
             gpioMappings.pins[pin].action = (GpioAction)doc[pinName]["action"];
             gpioMappings.pins[pin].customButtonMask = (uint32_t)doc[pinName]["customButtonMask"];
             gpioMappings.pins[pin].customDpadMask = (uint32_t)doc[pinName]["customDpadMask"];
-            gpioMappings.pins[pin].keyboardKeycode = (uint32_t)doc[pinName]["keyboardKeycode"];
-            gpioMappings.pins[pin].keyboardModifierMask = (uint32_t)doc[pinName]["keyboardModifierMask"];
         }
+        config.keyboardKeycodes[pin] = (uint32_t)doc["keyboardKeycodes"][pin];
+        config.keyboardModifierMasks[pin] = (uint32_t)doc["keyboardModifierMasks"][pin];
     }
+    config.keyboardKeycodes_count = NUM_BANK0_GPIOS;
+    config.keyboardModifierMasks_count = NUM_BANK0_GPIOS;
     size_t profileLabelSize = sizeof(gpioMappings.profileLabel);
     strncpy(gpioMappings.profileLabel, doc["profileLabel"], profileLabelSize - 1);
     gpioMappings.profileLabel[profileLabelSize - 1] = '\0';
@@ -1271,8 +1270,6 @@ std::string getPinMappings()
         writeDoc(doc, key, "action", value.action);
         writeDoc(doc, key, "customButtonMask", value.customButtonMask);
         writeDoc(doc, key, "customDpadMask", value.customDpadMask);
-        writeDoc(doc, key, "keyboardKeycode", value.keyboardKeycode);
-        writeDoc(doc, key, "keyboardModifierMask", value.keyboardModifierMask);
     };
 
     writePinDoc("pin00", gpioMappings.pins[0]);
@@ -1308,6 +1305,29 @@ std::string getPinMappings()
 
     writeDoc(doc, "profileLabel", gpioMappings.profileLabel);
     doc["enabled"] = gpioMappings.enabled;
+
+    Config& config = Storage::getInstance().getConfig();
+    JsonArray kcArr = doc.createNestedArray("keyboardKeycodes");
+    JsonArray kmArr = doc.createNestedArray("keyboardModifierMasks");
+    for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+        kcArr.add(pin < config.keyboardKeycodes_count ? config.keyboardKeycodes[pin] : 0);
+        kmArr.add(pin < config.keyboardModifierMasks_count ? config.keyboardModifierMasks[pin] : 0);
+    }
+
+    return serialize_json(doc);
+}
+
+std::string debugPinState()
+{
+    DynamicJsonDocument doc(8192);
+    Config& config = Storage::getInstance().getConfig();
+
+    JsonArray kcArr = doc.createNestedArray("keyboardKeycodes");
+    JsonArray kmArr = doc.createNestedArray("keyboardModifierMasks");
+    for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+        kcArr.add(pin < config.keyboardKeycodes_count ? config.keyboardKeycodes[pin] : 0);
+        kmArr.add(pin < config.keyboardModifierMasks_count ? config.keyboardModifierMasks[pin] : 0);
+    }
 
     return serialize_json(doc);
 }
@@ -2409,6 +2429,7 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/getButtonLayouts", getButtonLayouts },
     { "/api/getLedOptions", getLedOptions },
     { "/api/getPinMappings", getPinMappings },
+    { "/api/debug/pinState", debugPinState },
     { "/api/getProfileOptions", getProfileOptions },
     { "/api/getAddonsOptions", getAddonOptions },
     { "/api/getWiiControls", getWiiControls },

@@ -21,16 +21,28 @@ const boardId = (process.env.VITE_GP2040_BOARD || 'pico').toLowerCase();
 const controller = controllers[boardId] || controllers.pico;
 
 // Structure pin mappings to include masks and profile label
+const DEFAULT_KB = {
+	1:82, 2:81, 3:80, 4:79, 5:225, 6:29, 7:224, 8:226, 9:6, 10:44, 11:25, 12:27, 13:34, 14:30, 17:46, 18:45, 15:38, 16:33,
+};
+
 const createPinMappings = ({ profileLabel = 'Profile' }) => {
 	let pinMappings = { profileLabel, enabled: true };
+	const kcs = [];
+	const kms = [];
+	let idx = 0;
 
 	for (const [key, value] of Object.entries(controller)) {
+		const pinIdx = parseInt(key.replace('pin', ''), 10);
+		while (idx <= pinIdx) { kcs.push(DEFAULT_KB[idx] || 0); kms.push(0); idx++; }
 		pinMappings[key] = {
 			action: value,
 			customButtonMask: 0,
 			customDpadMask: 0,
 		};
 	}
+	while (idx < 30) { kcs.push(0); kms.push(0); idx++; }
+	pinMappings.keyboardKeycodes = kcs;
+	pinMappings.keyboardModifierMasks = kms;
 	return pinMappings;
 };
 

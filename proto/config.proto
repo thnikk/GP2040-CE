@@ -194,8 +194,6 @@ message GpioMappingInfo
     optional GpioDirection direction = 2;
     optional uint32 customDpadMask = 3;
     optional uint32 customButtonMask = 4;
-    optional uint32 keyboardKeycode = 5;
-    optional uint32 keyboardModifierMask = 6;
 }
 
 message GpioMappings
@@ -890,4 +888,6 @@ message Config
     optional ButtonLayout buttonLayout = 16;
     optional ButtonLayoutRight buttonLayoutRight = 17;
     optional int32 webConfigPin = 18;
+    repeated uint32 keyboardKeycodes = 19 [(nanopb).max_count = 30];
+    repeated uint32 keyboardModifierMasks = 20 [(nanopb).max_count = 30];
 }

@@ -404,77 +404,34 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.keyboardMapping, keyButtonA1, KEY_BUTTON_A1);
     INIT_UNSET_PROPERTY(config.keyboardMapping, keyButtonA2, KEY_BUTTON_A2);
 
-    // per-pin keyboard defaults from KEY_* macros + KEY_*_MOD modifier masks
-#define SET_PIN_KEY(macro_prefix) \
-    config.gpioMappings.pins[pin].keyboardKeycode = macro_prefix; \
-    config.gpioMappings.pins[pin].keyboardModifierMask = macro_prefix##_MOD; \
-    config.gpioMappings.pins[pin].has_keyboardKeycode = true; \
-    config.gpioMappings.pins[pin].has_keyboardModifierMask = true
-
-#define APPLY_PIN_MOD(macro_prefix) \
-    config.gpioMappings.pins[pin].keyboardModifierMask = macro_prefix##_MOD; \
-    config.gpioMappings.pins[pin].has_keyboardModifierMask = true
-
-    for (Pin_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
-        if (config.gpioMappings.pins[pin].has_keyboardKeycode)
-            continue;
-        if (config.gpioMappings.pins[pin].keyboardKeycode != 0)
-            continue;
-
-        switch (config.gpioMappings.pins[pin].action) {
-            case BUTTON_PRESS_UP:    if (KEY_DPAD_UP)    { SET_PIN_KEY(KEY_DPAD_UP); } break;
-            case BUTTON_PRESS_DOWN:  if (KEY_DPAD_DOWN)  { SET_PIN_KEY(KEY_DPAD_DOWN); } break;
-            case BUTTON_PRESS_LEFT:  if (KEY_DPAD_LEFT)  { SET_PIN_KEY(KEY_DPAD_LEFT); } break;
-            case BUTTON_PRESS_RIGHT: if (KEY_DPAD_RIGHT) { SET_PIN_KEY(KEY_DPAD_RIGHT); } break;
-            case BUTTON_PRESS_B1:    if (KEY_BUTTON_B1)  { SET_PIN_KEY(KEY_BUTTON_B1); } break;
-            case BUTTON_PRESS_B2:    if (KEY_BUTTON_B2)  { SET_PIN_KEY(KEY_BUTTON_B2); } break;
-            case BUTTON_PRESS_B3:    if (KEY_BUTTON_B3)  { SET_PIN_KEY(KEY_BUTTON_B3); } break;
-            case BUTTON_PRESS_B4:    if (KEY_BUTTON_B4)  { SET_PIN_KEY(KEY_BUTTON_B4); } break;
-            case BUTTON_PRESS_L1:    if (KEY_BUTTON_L1)  { SET_PIN_KEY(KEY_BUTTON_L1); } break;
-            case BUTTON_PRESS_R1:    if (KEY_BUTTON_R1)  { SET_PIN_KEY(KEY_BUTTON_R1); } break;
-            case BUTTON_PRESS_L2:    if (KEY_BUTTON_L2)  { SET_PIN_KEY(KEY_BUTTON_L2); } break;
-            case BUTTON_PRESS_R2:    if (KEY_BUTTON_R2)  { SET_PIN_KEY(KEY_BUTTON_R2); } break;
-            case BUTTON_PRESS_S1:    if (KEY_BUTTON_S1)  { SET_PIN_KEY(KEY_BUTTON_S1); } break;
-            case BUTTON_PRESS_S2:    if (KEY_BUTTON_S2)  { SET_PIN_KEY(KEY_BUTTON_S2); } break;
-            case BUTTON_PRESS_L3:    if (KEY_BUTTON_L3)  { SET_PIN_KEY(KEY_BUTTON_L3); } break;
-            case BUTTON_PRESS_R3:    if (KEY_BUTTON_R3)  { SET_PIN_KEY(KEY_BUTTON_R3); } break;
-            case BUTTON_PRESS_A1:    if (KEY_BUTTON_A1)  { SET_PIN_KEY(KEY_BUTTON_A1); } break;
-            case BUTTON_PRESS_A2:    if (KEY_BUTTON_A2)  { SET_PIN_KEY(KEY_BUTTON_A2); } break;
-            default: break;
+    // keyboard mapping defaults from KEY_* macros + KEY_*_MOD macros
+    if (config.keyboardKeycodes_count == 0) {
+        config.keyboardKeycodes_count = NUM_BANK0_GPIOS;
+        config.keyboardModifierMasks_count = NUM_BANK0_GPIOS;
+        for (Pin_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
+            switch (config.gpioMappings.pins[pin].action) {
+                case BUTTON_PRESS_UP:    config.keyboardKeycodes[pin] = KEY_DPAD_UP; config.keyboardModifierMasks[pin] = KEY_DPAD_UP_MOD; break;
+                case BUTTON_PRESS_DOWN:  config.keyboardKeycodes[pin] = KEY_DPAD_DOWN; config.keyboardModifierMasks[pin] = KEY_DPAD_DOWN_MOD; break;
+                case BUTTON_PRESS_LEFT:  config.keyboardKeycodes[pin] = KEY_DPAD_LEFT; config.keyboardModifierMasks[pin] = KEY_DPAD_LEFT_MOD; break;
+                case BUTTON_PRESS_RIGHT: config.keyboardKeycodes[pin] = KEY_DPAD_RIGHT; config.keyboardModifierMasks[pin] = KEY_DPAD_RIGHT_MOD; break;
+                case BUTTON_PRESS_B1:    config.keyboardKeycodes[pin] = KEY_BUTTON_B1; config.keyboardModifierMasks[pin] = KEY_BUTTON_B1_MOD; break;
+                case BUTTON_PRESS_B2:    config.keyboardKeycodes[pin] = KEY_BUTTON_B2; config.keyboardModifierMasks[pin] = KEY_BUTTON_B2_MOD; break;
+                case BUTTON_PRESS_B3:    config.keyboardKeycodes[pin] = KEY_BUTTON_B3; config.keyboardModifierMasks[pin] = KEY_BUTTON_B3_MOD; break;
+                case BUTTON_PRESS_B4:    config.keyboardKeycodes[pin] = KEY_BUTTON_B4; config.keyboardModifierMasks[pin] = KEY_BUTTON_B4_MOD; break;
+                case BUTTON_PRESS_L1:    config.keyboardKeycodes[pin] = KEY_BUTTON_L1; config.keyboardModifierMasks[pin] = KEY_BUTTON_L1_MOD; break;
+                case BUTTON_PRESS_R1:    config.keyboardKeycodes[pin] = KEY_BUTTON_R1; config.keyboardModifierMasks[pin] = KEY_BUTTON_R1_MOD; break;
+                case BUTTON_PRESS_L2:    config.keyboardKeycodes[pin] = KEY_BUTTON_L2; config.keyboardModifierMasks[pin] = KEY_BUTTON_L2_MOD; break;
+                case BUTTON_PRESS_R2:    config.keyboardKeycodes[pin] = KEY_BUTTON_R2; config.keyboardModifierMasks[pin] = KEY_BUTTON_R2_MOD; break;
+                case BUTTON_PRESS_S1:    config.keyboardKeycodes[pin] = KEY_BUTTON_S1; config.keyboardModifierMasks[pin] = KEY_BUTTON_S1_MOD; break;
+                case BUTTON_PRESS_S2:    config.keyboardKeycodes[pin] = KEY_BUTTON_S2; config.keyboardModifierMasks[pin] = KEY_BUTTON_S2_MOD; break;
+                case BUTTON_PRESS_L3:    config.keyboardKeycodes[pin] = KEY_BUTTON_L3; config.keyboardModifierMasks[pin] = KEY_BUTTON_L3_MOD; break;
+                case BUTTON_PRESS_R3:    config.keyboardKeycodes[pin] = KEY_BUTTON_R3; config.keyboardModifierMasks[pin] = KEY_BUTTON_R3_MOD; break;
+                case BUTTON_PRESS_A1:    config.keyboardKeycodes[pin] = KEY_BUTTON_A1; config.keyboardModifierMasks[pin] = KEY_BUTTON_A1_MOD; break;
+                case BUTTON_PRESS_A2:    config.keyboardKeycodes[pin] = KEY_BUTTON_A2; config.keyboardModifierMasks[pin] = KEY_BUTTON_A2_MOD; break;
+                default: break;
+            }
         }
     }
-
-    // migration: apply board defaults for pins saved without keycode or modifier
-    for (Pin_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
-        if (config.gpioMappings.pins[pin].has_keyboardKeycode &&
-            config.gpioMappings.pins[pin].keyboardKeycode != 0 &&
-            config.gpioMappings.pins[pin].keyboardModifierMask != 0)
-            continue;
-
-        switch (config.gpioMappings.pins[pin].action) {
-            case BUTTON_PRESS_UP:    SET_PIN_KEY(KEY_DPAD_UP); break;
-            case BUTTON_PRESS_DOWN:  SET_PIN_KEY(KEY_DPAD_DOWN); break;
-            case BUTTON_PRESS_LEFT:  SET_PIN_KEY(KEY_DPAD_LEFT); break;
-            case BUTTON_PRESS_RIGHT: SET_PIN_KEY(KEY_DPAD_RIGHT); break;
-            case BUTTON_PRESS_B1:    if (KEY_BUTTON_B1)  { SET_PIN_KEY(KEY_BUTTON_B1); } break;
-            case BUTTON_PRESS_B2:    if (KEY_BUTTON_B2)  { SET_PIN_KEY(KEY_BUTTON_B2); } break;
-            case BUTTON_PRESS_B3:    if (KEY_BUTTON_B3)  { SET_PIN_KEY(KEY_BUTTON_B3); } break;
-            case BUTTON_PRESS_B4:    if (KEY_BUTTON_B4)  { SET_PIN_KEY(KEY_BUTTON_B4); } break;
-            case BUTTON_PRESS_L1:    if (KEY_BUTTON_L1)  { SET_PIN_KEY(KEY_BUTTON_L1); } break;
-            case BUTTON_PRESS_R1:    if (KEY_BUTTON_R1)  { SET_PIN_KEY(KEY_BUTTON_R1); } break;
-            case BUTTON_PRESS_L2:    if (KEY_BUTTON_L2)  { SET_PIN_KEY(KEY_BUTTON_L2); } break;
-            case BUTTON_PRESS_R2:    if (KEY_BUTTON_R2)  { SET_PIN_KEY(KEY_BUTTON_R2); } break;
-            case BUTTON_PRESS_S1:    if (KEY_BUTTON_S1)  { SET_PIN_KEY(KEY_BUTTON_S1); } break;
-            case BUTTON_PRESS_S2:    if (KEY_BUTTON_S2)  { SET_PIN_KEY(KEY_BUTTON_S2); } break;
-            case BUTTON_PRESS_L3:    if (KEY_BUTTON_L3)  { SET_PIN_KEY(KEY_BUTTON_L3); } break;
-            case BUTTON_PRESS_R3:    if (KEY_BUTTON_R3)  { SET_PIN_KEY(KEY_BUTTON_R3); } break;
-            case BUTTON_PRESS_A1:    if (KEY_BUTTON_A1)  { SET_PIN_KEY(KEY_BUTTON_A1); } break;
-            case BUTTON_PRESS_A2:    if (KEY_BUTTON_A2)  { SET_PIN_KEY(KEY_BUTTON_A2); } break;
-            default: break;
-        }
-    }
-#undef SET_PIN_KEY
-#undef APPLY_PIN_MOD
 
     // displayOptions
     INIT_UNSET_PROPERTY(config.displayOptions, enabled, !!HAS_I2C_DISPLAY);

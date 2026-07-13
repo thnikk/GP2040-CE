@@ -62,16 +62,17 @@ uint8_t KeyboardDriver::getMultimedia(uint8_t code) {
 void KeyboardDriver::process(Gamepad * gamepad) {
 	const KeyboardMapping& keyboardMapping = Storage::getInstance().getKeyboardMapping();
 	GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
+	Config& config = Storage::getInstance().getConfig();
 	releaseAllKeys();
 
 	uint32_t perPinButtonMask = 0;
 	uint8_t perPinDpadMask = 0;
 
 	for (Pin_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
-		uint8_t keycode = pinMappings[pin].keyboardKeycode;
+		uint8_t keycode = pin < config.keyboardKeycodes_count ? config.keyboardKeycodes[pin] : 0;
 		if (keycode == 0) continue;
 
-		uint8_t modifierMask = pinMappings[pin].keyboardModifierMask;
+		uint8_t modifierMask = pin < config.keyboardModifierMasks_count ? config.keyboardModifierMasks[pin] : 0;
 
 		auto applyPress = [&]() {
 			keyboardReport.modifier |= modifierMask;
