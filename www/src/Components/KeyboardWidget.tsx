@@ -61,7 +61,7 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: '0', value: 0x27 },
 		{ label: '-', value: 0x2d },
 		{ label: '=', value: 0x2e },
-		{ label: 'Bksp', value: 0x2a, size: '2u' },
+		{ label: 'Backspace', value: 0x2a, size: '2u' },
 	],
 	[
 		{ label: 'Tab', value: 0x2b, size: '1.5u' },
@@ -80,7 +80,7 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: '\\', value: 0x31, size: '1.5u' },
 	],
 	[
-		{ label: 'CLck', value: 0x39, size: '1.75u' },
+		{ label: 'CapsLock', value: 0x39, size: '1.75u' },
 		{ label: 'A', value: 0x04 },
 		{ label: 'S', value: 0x16 },
 		{ label: 'D', value: 0x07 },
@@ -95,7 +95,7 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'Enter', value: 0x28, size: '2.25u' },
 	],
 	[
-		{ label: 'SftL', value: 0xe1, size: '2.25u' },
+		{ label: 'Shift', value: 0xe1, size: '2.25u' },
 		{ label: 'Z', value: 0x1d },
 		{ label: 'X', value: 0x1b },
 		{ label: 'C', value: 0x06 },
@@ -106,17 +106,17 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: ',', value: 0x36 },
 		{ label: '.', value: 0x37 },
 		{ label: '/', value: 0x38 },
-		{ label: 'SftR', value: 0xe5, size: '2.75u' },
+		{ label: 'Shift', value: 0xe5, size: '2.75u' },
 	],
 	[
-		{ label: 'CtL', value: 0xe0, size: '1.25u' },
-		{ label: 'WinL', value: 0xe3, size: '1.25u' },
-		{ label: 'AltL', value: 0xe2, size: '1.25u' },
+		{ label: 'Ctrl', value: 0xe0, size: '1.25u' },
+		{ label: 'Win', value: 0xe3, size: '1.25u' },
+		{ label: 'Alt', value: 0xe2, size: '1.25u' },
 		{ label: 'Space', value: 0x2c, size: '6.25u' },
-		{ label: 'AltR', value: 0xe6, size: '1.25u' },
-		{ label: 'WinR', value: 0xe7, size: '1.25u' },
+		{ label: 'Alt', value: 0xe6, size: '1.25u' },
+		{ label: 'Win', value: 0xe7, size: '1.25u' },
 		{ label: '', value: 0, size: '1.5u', spacer: true },
-		{ label: 'CtR', value: 0xe4, size: '1.25u' },
+		{ label: 'Ctrl', value: 0xe4, size: '1.25u' },
 	],
 ];
 
