@@ -2,9 +2,6 @@ import { create } from 'zustand';
 import WebApi from '../Services/WebApi';
 import { PinActionValues } from '../Data/Pins';
 
-let cachedKc: number[] = [];
-let cachedKm: number[] = [];
-
 // Max number of profiles that can be created, including the base profile
 export const MAX_PROFILES = 4;
 
@@ -50,6 +47,8 @@ export type PinsType = {
 	pin29: MaskPayload;
 	profileLabel: string;
 	enabled: boolean;
+	keyboardKeycodes: number[];
+	keyboardModifierMasks: number[];
 };
 
 type State = {
@@ -70,14 +69,9 @@ type Actions = {
 	saveProfiles: () => Promise<object>;
 	setProfileLabel: (profileIndex: number, profileLabel: string) => void;
 	setProfilePin: SetProfilePinType;
-	setPinKeyboard: (pinIndex: number, keycode: number, modifierMask: number) => void;
+	setPinKeyboard: (profileIndex: number, pinIndex: number, keycode: number, modifierMask: number) => void;
 	toggleProfileEnabled: (profileIndex: number) => void;
 };
-
-export const getKeyboardKeycode = (pin: number): number =>
-	pin >= 0 && pin < cachedKc.length ? cachedKc[pin] : 0;
-export const getKeyboardModifierMask = (pin: number): number =>
-	pin >= 0 && pin < cachedKm.length ? cachedKm[pin] : 0;
 
 const INITIAL_STATE: State = {
 	profiles: [
@@ -87,18 +81,18 @@ const INITIAL_STATE: State = {
 	loadingProfiles: false,
 };
 
-const normalizePinData = (profile: PinsType, kcArr?: number[], kmArr?: number[]): PinsType => {
-	if (kcArr) cachedKc = kcArr;
-	if (kmArr) cachedKm = kmArr;
-	const normalized = { ...profile };
+const normalizePinData = (profile: Record<string, unknown>): PinsType => {
+	const kcArr = (profile.keyboardKeycodes as number[]) || [];
+	const kmArr = (profile.keyboardModifierMasks as number[]) || [];
+	const normalized: Record<string, unknown> = { ...profile, keyboardKeycodes: kcArr, keyboardModifierMasks: kmArr };
 	for (let i = 0; i < 30; i++) {
 		const key = `pin${i.toString().padStart(2, '0')}`;
-		const pin = (normalized as Record<string, unknown>)[key] as MaskPayload | undefined;
+		const pin = normalized[key] as MaskPayload | undefined;
 		if (pin) {
-			(normalized as Record<string, unknown>)[key] = { ...pin };
+			normalized[key] = { ...pin };
 		}
 	}
-	return normalized;
+	return normalized as unknown as PinsType;
 };
 
 const useProfilesStore = create<State & Actions>()((set, get) => ({
@@ -106,9 +100,8 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 	fetchProfiles: async () => {
 		set({ loadingProfiles: true });
 
-		const pinData = await WebApi.getPinMappings();
-		const baseProfile = normalizePinData(pinData, pinData.keyboardKeycodes, pinData.keyboardModifierMasks);
-		const profiles = (await WebApi.getProfileOptions()).map((p: PinsType) => normalizePinData(p));
+		const baseProfile = normalizePinData(await WebApi.getPinMappings());
+		const profiles = (await WebApi.getProfileOptions()).map((p: Record<string, unknown>) => normalizePinData(p));
 		const allProfiles = [baseProfile, ...profiles];
 
 		while (allProfiles.length < MAX_PROFILES) {
@@ -116,6 +109,8 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 				...JSON.parse(JSON.stringify(baseProfile)),
 				profileLabel: `Profile ${allProfiles.length + 1}`,
 				enabled: false,
+				keyboardKeycodes: [...(baseProfile.keyboardKeycodes || [])],
+				keyboardModifierMasks: [...(baseProfile.keyboardModifierMasks || [])],
 			});
 		}
 
@@ -152,11 +147,15 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 			};
 			return { profiles };
 		}),
-	setPinKeyboard: (pinIndex: number, keycode: number, modifierMask: number) =>
-		set(() => {
-			cachedKc[pinIndex] = keycode;
-			cachedKm[pinIndex] = modifierMask;
-			return {};
+	setPinKeyboard: (profileIndex: number, pinIndex: number, keycode: number, modifierMask: number) =>
+		set((state) => {
+			const profiles = [...state.profiles];
+			const kc = [...(profiles[profileIndex]?.keyboardKeycodes || [])];
+			const km = [...(profiles[profileIndex]?.keyboardModifierMasks || [])];
+			kc[pinIndex] = keycode;
+			km[pinIndex] = modifierMask;
+			profiles[profileIndex] = { ...profiles[profileIndex], keyboardKeycodes: kc, keyboardModifierMasks: km };
+			return { profiles };
 		}),
 	setProfileLabel: (profileIndex, profileLabel) =>
 		set((state) => {
@@ -166,9 +165,8 @@ const useProfilesStore = create<State & Actions>()((set, get) => ({
 		}),
 	saveProfiles: async () => {
 		const [baseProfile, ...profiles] = get().profiles;
-		const payload = { ...baseProfile, keyboardKeycodes: cachedKc, keyboardModifierMasks: cachedKm };
 		const result = await Promise.all([
-			WebApi.setPinMappings(payload),
+			WebApi.setPinMappings(baseProfile),
 			WebApi.setProfileOptions(profiles),
 		]);
 		set({ savedProfiles: JSON.parse(JSON.stringify(get().profiles)) });

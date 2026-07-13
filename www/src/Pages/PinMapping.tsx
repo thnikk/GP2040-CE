@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import omit from 'lodash/omit';
 
 import { AppContext } from '../Contexts/AppContext';
-import useProfilesStore, { getKeyboardKeycode, getKeyboardModifierMask } from '../Store/useProfilesStore';
+import useProfilesStore from '../Store/useProfilesStore';
 
 import Section from '../Components/Section';
 import PinSelectList from '../Components/PinSelectList';
@@ -207,7 +207,7 @@ const PinSection = memo(function PinSection({
 		(pinNumber: number, action: PinActionValues, customButtonMask: number, customDpadMask: number, keyboardKeycode: number, keyboardModifierMask: number) => {
 			const pinKey = pinNumber < 10 ? `pin0${pinNumber}` : `pin${pinNumber}`;
 			setProfilePin(profileIndex, pinKey, { action, customButtonMask, customDpadMask });
-			setPinKeyboard(pinNumber, keyboardKeycode, keyboardModifierMask);
+			setPinKeyboard(profileIndex, pinNumber, keyboardKeycode, keyboardModifierMask);
 		},
 		[profileIndex, setPinKeyboard],
 	);
@@ -282,8 +282,8 @@ const PinSection = memo(function PinSection({
 						currentAction={currentPinData?.action ?? BUTTON_ACTIONS.NONE}
 						currentCustomButtonMask={currentPinData?.customButtonMask ?? 0}
 						currentCustomDpadMask={currentPinData?.customDpadMask ?? 0}
-						currentKeyboardKeycode={getKeyboardKeycode(modalPin ?? 0)}
-						currentKeyboardModifierMask={getKeyboardModifierMask(modalPin ?? 0)}
+						currentKeyboardKeycode={useProfilesStore.getState().profiles[profileIndex]?.keyboardKeycodes?.[modalPin ?? 0] ?? 0}
+						currentKeyboardModifierMask={useProfilesStore.getState().profiles[profileIndex]?.keyboardModifierMasks?.[modalPin ?? 0] ?? 0}
 						onClose={handleModalClose}
 						onAssign={handlePinAssign}
 						customTheme={customTheme}

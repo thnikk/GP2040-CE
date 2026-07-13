@@ -47,6 +47,8 @@ public:
 	AnimationOptions_Proto& getAnimationOptions() { return config.animationOptions; }
 	ProfileOptions& getProfileOptions() { return config.profileOptions; }
 	GpioMappingInfo* getProfilePinMappings() { return functionalPinMappings; }
+	uint32_t* getKeyboardKeycodes() { return functionalKeyboardKeycodes; }
+	uint32_t* getKeyboardModifierMasks() { return functionalKeyboardModifierMasks; }
 	PeripheralOptions& getPeripheralOptions() { return config.peripheralOptions; }
 	int32_t getWebConfigPin() { return config.webConfigPin; }
 
@@ -89,6 +91,8 @@ private:
 	uint32_t animationOptionsCrc = 0;
 	AnimationOptions animationOptionsToSave = {};
 	GpioMappingInfo functionalPinMappings[NUM_BANK0_GPIOS];
+	uint32_t functionalKeyboardKeycodes[NUM_BANK0_GPIOS];
+	uint32_t functionalKeyboardModifierMasks[NUM_BANK0_GPIOS];
 };
 
 #endif

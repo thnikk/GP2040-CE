@@ -201,6 +201,8 @@ message GpioMappings
     repeated GpioMappingInfo pins = 1 [(nanopb).max_count = 30];
     optional string profileLabel = 2 [(nanopb).max_length = 16];
     optional bool enabled = 3 [default = false];
+    repeated uint32 keyboardKeycodes = 4 [(nanopb).max_count = 30];
+    repeated uint32 keyboardModifierMasks = 5 [(nanopb).max_count = 30];
 }
 
 
@@ -888,6 +890,4 @@ message Config
     optional ButtonLayout buttonLayout = 16;
     optional ButtonLayoutRight buttonLayoutRight = 17;
     optional int32 webConfigPin = 18;
-    repeated uint32 keyboardKeycodes = 19 [(nanopb).max_count = 30];
-    repeated uint32 keyboardModifierMasks = 20 [(nanopb).max_count = 30];
 }

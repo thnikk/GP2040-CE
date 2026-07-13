@@ -4,7 +4,7 @@ import invert from 'lodash/invert';
 import omit from 'lodash/omit';
 import { useContext } from 'react';
 import { AppContext } from '../Contexts/AppContext';
-import useProfilesStore, { getKeyboardKeycode, getKeyboardModifierMask } from '../Store/useProfilesStore';
+import useProfilesStore from '../Store/useProfilesStore';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { getButtonLabels } from '../Data/Buttons';
 import { KEY_CODES } from '../Data/Keyboard';
@@ -310,8 +310,9 @@ export default function BoardSVG({
 			const btnKey = ACTION_LABELS[action] || actionKey?.split('BUTTON_PRESS_')?.pop();
 
 			const isKeyboardMode = inputMode === 3;
-			const keyboardKeycode = getKeyboardKeycode(pinNumber);
-			const keyboardModifierMask = getKeyboardModifierMask(pinNumber);
+			const profileData = useProfilesStore.getState().profiles[profileIndex];
+			const keyboardKeycode = profileData?.keyboardKeycodes?.[pinNumber] ?? 0;
+			const keyboardModifierMask = profileData?.keyboardModifierMasks?.[pinNumber] ?? 0;
 
 			let keyboardLines: string[] | null = null;
 			if (isKeyboardMode && keyboardKeycode > 0) {

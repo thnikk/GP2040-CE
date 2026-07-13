@@ -616,6 +616,12 @@ std::string setProfileOptions()
                 profileOptions.gpioMappingsSets[altsIndex].pins[pin].action = (GpioAction)alt[pinName]["action"];
             }
         }
+        for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+            profileOptions.gpioMappingsSets[altsIndex].keyboardKeycodes[pin] = (uint32_t)alt["keyboardKeycodes"][pin];
+            profileOptions.gpioMappingsSets[altsIndex].keyboardModifierMasks[pin] = (uint32_t)alt["keyboardModifierMasks"][pin];
+        }
+        profileOptions.gpioMappingsSets[altsIndex].keyboardKeycodes_count = NUM_BANK0_GPIOS;
+        profileOptions.gpioMappingsSets[altsIndex].keyboardModifierMasks_count = NUM_BANK0_GPIOS;
         profileOptions.gpioMappingsSets[altsIndex].pins_count = NUM_BANK0_GPIOS;
 
         size_t profileLabelSize = sizeof(profileOptions.gpioMappingsSets[altsIndex].profileLabel);
@@ -685,6 +691,12 @@ std::string getProfileOptions()
         writePinDoc(i, "pin29", profileOptions.gpioMappingsSets[i].pins[29]);
         writeDoc(doc, "alternativePinMappings", i, "profileLabel", profileOptions.gpioMappingsSets[i].profileLabel);
         doc["alternativePinMappings"][i]["enabled"] = profileOptions.gpioMappingsSets[i].enabled;
+        JsonArray kcArr = doc["alternativePinMappings"][i].createNestedArray("keyboardKeycodes");
+        JsonArray kmArr = doc["alternativePinMappings"][i].createNestedArray("keyboardModifierMasks");
+        for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+            kcArr.add(pin < profileOptions.gpioMappingsSets[i].keyboardKeycodes_count ? profileOptions.gpioMappingsSets[i].keyboardKeycodes[pin] : 0);
+            kmArr.add(pin < profileOptions.gpioMappingsSets[i].keyboardModifierMasks_count ? profileOptions.gpioMappingsSets[i].keyboardModifierMasks[pin] : 0);
+        }
     }
 
     return serialize_json(doc);
@@ -1230,7 +1242,6 @@ std::string setPinMappings()
     DynamicJsonDocument doc = get_post_data();
 
     GpioMappings& gpioMappings = Storage::getInstance().getGpioMappings();
-    Config& config = Storage::getInstance().getConfig();
 
     char pinName[6];
     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
@@ -1244,11 +1255,11 @@ std::string setPinMappings()
             gpioMappings.pins[pin].customButtonMask = (uint32_t)doc[pinName]["customButtonMask"];
             gpioMappings.pins[pin].customDpadMask = (uint32_t)doc[pinName]["customDpadMask"];
         }
-        config.keyboardKeycodes[pin] = (uint32_t)doc["keyboardKeycodes"][pin];
-        config.keyboardModifierMasks[pin] = (uint32_t)doc["keyboardModifierMasks"][pin];
+        gpioMappings.keyboardKeycodes[pin] = (uint32_t)doc["keyboardKeycodes"][pin];
+        gpioMappings.keyboardModifierMasks[pin] = (uint32_t)doc["keyboardModifierMasks"][pin];
     }
-    config.keyboardKeycodes_count = NUM_BANK0_GPIOS;
-    config.keyboardModifierMasks_count = NUM_BANK0_GPIOS;
+    gpioMappings.keyboardKeycodes_count = NUM_BANK0_GPIOS;
+    gpioMappings.keyboardModifierMasks_count = NUM_BANK0_GPIOS;
     size_t profileLabelSize = sizeof(gpioMappings.profileLabel);
     strncpy(gpioMappings.profileLabel, doc["profileLabel"], profileLabelSize - 1);
     gpioMappings.profileLabel[profileLabelSize - 1] = '\0';
@@ -1306,12 +1317,11 @@ std::string getPinMappings()
     writeDoc(doc, "profileLabel", gpioMappings.profileLabel);
     doc["enabled"] = gpioMappings.enabled;
 
-    Config& config = Storage::getInstance().getConfig();
     JsonArray kcArr = doc.createNestedArray("keyboardKeycodes");
     JsonArray kmArr = doc.createNestedArray("keyboardModifierMasks");
     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
-        kcArr.add(pin < config.keyboardKeycodes_count ? config.keyboardKeycodes[pin] : 0);
-        kmArr.add(pin < config.keyboardModifierMasks_count ? config.keyboardModifierMasks[pin] : 0);
+        kcArr.add(pin < gpioMappings.keyboardKeycodes_count ? gpioMappings.keyboardKeycodes[pin] : 0);
+        kmArr.add(pin < gpioMappings.keyboardModifierMasks_count ? gpioMappings.keyboardModifierMasks[pin] : 0);
     }
 
     return serialize_json(doc);
@@ -1320,13 +1330,13 @@ std::string getPinMappings()
 std::string debugPinState()
 {
     DynamicJsonDocument doc(8192);
-    Config& config = Storage::getInstance().getConfig();
+    GpioMappings& gpioMappings = Storage::getInstance().getGpioMappings();
 
     JsonArray kcArr = doc.createNestedArray("keyboardKeycodes");
     JsonArray kmArr = doc.createNestedArray("keyboardModifierMasks");
     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
-        kcArr.add(pin < config.keyboardKeycodes_count ? config.keyboardKeycodes[pin] : 0);
-        kmArr.add(pin < config.keyboardModifierMasks_count ? config.keyboardModifierMasks[pin] : 0);
+        kcArr.add(pin < gpioMappings.keyboardKeycodes_count ? gpioMappings.keyboardKeycodes[pin] : 0);
+        kmArr.add(pin < gpioMappings.keyboardModifierMasks_count ? gpioMappings.keyboardModifierMasks[pin] : 0);
     }
 
     return serialize_json(doc);

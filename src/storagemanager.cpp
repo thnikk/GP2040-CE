@@ -198,6 +198,21 @@ void Storage::setFunctionalPinMappings()
 			functionalPinMappings[pin] = this->config.gpioMappings.pins[pin];
 		}
 	}
+
+	// Copy keyboard arrays from the active profile
+	GpioMappings* activeMappings = &config.gpioMappings;
+	if (alts != nullptr) {
+		// Use the profile's gpioMappingsSets entry directly (it's already resolved above)
+		uint32_t profileIdx = config.gamepadOptions.profileNumber - 2;
+		if (profileIdx < config.profileOptions.gpioMappingsSets_count)
+			activeMappings = &config.profileOptions.gpioMappingsSets[profileIdx];
+	}
+	pb_size_t kcCount = activeMappings->keyboardKeycodes_count;
+	pb_size_t kmCount = activeMappings->keyboardModifierMasks_count;
+	for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+		functionalKeyboardKeycodes[pin] = pin < kcCount ? activeMappings->keyboardKeycodes[pin] : 0;
+		functionalKeyboardModifierMasks[pin] = pin < kmCount ? activeMappings->keyboardModifierMasks[pin] : 0;
+	}
 }
 
 void Storage::SetConfigMode(bool mode) { // hack for config mode

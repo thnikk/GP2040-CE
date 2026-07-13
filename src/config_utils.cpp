@@ -1647,33 +1647,37 @@ void ConfigUtils::load(Config& config)
         gpioMappingsMigrationCore(config);
 
     // keyboard mapping defaults from KEY_* macros (must run after gpioMappingsMigrationCore)
-    if (config.keyboardKeycodes_count == 0) {
-        config.keyboardKeycodes_count = NUM_BANK0_GPIOS;
-        config.keyboardModifierMasks_count = NUM_BANK0_GPIOS;
+    auto setKeyboardDefaults = [](GpioMappings& mappings) {
+        if (mappings.keyboardKeycodes_count != 0) return;
+        mappings.keyboardKeycodes_count = NUM_BANK0_GPIOS;
+        mappings.keyboardModifierMasks_count = NUM_BANK0_GPIOS;
         for (Pin_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
-            switch (config.gpioMappings.pins[pin].action) {
-                case BUTTON_PRESS_UP:    config.keyboardKeycodes[pin] = KEY_DPAD_UP; config.keyboardModifierMasks[pin] = KEY_DPAD_UP_MOD; break;
-                case BUTTON_PRESS_DOWN:  config.keyboardKeycodes[pin] = KEY_DPAD_DOWN; config.keyboardModifierMasks[pin] = KEY_DPAD_DOWN_MOD; break;
-                case BUTTON_PRESS_LEFT:  config.keyboardKeycodes[pin] = KEY_DPAD_LEFT; config.keyboardModifierMasks[pin] = KEY_DPAD_LEFT_MOD; break;
-                case BUTTON_PRESS_RIGHT: config.keyboardKeycodes[pin] = KEY_DPAD_RIGHT; config.keyboardModifierMasks[pin] = KEY_DPAD_RIGHT_MOD; break;
-                case BUTTON_PRESS_B1:    config.keyboardKeycodes[pin] = KEY_BUTTON_B1; config.keyboardModifierMasks[pin] = KEY_BUTTON_B1_MOD; break;
-                case BUTTON_PRESS_B2:    config.keyboardKeycodes[pin] = KEY_BUTTON_B2; config.keyboardModifierMasks[pin] = KEY_BUTTON_B2_MOD; break;
-                case BUTTON_PRESS_B3:    config.keyboardKeycodes[pin] = KEY_BUTTON_B3; config.keyboardModifierMasks[pin] = KEY_BUTTON_B3_MOD; break;
-                case BUTTON_PRESS_B4:    config.keyboardKeycodes[pin] = KEY_BUTTON_B4; config.keyboardModifierMasks[pin] = KEY_BUTTON_B4_MOD; break;
-                case BUTTON_PRESS_L1:    config.keyboardKeycodes[pin] = KEY_BUTTON_L1; config.keyboardModifierMasks[pin] = KEY_BUTTON_L1_MOD; break;
-                case BUTTON_PRESS_R1:    config.keyboardKeycodes[pin] = KEY_BUTTON_R1; config.keyboardModifierMasks[pin] = KEY_BUTTON_R1_MOD; break;
-                case BUTTON_PRESS_L2:    config.keyboardKeycodes[pin] = KEY_BUTTON_L2; config.keyboardModifierMasks[pin] = KEY_BUTTON_L2_MOD; break;
-                case BUTTON_PRESS_R2:    config.keyboardKeycodes[pin] = KEY_BUTTON_R2; config.keyboardModifierMasks[pin] = KEY_BUTTON_R2_MOD; break;
-                case BUTTON_PRESS_S1:    config.keyboardKeycodes[pin] = KEY_BUTTON_S1; config.keyboardModifierMasks[pin] = KEY_BUTTON_S1_MOD; break;
-                case BUTTON_PRESS_S2:    config.keyboardKeycodes[pin] = KEY_BUTTON_S2; config.keyboardModifierMasks[pin] = KEY_BUTTON_S2_MOD; break;
-                case BUTTON_PRESS_L3:    config.keyboardKeycodes[pin] = KEY_BUTTON_L3; config.keyboardModifierMasks[pin] = KEY_BUTTON_L3_MOD; break;
-                case BUTTON_PRESS_R3:    config.keyboardKeycodes[pin] = KEY_BUTTON_R3; config.keyboardModifierMasks[pin] = KEY_BUTTON_R3_MOD; break;
-                case BUTTON_PRESS_A1:    config.keyboardKeycodes[pin] = KEY_BUTTON_A1; config.keyboardModifierMasks[pin] = KEY_BUTTON_A1_MOD; break;
-                case BUTTON_PRESS_A2:    config.keyboardKeycodes[pin] = KEY_BUTTON_A2; config.keyboardModifierMasks[pin] = KEY_BUTTON_A2_MOD; break;
+            switch (mappings.pins[pin].action) {
+                case BUTTON_PRESS_UP:    mappings.keyboardKeycodes[pin] = KEY_DPAD_UP; mappings.keyboardModifierMasks[pin] = KEY_DPAD_UP_MOD; break;
+                case BUTTON_PRESS_DOWN:  mappings.keyboardKeycodes[pin] = KEY_DPAD_DOWN; mappings.keyboardModifierMasks[pin] = KEY_DPAD_DOWN_MOD; break;
+                case BUTTON_PRESS_LEFT:  mappings.keyboardKeycodes[pin] = KEY_DPAD_LEFT; mappings.keyboardModifierMasks[pin] = KEY_DPAD_LEFT_MOD; break;
+                case BUTTON_PRESS_RIGHT: mappings.keyboardKeycodes[pin] = KEY_DPAD_RIGHT; mappings.keyboardModifierMasks[pin] = KEY_DPAD_RIGHT_MOD; break;
+                case BUTTON_PRESS_B1:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_B1; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_B1_MOD; break;
+                case BUTTON_PRESS_B2:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_B2; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_B2_MOD; break;
+                case BUTTON_PRESS_B3:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_B3; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_B3_MOD; break;
+                case BUTTON_PRESS_B4:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_B4; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_B4_MOD; break;
+                case BUTTON_PRESS_L1:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_L1; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_L1_MOD; break;
+                case BUTTON_PRESS_R1:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_R1; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_R1_MOD; break;
+                case BUTTON_PRESS_L2:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_L2; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_L2_MOD; break;
+                case BUTTON_PRESS_R2:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_R2; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_R2_MOD; break;
+                case BUTTON_PRESS_S1:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_S1; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_S1_MOD; break;
+                case BUTTON_PRESS_S2:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_S2; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_S2_MOD; break;
+                case BUTTON_PRESS_L3:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_L3; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_L3_MOD; break;
+                case BUTTON_PRESS_R3:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_R3; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_R3_MOD; break;
+                case BUTTON_PRESS_A1:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_A1; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_A1_MOD; break;
+                case BUTTON_PRESS_A2:    mappings.keyboardKeycodes[pin] = KEY_BUTTON_A2; mappings.keyboardModifierMasks[pin] = KEY_BUTTON_A2_MOD; break;
                 default: break;
             }
         }
-    }
+    };
+    setKeyboardDefaults(config.gpioMappings);
+    for (int i = 0; i < config.profileOptions.gpioMappingsSets_count; i++)
+        setKeyboardDefaults(config.profileOptions.gpioMappingsSets[i]);
 
     // Run migration to enable or disable pre-existing profiles
     if (!config.migrations.profileEnabledFlagsMigrated)
