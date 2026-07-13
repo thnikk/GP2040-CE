@@ -61,7 +61,7 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: '0', value: 0x27 },
 		{ label: '-', value: 0x2d },
 		{ label: '=', value: 0x2e },
-		{ label: 'Bksp', value: 0x2a, size: '1.75u' },
+		{ label: 'Bksp', value: 0x2a, size: '2u' },
 	],
 	[
 		{ label: 'Tab', value: 0x2b, size: '1.5u' },
@@ -92,7 +92,7 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'L', value: 0x0f },
 		{ label: ';', value: 0x33 },
 		{ label: "'", value: 0x34 },
-		{ label: 'Enter', value: 0x28, size: '2u' },
+		{ label: 'Enter', value: 0x28, size: '2.25u' },
 	],
 	[
 		{ label: 'SftL', value: 0xe1, size: '2.25u' },
@@ -115,7 +115,7 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'Space', value: 0x2c, size: '6.25u' },
 		{ label: 'AltR', value: 0xe6, size: '1.25u' },
 		{ label: 'WinR', value: 0xe7, size: '1.25u' },
-		{ label: '', value: 0, size: '1.25u', spacer: true },
+		{ label: '', value: 0, size: '1.5u', spacer: true },
 		{ label: 'CtR', value: 0xe4, size: '1.25u' },
 	],
 ];
