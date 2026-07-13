@@ -8,11 +8,11 @@ const isModifier = (v: number) => v >= MODIFIER_MIN && v <= MODIFIER_MAX;
 
 const labelMap = new Map(KEY_CODES.map((k) => [k.value, k.label]));
 
-type KeyDef = { label: string; value: number; w?: number; spacer?: boolean };
+type KeyDef = { label: string; value: number; size?: string; spacer?: boolean };
 
 const MAIN_ROWS: KeyDef[][] = [
 	[
-		{ label: '', value: 0, w: 1.5, spacer: true },
+		{ label: '', value: 0, size: '1.5u', spacer: true },
 		{ label: 'F13', value: 0x68 },
 		{ label: 'F14', value: 0x69 },
 		{ label: 'F15', value: 0x6a },
@@ -25,10 +25,10 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'F22', value: 0x71 },
 		{ label: 'F23', value: 0x72 },
 		{ label: 'F24', value: 0x73 },
-		{ label: '', value: 0, w: 1.2, spacer: true },
+		{ label: '', value: 0, size: '1.25u', spacer: true },
 	],
 	[
-		{ label: 'Esc', value: 0x29, w: 1.5 },
+		{ label: 'Esc', value: 0x29, size: '1.5u' },
 		{ label: 'F1', value: 0x3a },
 		{ label: 'F2', value: 0x3b },
 		{ label: 'F3', value: 0x3c },
@@ -41,7 +41,7 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'F10', value: 0x43 },
 		{ label: 'F11', value: 0x44 },
 		{ label: 'F12', value: 0x45 },
-		{ label: 'Del', value: 0x4c, w: 1.2 },
+		{ label: 'Del', value: 0x4c, size: '1.25u' },
 	],
 	[
 		{ label: '`', value: 0x35 },
@@ -57,10 +57,10 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: '0', value: 0x27 },
 		{ label: '-', value: 0x2d },
 		{ label: '=', value: 0x2e },
-		{ label: 'Bksp', value: 0x2a, w: 1.8 },
+		{ label: 'Bksp', value: 0x2a, size: '1.75u' },
 	],
 	[
-		{ label: 'Tab', value: 0x2b, w: 1.5 },
+		{ label: 'Tab', value: 0x2b, size: '1.5u' },
 		{ label: 'Q', value: 0x14 },
 		{ label: 'W', value: 0x1a },
 		{ label: 'E', value: 0x08 },
@@ -73,10 +73,10 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'P', value: 0x13 },
 		{ label: '[', value: 0x2f },
 		{ label: ']', value: 0x30 },
-		{ label: '\\', value: 0x31, w: 1.5 },
+		{ label: '\\', value: 0x31, size: '1.5u' },
 	],
 	[
-		{ label: 'CLck', value: 0x39, w: 1.8 },
+		{ label: 'CLck', value: 0x39, size: '1.75u' },
 		{ label: 'A', value: 0x04 },
 		{ label: 'S', value: 0x16 },
 		{ label: 'D', value: 0x07 },
@@ -88,10 +88,10 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'L', value: 0x0f },
 		{ label: ';', value: 0x33 },
 		{ label: "'", value: 0x34 },
-		{ label: 'Enter', value: 0x28, w: 2 },
+		{ label: 'Enter', value: 0x28, size: '2u' },
 	],
 	[
-		{ label: 'SftL', value: 0xe1, w: 2.3 },
+		{ label: 'SftL', value: 0xe1, size: '2.25u' },
 		{ label: 'Z', value: 0x1d },
 		{ label: 'X', value: 0x1b },
 		{ label: 'C', value: 0x06 },
@@ -102,16 +102,16 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: ',', value: 0x36 },
 		{ label: '.', value: 0x37 },
 		{ label: '/', value: 0x38 },
-		{ label: 'SftR', value: 0xe5, w: 2.7 },
+		{ label: 'SftR', value: 0xe5, size: '2.75u' },
 	],
 	[
-		{ label: 'CtL', value: 0xe0, w: 1.3 },
-		{ label: 'WinL', value: 0xe3, w: 1.3 },
-		{ label: 'AltL', value: 0xe2, w: 1.3 },
-		{ label: 'Space', value: 0x2c, w: 6.3 },
-		{ label: 'AltR', value: 0xe6, w: 1.3 },
-		{ label: 'WinR', value: 0xe7, w: 1.3 },
-		{ label: 'CtR', value: 0xe4, w: 1.3 },
+		{ label: 'CtL', value: 0xe0, size: '1.25u' },
+		{ label: 'WinL', value: 0xe3, size: '1.25u' },
+		{ label: 'AltL', value: 0xe2, size: '1.25u' },
+		{ label: 'Space', value: 0x2c, size: '6.25u' },
+		{ label: 'AltR', value: 0xe6, size: '1.25u' },
+		{ label: 'WinR', value: 0xe7, size: '1.25u' },
+		{ label: 'CtR', value: 0xe4, size: '1.25u' },
 	],
 ];
 
@@ -129,10 +129,19 @@ const EXTRA_CLUSTERS: { label: string; keys: KeyDef[][] }[] = [
 				{ label: 'End', value: 0x4d },
 				{ label: 'PgDn', value: 0x4e },
 			],
+		],
+	},
+	{
+		label: 'Arrows',
+		keys: [
 			[
+				{ label: '', value: 0, spacer: true },
 				{ label: '↑', value: 0x52 },
-				{ label: '↓', value: 0x51 },
+				{ label: '', value: 0, spacer: true },
+			],
+			[
 				{ label: '←', value: 0x50 },
+				{ label: '↓', value: 0x51 },
 				{ label: '→', value: 0x4f },
 			],
 		],
@@ -144,6 +153,7 @@ const EXTRA_CLUSTERS: { label: string; keys: KeyDef[][] }[] = [
 				{ label: 'Mute', value: 0xf2 },
 				{ label: 'Vol-', value: 0xf4 },
 				{ label: 'Vol+', value: 0xf3 },
+				{ label: '', value: 0, spacer: true },
 			],
 			[
 				{ label: 'Prev', value: 0xe9 },
@@ -178,9 +188,12 @@ export default function KeyboardWidget({
 		[keycode, modifierMask, onChange],
 	);
 
+	const sizeClass = (s: string | undefined) => s ? `sz-${s.replace('.', '_')}` : 'sz-1u';
+
 	const renderKey = (key: KeyDef, idx: number) => {
+		const sz = sizeClass(key.size);
 		if (key.spacer) {
-			return <div className="kb-spacer" style={{ flex: key.w || 1 }} key={`s-${idx}`} />;
+			return <div className={`kb-spacer ${sz}`} key={`s-${idx}`} />;
 		}
 		const isMod = isModifier(key.value);
 		const isSelected = isMod
@@ -189,8 +202,7 @@ export default function KeyboardWidget({
 		return (
 			<button
 				type="button"
-				className={`kb-key${isSelected ? ' selected' : ''}${isMod ? ' mod' : ''}`}
-				style={{ flex: key.w || 1 }}
+				className={`kb-key${isSelected ? ' selected' : ''}${isMod ? ' mod' : ''} ${sz}`}
 				key={key.value}
 				onClick={() => handleKeyClick(key.value)}
 				title={labelMap.get(key.value) || key.label}

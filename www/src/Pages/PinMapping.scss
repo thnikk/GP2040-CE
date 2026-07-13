@@ -227,12 +227,12 @@ $danger: #7b2d26;
 
 	.kb-clusters-row {
 		display: flex;
-		gap: 6px;
+		justify-content: space-evenly;
 		margin-top: 4px;
 	}
 
 	.kb-cluster {
-		flex: 1;
+		flex: 0 1 auto;
 		background: rgba(255, 255, 255, 0.04);
 		border-radius: 6px;
 		padding: 6px;
@@ -258,11 +258,36 @@ $danger: #7b2d26;
 		visibility: hidden;
 	}
 
+	$key-h: 36px;
+	$key-gap: 3px;
+
+	.keyboard-row {
+		display: flex;
+		gap: $key-gap;
+		height: $key-h;
+	}
+
+	$sizes: (
+		'1u': $key-h,
+		'1_25u': $key-h * 1.25,
+		'1_5u': $key-h * 1.5,
+		'1_75u': $key-h * 1.75,
+		'2u': $key-h * 2,
+		'2_25u': $key-h * 2.25,
+		'2_75u': $key-h * 2.75,
+		'6_25u': $key-h * 6.25,
+	);
+
+	@each $name, $w in $sizes {
+		.sz-#{$name} {
+			width: $w;
+			min-width: $w;
+		}
+	}
+
 	.kb-key {
-		flex: 1;
-		min-width: 0;
-		height: 5em;
-		padding: 0 2px;
+		height: $key-h;
+		padding: 0 4px;
 		border: 1px solid rgba(255, 255, 255, 0.2);
 		border-radius: 4px;
 		background: rgba(255, 255, 255, 0.06);
@@ -298,6 +323,12 @@ $danger: #7b2d26;
 			background: #ff8c00;
 			border-color: #ff8c00;
 		}
+	}
+
+	.kb-spacer {
+		height: $key-h;
+		pointer-events: none;
+		visibility: hidden;
 	}
 }
 
