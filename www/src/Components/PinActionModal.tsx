@@ -247,12 +247,11 @@ export default function PinActionModal({
 	}, [pendingKeyboardKeycode]);
 
 	const keyboardValue = useMemo(() => {
-		const selected = [];
-		if (pendingKeyboardKeycode > 0)
-			selected.push({
-				label: KEY_CODES.find((k) => k.value === pendingKeyboardKeycode)?.label ?? 'None',
-				value: pendingKeyboardKeycode,
-			});
+		const selected: { label: string; value: number }[] = [];
+		if (pendingKeyboardKeycode > 0) {
+			const label = KEY_CODES.find((k) => k.value === pendingKeyboardKeycode)?.label ?? 'None';
+			selected.push({ label, value: pendingKeyboardKeycode });
+		}
 		for (let i = 0; i < 8; i++) {
 			const modValue = MODIFIER_MIN + i;
 			if (pendingKeyboardModifierMask & (1 << i)) {
@@ -276,7 +275,7 @@ export default function PinActionModal({
 			for (const item of items) {
 				if (isModifierKey(item.value))
 					modMask |= 1 << (item.value - MODIFIER_MIN);
-				else
+				else if (keycode === 0)
 					keycode = item.value;
 			}
 			setPendingKeyboardKeycode(keycode);

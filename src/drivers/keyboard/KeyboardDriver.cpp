@@ -77,7 +77,8 @@ void KeyboardDriver::process(Gamepad * gamepad) {
 
 		uint8_t modifierMask = pinMappings[pin].keyboardModifierMask;
 
-		auto applyModifiers = [&]() {
+		auto applyPress = [&]() {
+			pressKey(keycode);
 			for (uint8_t i = 0; i < 8; i++) {
 				if (modifierMask & (1 << i))
 					pressKey(modifierKeys[i]);
@@ -85,7 +86,7 @@ void KeyboardDriver::process(Gamepad * gamepad) {
 		};
 
 #define MOD_CASE(action, gamepad_call, mask_field, mask_value) \
-	case action: if (gamepad->gamepad_call) { pressKey(keycode); applyModifiers(); mask_field |= mask_value; } break
+	case action: if (gamepad->gamepad_call) { applyPress(); mask_field |= mask_value; } break
 
 		switch (pinMappings[pin].action) {
 			MOD_CASE(BUTTON_PRESS_UP,    pressedUp(),    perPinDpadMask, GAMEPAD_MASK_UP);

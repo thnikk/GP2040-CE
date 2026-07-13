@@ -213,3 +213,59 @@
 #ifndef HOTKEY_16_ACTION
 #define HOTKEY_16_ACTION 0
 #endif
+
+/* per-button keyboard modifier masks (optional, default 0 = none) */
+#ifndef KEY_DPAD_UP_MOD
+#define KEY_DPAD_UP_MOD 0
+#endif
+#ifndef KEY_DPAD_DOWN_MOD
+#define KEY_DPAD_DOWN_MOD 0
+#endif
+#ifndef KEY_DPAD_LEFT_MOD
+#define KEY_DPAD_LEFT_MOD 0
+#endif
+#ifndef KEY_DPAD_RIGHT_MOD
+#define KEY_DPAD_RIGHT_MOD 0
+#endif
+#ifndef KEY_BUTTON_B1_MOD
+#define KEY_BUTTON_B1_MOD 0
+#endif
+#ifndef KEY_BUTTON_B2_MOD
+#define KEY_BUTTON_B2_MOD 0
+#endif
+#ifndef KEY_BUTTON_B3_MOD
+#define KEY_BUTTON_B3_MOD 0
+#endif
+#ifndef KEY_BUTTON_B4_MOD
+#define KEY_BUTTON_B4_MOD 0
+#endif
+#ifndef KEY_BUTTON_L1_MOD
+#define KEY_BUTTON_L1_MOD 0
+#endif
+#ifndef KEY_BUTTON_R1_MOD
+#define KEY_BUTTON_R1_MOD 0
+#endif
+#ifndef KEY_BUTTON_L2_MOD
+#define KEY_BUTTON_L2_MOD 0
+#endif
+#ifndef KEY_BUTTON_R2_MOD
+#define KEY_BUTTON_R2_MOD 0
+#endif
+#ifndef KEY_BUTTON_S1_MOD
+#define KEY_BUTTON_S1_MOD 0
+#endif
+#ifndef KEY_BUTTON_S2_MOD
+#define KEY_BUTTON_S2_MOD 0
+#endif
+#ifndef KEY_BUTTON_L3_MOD
+#define KEY_BUTTON_L3_MOD 0
+#endif
+#ifndef KEY_BUTTON_R3_MOD
+#define KEY_BUTTON_R3_MOD 0
+#endif
+#ifndef KEY_BUTTON_A1_MOD
+#define KEY_BUTTON_A1_MOD 0
+#endif
+#ifndef KEY_BUTTON_A2_MOD
+#define KEY_BUTTON_A2_MOD 0
+#endif
