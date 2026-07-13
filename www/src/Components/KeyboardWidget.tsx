@@ -185,7 +185,11 @@ export default function KeyboardWidget({
 		(value: number) => {
 			if (isModifier(value)) {
 				const bit = 1 << (value - MODIFIER_MIN);
-				onChange(keycode, modifierMask ^ bit);
+				if (value === keycode) {
+					onChange(0, modifierMask | bit);
+				} else {
+					onChange(keycode, modifierMask ^ bit);
+				}
 			} else {
 				onChange(value === keycode ? 0 : value, modifierMask);
 			}
@@ -203,7 +207,7 @@ export default function KeyboardWidget({
 		}
 		const isMod = isModifier(key.value);
 		const isSelected = isMod
-			? Boolean(modifierMask & (1 << (key.value - MODIFIER_MIN)))
+			? Boolean(modifierMask & (1 << (key.value - MODIFIER_MIN))) || key.value === keycode
 			: key.value === keycode;
 		return (
 			<button

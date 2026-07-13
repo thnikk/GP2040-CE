@@ -323,6 +323,8 @@ export default function BoardSVG({
 				}
 				if (keyboardKeycode < MODIFIER_MIN)
 					keyboardLines.push(keyCodeLabel(keyboardKeycode));
+				else
+					keyboardLines.push(MODIFIER_SHORT[keyboardKeycode] || keyCodeLabel(keyboardKeycode));
 			}
 
 			if (keyboardLines) {
