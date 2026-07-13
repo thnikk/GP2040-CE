@@ -225,6 +225,23 @@ $danger: #7b2d26;
 	gap: 3px;
 	user-select: none;
 
+	.kb-main-centered {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 3px;
+	}
+
+	.f-row {
+		width: 100%;
+		justify-content: space-between;
+	}
+
+	.f-cluster {
+		display: flex;
+		gap: 3px;
+	}
+
 	.kb-clusters-row {
 		display: flex;
 		justify-content: space-evenly;
@@ -248,23 +265,19 @@ $danger: #7b2d26;
 		padding-bottom: 2px;
 	}
 
-	.keyboard-row {
-		display: flex;
-		gap: 3px;
-	}
-
 	.kb-spacer {
 		pointer-events: none;
 		visibility: hidden;
 	}
 
-	$key-h: 36px;
+	$key-h: 48px;
 	$key-gap: 3px;
 
 	.keyboard-row {
 		display: flex;
 		gap: $key-gap;
 		height: $key-h;
+		width: 100%;
 	}
 
 	$sizes: (
@@ -292,7 +305,7 @@ $danger: #7b2d26;
 		border-radius: 4px;
 		background: rgba(255, 255, 255, 0.06);
 		color: inherit;
-		font-size: 0.6rem;
+		font-size: 0.75rem;
 		font-family: 'Nunito', monospace;
 		text-align: center;
 		cursor: pointer;
@@ -327,6 +340,13 @@ $danger: #7b2d26;
 
 	.kb-spacer {
 		height: $key-h;
+		pointer-events: none;
+		visibility: hidden;
+	}
+
+	.kb-flex-spacer {
+		height: $key-h;
+		flex: 1;
 		pointer-events: none;
 		visibility: hidden;
 	}

@@ -8,40 +8,44 @@ const isModifier = (v: number) => v >= MODIFIER_MIN && v <= MODIFIER_MAX;
 
 const labelMap = new Map(KEY_CODES.map((k) => [k.value, k.label]));
 
-type KeyDef = { label: string; value: number; size?: string; spacer?: boolean };
+type KeyDef = { label: string; value: number; size?: string; spacer?: boolean; flex?: boolean };
 
 const MAIN_ROWS: KeyDef[][] = [
 	[
-		{ label: '', value: 0, size: '1.5u', spacer: true },
+		{ label: '', value: 0, size: '1u', spacer: true },
+		{ label: '', value: 0, flex:true, spacer: true },
 		{ label: 'F13', value: 0x68 },
 		{ label: 'F14', value: 0x69 },
 		{ label: 'F15', value: 0x6a },
 		{ label: 'F16', value: 0x6b },
+		{ label: '', value: 0, flex: true, spacer: true },
 		{ label: 'F17', value: 0x6c },
 		{ label: 'F18', value: 0x6d },
 		{ label: 'F19', value: 0x6e },
 		{ label: 'F20', value: 0x6f },
+		{ label: '', value: 0, flex: true, spacer: true },
 		{ label: 'F21', value: 0x70 },
 		{ label: 'F22', value: 0x71 },
 		{ label: 'F23', value: 0x72 },
 		{ label: 'F24', value: 0x73 },
-		{ label: '', value: 0, size: '1.25u', spacer: true },
 	],
 	[
-		{ label: 'Esc', value: 0x29, size: '1.5u' },
+		{ label: 'Esc', value: 0x29 },
+		{ label: '', value: 0, flex: true, spacer: true },
 		{ label: 'F1', value: 0x3a },
 		{ label: 'F2', value: 0x3b },
 		{ label: 'F3', value: 0x3c },
 		{ label: 'F4', value: 0x3d },
+		{ label: '', value: 0, flex: true, spacer: true },
 		{ label: 'F5', value: 0x3e },
 		{ label: 'F6', value: 0x3f },
 		{ label: 'F7', value: 0x40 },
 		{ label: 'F8', value: 0x41 },
+		{ label: '', value: 0, flex: true, spacer: true },
 		{ label: 'F9', value: 0x42 },
 		{ label: 'F10', value: 0x43 },
 		{ label: 'F11', value: 0x44 },
 		{ label: 'F12', value: 0x45 },
-		{ label: 'Del', value: 0x4c, size: '1.25u' },
 	],
 	[
 		{ label: '`', value: 0x35 },
@@ -111,6 +115,7 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'Space', value: 0x2c, size: '6.25u' },
 		{ label: 'AltR', value: 0xe6, size: '1.25u' },
 		{ label: 'WinR', value: 0xe7, size: '1.25u' },
+		{ label: '', value: 0, size: '1.25u', spacer: true },
 		{ label: 'CtR', value: 0xe4, size: '1.25u' },
 	],
 ];
@@ -193,7 +198,8 @@ export default function KeyboardWidget({
 	const renderKey = (key: KeyDef, idx: number) => {
 		const sz = sizeClass(key.size);
 		if (key.spacer) {
-			return <div className={`kb-spacer ${sz}`} key={`s-${idx}`} />;
+			const cls = key.flex ? 'kb-flex-spacer' : `kb-spacer ${sz}`;
+			return <div className={cls} key={`s-${idx}`} />;
 		}
 		const isMod = isModifier(key.value);
 		const isSelected = isMod
@@ -214,11 +220,34 @@ export default function KeyboardWidget({
 
 	return (
 		<div className="keyboard-widget">
-			{MAIN_ROWS.map((row, ri) => (
-				<div className="keyboard-row" key={ri}>
-					{row.map((key, ki) => renderKey(key, ki))}
-				</div>
-			))}
+			<div className="kb-main-centered">
+				{MAIN_ROWS.map((row, ri) => {
+					if (ri < 2) {
+						const groups: KeyDef[][] = [[]];
+						for (const key of row) {
+							if (key.flex) {
+								groups.push([]);
+							} else {
+								groups[groups.length - 1].push(key);
+							}
+						}
+						return (
+							<div className="keyboard-row f-row" key={ri}>
+								{groups.map((g, gi) => (
+									<div className="f-cluster" key={gi}>
+										{g.map((key, ki) => renderKey(key, ki))}
+									</div>
+								))}
+							</div>
+						);
+					}
+					return (
+						<div className="keyboard-row" key={ri}>
+							{row.map((key, ki) => renderKey(key, ki))}
+						</div>
+					);
+				})}
+			</div>
 			<div className="kb-clusters-row">
 				{EXTRA_CLUSTERS.map((cluster) => (
 					<div className="kb-cluster" key={cluster.label}>
