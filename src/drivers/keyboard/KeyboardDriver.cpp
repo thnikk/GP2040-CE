@@ -8,6 +8,7 @@
 
 void KeyboardDriver::initialize() {
 	keyboardReport = {
+		.modifier = 0,
 		.keycode = { 0 },
 		.multimedia = 0
 	};
@@ -66,11 +67,6 @@ void KeyboardDriver::process(Gamepad * gamepad) {
 	uint32_t perPinButtonMask = 0;
 	uint8_t perPinDpadMask = 0;
 
-	const uint8_t modifierKeys[8] = {
-		HID_KEY_CONTROL_LEFT, HID_KEY_SHIFT_LEFT, HID_KEY_ALT_LEFT, HID_KEY_GUI_LEFT,
-		HID_KEY_CONTROL_RIGHT, HID_KEY_SHIFT_RIGHT, HID_KEY_ALT_RIGHT, HID_KEY_GUI_RIGHT,
-	};
-
 	for (Pin_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
 		uint8_t keycode = pinMappings[pin].keyboardKeycode;
 		if (keycode == 0) continue;
@@ -78,11 +74,8 @@ void KeyboardDriver::process(Gamepad * gamepad) {
 		uint8_t modifierMask = pinMappings[pin].keyboardModifierMask;
 
 		auto applyPress = [&]() {
+			keyboardReport.modifier |= modifierMask;
 			pressKey(keycode);
-			for (uint8_t i = 0; i < 8; i++) {
-				if (modifierMask & (1 << i))
-					pressKey(modifierKeys[i]);
-			}
 		};
 
 #define MOD_CASE(action, gamepad_call, mask_field, mask_value) \
@@ -172,8 +165,8 @@ void KeyboardDriver::process(Gamepad * gamepad) {
 	void *keyboard_report_payload;
 	uint16_t keyboard_report_size;
 	if ( keyboardReport.reportId == KEYBOARD_KEY_REPORT_ID ) {
-		keyboard_report_payload = (void *)keyboardReport.keycode;
-		keyboard_report_size = sizeof(KeyboardReport::keycode);
+		keyboard_report_payload = (void *)&keyboardReport.modifier;
+		keyboard_report_size = sizeof(KeyboardReport::modifier) + sizeof(KeyboardReport::keycode);
 		
 	} else {
 		keyboard_report_payload = (void *)&keyboardReport.multimedia;
@@ -210,6 +203,7 @@ void KeyboardDriver::pressKey(uint8_t code) {
 }
 
 void KeyboardDriver::releaseAllKeys(void) {
+	keyboardReport.modifier = 0;
 	for (uint8_t i = 0; i < (sizeof(keyboardReport.keycode) / sizeof(keyboardReport.keycode[0])); i++) {
 		keyboardReport.keycode[i] = 0;
 	}
@@ -219,8 +213,8 @@ void KeyboardDriver::releaseAllKeys(void) {
 // tud_hid_get_report_cb
 uint16_t KeyboardDriver::get_report(uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
 	if ( report_id == KEYBOARD_KEY_REPORT_ID ) {
-		memcpy(buffer, (void*) keyboardReport.keycode, sizeof(KeyboardReport::keycode));
-		return sizeof(KeyboardReport::keycode);
+		memcpy(buffer, (void*) &keyboardReport.modifier, sizeof(KeyboardReport::modifier) + sizeof(KeyboardReport::keycode));
+		return sizeof(KeyboardReport::modifier) + sizeof(KeyboardReport::keycode);
 	} else {
 		memcpy(buffer, (void*) &keyboardReport.multimedia, sizeof(KeyboardReport::multimedia));
 		return sizeof(KeyboardReport::multimedia);

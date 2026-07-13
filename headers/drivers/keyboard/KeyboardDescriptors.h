@@ -18,6 +18,7 @@
 typedef struct
 {
 	uint8_t reportId = KEYBOARD_KEY_REPORT_ID;
+	uint8_t modifier;  /**< Keyboard modifier (KEYBOARD_MODIFIER_* masks). */
 	uint8_t keycode[32]; /**< Key codes of the currently pressed keys. */
 	uint8_t multimedia;
 } KeyboardReport;
@@ -71,7 +72,16 @@ static const uint8_t keyboard_report_descriptor[] =
 
 		// Report ID (1)
 		0x85, KEYBOARD_KEY_REPORT_ID,
-		// Keys
+		// Modifier byte
+		0x05, 0x07,			 // Usage Page (Key Codes),
+		0x19, 0xE0,			 // Usage Minimum (224),
+		0x29, 0xE7,			 // Usage Maximum (231),
+		0x15, 0x00,			 // Logical Minimum (0),
+		0x25, 0x01,			 // Logical Maximum (1),
+		0x75, 0x01,			 // Report Size (1),
+		0x95, 0x08,			 // Report Count (8),
+		0x81, 0x02,			 // Input (Data, Variable, Absolute)
+		// Keycodes
 		0x05, 0x07,			 // Usage Page (Key Codes),
 		0x19, 0x00,			 // Usage Minimum (0),
 		0x2A, 0xFF, 0x00, 	 // Usage Maximum (255),
@@ -79,7 +89,7 @@ static const uint8_t keyboard_report_descriptor[] =
 		0x25, 0x01,			 // Logical Maximum (1),
 		0x75, 0x01,			 // Report Size (1),
 		0x96, 0x00, 0x01,	 // Report Count (256),
-		0x81, 0x02,			 // Input (Data, Variable, Absolute), Key byte (1-32)
+		0x81, 0x02,			 // Input (Data, Variable, Absolute)
 		0xC0,			// End Collection
 		0x05, 0x0C, //Usage Page (Consumer Devices)
 		0x09, 0x01, //Usage (Consumer Control)
