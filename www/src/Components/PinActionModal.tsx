@@ -9,14 +9,14 @@ import CustomSelect from './CustomSelect';
 import { AppContext } from '../Contexts/AppContext';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../Data/Buttons';
-import { KEY_CODES } from '../Data/Keyboard';
 import LEDColors from '../Data/LEDColors';
 import { MultiValue, SingleValue } from 'react-select';
+import { KEY_CODES } from '../Data/Keyboard';
+import KeyboardWidget from './KeyboardWidget';
 
 const MODIFIER_MIN = 0xe0;
-const MODIFIER_MAX = 0xe7;
-
-const isModifierKey = (value: number) => value >= MODIFIER_MIN && value <= MODIFIER_MAX;
+const isModifierKey = (value: number) => value >= MODIFIER_MIN && value <= 0xe7;
+const WIDGET_BREAKPOINT = 992;
 
 type OptionType = {
 	label: string;
@@ -238,7 +238,15 @@ export default function PinActionModal({
 		[],
 	);
 
-	const keyboardOptions = useMemo(() => {
+	const [useWidget, setUseWidget] = useState(window.innerWidth >= WIDGET_BREAKPOINT);
+
+	useEffect(() => {
+		const onResize = () => setUseWidget(window.innerWidth >= WIDGET_BREAKPOINT);
+		window.addEventListener('resize', onResize);
+		return () => window.removeEventListener('resize', onResize);
+	}, []);
+
+	const keyboardDropdownOptions = useMemo(() => {
 		if (pendingKeyboardKeycode === 0 || isModifierKey(pendingKeyboardKeycode))
 			return KEY_CODES;
 		return KEY_CODES.filter(
@@ -246,7 +254,7 @@ export default function PinActionModal({
 		);
 	}, [pendingKeyboardKeycode]);
 
-	const keyboardValue = useMemo(() => {
+	const keyboardDropdownValue = useMemo(() => {
 		const selected: { label: string; value: number }[] = [];
 		if (pendingKeyboardKeycode > 0) {
 			const label = KEY_CODES.find((k) => k.value === pendingKeyboardKeycode)?.label ?? 'None';
@@ -262,7 +270,7 @@ export default function PinActionModal({
 		return selected;
 	}, [pendingKeyboardKeycode, pendingKeyboardModifierMask]);
 
-	const handleKeyboardChange = useCallback(
+	const handleKeyboardDropdownChange = useCallback(
 		(selected: MultiValue<{ label: string; value: number }> | SingleValue<{ label: string; value: number }>) => {
 			if (!selected || (Array.isArray(selected) && !selected.length)) {
 				setPendingKeyboardKeycode(0);
@@ -279,6 +287,14 @@ export default function PinActionModal({
 					keycode = item.value;
 			}
 			setPendingKeyboardKeycode(keycode);
+			setPendingKeyboardModifierMask(modMask);
+		},
+		[],
+	);
+
+	const handleKeyboardChange = useCallback(
+		(kc: number, modMask: number) => {
+			setPendingKeyboardKeycode(kc);
 			setPendingKeyboardModifierMask(modMask);
 		},
 		[],
@@ -388,14 +404,22 @@ export default function PinActionModal({
 				)}
 				{activeTab === 'keyboard' && (
 					<div className="pin-action-section">
-						<CustomSelect
-							isMulti
-							options={keyboardOptions}
-							onChange={handleKeyboardChange}
-							value={keyboardValue}
-							getOptionLabel={(o: { label: string }) => o.label}
-							autoFocus
-						/>
+						{useWidget ? (
+							<KeyboardWidget
+								keycode={pendingKeyboardKeycode}
+								modifierMask={pendingKeyboardModifierMask}
+								onChange={handleKeyboardChange}
+							/>
+						) : (
+							<CustomSelect
+								isMulti
+								options={keyboardDropdownOptions}
+								onChange={handleKeyboardDropdownChange}
+								value={keyboardDropdownValue}
+								getOptionLabel={(o: { label: string }) => o.label}
+								autoFocus
+							/>
+						)}
 					</div>
 				)}
 				{showLedSection && (

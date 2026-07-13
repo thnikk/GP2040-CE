@@ -219,7 +219,89 @@ $danger: #7b2d26;
 
 
 [data-bs-theme="dark"] {
-	.pin-action-modal {
+.keyboard-widget {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	user-select: none;
+
+	.kb-clusters-row {
+		display: flex;
+		gap: 6px;
+		margin-top: 4px;
+	}
+
+	.kb-cluster {
+		flex: 1;
+		background: rgba(255, 255, 255, 0.04);
+		border-radius: 6px;
+		padding: 6px;
+		gap: 3px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.kb-cluster-label {
+		font-size: 0.6rem;
+		opacity: 0.5;
+		text-align: center;
+		padding-bottom: 2px;
+	}
+
+	.keyboard-row {
+		display: flex;
+		gap: 3px;
+	}
+
+	.kb-spacer {
+		pointer-events: none;
+		visibility: hidden;
+	}
+
+	.kb-key {
+		flex: 1;
+		min-width: 0;
+		height: 5em;
+		padding: 0 2px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 4px;
+		background: rgba(255, 255, 255, 0.06);
+		color: inherit;
+		font-size: 0.6rem;
+		font-family: 'Nunito', monospace;
+		text-align: center;
+		cursor: pointer;
+		transition: background 0.1s, border-color 0.1s;
+		white-space: nowrap;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 1;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.15);
+			border-color: rgba(255, 255, 255, 0.4);
+		}
+
+		&.mod:hover {
+			border-color: #ffa500;
+		}
+
+		&.selected {
+			background: #0d6efd;
+			border-color: #0d6efd;
+			color: #fff;
+		}
+
+		&.mod.selected {
+			background: #ff8c00;
+			border-color: #ff8c00;
+		}
+	}
+}
+
+.pin-action-modal {
 		.modal-content {
 			background: #{$nord0};
 		}
