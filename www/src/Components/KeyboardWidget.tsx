@@ -8,7 +8,7 @@ const isModifier = (v: number) => v >= MODIFIER_MIN && v <= MODIFIER_MAX;
 
 const labelMap = new Map(KEY_CODES.map((k) => [k.value, k.label]));
 
-type KeyDef = { label: string; value: number; size?: string; spacer?: boolean; flex?: boolean };
+type KeyDef = { label: string; value: number; size?: string; spacer?: boolean; flex?: boolean; sub?: string };
 
 const MAIN_ROWS: KeyDef[][] = [
 	[
@@ -48,19 +48,19 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'F12', value: 0x45 },
 	],
 	[
-		{ label: '`', value: 0x35 },
-		{ label: '1', value: 0x1e },
-		{ label: '2', value: 0x1f },
-		{ label: '3', value: 0x20 },
-		{ label: '4', value: 0x21 },
-		{ label: '5', value: 0x22 },
-		{ label: '6', value: 0x23 },
-		{ label: '7', value: 0x24 },
-		{ label: '8', value: 0x25 },
-		{ label: '9', value: 0x26 },
-		{ label: '0', value: 0x27 },
-		{ label: '-', value: 0x2d },
-		{ label: '=', value: 0x2e },
+		{ label: '`', value: 0x35, sub: '~' },
+		{ label: '1', value: 0x1e, sub: '!' },
+		{ label: '2', value: 0x1f, sub: '@' },
+		{ label: '3', value: 0x20, sub: '#' },
+		{ label: '4', value: 0x21, sub: '$' },
+		{ label: '5', value: 0x22, sub: '%' },
+		{ label: '6', value: 0x23, sub: '^' },
+		{ label: '7', value: 0x24, sub: '&' },
+		{ label: '8', value: 0x25, sub: '*' },
+		{ label: '9', value: 0x26, sub: '(' },
+		{ label: '0', value: 0x27, sub: ')' },
+		{ label: '-', value: 0x2d, sub: '_' },
+		{ label: '=', value: 0x2e, sub: '+' },
 		{ label: 'Backspace', value: 0x2a, size: '2u' },
 	],
 	[
@@ -75,9 +75,9 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'I', value: 0x0c },
 		{ label: 'O', value: 0x12 },
 		{ label: 'P', value: 0x13 },
-		{ label: '[', value: 0x2f },
-		{ label: ']', value: 0x30 },
-		{ label: '\\', value: 0x31, size: '1.5u' },
+		{ label: '[', value: 0x2f, sub: '{' },
+		{ label: ']', value: 0x30, sub: '}' },
+		{ label: '\\', value: 0x31, size: '1.5u', sub: '|' },
 	],
 	[
 		{ label: 'CapsLock', value: 0x39, size: '1.75u' },
@@ -90,8 +90,8 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'J', value: 0x0d },
 		{ label: 'K', value: 0x0e },
 		{ label: 'L', value: 0x0f },
-		{ label: ';', value: 0x33 },
-		{ label: "'", value: 0x34 },
+		{ label: ';', value: 0x33, sub: ':' },
+		{ label: "'", value: 0x34, sub: '"' },
 		{ label: 'Enter', value: 0x28, size: '2.25u' },
 	],
 	[
@@ -103,9 +103,9 @@ const MAIN_ROWS: KeyDef[][] = [
 		{ label: 'B', value: 0x05 },
 		{ label: 'N', value: 0x11 },
 		{ label: 'M', value: 0x10 },
-		{ label: ',', value: 0x36 },
-		{ label: '.', value: 0x37 },
-		{ label: '/', value: 0x38 },
+		{ label: ',', value: 0x36, sub: '<' },
+		{ label: '.', value: 0x37, sub: '>' },
+		{ label: '/', value: 0x38, sub: '?' },
 		{ label: 'Shift', value: 0xe5, size: '2.75u' },
 	],
 	[
@@ -213,7 +213,14 @@ export default function KeyboardWidget({
 				onClick={() => handleKeyClick(key.value)}
 				title={labelMap.get(key.value) || key.label}
 			>
-				{key.label}
+				{key.sub ? (
+					<span className="kb-key-stack">
+						<span className="kb-key-sub">{key.sub}</span>
+						<span className="kb-key-main">{key.label}</span>
+					</span>
+				) : (
+					key.label
+				)}
 			</button>
 		);
 	};

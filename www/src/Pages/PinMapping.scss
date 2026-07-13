@@ -306,7 +306,7 @@ $danger: #7b2d26;
 /*		background: rgba(255, 255, 255, 0.06); */
 		background: #{$nord1};
 		color: inherit;
-		font-size: 0.75rem;
+		font-size: 1rem;
 		font-family: 'Nunito', monospace;
 		text-align: center;
 		cursor: pointer;
@@ -348,6 +348,22 @@ $danger: #7b2d26;
 		flex: 1;
 		pointer-events: none;
 		visibility: hidden;
+	}
+
+	.kb-key-stack {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		line-height: 1.1;
+	}
+
+	.kb-key-sub {
+		font-size: 0.75rem;
+		opacity: 0.5;
+	}
+
+	.kb-key-main {
+		font-size: 1rem;
 	}
 }
 
