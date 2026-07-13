@@ -1,9 +1,126 @@
 #include "ButtonLayoutScreen.h"
 #include "buttonlayouts.h"
 #include "drivermanager.h"
+#include "storagemanager.h"
 #include "drivers/ps4/PS4Driver.h"
 #include "drivers/xbone/XBOneDriver.h"
 #include "drivers/xinput/XInputDriver.h"
+
+static std::string keycodeToName(uint8_t code) {
+	if (code == 0x00) return "";
+
+	// A-Z (0x04-0x1D)
+	if (code >= 0x04 && code <= 0x1D)
+		return std::string(1, 'A' + (code - 0x04));
+
+	// 1-9 (0x1E-0x26), 0 (0x27)
+	if (code >= 0x1E && code <= 0x26)
+		return std::string(1, '1' + (code - 0x1E));
+	if (code == 0x27) return "0";
+
+	switch (code) {
+		case 0x28: return "Ent";
+		case 0x29: return "Esc";
+		case 0x2A: return "Bsp";
+		case 0x2B: return "Tab";
+		case 0x2C: return "Spc";
+		case 0x2D: return "-";
+		case 0x2E: return "=";
+		case 0x2F: return "[";
+		case 0x30: return "]";
+		case 0x31: return "\\";
+		case 0x33: return ";";
+		case 0x34: return "'";
+		case 0x35: return "`";
+		case 0x36: return ",";
+		case 0x37: return ".";
+		case 0x38: return "/";
+		case 0x39: return "Cap";
+		case 0x46: return "PSc";
+		case 0x47: return "Scr";
+		case 0x48: return "Pau";
+		case 0x49: return "Ins";
+		case 0x4A: return "Hm";
+		case 0x4B: return "PU";
+		case 0x4C: return "Del";
+		case 0x4D: return "End";
+		case 0x4E: return "PD";
+		case 0x4F: return "Rt";
+		case 0x50: return "Lt";
+		case 0x51: return "Dn";
+		case 0x52: return "Up";
+		case 0x53: return "Num";
+		case 0x54: return "N/";
+		case 0x55: return "N*";
+		case 0x56: return "N-";
+		case 0x57: return "N+";
+		case 0x58: return "NE";
+		case 0x65: return "App";
+		case 0x66: return "Pwr";
+		case 0x67: return "NEq";
+		case 0xE0: return "CL";
+		case 0xE1: return "SL";
+		case 0xE2: return "AL";
+		case 0xE3: return "GL";
+		case 0xE4: return "CR";
+		case 0xE5: return "SR";
+		case 0xE6: return "AR";
+		case 0xE7: return "GR";
+		case 0xE8: return "Nxt";
+		case 0xE9: return "Prv";
+		case 0xF0: return "Stp";
+		case 0xF1: return "P/P";
+		case 0xF2: return "Mut";
+		case 0xF3: return "V+";
+		case 0xF4: return "V-";
+	}
+
+	// F1-F12 (0x3A-0x45)
+	if (code >= 0x3A && code <= 0x45)
+		return "F" + std::to_string(code - 0x3A + 1);
+
+	// F13-F24 (0x68-0x73)
+	if (code >= 0x68 && code <= 0x73)
+		return "F" + std::to_string(code - 0x68 + 13);
+
+	// Numpad 1-9 (0x59-0x61)
+	if (code >= 0x59 && code <= 0x61)
+		return "N" + std::string(1, '1' + (code - 0x59));
+
+	if (code == 0x62) return "N0";
+	if (code == 0x63) return "N.";
+
+	return "";
+}
+
+static std::string keyboardInputName(const KeyboardMapping& mapping, uint8_t index) {
+	uint32_t keycode = 0;
+	switch (index) {
+		case 0:  keycode = mapping.keyDpadUp; break;
+		case 1:  keycode = mapping.keyDpadDown; break;
+		case 2:  keycode = mapping.keyDpadLeft; break;
+		case 3:  keycode = mapping.keyDpadRight; break;
+		case 4:
+		case 5:
+		case 6:
+		case 7:  return ""; // diagonal - skip to avoid duplicates
+		case 8:  keycode = mapping.keyButtonB1; break;
+		case 9:  keycode = mapping.keyButtonB2; break;
+		case 10: keycode = mapping.keyButtonB3; break;
+		case 11: keycode = mapping.keyButtonB4; break;
+		case 12: keycode = mapping.keyButtonL1; break;
+		case 13: keycode = mapping.keyButtonR1; break;
+		case 14: keycode = mapping.keyButtonL2; break;
+		case 15: keycode = mapping.keyButtonR2; break;
+		case 16: keycode = mapping.keyButtonS1; break;
+		case 17: keycode = mapping.keyButtonS2; break;
+		case 18: keycode = mapping.keyButtonL3; break;
+		case 19: keycode = mapping.keyButtonR3; break;
+		case 20: keycode = mapping.keyButtonA1; break;
+		case 21: keycode = mapping.keyButtonA2; break;
+	}
+	return keycodeToName((uint8_t)keycode);
+}
 
 void ButtonLayoutScreen::init() {
     isInputHistoryEnabled = Storage::getInstance().getDisplayOptions().inputHistoryEnabled;
@@ -370,10 +487,19 @@ void ButtonLayoutScreen::processInputHistory() {
 
 	// Check if any new keys have been pressed
 	if (lastInput != currentInput) {
+		// Load keyboard mapping if in keyboard mode
+		const KeyboardMapping* kbMapping = nullptr;
+		if (mode == 3)
+			kbMapping = &Storage::getInstance().getKeyboardMapping();
+
 		// Iterate through array
 		for (uint8_t x=0; x<INPUT_HISTORY_MAX_INPUTS; x++) {
 			// Add any pressed keys to deque
-			std::string inputChar(displayNames[mode][x]);
+			std::string inputChar;
+			if (kbMapping != nullptr)
+				inputChar = keyboardInputName(*kbMapping, x);
+			else
+				inputChar = std::string(displayNames[mode][x]);
 			if (currentInput[x] && (inputChar != "")) pressed.push_back(inputChar);
 		}
 		// Update the last keypress array
