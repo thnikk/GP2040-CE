@@ -84,18 +84,19 @@
 #define LED_FORMAT LED_FORMAT_GRB
 #define LEDS_PER_PIXEL 1
 
-#define LEDS_DPAD_LEFT   10
-#define LEDS_DPAD_DOWN   9
-#define LEDS_DPAD_RIGHT  8
-#define LEDS_DPAD_UP     11
-#define LEDS_BUTTON_B3   0
-#define LEDS_BUTTON_B4   1
-#define LEDS_BUTTON_R1   2
-#define LEDS_BUTTON_L1   3
-#define LEDS_BUTTON_B1   7
-#define LEDS_BUTTON_B2   6
-#define LEDS_BUTTON_R2   5
-#define LEDS_BUTTON_L2   4
+// Pin → LED strip index mapping
+#define BOARD_LED_INDEX_GP01  0
+#define BOARD_LED_INDEX_GP02  1
+#define BOARD_LED_INDEX_GP03  2
+#define BOARD_LED_INDEX_GP04  3
+#define BOARD_LED_INDEX_GP05  7
+#define BOARD_LED_INDEX_GP06  6
+#define BOARD_LED_INDEX_GP07  5
+#define BOARD_LED_INDEX_GP08  4
+#define BOARD_LED_INDEX_GP26  8
+#define BOARD_LED_INDEX_GP27  9
+#define BOARD_LED_INDEX_GP28  10
+#define BOARD_LED_INDEX_GP29  11
 
 // Onboard WS2812 RGB LED (GPIO16) - shows the active input mode as a
 // color. Runs alongside the per-switch LEDs above (BOARD_LEDS_PIN),

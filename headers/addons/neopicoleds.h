@@ -78,86 +78,12 @@
 #define LED_BRIGHTNESS_STEPS 5
 #endif
 
-#ifndef LEDS_DPAD_LEFT
-#define LEDS_DPAD_LEFT  -1
-#endif
-
-#ifndef LEDS_DPAD_DOWN
-#define LEDS_DPAD_DOWN  -1
-#endif
-
-#ifndef LEDS_DPAD_RIGHT
-#define LEDS_DPAD_RIGHT -1
-#endif
-
-#ifndef LEDS_DPAD_UP
-#define LEDS_DPAD_UP    -1
-#endif
-
-#ifndef LEDS_BUTTON_B1
-#define LEDS_BUTTON_B1  -1
-#endif
-
-#ifndef LEDS_BUTTON_B2
-#define LEDS_BUTTON_B2  -1
-#endif
-
-#ifndef LEDS_BUTTON_B3
-#define LEDS_BUTTON_B3  -1
-#endif
-
-#ifndef LEDS_BUTTON_B4
-#define LEDS_BUTTON_B4  -1
-#endif
-
-#ifndef LEDS_BUTTON_R1
-#define LEDS_BUTTON_R1  -1
-#endif
-
-#ifndef LEDS_BUTTON_L1
-#define LEDS_BUTTON_L1  -1
-#endif
-
-#ifndef LEDS_BUTTON_L2
-#define LEDS_BUTTON_L2  -1
-#endif
-
-#ifndef LEDS_BUTTON_R2
-#define LEDS_BUTTON_R2  -1
-#endif
-
-#ifndef LEDS_BUTTON_S1
-#define LEDS_BUTTON_S1  -1
-#endif
-
-#ifndef LEDS_BUTTON_S2
-#define LEDS_BUTTON_S2  -1
-#endif
-
-#ifndef LEDS_BUTTON_L3
-#define LEDS_BUTTON_L3  -1
-#endif
-
-#ifndef LEDS_BUTTON_R3
-#define LEDS_BUTTON_R3  -1
-#endif
-
-#ifndef LEDS_BUTTON_A1
-#define LEDS_BUTTON_A1  -1
-#endif
-
-#ifndef LEDS_BUTTON_A2
-#define LEDS_BUTTON_A2  -1
-#endif
-
 #ifndef LEDS_TURN_OFF_WHEN_SUSPENDED
 #define LEDS_TURN_OFF_WHEN_SUSPENDED 0
 #endif
 
 void configureAnimations(AnimationStation *as);
 AnimationHotkey animationHotkeys(Gamepad *gamepad);
-PixelMatrix createLedButtonLayout(ButtonLayout layout, int ledsPerPixel);
-PixelMatrix createLedButtonLayout(ButtonLayout layout, std::vector<uint8_t> *positions);
 
 // Neo Pixel needs to tie into PlayerLEDS led Levels
 class NeoPicoPlayerLEDs : public PlayerLEDs
@@ -181,14 +107,9 @@ public:
 	void configureLEDs();
 	uint32_t frame[100];
 private:
-	std::vector<uint8_t> * getLEDPositions(std::string button, std::vector<std::vector<uint8_t>> *positions);
-	std::vector<std::vector<Pixel>> generatedLEDButtons(std::vector<std::vector<uint8_t>> *positions);
-	std::vector<std::vector<Pixel>> generatedLEDStickless(std::vector<std::vector<uint8_t>> *positions);
-	std::vector<std::vector<Pixel>> generatedLEDWasd(std::vector<std::vector<uint8_t>> *positions);
-	std::vector<std::vector<Pixel>> generatedLEDWasdFBM(std::vector<std::vector<uint8_t>> *positions);
-	std::vector<std::vector<Pixel>> createLEDLayout(ButtonLayout layout, uint8_t ledsPerPixel, uint8_t ledButtonCount);
+	uint32_t getBaseButtonMaskForPin(Pin_t pin);
+	std::vector<std::vector<Pixel>> createPinLEDLayout(uint8_t ledsPerPixel);
 	uint32_t prevMillis;
-	uint8_t setupButtonPositions();
 	const uint32_t intervalMS = 10;
 	absolute_time_t nextRunTime;
 	uint8_t ledCount;
@@ -199,7 +120,6 @@ private:
 	NeoPicoPlayerLEDs * neoPLEDs = nullptr;
 	AnimationStation as;
 	uint8_t lastMode = 255;
-	std::map<std::string, int> buttonPositions;
 	bool turnOffWhenSuspended;
     PLEDType ledType;
 };

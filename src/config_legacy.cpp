@@ -877,24 +877,10 @@ bool ConfigUtils::fromLegacyStorage(Config& config)
         SET_PROPERTY(ledOptions, ledsPerButton, legacyLEDOptions.ledsPerButton);
         SET_PROPERTY(ledOptions, brightnessMaximum, legacyLEDOptions.brightnessMaximum);
         SET_PROPERTY(ledOptions, brightnessSteps, legacyLEDOptions.brightnessSteps);
-        SET_PROPERTY(ledOptions, indexUp, legacyLEDOptions.indexUp);
-        SET_PROPERTY(ledOptions, indexDown, legacyLEDOptions.indexDown);
-        SET_PROPERTY(ledOptions, indexLeft, legacyLEDOptions.indexLeft);
-        SET_PROPERTY(ledOptions, indexRight, legacyLEDOptions.indexRight);
-        SET_PROPERTY(ledOptions, indexB1, legacyLEDOptions.indexB1);
-        SET_PROPERTY(ledOptions, indexB2, legacyLEDOptions.indexB2);
-        SET_PROPERTY(ledOptions, indexB3, legacyLEDOptions.indexB3);
-        SET_PROPERTY(ledOptions, indexB4, legacyLEDOptions.indexB4);
-        SET_PROPERTY(ledOptions, indexL1, legacyLEDOptions.indexL1);
-        SET_PROPERTY(ledOptions, indexR1, legacyLEDOptions.indexR1);
-        SET_PROPERTY(ledOptions, indexL2, legacyLEDOptions.indexL2);
-        SET_PROPERTY(ledOptions, indexR2, legacyLEDOptions.indexR2);
-        SET_PROPERTY(ledOptions, indexS1, legacyLEDOptions.indexS1);
-        SET_PROPERTY(ledOptions, indexS2, legacyLEDOptions.indexS2);
-        SET_PROPERTY(ledOptions, indexL3, legacyLEDOptions.indexL3);
-        SET_PROPERTY(ledOptions, indexR3, legacyLEDOptions.indexR3);
-        SET_PROPERTY(ledOptions, indexA1, legacyLEDOptions.indexA1);
-        SET_PROPERTY(ledOptions, indexA2, legacyLEDOptions.indexA2);
+        // Pin→LED mapping defaults to all disabled for migrated configs
+        for (int i = 0; i < 30; i++)
+            ledOptions.pinLedIndices[i] = -1;
+        ledOptions.pinLedIndices_count = 30;
         if (isValidPLEDType(static_cast<PLEDType>(legacyLEDOptions.pledType)))
         {
             SET_PROPERTY(ledOptions, pledType, static_cast<PLEDType>(legacyLEDOptions.pledType));

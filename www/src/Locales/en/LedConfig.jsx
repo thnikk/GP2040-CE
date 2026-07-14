@@ -13,7 +13,7 @@ export default {
 		'pwm-sub-header-text':
 			'For PWM LEDs, set each LED to a dedicated GPIO pin.',
 		'rgb-sub-header-text':
-			'For RGB LEDs, the indexes must be after the last LED button defined in <1>RGB LED Button Order</1> section and likely <3>starts at index {{rgbLedStartIndex}}</3>.',
+			'Set the NeoPixel LED index for each player LED.',
 		'pled-type-label': 'Player LED Type',
 		'pled-type-off': 'Off',
 		'pled-type-pwm': 'PWM',
@@ -23,7 +23,7 @@ export default {
     case: {
         'header-text': 'Case RGB LEDs',
         'sub-header-text':
-			'For Case RGB LEDs, set a starting index and the case RGB count. The index must be after the last LED button defined but can be before or after the player LEDs and turbo LED.',
+			'For Case RGB LEDs, set a starting index and the case RGB count.',
 		'case-index-label': 'RGB LED Index',
         'case-count-label': 'RGB LED Count',
         'case-type-label': 'Color Type',
@@ -33,14 +33,13 @@ export default {
     },
 	'pled-pin-label': 'PLED #{{pin}} Pin',
 	'pled-index-label': 'PLED #{{index}} Index',
-	'rgb-order': {
-		'header-text': 'RGB LED Button Order',
+	'pin-led': {
+		'header-text': 'Pin LED Mapping',
 		'sub-header-text':
-			'Here you can define which buttons have RGB LEDs and in what order they run from the control board. This is required for certain LED animations and static theme support.',
-		'sub-header1-text':
-			'Drag and drop list items to assign and reorder the RGB LEDs.',
-		'available-header-text': 'Available Buttons',
-		'assigned-header-text': 'Assigned Buttons',
+			'Assign LED strip indices to GPIO pins. Set -1 for pins with no LED.',
+		'pin-header': 'Pin',
+		'action-header': 'Action',
+		'led-index-header': 'LED Index',
 	},
 	'turn-off-when-suspended': 'Turn Off When Suspended',
 };

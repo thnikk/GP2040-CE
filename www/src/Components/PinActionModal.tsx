@@ -30,6 +30,7 @@ type PinActionModalProps = {
 	show: boolean;
 	pinNumber: number | null;
 	currentAction: PinActionValues;
+	baseAction?: PinActionValues;
 	currentCustomButtonMask: number;
 	currentCustomDpadMask: number;
 	currentKeyboardKeycode: number;
@@ -47,7 +48,7 @@ type PinActionModalProps = {
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSaveColor?: () => void;
-	ledButtonMap?: Record<string, number | null>;
+	pinLedIndices?: Record<string, number>;
 	inputMode?: number;
 };
 
@@ -94,6 +95,7 @@ export default function PinActionModal({
 	show,
 	pinNumber,
 	currentAction,
+	baseAction,
 	currentCustomButtonMask,
 	currentCustomDpadMask,
 	currentKeyboardKeycode,
@@ -104,7 +106,7 @@ export default function PinActionModal({
 	hasCustomTheme,
 	onLedColorChange,
 	onSaveColor,
-	ledButtonMap,
+	pinLedIndices,
 	inputMode,
 }: PinActionModalProps) {
 	const { t } = useTranslation('');
@@ -154,8 +156,8 @@ export default function PinActionModal({
 
 	const buttonName = useMemo(() => {
 		if (disabled) return null;
-		return getButtonNameFromAction(pendingAction);
-	}, [pendingAction, disabled]);
+		return getButtonNameFromAction(baseAction ?? pendingAction);
+	}, [baseAction, pendingAction, disabled]);
 
 	const isButtonPress = !!buttonName;
 
@@ -341,7 +343,8 @@ export default function PinActionModal({
 		setSavedColors(newColors);
 	}, [selectedColor, savedColors, setSavedColors]);
 
-	const showLedSection = isButtonPress && !disabled && !!onLedColorChange && (!ledButtonMap || ledButtonMap[buttonName!] != null);
+	const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinLedIndices[String(pinNumber)] >= 0;
+	const showLedSection = isButtonPress && !disabled && !!onLedColorChange && hasLed;
 
 	const [activeTab, setActiveTab] = useState<'controller' | 'keyboard'>(inputMode === 3 ? 'keyboard' : 'controller');
 

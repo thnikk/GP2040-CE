@@ -80,18 +80,19 @@
 #define LED_FORMAT LED_FORMAT_GRB
 #define LEDS_PER_PIXEL 1
 
-#define LEDS_BUTTON_L1   11
-#define LEDS_DPAD_UP     10
-#define LEDS_BUTTON_L2   9
-#define LEDS_DPAD_LEFT   8
-#define LEDS_DPAD_DOWN   7
-#define LEDS_DPAD_RIGHT  6
-#define LEDS_BUTTON_B3   5
-#define LEDS_BUTTON_B1   4
-#define LEDS_BUTTON_B2   3
-#define LEDS_BUTTON_R2   2
-#define LEDS_BUTTON_B4   1
-#define LEDS_BUTTON_R1   0
+// Pin → LED strip index mapping
+#define BOARD_LED_INDEX_GP02  0
+#define BOARD_LED_INDEX_GP03  1
+#define BOARD_LED_INDEX_GP04  2
+#define BOARD_LED_INDEX_GP05  5
+#define BOARD_LED_INDEX_GP06  4
+#define BOARD_LED_INDEX_GP07  3
+#define BOARD_LED_INDEX_GP14  8
+#define BOARD_LED_INDEX_GP15  7
+#define BOARD_LED_INDEX_GP26  6
+#define BOARD_LED_INDEX_GP27  9
+#define BOARD_LED_INDEX_GP28  10
+#define BOARD_LED_INDEX_GP29  11
 
 #define HAS_I2C_DISPLAY 1
 #define I2C1_ENABLED 1

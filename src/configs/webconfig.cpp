@@ -16,6 +16,7 @@
 #include "Effects/CustomTheme.hpp"
 #include "Effects/CustomThemePressed.hpp"
 
+#include <cstdio>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -233,6 +234,12 @@ static void __attribute__((noinline)) writeDoc(DynamicJsonDocument& doc, const K
 }
 
 static int32_t cleanPin(int32_t pin) { return isValidPin(pin) ? pin : -1; }
+
+static const char* const PIN_LED_KEYS[] = {
+    "0","1","2","3","4","5","6","7","8","9",
+    "10","11","12","13","14","15","16","17","18","19",
+    "20","21","22","23","24","25","26","27","28","29"
+};
 
 static uint32_t systemFlashSize;
 
@@ -842,15 +849,6 @@ std::string setLedOptions()
 {
     DynamicJsonDocument doc = get_post_data();
 
-    const auto readIndex = [&](int32_t& var, const char* key0, const char* key1)
-    {
-        var = -1;
-        if (hasValue(doc, key0, key1))
-        {
-            readDoc(var, doc, key0, key1);
-        }
-    };
-
     LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
     Config& config = Storage::getInstance().getConfig();
     docToPin(ledOptions.dataPin, doc, "dataPin");
@@ -862,24 +860,15 @@ std::string setLedOptions()
     readDoc(ledOptions.brightnessMaximum, doc, "brightnessMaximum");
     readDoc(ledOptions.brightnessSteps, doc, "brightnessSteps");
     readDoc(ledOptions.turnOffWhenSuspended, doc, "turnOffWhenSuspended");
-    readIndex(ledOptions.indexUp, "ledButtonMap", "Up");
-    readIndex(ledOptions.indexDown, "ledButtonMap", "Down");
-    readIndex(ledOptions.indexLeft, "ledButtonMap", "Left");
-    readIndex(ledOptions.indexRight, "ledButtonMap", "Right");
-    readIndex(ledOptions.indexB1, "ledButtonMap", "B1");
-    readIndex(ledOptions.indexB2, "ledButtonMap", "B2");
-    readIndex(ledOptions.indexB3, "ledButtonMap", "B3");
-    readIndex(ledOptions.indexB4, "ledButtonMap", "B4");
-    readIndex(ledOptions.indexL1, "ledButtonMap", "L1");
-    readIndex(ledOptions.indexR1, "ledButtonMap", "R1");
-    readIndex(ledOptions.indexL2, "ledButtonMap", "L2");
-    readIndex(ledOptions.indexR2, "ledButtonMap", "R2");
-    readIndex(ledOptions.indexS1, "ledButtonMap", "S1");
-    readIndex(ledOptions.indexS2, "ledButtonMap", "S2");
-    readIndex(ledOptions.indexL3, "ledButtonMap", "L3");
-    readIndex(ledOptions.indexR3, "ledButtonMap", "R3");
-    readIndex(ledOptions.indexA1, "ledButtonMap", "A1");
-    readIndex(ledOptions.indexA2, "ledButtonMap", "A2");
+
+    // Read pin→LED index mapping
+    ledOptions.pinLedIndices_count = 30;
+    for (Pin_t pin = 0; pin < (Pin_t)30; pin++)
+    {
+        ledOptions.pinLedIndices[pin] = -1;
+        if (hasValue(doc, "pinLedIndices", PIN_LED_KEYS[pin]))
+            readDoc(ledOptions.pinLedIndices[pin], doc, "pinLedIndices", PIN_LED_KEYS[pin]);
+    }
     readDoc(ledOptions.pledType, doc, "pledType");
     docToPin(ledOptions.pledPin1, doc, "pledPin1");
     docToPin(ledOptions.pledPin2, doc, "pledPin2");
@@ -912,35 +901,14 @@ std::string getLedOptions()
     writeDoc(doc, "brightnessSteps", ledOptions.brightnessSteps);
     writeDoc(doc, "turnOffWhenSuspended", ledOptions.turnOffWhenSuspended);
 
-    const auto writeIndex = [&](const char* key0, const char* key1, int var)
+    // Write pin→LED index mapping
+    for (Pin_t pin = 0; pin < (Pin_t)30; pin++)
     {
-        if (var < 0)
-        {
-            writeDoc(doc, key0, key1, nullptr);
-        }
+        if (pin < (Pin_t)ledOptions.pinLedIndices_count && ledOptions.pinLedIndices[pin] >= 0)
+            writeDoc(doc, "pinLedIndices", PIN_LED_KEYS[pin], ledOptions.pinLedIndices[pin]);
         else
-        {
-            writeDoc(doc, key0, key1, var);
-        }
-    };
-    writeIndex("ledButtonMap", "Up", ledOptions.indexUp);
-    writeIndex("ledButtonMap", "Down", ledOptions.indexDown);
-    writeIndex("ledButtonMap", "Left", ledOptions.indexLeft);
-    writeIndex("ledButtonMap", "Right", ledOptions.indexRight);
-    writeIndex("ledButtonMap", "B1", ledOptions.indexB1);
-    writeIndex("ledButtonMap", "B2", ledOptions.indexB2);
-    writeIndex("ledButtonMap", "B3", ledOptions.indexB3);
-    writeIndex("ledButtonMap", "B4", ledOptions.indexB4);
-    writeIndex("ledButtonMap", "L1", ledOptions.indexL1);
-    writeIndex("ledButtonMap", "R1", ledOptions.indexR1);
-    writeIndex("ledButtonMap", "L2", ledOptions.indexL2);
-    writeIndex("ledButtonMap", "R2", ledOptions.indexR2);
-    writeIndex("ledButtonMap", "S1", ledOptions.indexS1);
-    writeIndex("ledButtonMap", "S2", ledOptions.indexS2);
-    writeIndex("ledButtonMap", "L3", ledOptions.indexL3);
-    writeIndex("ledButtonMap", "R3", ledOptions.indexR3);
-    writeIndex("ledButtonMap", "A1", ledOptions.indexA1);
-    writeIndex("ledButtonMap", "A2", ledOptions.indexA2);
+            writeDoc(doc, "pinLedIndices", PIN_LED_KEYS[pin], nullptr);
+    }
     writeDoc(doc, "pledType", ledOptions.pledType);
     writeDoc(doc, "pledPin1", ledOptions.pledPin1);
     writeDoc(doc, "pledPin2", ledOptions.pledPin2);
@@ -1006,7 +974,6 @@ std::string getButtonLayouts()
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
     const Config& config = Storage::getInstance().getConfig();
-    const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
     const DisplayOptions& displayOptions = Storage::getInstance().getDisplayOptions();
     uint16_t elementCtr = 0;
 
@@ -1014,24 +981,6 @@ std::string getButtonLayouts()
     LayoutManager::LayoutList layoutB = LayoutManager::getInstance().getLayoutB();
 
     writeDoc(doc, "ledLayout", "id", config.buttonLayout);
-    writeDoc(doc, "ledLayout", "indexUp", ledOptions.indexUp);
-    writeDoc(doc, "ledLayout", "indexDown", ledOptions.indexDown);
-    writeDoc(doc, "ledLayout", "indexLeft", ledOptions.indexLeft);
-    writeDoc(doc, "ledLayout", "indexRight", ledOptions.indexRight);
-    writeDoc(doc, "ledLayout", "indexB1", ledOptions.indexB1);
-    writeDoc(doc, "ledLayout", "indexB2", ledOptions.indexB2);
-    writeDoc(doc, "ledLayout", "indexB3", ledOptions.indexB3);
-    writeDoc(doc, "ledLayout", "indexB4", ledOptions.indexB4);
-    writeDoc(doc, "ledLayout", "indexL1", ledOptions.indexL1);
-    writeDoc(doc, "ledLayout", "indexR1", ledOptions.indexR1);
-    writeDoc(doc, "ledLayout", "indexL2", ledOptions.indexL2);
-    writeDoc(doc, "ledLayout", "indexR2", ledOptions.indexR2);
-    writeDoc(doc, "ledLayout", "indexS1", ledOptions.indexS1);
-    writeDoc(doc, "ledLayout", "indexS2", ledOptions.indexS2);
-    writeDoc(doc, "ledLayout", "indexL3", ledOptions.indexL3);
-    writeDoc(doc, "ledLayout", "indexR3", ledOptions.indexR3);
-    writeDoc(doc, "ledLayout", "indexA1", ledOptions.indexA1);
-    writeDoc(doc, "ledLayout", "indexA2", ledOptions.indexA2);
 
     writeDoc(doc, "displayLayouts", "buttonLayoutId", config.buttonLayout);
     for (elementCtr = 0; elementCtr < layoutA.size(); elementCtr++) {

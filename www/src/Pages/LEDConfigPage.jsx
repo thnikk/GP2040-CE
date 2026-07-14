@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-
-import DraggableListGroup from '../Components/DraggableListGroup';
+import Table from 'react-bootstrap/Table';
+import { useShallow } from 'zustand/react/shallow';
+import omit from 'lodash/omit';
 
 import { Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';
-import orderBy from 'lodash/orderBy';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AppContext } from '../Contexts/AppContext';
@@ -16,10 +16,11 @@ import ColorPicker from '../Components/ColorPicker';
 import Section from '../Components/Section';
 import FormControl from '../Components/FormControl';
 import FormSelect from '../Components/FormSelect';
-import { getButtonLabels } from '../Data/Buttons';
+import { BUTTON_ACTIONS } from '../Data/Pins';
 import LEDColors from '../Data/LEDColors';
 import { hexToInt } from '../Services/Utilities';
 import WebApi from '../Services/WebApi';
+import useProfilesStore from '../Store/useProfilesStore';
 
 const LED_FORMATS = [
 	{ label: 'GRB', value: 0 },
@@ -34,6 +35,32 @@ const PLED_LABELS = [
 	{ 0: 'PLED #3 Pin', 1: 'PLED #3 Index' },
 	{ 0: 'PLED #4 Pin', 1: 'PLED #4 Index' },
 ];
+
+const ACTION_LABELS = {
+	[BUTTON_ACTIONS.BUTTON_PRESS_UP]: 'Up',
+	[BUTTON_ACTIONS.BUTTON_PRESS_DOWN]: 'Down',
+	[BUTTON_ACTIONS.BUTTON_PRESS_LEFT]: 'Left',
+	[BUTTON_ACTIONS.BUTTON_PRESS_RIGHT]: 'Right',
+	[BUTTON_ACTIONS.BUTTON_PRESS_B1]: 'B1',
+	[BUTTON_ACTIONS.BUTTON_PRESS_B2]: 'B2',
+	[BUTTON_ACTIONS.BUTTON_PRESS_B3]: 'B3',
+	[BUTTON_ACTIONS.BUTTON_PRESS_B4]: 'B4',
+	[BUTTON_ACTIONS.BUTTON_PRESS_L1]: 'L1',
+	[BUTTON_ACTIONS.BUTTON_PRESS_R1]: 'R1',
+	[BUTTON_ACTIONS.BUTTON_PRESS_L2]: 'L2',
+	[BUTTON_ACTIONS.BUTTON_PRESS_R2]: 'R2',
+	[BUTTON_ACTIONS.BUTTON_PRESS_S1]: 'S1',
+	[BUTTON_ACTIONS.BUTTON_PRESS_S2]: 'S2',
+	[BUTTON_ACTIONS.BUTTON_PRESS_L3]: 'L3',
+	[BUTTON_ACTIONS.BUTTON_PRESS_R3]: 'R3',
+	[BUTTON_ACTIONS.BUTTON_PRESS_A1]: 'A1',
+	[BUTTON_ACTIONS.BUTTON_PRESS_A2]: 'A2',
+};
+
+const DEFAULT_PIN_LED_INDICES = {};
+for (let i = 0; i < 30; i++) {
+	DEFAULT_PIN_LED_INDICES[String(i)] = -1;
+}
 
 const defaultValue = {
 	brightnessMaximum: 255,
@@ -56,7 +83,7 @@ const defaultValue = {
     caseRGBIndex: -1,
     caseRGBCount: 0,
     caseRGBColor: '#00ff00',
-	ledButtonMap: {},
+	pinLedIndices: { ...DEFAULT_PIN_LED_INDICES },
 };
 
 const schema = yup.object().shape({
@@ -149,88 +176,51 @@ const schema = yup.object().shape({
 		.label('Case RGB Index')
         .min(-1)
         .max(100),
-	ledButtonMap: yup.object(),
+	pinLedIndices: yup.object(),
 });
 
-const createDataSource = (ledButtonMap, buttonLabelType, swapTpShareLabels) => {
-	let available = {};
-	let assigned = {};
+const PIN_ACTIONS = [
+	BUTTON_ACTIONS.BUTTON_PRESS_UP,
+	BUTTON_ACTIONS.BUTTON_PRESS_DOWN,
+	BUTTON_ACTIONS.BUTTON_PRESS_LEFT,
+	BUTTON_ACTIONS.BUTTON_PRESS_RIGHT,
+	BUTTON_ACTIONS.BUTTON_PRESS_B1,
+	BUTTON_ACTIONS.BUTTON_PRESS_B2,
+	BUTTON_ACTIONS.BUTTON_PRESS_B3,
+	BUTTON_ACTIONS.BUTTON_PRESS_B4,
+	BUTTON_ACTIONS.BUTTON_PRESS_L1,
+	BUTTON_ACTIONS.BUTTON_PRESS_R1,
+	BUTTON_ACTIONS.BUTTON_PRESS_L2,
+	BUTTON_ACTIONS.BUTTON_PRESS_R2,
+	BUTTON_ACTIONS.BUTTON_PRESS_S1,
+	BUTTON_ACTIONS.BUTTON_PRESS_S2,
+	BUTTON_ACTIONS.BUTTON_PRESS_L3,
+	BUTTON_ACTIONS.BUTTON_PRESS_R3,
+	BUTTON_ACTIONS.BUTTON_PRESS_A1,
+	BUTTON_ACTIONS.BUTTON_PRESS_A2,
+];
 
-	Object.keys(ledButtonMap).forEach((p) => {
-		if (ledButtonMap[p] === null) available[p] = ledButtonMap[p];
-		else assigned[p] = ledButtonMap[p];
-	});
+const PIN_LABELS = {};
+for (let i = 0; i < 30; i++) {
+	PIN_LABELS[i] = `GP${i}`;
+}
 
-	const dataSources = [
-		getLedButtons(buttonLabelType, available, true, swapTpShareLabels),
-		getLedButtons(buttonLabelType, assigned, true, swapTpShareLabels),
-	];
-
-	return dataSources;
-};
-
-const getLedButtons = (buttonLabels, map, excludeNulls, swapTpShareLabels) => {
-	const current_buttons = getButtonLabels(buttonLabels, swapTpShareLabels);
-	return orderBy(
-		Object.keys(current_buttons)
-			.filter((p) => p !== 'label' && p !== 'value')
-			.filter((p) => (excludeNulls ? map[p] > -1 : true))
-			.map((p) => {
-				return { id: p, label: current_buttons[p], value: map[p] };
-			}),
-		'value',
-	);
-};
-
-const getLedMap = (buttonLabels, ledButtons, excludeNulls) => {
-	if (!ledButtons) return;
-
-	const buttons = getButtonLabels(buttonLabels, false);
-	const map = Object.keys(buttons)
-		.filter((p) => p !== 'label' && p !== 'value')
-		.filter((p) => (excludeNulls ? ledButtons[p].value > -1 : true))
-		.reduce((p, n) => {
-			p[n] = null;
-			return p;
-		}, {});
-
-	for (let i = 0; i < ledButtons.length; i++) map[ledButtons[i].id] = i;
-
-	return map;
-};
-
-const FormContext = ({
-	buttonLabelType,
-	ledButtonMap,
-	swapTpShareLabels,
-	setDataSources,
-}) => {
+const FormContext = () => {
 	const { setValues } = useFormikContext();
 	const { setLoading } = useContext(AppContext);
 
 	useEffect(() => {
 		async function fetchData() {
 			const data = await WebApi.getLedOptions(setLoading);
-			const dataSources = createDataSource(
-				data.ledButtonMap,
-				buttonLabelType,
-				swapTpShareLabels,
-			);
-			setDataSources(dataSources);
+			if (!data.pinLedIndices) {
+				data.pinLedIndices = {};
+				for (let i = 0; i < 30; i++) data.pinLedIndices[String(i)] = -1;
+			}
 			setValues(data);
 		}
 
 		fetchData();
 	}, []);
-
-	useEffect(() => {
-		const dataSources = createDataSource(
-			ledButtonMap,
-			buttonLabelType,
-			swapTpShareLabels,
-		);
-		setDataSources(dataSources);
-	}, [buttonLabelType, swapTpShareLabels]);
 
 	return null;
 };
@@ -238,41 +228,38 @@ const FormContext = ({
 export default function LEDConfigPage() {
 	const { buttonLabels, updateUsedPins } = useContext(AppContext);
 	const [saveMessage, setSaveMessage] = useState('');
-	const [dataSources, setDataSources] = useState([[], []]);
 	const [colorPickerTarget, setColorPickerTarget] = useState(null);
 	const [showPicker, setShowPicker] = useState(false);
-	const [rgbLedStartIndex, setRgbLedStartIndex] = useState(0);
 
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 
 	const { t } = useTranslation('');
+
+	const pins = useProfilesStore(
+		useShallow((state) => {
+			const p = state.profiles[0];
+			if (!p) return {};
+			return omit(p, ['profileLabel', 'enabled']);
+		}),
+	);
+
+	const pinActions = useMemo(() => {
+		const actions = {};
+		for (let pin = 0; pin < 30; pin++) {
+			const pinData = pins[`pin${String(pin).padStart(2, '0')}`];
+			const action = pinData?.action ?? BUTTON_ACTIONS.NONE;
+			actions[pin] = PIN_ACTIONS.includes(action)
+				? ACTION_LABELS[action] || ''
+				: '';
+		}
+		return actions;
+	}, [pins]);
 
 	// Translate PLED labels
 	PLED_LABELS.map((p, n) => {
 		p[0] = t(`LedConfig:pled-pin-label`, { pin: ++n });
 		p[1] = t(`LedConfig:pled-index-label`, { index: n });
 	});
-
-	const ledOrderChanged = (setFieldValue, ledOrderArrays, ledsPerButton) => {
-		if (ledOrderArrays.length === 2) {
-			setRgbLedStartIndex(ledOrderArrays[1].length * (ledsPerButton || 0));
-			setFieldValue(
-				'ledButtonMap',
-				getLedMap(buttonLabelType, ledOrderArrays[1]),
-			);
-			console.log(
-				'new start index: ',
-				ledOrderArrays[1].length * (ledsPerButton || 0),
-				ledOrderArrays,
-			);
-		}
-	};
-
-	const ledsPerButtonChanged = (e, handleChange) => {
-		const ledsPerButton = parseInt(e.target.value);
-		setRgbLedStartIndex(dataSources[1].length * (ledsPerButton || 0));
-		handleChange(e);
-	};
 
 	const toggleRgbPledPicker = (e) => {
 		e.stopPropagation();
@@ -289,14 +276,6 @@ export default function LEDConfigPage() {
 
 		const success = await WebApi.setLedOptions(data);
 		if (success) updateUsedPins();
-
-		// Need to recreate the DraggableList data source after save
-		const dataSources = createDataSource(
-			data.ledButtonMap,
-			buttonLabelType,
-			swapTpShareLabels,
-		);
-		setDataSources(dataSources);
 
 		setSaveMessage(
 			success
@@ -375,7 +354,7 @@ export default function LEDConfigPage() {
 								value={values.ledsPerButton}
 								error={errors.ledsPerButton}
 								isInvalid={errors.ledsPerButton}
-								onChange={(e) => ledsPerButtonChanged(e, handleChange)}
+								onChange={handleChange}
 								min={1}
 							/>
 							<FormControl
@@ -421,24 +400,54 @@ export default function LEDConfigPage() {
 							</div>
 						</Row>
 					</Section>
-					<Section title={t('LedConfig:rgb-order.header-text')}>
+					<Section title={t('LedConfig:pin-led.header-text')}>
 						<p className="card-text">
-							{t('LedConfig:rgb-order.sub-header-text')}
+							{t('LedConfig:pin-led.sub-header-text')}
 						</p>
-						<p className="card-text">
-							{t('LedConfig:rgb-order.sub-header1-text')}
-						</p>
-						<DraggableListGroup
-							groupName="test"
-							titles={[
-								t('LedConfig:rgb-order.available-header-text'),
-								t('LedConfig:rgb-order.assigned-header-text'),
-							]}
-							dataSources={dataSources}
-							onChange={(a) =>
-								ledOrderChanged(setFieldValue, a, values.ledsPerButton)
-							}
-						/>
+						<Table striped bordered hover size="sm">
+							<thead>
+								<tr>
+									<th>{t('LedConfig:pin-led.pin-header')}</th>
+									<th>{t('LedConfig:pin-led.action-header')}</th>
+									<th>{t('LedConfig:pin-led.led-index-header')}</th>
+								</tr>
+							</thead>
+							<tbody>
+								{Array.from({ length: 30 }, (_, pin) => {
+									const pinStr = String(pin);
+									const pinValue = values.pinLedIndices?.[pinStr] ?? -1;
+									const hasAction = pinActions[pin] !== '';
+									return (
+										<tr key={pin} className={pinValue >= 0 ? 'table-active' : ''}>
+											<td className="align-middle">{PIN_LABELS[pin]}</td>
+											<td className="align-middle">
+												{hasAction ? (
+													<span className="badge bg-secondary">{pinActions[pin]}</span>
+												) : (
+													<span className="text-muted small">—</span>
+												)}
+											</td>
+											<td>
+												<Form.Control
+													type="number"
+													size="sm"
+													name={`pinLedIndices.${pinStr}`}
+													value={pinValue}
+													onChange={(e) => {
+														const newVal = parseInt(e.target.value, 10);
+														setFieldValue(`pinLedIndices.${pinStr}`, isNaN(newVal) ? -1 : newVal);
+													}}
+													min={-1}
+													max={255}
+													className={`pin-led-input ${pinValue >= 0 ? 'has-led' : ''}`}
+													style={{ width: '80px' }}
+												/>
+											</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</Table>
 					</Section>
 					<Section title={t('LedConfig:player.header-text')}>
 						<Form.Group as={Col}>
@@ -637,11 +646,8 @@ export default function LEDConfigPage() {
 								<Trans
 									ns="LedConfig"
 									i18nKey="player.rgb-sub-header-text"
-									rgbLedStartIndex={rgbLedStartIndex}
 								>
-									For RGB LEDs, the indexes must be after the last LED button
-									defined in <em>RGB LED Button Order</em> section and likely{' '}
-									<strong>starts at index {{ rgbLedStartIndex }}</strong>.
+									Set the NeoPixel LED index for each player LED.
 								</Trans>
 							</p>
 						</Form.Group>
@@ -735,14 +741,7 @@ export default function LEDConfigPage() {
 					</Section>
 					<Button type="submit">{t('Common:button-save-label')}</Button>
 					{saveMessage ? <span className="alert">{saveMessage}</span> : null}
-					<FormContext
-						{...{
-							buttonLabelType,
-							ledButtonMap: values.ledButtonMap,
-							swapTpShareLabels,
-							setDataSources,
-						}}
-					/>
+					<FormContext />
 				</Form>
 			)}
 		</Formik>

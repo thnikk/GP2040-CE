@@ -508,24 +508,104 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.ledOptions, brightnessSteps, LED_BRIGHTNESS_STEPS);
     INIT_UNSET_PROPERTY(config.ledOptions, turnOffWhenSuspended, LEDS_TURN_OFF_WHEN_SUSPENDED);
 
-    INIT_UNSET_PROPERTY(config.ledOptions, indexUp, LEDS_DPAD_UP);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexDown, LEDS_DPAD_DOWN);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexLeft, LEDS_DPAD_LEFT);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexRight, LEDS_DPAD_RIGHT);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexB1, LEDS_BUTTON_B1);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexB2, LEDS_BUTTON_B2);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexB3, LEDS_BUTTON_B3);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexB4, LEDS_BUTTON_B4);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexL1, LEDS_BUTTON_L1);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexR1, LEDS_BUTTON_R1);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexL2, LEDS_BUTTON_L2);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexR2, LEDS_BUTTON_R2);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexS1, LEDS_BUTTON_S1);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexS2, LEDS_BUTTON_S2);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexL3, LEDS_BUTTON_L3);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexR3, LEDS_BUTTON_R3);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexA1, LEDS_BUTTON_A1);
-    INIT_UNSET_PROPERTY(config.ledOptions, indexA2, LEDS_BUTTON_A2);
+    // Initialize pin-led mapping (all pins start with no LED assigned)
+    if (config.ledOptions.pinLedIndices_count == 0)
+    {
+        for (int i = 0; i < 30; i++)
+            config.ledOptions.pinLedIndices[i] = -1;
+        config.ledOptions.pinLedIndices_count = 30;
+    }
+
+#ifndef BOARD_LED_INDEX_GP00
+#define BOARD_LED_INDEX_GP00 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP01
+#define BOARD_LED_INDEX_GP01 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP02
+#define BOARD_LED_INDEX_GP02 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP03
+#define BOARD_LED_INDEX_GP03 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP04
+#define BOARD_LED_INDEX_GP04 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP05
+#define BOARD_LED_INDEX_GP05 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP06
+#define BOARD_LED_INDEX_GP06 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP07
+#define BOARD_LED_INDEX_GP07 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP08
+#define BOARD_LED_INDEX_GP08 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP09
+#define BOARD_LED_INDEX_GP09 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP10
+#define BOARD_LED_INDEX_GP10 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP11
+#define BOARD_LED_INDEX_GP11 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP12
+#define BOARD_LED_INDEX_GP12 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP13
+#define BOARD_LED_INDEX_GP13 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP14
+#define BOARD_LED_INDEX_GP14 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP15
+#define BOARD_LED_INDEX_GP15 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP16
+#define BOARD_LED_INDEX_GP16 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP17
+#define BOARD_LED_INDEX_GP17 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP18
+#define BOARD_LED_INDEX_GP18 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP19
+#define BOARD_LED_INDEX_GP19 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP20
+#define BOARD_LED_INDEX_GP20 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP21
+#define BOARD_LED_INDEX_GP21 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP22
+#define BOARD_LED_INDEX_GP22 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP23
+#define BOARD_LED_INDEX_GP23 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP24
+#define BOARD_LED_INDEX_GP24 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP25
+#define BOARD_LED_INDEX_GP25 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP26
+#define BOARD_LED_INDEX_GP26 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP27
+#define BOARD_LED_INDEX_GP27 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP28
+#define BOARD_LED_INDEX_GP28 -1
+#endif
+#ifndef BOARD_LED_INDEX_GP29
+#define BOARD_LED_INDEX_GP29 -1
+#endif
 
     INIT_UNSET_PROPERTY(config.ledOptions, pledType, PLED_TYPE);
     INIT_UNSET_PROPERTY(config.ledOptions, pledPin1, PLED1_PIN);
@@ -1645,6 +1725,28 @@ void ConfigUtils::load(Config& config)
     // ProtoBuf && Board Config settings are loaded here
     if (!config.migrations.gpioMappingsMigrated)
         gpioMappingsMigrationCore(config);
+
+    // Set default pin→LED indices from board config (BOARD_LED_INDEX_GPxx defines)
+    if (config.ledOptions.pinLedIndices_count == 30)
+    {
+        static const int32_t DEFAULT_PIN_LED_INDICES[30] = {
+            BOARD_LED_INDEX_GP00, BOARD_LED_INDEX_GP01, BOARD_LED_INDEX_GP02,
+            BOARD_LED_INDEX_GP03, BOARD_LED_INDEX_GP04, BOARD_LED_INDEX_GP05,
+            BOARD_LED_INDEX_GP06, BOARD_LED_INDEX_GP07, BOARD_LED_INDEX_GP08,
+            BOARD_LED_INDEX_GP09, BOARD_LED_INDEX_GP10, BOARD_LED_INDEX_GP11,
+            BOARD_LED_INDEX_GP12, BOARD_LED_INDEX_GP13, BOARD_LED_INDEX_GP14,
+            BOARD_LED_INDEX_GP15, BOARD_LED_INDEX_GP16, BOARD_LED_INDEX_GP17,
+            BOARD_LED_INDEX_GP18, BOARD_LED_INDEX_GP19, BOARD_LED_INDEX_GP20,
+            BOARD_LED_INDEX_GP21, BOARD_LED_INDEX_GP22, BOARD_LED_INDEX_GP23,
+            BOARD_LED_INDEX_GP24, BOARD_LED_INDEX_GP25, BOARD_LED_INDEX_GP26,
+            BOARD_LED_INDEX_GP27, BOARD_LED_INDEX_GP28, BOARD_LED_INDEX_GP29
+        };
+        for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++)
+        {
+            if (config.ledOptions.pinLedIndices[pin] < 0 && DEFAULT_PIN_LED_INDICES[pin] >= 0)
+                config.ledOptions.pinLedIndices[pin] = DEFAULT_PIN_LED_INDICES[pin];
+        }
+    }
 
     // keyboard mapping defaults from KEY_* macros (must run after gpioMappingsMigrationCore)
     auto setKeyboardDefaults = [](GpioMappings& mappings) {

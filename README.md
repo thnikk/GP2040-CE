@@ -46,6 +46,15 @@ The Waveshare RP2040-Zero includes an on-board LED and this addon sets the color
 #### Revamped Web Config
 The new config is designed for easy configuration of supported boards.
 
+### Per-profile Keyboard Mapping
+Unique keyboard mapping for each profile.
+
+### Multi-key Keyboard Mapping
+Map each button to a key and multiple modifiers.
+
+### Keyboard Widget
+Instead of setting keys with a dropdown, you can just click on the keyboard keys you'd like to use.
+
 ## Features
 
 - Select from 13 input modes including X-Input, Nintendo Switch, Playstation 4/5, Xbox One, D-Input, and Keyboard

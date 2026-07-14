@@ -111,7 +111,7 @@ const PinSection = memo(function PinSection({
 	onSavePinColors,
 	staticColorNormal,
 	inputMode,
-	ledButtonMap,
+	pinLedIndices,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
@@ -123,7 +123,7 @@ const PinSection = memo(function PinSection({
 	onSavePinColors?: () => Promise<boolean>;
 	staticColorNormal?: string;
 	inputMode?: number;
-	ledButtonMap?: Record<string, number | null>;
+	pinLedIndices?: Record<string, number>;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -216,6 +216,16 @@ const PinSection = memo(function PinSection({
 		? profilePins[`pin${modalPin.toString().padStart(2, '0')}`]
 		: null;
 
+	const baseProfilePins = useProfilesStore(
+		useShallow((state) => {
+			const p = state.profiles[0];
+			return p ? omit(p, ['profileLabel', 'enabled']) : {};
+		}),
+	);
+	const baseAction = modalPin !== null && baseProfilePins
+		? baseProfilePins[`pin${modalPin.toString().padStart(2, '0')}`]?.action ?? BUTTON_ACTIONS.NONE
+		: BUTTON_ACTIONS.NONE;
+
 	return (
 		<Form onSubmit={handleSubmit}>
 			<div className="d-flex justify-content-between">
@@ -268,7 +278,7 @@ const PinSection = memo(function PinSection({
 						themeIndex={themeIndex}
 						staticColorNormal={staticColorNormal}
 						inputMode={inputMode}
-						ledButtonMap={ledButtonMap}
+						pinLedIndices={pinLedIndices}
 					/>
 					) : (
 						<div className="alert alert-info">
@@ -280,6 +290,7 @@ const PinSection = memo(function PinSection({
 						show={modalPin !== null}
 						pinNumber={modalPin}
 						currentAction={currentPinData?.action ?? BUTTON_ACTIONS.NONE}
+						baseAction={baseAction}
 						currentCustomButtonMask={currentPinData?.customButtonMask ?? 0}
 						currentCustomDpadMask={currentPinData?.customDpadMask ?? 0}
 						currentKeyboardKeycode={useProfilesStore.getState().profiles[profileIndex]?.keyboardKeycodes?.[modalPin ?? 0] ?? 0}
@@ -290,7 +301,7 @@ const PinSection = memo(function PinSection({
 						hasCustomTheme={hasCustomTheme}
 						onLedColorChange={onLedColorChange}
 						onSaveColor={onSavePinColors}
-						ledButtonMap={ledButtonMap}
+						pinLedIndices={pinLedIndices}
 						inputMode={inputMode}
 					/>
 
@@ -358,7 +369,7 @@ export default function PinMapping() {
 	}, [themeSaveMessage, setThemeSaveMessage]);
 	const [ledsEnabled, setLedsEnabled] = useState(false);
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
-	const [ledButtonMap, setLedButtonMap] = useState<Record<string, number | null> | undefined>(undefined);
+	const [pinLedIndices, setPinLedIndices] = useState<Record<string, number> | undefined>(undefined);
 
 	const { setLoading } = useContext(AppContext);
 
@@ -391,7 +402,7 @@ export default function PinMapping() {
 			const options = await WebApi.getLedOptions(setLoading);
 			const gamepadOptions = await WebApi.getGamepadOptions(setLoading);
 			setLedsEnabled(options?.dataPin > -1);
-			setLedButtonMap(options?.ledButtonMap);
+			setPinLedIndices(options?.pinLedIndices);
 			setInputMode(gamepadOptions?.inputMode);
 		}
 		fetchLedOptions();
@@ -611,7 +622,7 @@ export default function PinMapping() {
 							onSavePinColors={ledsEnabled ? savePinColors : undefined}
 							staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
 							inputMode={inputMode}
-							ledButtonMap={ledButtonMap}
+							pinLedIndices={pinLedIndices}
 						/>
 						)
 					))}
