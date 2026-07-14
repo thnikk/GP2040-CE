@@ -19,6 +19,7 @@ import {
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import omit from 'lodash/omit';
+import invert from 'lodash/invert';
 
 import { AppContext } from '../Contexts/AppContext';
 import useProfilesStore from '../Store/useProfilesStore';
@@ -222,9 +223,28 @@ const PinSection = memo(function PinSection({
 			return p ? omit(p, ['profileLabel', 'enabled']) : {};
 		}),
 	);
-	const baseAction = modalPin !== null && baseProfilePins
-		? baseProfilePins[`pin${modalPin.toString().padStart(2, '0')}`]?.action ?? BUTTON_ACTIONS.NONE
-		: BUTTON_ACTIONS.NONE;
+
+	const getButtonNameFromAction = useCallback((action: number): string | null => {
+		const actionKey = invert(BUTTON_ACTIONS)[action as PinActionValues];
+		const btnKey = actionKey?.split('BUTTON_PRESS_')?.pop();
+		if (!btnKey) return null;
+		return btnKey.charAt(0).toUpperCase() + btnKey.slice(1).toLowerCase();
+	}, []);
+
+	const ledButtonOrder = useMemo(() => {
+		const order: (string | undefined)[] = [];
+		if (!pinLedIndices) return order;
+		for (let pin = 0; pin < 30; pin++) {
+			const ledIndex = pinLedIndices[String(pin)];
+			if (ledIndex == null || ledIndex < 0) continue;
+			const pinKey = `pin${pin.toString().padStart(2, '0')}`;
+			const action = baseProfilePins[pinKey]?.action;
+			if (action == null) continue;
+			const btnKey = getButtonNameFromAction(action);
+			if (btnKey) order[ledIndex] = btnKey;
+		}
+		return order;
+	}, [pinLedIndices, baseProfilePins, getButtonNameFromAction]);
 
 	return (
 		<Form onSubmit={handleSubmit}>
@@ -279,6 +299,7 @@ const PinSection = memo(function PinSection({
 						staticColorNormal={staticColorNormal}
 						inputMode={inputMode}
 						pinLedIndices={pinLedIndices}
+						ledButtonOrder={ledButtonOrder}
 					/>
 					) : (
 						<div className="alert alert-info">
@@ -290,7 +311,6 @@ const PinSection = memo(function PinSection({
 						show={modalPin !== null}
 						pinNumber={modalPin}
 						currentAction={currentPinData?.action ?? BUTTON_ACTIONS.NONE}
-						baseAction={baseAction}
 						currentCustomButtonMask={currentPinData?.customButtonMask ?? 0}
 						currentCustomDpadMask={currentPinData?.customDpadMask ?? 0}
 						currentKeyboardKeycode={useProfilesStore.getState().profiles[profileIndex]?.keyboardKeycodes?.[modalPin ?? 0] ?? 0}
@@ -303,6 +323,7 @@ const PinSection = memo(function PinSection({
 						onSaveColor={onSavePinColors}
 						pinLedIndices={pinLedIndices}
 						inputMode={inputMode}
+						ledButtonOrder={ledButtonOrder}
 					/>
 
 				</div>

@@ -64,6 +64,7 @@ type BoardSVGProps = {
 	staticColorNormal?: string;
 	inputMode?: number;
 	pinLedIndices?: Record<string, number>;
+	ledButtonOrder?: (string | undefined)[];
 };
 
 const ACTION_LABELS: Record<PinActionValues, string> = {
@@ -177,32 +178,33 @@ function prepareSvg(svg: string): string {
 
 const BUTTON_ORDER = ['Up', 'Down', 'Left', 'Right', 'B1', 'B2', 'B3', 'B4', 'R1', 'R2', 'L1', 'L2', 'S1', 'S2', 'L3', 'R3', 'A1', 'A2'];
 
-function rainbowColor(btnKey: string): string {
-	const index = BUTTON_ORDER.indexOf(btnKey);
-	if (index === -1) return '';
-	const hue = (index * 360 / BUTTON_ORDER.length) % 360;
+function rainbowColor(ledIndex: number, totalLeds: number): string {
+	const hue = (ledIndex * 360 / totalLeds) % 360;
 	return `hsl(${hue}, 100%, 50%)`;
 }
 
 function getLedColor(
-	btnKey: string | undefined,
+	ledIndex: number,
+	totalLeds: number,
 	animationMode: number,
 	themeIndex: number,
 	customTheme?: Record<string, { normal: string; pressed: string }>,
 	staticColorNormal?: string,
+	ledButtonOrder?: (string | undefined)[],
 ): string {
-	if (!btnKey) return '';
 	if (animationMode === 0 && staticColorNormal) {
 		return staticColorNormal;
 	}
-	if (animationMode === 4 && customTheme && customTheme[btnKey]) {
-		return customTheme[btnKey].normal;
+	if (animationMode === 4 && customTheme) {
+		const btnKey = ledButtonOrder?.[ledIndex] || BUTTON_ORDER[ledIndex % BUTTON_ORDER.length];
+		if (customTheme[btnKey]) return customTheme[btnKey].normal;
 	}
 	if (animationMode === 3 && themeIndex >= 0 && themeIndex < STATIC_THEME_COLORS.length) {
+		const btnKey = ledButtonOrder?.[ledIndex] || BUTTON_ORDER[ledIndex % BUTTON_ORDER.length];
 		return STATIC_THEME_COLORS[themeIndex][btnKey] || '';
 	}
 	if (animationMode === 1 || animationMode === 2) {
-		return rainbowColor(btnKey);
+		return rainbowColor(ledIndex, totalLeds);
 	}
 	return '';
 }
@@ -220,6 +222,7 @@ export default function BoardSVG({
 	staticColorNormal,
 	inputMode,
 	pinLedIndices,
+	ledButtonOrder,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels } = useContext(AppContext);
@@ -236,15 +239,7 @@ export default function BoardSVG({
 		}),
 	);
 
-    const basePins = useProfilesStore(
-		useShallow((state) => {
-			const p = state.profiles[0];
-			if (!p) return {};
-			return omit(p, ['profileLabel', 'enabled']);
-		}),
-	);
-
-	const updateLabels = useCallback(() => {
+    const updateLabels = useCallback(() => {
 	        if (!containerRef.current) return;
 
 	        if (originalFills.current.size === 0) {
@@ -271,6 +266,9 @@ export default function BoardSVG({
 	            });
 	        }
 
+	        const ledValues = pinLedIndices ? Object.values(pinLedIndices).filter((v): v is number => typeof v === 'number' && v >= 0) : [];
+	        const totalLeds = ledValues.length > 0 ? Math.max(...ledValues) + 1 : 0;
+
 	        pinElements.forEach(({ id, pinNumber }) => {
 			const el = containerRef.current?.querySelector(`#${CSS.escape(id)}`);
 			if (!el) return;
@@ -283,9 +281,6 @@ export default function BoardSVG({
 
 			const pinData = pins[`pin${pinNumber.toString().padStart(2, '0')}`];
 			const action = pinData?.action ?? BUTTON_ACTIONS.NONE;
-			const basePinData = basePins[`pin${pinNumber.toString().padStart(2, '0')}`];
-			const baseAction = basePinData?.action ?? BUTTON_ACTIONS.NONE;
-
 			let labelEl = el.querySelector<SVGTextElement>('.pin-action-label');
 			if (!labelEl) {
 				const svgNs = 'http://www.w3.org/2000/svg';
@@ -316,9 +311,6 @@ export default function BoardSVG({
 
 			const actionKey = invert(BUTTON_ACTIONS)[action];
 			const btnKey = ACTION_LABELS[action] || actionKey?.split('BUTTON_PRESS_')?.pop();
-
-			const baseActionKey = invert(BUTTON_ACTIONS)[baseAction];
-			const baseBtnKey = ACTION_LABELS[baseAction] || baseActionKey?.split('BUTTON_PRESS_')?.pop();
 
 			const isKeyboardMode = inputMode === 3;
 			const profileData = useProfilesStore.getState().profiles[profileIndex];
@@ -407,7 +399,8 @@ export default function BoardSVG({
 
 			const pinStr = String(pinNumber);
 			const hasLed = pinLedIndices && pinLedIndices[pinStr] != null && pinLedIndices[pinStr] >= 0;
-			const ledColor = hasLed ? getLedColor(baseBtnKey, animationMode, themeIndex, customTheme, staticColorNormal) : '';
+			const ledIndex = hasLed ? pinLedIndices[pinStr] : -1;
+			const ledColor = hasLed ? getLedColor(ledIndex, totalLeds, animationMode, themeIndex, customTheme, staticColorNormal, ledButtonOrder) : '';
 
 	        shapes.forEach((shape, shapeIndex) => {
 	            const svgEl = shape as HTMLElement;
@@ -462,7 +455,7 @@ export default function BoardSVG({
 	            }
 	        });
 		});
-	}, [pinElements, pins, basePins, buttonNames, highlightedPin, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices]);
+	}, [pinElements, pins, buttonNames, highlightedPin, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices, ledButtonOrder]);
 
 	useEffect(() => {
 		if (!containerRef.current || !svgContent) return;

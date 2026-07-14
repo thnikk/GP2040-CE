@@ -26,11 +26,12 @@ type OptionType = {
 	customDpadMask: number;
 };
 
+const BUTTON_ORDER = ['Up', 'Down', 'Left', 'Right', 'B1', 'B2', 'B3', 'B4', 'R1', 'R2', 'L1', 'L2', 'S1', 'S2', 'L3', 'R3', 'A1', 'A2'];
+
 type PinActionModalProps = {
 	show: boolean;
 	pinNumber: number | null;
 	currentAction: PinActionValues;
-	baseAction?: PinActionValues;
 	currentCustomButtonMask: number;
 	currentCustomDpadMask: number;
 	currentKeyboardKeycode: number;
@@ -49,6 +50,7 @@ type PinActionModalProps = {
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSaveColor?: () => void;
 	pinLedIndices?: Record<string, number>;
+	ledButtonOrder?: (string | undefined)[];
 	inputMode?: number;
 };
 
@@ -84,18 +86,10 @@ const buildOptions = () =>
 			};
 		});
 
-const getButtonNameFromAction = (action: PinActionValues): string | null => {
-	const actionKey = invert(BUTTON_ACTIONS)[action];
-	const btnKey = actionKey?.split('BUTTON_PRESS_')?.pop();
-	if (!btnKey) return null;
-	return btnKey.charAt(0).toUpperCase() + btnKey.slice(1).toLowerCase();
-};
-
 export default function PinActionModal({
 	show,
 	pinNumber,
 	currentAction,
-	baseAction,
 	currentCustomButtonMask,
 	currentCustomDpadMask,
 	currentKeyboardKeycode,
@@ -107,6 +101,7 @@ export default function PinActionModal({
 	onLedColorChange,
 	onSaveColor,
 	pinLedIndices,
+	ledButtonOrder,
 	inputMode,
 }: PinActionModalProps) {
 	const { t } = useTranslation('');
@@ -155,9 +150,11 @@ export default function PinActionModal({
 	const disabled = disabledOptions.includes(pendingAction);
 
 	const buttonName = useMemo(() => {
-		if (disabled) return null;
-		return getButtonNameFromAction(baseAction ?? pendingAction);
-	}, [baseAction, pendingAction, disabled]);
+		if (disabled || pinNumber === null || !pinLedIndices) return null;
+		const ledIndex = pinLedIndices[String(pinNumber)];
+		if (ledIndex == null || ledIndex < 0) return null;
+		return ledButtonOrder?.[ledIndex] || BUTTON_ORDER[ledIndex % BUTTON_ORDER.length] || null;
+	}, [disabled, pinNumber, pinLedIndices, ledButtonOrder]);
 
 	const isButtonPress = !!buttonName;
 
