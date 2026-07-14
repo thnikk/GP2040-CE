@@ -153,9 +153,11 @@ def main():
         'chown -R 1000:1000 '
         '/build/.git/modules /build/lib/pico_pio_usb /build/lib/tinyusb '
         '/build/www /build/build 2>/dev/null || true; '
-        'rm -rf /build/build /build/www/node_modules /build/www/build '
+        'rm -rf /build/www/node_modules /build/www/build '
         '/build/lib/httpd/fsdata.c 2>/dev/null || true'
     )
+    if args.clean:
+        cleanup_cmd += '; rm -rf /build/build 2>/dev/null || true'
     run_docker(args.image, cleanup_cmd,
                extra_args=["--user", "0:0"],
                log_file=args.output, verbose=args.verbose)
