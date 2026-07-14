@@ -53,8 +53,6 @@ def run_docker(image, command, extra_args=None, log_file=None, verbose=False):
             cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
         ) as proc:
             _build_started = False
-            _web_notified = False
-            _compress_notified = False
             _output_shown = False
 
             for line in proc.stdout:
@@ -77,14 +75,6 @@ def run_docker(image, command, extra_args=None, log_file=None, verbose=False):
                         if _build_started:
                             print()
                         print(line, end='', flush=True)
-                    elif 'Not Skipping WebBuild' in line and not _web_notified:
-                        _output_shown = True
-                        _web_notified = True
-                        print('Building web interface...')
-                    elif line.strip().startswith('Compressed ') and not _compress_notified:
-                        _output_shown = True
-                        _compress_notified = True
-                        print('Compressing web assets...')
             proc.wait()
             if not verbose and _output_shown:
                 print()
@@ -166,6 +156,10 @@ def main():
                log_file=args.output, verbose=args.verbose)
 
     # --- Build ---
+    fsdata = REPO_ROOT / "lib" / "httpd" / "fsdata.c"
+    if fsdata.exists():
+        fsdata.unlink()
+
     log_msg("Configuring...", args.output)
     build_cmd = (
         'cmake -B build -DCMAKE_BUILD_TYPE=Release '
