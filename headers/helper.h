@@ -14,6 +14,10 @@
 #define GP2040_BOARDCONFIG "Unknown"
 #endif
 
+#ifndef BOARD_EXTRA_PINS
+#define BOARD_EXTRA_PINS {}
+#endif
+
 #define PLED_REPORT_SIZE 32
 
 #ifndef PLED1_PIN

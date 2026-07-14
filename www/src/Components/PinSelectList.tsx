@@ -91,9 +91,11 @@ const getMultiValue = (pinData) => {
 const PinSelectList = memo(function PinSelectList({
 	profileIndex,
 	excludePins,
+	includePins,
 }: {
 	profileIndex: number;
 	excludePins?: Set<number>;
+	includePins?: Set<number>;
 }) {
 	const setProfilePin = useProfilesStore((state) => state.setProfilePin);
 
@@ -171,9 +173,11 @@ const PinSelectList = memo(function PinSelectList({
 		[buttonNames],
 	);
 	const pinEntries = Object.entries(pins).filter(([pin]) => {
-		if (!excludePins) return true;
+		if (!pin.startsWith('pin')) return false;
 		const num = parseInt(pin.replace('pin', ''), 10);
-		return !excludePins.has(num);
+		if (includePins) return includePins.has(num);
+		if (excludePins) return !excludePins.has(num);
+		return true;
 	});
 
 	return pinEntries.map(([pin, pinData], index) => (

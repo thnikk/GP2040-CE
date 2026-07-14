@@ -605,6 +605,13 @@ export default function SettingsPage() {
 		);
 	};
 
+	const [extraPins, setExtraPins] = useState(null);
+	useEffect(() => {
+		WebApi.getExtraPins().then((data) => {
+			if (data?.extraPins) setExtraPins(new Set(data.extraPins));
+		});
+	}, []);
+
 	const [PS4Key, setPS4Key] = useState();
 	const [PS4Serial, setPS4Serial] = useState();
 	const [PS4Signature, setPS4Signature] = useState();
@@ -1790,7 +1797,7 @@ export default function SettingsPage() {
 													<Alert variant="info">
 														These pins are accessible on the back of the RP2040-Zero via the small surface-mount pads.
 													</Alert>
-													<PinSelectList profileIndex={0} excludePins={svgPinSet} />
+													<PinSelectList profileIndex={0} includePins={extraPins} />
 													<div className="d-flex gap-2 align-self-end">
 														{extraPinsSaveMessage ? (
 															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{extraPinsSaveMessage}</Alert>

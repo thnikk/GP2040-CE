@@ -626,6 +626,15 @@ async function setPeripheralOptions(mappings) {
 		});
 }
 
+async function getExtraPins() {
+	try {
+		const response = await Http.get(`${baseUrl}/api/getExtraPins`);
+		return response.data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
 async function getUsedPins(setLoading) {
 	setLoading(true);
 
@@ -720,6 +729,7 @@ export default {
 	getSplashImage,
 	setSplashImage,
 	getUsedPins,
+	getExtraPins,
 	getHeldPins,
 	abortGetHeldPins,
 	reboot,

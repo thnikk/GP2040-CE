@@ -464,6 +464,17 @@ std::string getUsedPins()
     return serialize_json(doc);
 }
 
+std::string getExtraPins()
+{
+    DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
+    auto pins = doc.createNestedArray("extraPins");
+    auto extra = std::initializer_list<int32_t> BOARD_EXTRA_PINS;
+    for (int32_t pin : extra) {
+        pins.add(pin);
+    }
+    return serialize_json(doc);
+}
+
 std::string setDisplayOptions(DisplayOptions& displayOptions)
 {
     DynamicJsonDocument doc = get_post_data();
@@ -2400,6 +2411,7 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/getHeldPins", getHeldPins },
     { "/api/abortGetHeldPins", abortGetHeldPins },
     { "/api/getUsedPins", getUsedPins },
+    { "/api/getExtraPins", getExtraPins },
     { "/api/getConfig", getConfig },
 #if !defined(NDEBUG)
     { "/api/echo", echo },

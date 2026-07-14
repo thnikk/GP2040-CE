@@ -11,6 +11,10 @@
 
 #define BOARD_CONFIG_LABEL "Waveshare Zero"
 
+// Extra GPIO pads on the back of the RP2040-Zero (small surface-mount pads)
+// Uncomment and adjust for your board:
+// #define BOARD_EXTRA_PINS {0, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25}
+
 // Main pin mapping Configuration
 //                                                  // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
 #define GPIO_PIN_02 GpioAction::BUTTON_PRESS_UP     // UP     | UP     | UP      | UP       | UP     | UP     |

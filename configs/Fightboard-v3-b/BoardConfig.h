@@ -12,6 +12,8 @@
 #define BOARD_CONFIG_LABEL "fightboard-v3-b"
 #define BOARD_SVG
 
+#define BOARD_EXTRA_PINS {17, 18, 19, 20, 21, 22, 23, 24, 25}
+
 // Main pin mapping Configuration
 //                                                  // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
 #define GPIO_PIN_29 GpioAction::BUTTON_PRESS_UP     // UP     | UP     | UP      | UP       | UP     | UP     |
