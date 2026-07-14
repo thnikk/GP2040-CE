@@ -2,6 +2,8 @@
 #include "hardware/watchdog.h"
 #include "system.h"
 
+#include <cctype>
+
 extern uint32_t getMillis();
 
 void MainMenuScreen::init() {
@@ -43,6 +45,7 @@ void MainMenuScreen::init() {
         if (menuLabel.empty()) {
             menuLabel = "Profile #" + std::to_string(profileCtr);
         }
+        for (auto &c : menuLabel) c = toupper(c);
         MenuEntry menuEntry = {menuLabel, NULL, nullptr, std::bind(&MainMenuScreen::currentProfile, this), std::bind(&MainMenuScreen::selectProfile, this), profileCtr+1};
         profilesMenu.push_back(menuEntry);
     }

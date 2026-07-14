@@ -6,6 +6,8 @@
 #include "drivers/xbone/XBOneDriver.h"
 #include "drivers/xinput/XInputDriver.h"
 
+#include <cctype>
+
 static std::string keycodeToName(uint8_t code) {
 	if (code == 0x00) return "";
 
@@ -257,7 +259,7 @@ void ButtonLayoutScreen::generateHeader() {
 					statusBar = "PROFILE ";
 					statusBar +=  std::to_string(getGamepad()->getOptions().profileNumber);
 				} else {
-					statusBar.insert(statusBar.begin(), (21-statusBar.length())/2, ' ');
+					for (auto &c : statusBar) c = toupper(c);
 				}
 			} else {
 				statusBar = bannerMessage;
@@ -359,7 +361,8 @@ void ButtonLayoutScreen::generateHeader() {
         profile.assign(storage.currentProfileLabel(), strlen(storage.currentProfileLabel()));
         if (profile.empty()) {
             statusBar += std::to_string(getGamepad()->getOptions().profileNumber);
-        } else {
+		} else {
+            for (auto &c : profile) c = toupper(c);
             statusBar += profile;
         }
     }
