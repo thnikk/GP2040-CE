@@ -23,3 +23,8 @@ www/src_gen/enums.ts
 
 # Python
 __pycache__/
+
+# Local build log
+build-log.txt
+
+.opencode/

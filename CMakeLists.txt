@@ -75,37 +75,34 @@ endif()
 if(SKIP_WEBBUILD)
   cmake_print_variables(SKIP_WEBBUILD)
 else()
-  message(STATUS "Not Skipping WebBuild")
   include(${CMAKE_SOURCE_DIR}/modules/FindNodeJS.cmake)
   include(${CMAKE_SOURCE_DIR}/modules/FindNPM.cmake)
   if(NODEJS_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/www")
     if(NPM_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/www/package.json")
-      execute_process(COMMAND ${NPM_EXECUTABLE} ci
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www
-                      RESULT_VARIABLE NPM_CI_RESULT)
-      if(NOT NPM_CI_RESULT EQUAL "0")
-        message(FATAL_ERROR "npm ci failed with ${NPM_CI_RESULT}")
-      endif()
+      message(STATUS "Not Skipping WebBuild")
 
-      # Check if board config defines BOARD_SVG for SVG-based pin mapping UI
       string(TOLOWER "${GP2040_BOARDCONFIG}" GP2040_BOARD_LOWER)
-      set(ENV{VITE_GP2040_BOARD} "${GP2040_BOARD_LOWER}")
-      set(ENV{VITE_GP2040_BOARD_HAS_SVG} "false")
+
+      set(BOARD_HAS_SVG "false")
       if(EXISTS "${CMAKE_SOURCE_DIR}/configs/${GP2040_BOARDCONFIG}/BoardConfig.h")
         file(READ "${CMAKE_SOURCE_DIR}/configs/${GP2040_BOARDCONFIG}/BoardConfig.h" BOARD_CONFIG_CONTENT)
-        string(REGEX MATCH "#[ \t]*define[ \t]+BOARD_SVG" BOARD_HAS_SVG "${BOARD_CONFIG_CONTENT}")
-        if(BOARD_HAS_SVG)
-          set(ENV{VITE_GP2040_BOARD_HAS_SVG} "true")
+        string(REGEX MATCH "#[ \t]*define[ \t]+BOARD_SVG" BOARD_HAS_SVG_MATCH "${BOARD_CONFIG_CONTENT}")
+        if(BOARD_HAS_SVG_MATCH)
+          set(BOARD_HAS_SVG "true")
           message(STATUS "Board ${GP2040_BOARDCONFIG} has BOARD_SVG defined - SVG pin mapping enabled")
         endif()
       endif()
 
-      execute_process(COMMAND ${NPM_EXECUTABLE} run build
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/www
-                      RESULT_VARIABLE NPM_BUILD_RESULT)
-      if(NOT NPM_BUILD_RESULT EQUAL "0")
-        message(FATAL_ERROR "npm run build failed with ${NPM_BUILD_RESULT}")
-      endif()
+      add_custom_target(WebBuild ALL
+        COMMAND ${CMAKE_COMMAND}
+          -D WEB_SRC_DIR=${CMAKE_SOURCE_DIR}/www
+          -D OUT_FILE=${CMAKE_SOURCE_DIR}/lib/httpd/fsdata.c
+          -D NPM_EXECUTABLE=${NPM_EXECUTABLE}
+          -D VITE_GP2040_BOARD=${GP2040_BOARD_LOWER}
+          -D VITE_GP2040_BOARD_HAS_SVG=${BOARD_HAS_SVG}
+          -P ${CMAKE_SOURCE_DIR}/modules/web-build.cmake
+        COMMENT "Building web interface..."
+      )
     endif()
   endif()
 endif()
@@ -146,7 +143,19 @@ pico_sdk_init()
 add_compile_options(-fdata-sections -ffunction-sections)
 add_link_options(-Wl,--gc-sections)
 
+# Create an empty stub so the httpd library has a source file to reference
+# at configure time. The epoch timestamp ensures the custom command below
+# always regenerates the real file on the first build.
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/lib/httpd/fsdata.c")
+  file(WRITE "${CMAKE_SOURCE_DIR}/lib/httpd/fsdata.c" "")
+  execute_process(COMMAND touch -t 197001010000 "${CMAKE_SOURCE_DIR}/lib/httpd/fsdata.c" ERROR_QUIET)
+endif()
+
 add_subdirectory(lib)
+
+if(NOT SKIP_WEBBUILD AND TARGET WebBuild AND TARGET httpd)
+  add_dependencies(httpd WebBuild)
+endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   # Activate some compiler / linker options to aid us with diagnosing stack space issues in Debug builds
