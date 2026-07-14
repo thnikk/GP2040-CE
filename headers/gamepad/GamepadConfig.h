@@ -269,3 +269,6 @@
 #ifndef KEY_BUTTON_A2_MOD
 #define KEY_BUTTON_A2_MOD 0
 #endif
+#ifndef KEY_BUTTON_A2
+#define KEY_BUTTON_A2 0
+#endif
