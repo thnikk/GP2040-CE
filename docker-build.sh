@@ -14,7 +14,7 @@ docker run --rm -v "$(pwd):/build" --user 0:0 "$IMAGE" sh -c '
     /build/www \
     /build/build \
     2>/dev/null || true
-  rm -rf /build/www/node_modules /build/www/build /build/lib/httpd/fsdata.c 2>/dev/null || true
+  rm -rf /build/www/node_modules /build/www/build 2>/dev/null || true
 ' 2>/dev/null
 
 docker run --rm -v "$(pwd):/build" "$IMAGE" \

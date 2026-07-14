@@ -120,6 +120,9 @@ def main():
 
     args = parser.parse_args()
 
+    if args.output:
+        open(args.output, "w").close()
+
     if args.board not in valid_boards:
         print(f"Error: Unknown board '{args.board}'. Available boards:",
               file=sys.stderr)
@@ -153,8 +156,7 @@ def main():
         'chown -R 1000:1000 '
         '/build/.git/modules /build/lib/pico_pio_usb /build/lib/tinyusb '
         '/build/www /build/build 2>/dev/null || true; '
-        'rm -rf /build/www/node_modules /build/www/build '
-        '/build/lib/httpd/fsdata.c 2>/dev/null || true'
+        'rm -rf /build/www/node_modules /build/www/build 2>/dev/null || true'
     )
     if args.clean:
         cleanup_cmd += '; rm -rf /build/build 2>/dev/null || true'
