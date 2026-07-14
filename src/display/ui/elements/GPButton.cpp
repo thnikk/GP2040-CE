@@ -86,8 +86,8 @@ void GPButton::draw() {
             mapMask = getGamepad()->mapDpadRight;
         }
     } else if (_inputType == GP_ELEMENT_PIN_BUTTON) {
-        // physical pin
-        pinState = ((pinValues >> this->_inputMask) & 0x01);
+        // physical pin — use debounced GPIO to match LED behavior
+        pinState = ((getGamepad()->debouncedGpio >> this->_inputMask) & 0x01);
         buttonState = true;
     }
 
