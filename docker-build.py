@@ -2,6 +2,7 @@
 import argparse
 import glob
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -42,20 +43,54 @@ def run_docker(image, command, extra_args=None, log_file=None, verbose=False):
         cmd.extend(extra_args)
     cmd.extend([image, "bash", "-c", command])
 
+    log_fh = None
     if log_file:
-        with open(log_file, "a") as log:
-            with subprocess.Popen(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
-            ) as proc:
-                for line in proc.stdout:
-                    log.write(line)
-                    if verbose:
-                        print(line, end="", flush=True)
-                proc.wait()
-                return proc.returncode
-    else:
-        result = subprocess.run(cmd)
-        return result.returncode
+        log_fh = open(log_file, "a")
+
+    try:
+        with subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+        ) as proc:
+            _build_started = False
+            _web_notified = False
+            _compress_notified = False
+            _output_shown = False
+
+            for line in proc.stdout:
+                if log_fh:
+                    log_fh.write(line)
+                if verbose:
+                    _output_shown = True
+                    print(line, end="", flush=True)
+                else:
+                    m = re.match(r'^\[(\s*\d+)%\]', line)
+                    if m:
+                        _output_shown = True
+                        if not _build_started:
+                            _build_started = True
+                        pct = int(m.group(1))
+                        bar = '\u2588' * (40 * pct // 100) + '\u2591' * (40 - 40 * pct // 100)
+                        print(f'\r  Building: |{bar}| {pct:3d}%', end='', flush=True)
+                    elif re.search(r'error:', line, re.IGNORECASE):
+                        _output_shown = True
+                        if _build_started:
+                            print()
+                        print(line, end='', flush=True)
+                    elif 'Not Skipping WebBuild' in line and not _web_notified:
+                        _output_shown = True
+                        _web_notified = True
+                        print('Building web interface...')
+                    elif line.strip().startswith('Compressed ') and not _compress_notified:
+                        _output_shown = True
+                        _compress_notified = True
+                        print('Compressing web assets...')
+            proc.wait()
+            if not verbose and _output_shown:
+                print()
+            return proc.returncode
+    finally:
+        if log_fh:
+            log_fh.close()
 
 
 def main():
@@ -113,6 +148,7 @@ def main():
                 log_msg(f"Warning: nuke failed: {e}", args.output)
 
     # --- Cleanup ---
+    log_msg("Cleaning...", args.output)
     cleanup_cmd = (
         'chown -R 1000:1000 '
         '/build/.git/modules /build/lib/pico_pio_usb /build/lib/tinyusb '
@@ -125,6 +161,7 @@ def main():
                log_file=args.output, verbose=args.verbose)
 
     # --- Build ---
+    log_msg("Configuring...", args.output)
     build_cmd = (
         'cmake -B build -DCMAKE_BUILD_TYPE=Release '
         '-DGP2040_BOARDCONFIG=$GP2040_BOARDCONFIG '
@@ -138,6 +175,12 @@ def main():
         if args.output:
             log_msg(f"Build failed (exit {ret}). Log: {args.output}")
         sys.exit(ret)
+
+    uf2_matches = sorted(glob.glob(str(REPO_ROOT / "build" / f"GP2040-CE_*_{args.board}.uf2")))
+    if uf2_matches:
+        log_msg(f"Build complete! → {Path(uf2_matches[-1]).name}", args.output)
+    else:
+        log_msg("Build complete!", args.output)
 
     # --- Flash ---
     if args.flash:
