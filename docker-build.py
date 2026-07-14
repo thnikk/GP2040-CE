@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 
@@ -188,6 +189,14 @@ def main():
 
     # --- Flash ---
     if args.flash:
+        if not flash_dir.is_dir() and args.nuke:
+            log_msg("Waiting for board to remount...", args.output)
+            for _ in range(30):
+                if flash_dir.is_dir():
+                    time.sleep(1)
+                    break
+                time.sleep(1)
+
         if not flash_dir.is_dir():
             log_msg(f"Warning: flash path {flash_path} not found, skipping flash",
                     args.output)
