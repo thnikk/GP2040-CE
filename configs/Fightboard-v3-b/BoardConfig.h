@@ -59,8 +59,12 @@
 #define KEY_BUTTON_FN   -1                    // Hotkey Function                                        |
 
 // Boot-hold pin-based input mode overrides
-#define DEFAULT_INPUT_MODE_XINPUT_PIN 5  // B1 (GP5)
-#define DEFAULT_INPUT_MODE_SWITCH_PIN 6  // B2 (GP6)
+#define DEFAULT_INPUT_MODE_XINPUT_PIN 5   // B1 (GP5)
+#define DEFAULT_INPUT_MODE_SWITCH_PIN 6   // B2 (GP6)
+#define DEFAULT_INPUT_MODE_PS3_PIN 1      // B3 (GP1)
+#define DEFAULT_INPUT_MODE_PS4_PIN 2      // B4 (GP2)
+#define DEFAULT_INPUT_MODE_PS5_PIN 3      // R1 (GP3)
+#define DEFAULT_INPUT_MODE_KEYBOARD_PIN 4 // L1 (GP4)
 
 // Hotkeys
 #define HOTKEY_08_BUTTONS_MASK 3072  // L3+R3

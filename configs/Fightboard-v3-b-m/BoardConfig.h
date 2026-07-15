@@ -15,8 +15,12 @@
 #define BOARD_EXTRA_PINS {17, 18, 19, 20, 21, 22, 23, 24, 25}
 
 // Boot-hold pin-based input mode overrides
-#define DEFAULT_INPUT_MODE_XINPUT_PIN 9   // B1 (GP9)
-#define DEFAULT_INPUT_MODE_SWITCH_PIN 12  // B2 (GP12)
+#define DEFAULT_INPUT_MODE_XINPUT_PIN 9    // B1 (GP9)
+#define DEFAULT_INPUT_MODE_SWITCH_PIN 12   // B2 (GP12)
+#define DEFAULT_INPUT_MODE_PS3_PIN 15      // B3 (GP15)
+#define DEFAULT_INPUT_MODE_PS4_PIN 28      // B4 (GP28)
+#define DEFAULT_INPUT_MODE_PS5_PIN 27      // R1 (GP27)
+#define DEFAULT_INPUT_MODE_KEYBOARD_PIN 26 // L1 (GP26)
 
 // Main pin mapping Configuration
 //                                                  // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
@@ -84,7 +88,11 @@
 #define BOARD_LEDS_RGB_BRIGHTNESS 16
 
 // Boot-hold pin-based input mode overrides
-#define DEFAULT_INPUT_MODE_XINPUT_PIN 9   // B1 (GP9)
-#define DEFAULT_INPUT_MODE_SWITCH_PIN 12  // B2 (GP12)
+#define DEFAULT_INPUT_MODE_XINPUT_PIN 9    // B1 (GP9)
+#define DEFAULT_INPUT_MODE_SWITCH_PIN 12   // B2 (GP12)
+#define DEFAULT_INPUT_MODE_PS3_PIN 15      // B3 (GP15)
+#define DEFAULT_INPUT_MODE_PS4_PIN 28      // B4 (GP28)
+#define DEFAULT_INPUT_MODE_PS5_PIN 27      // R1 (GP27)
+#define DEFAULT_INPUT_MODE_KEYBOARD_PIN 26 // L1 (GP26)
 
 #endif
