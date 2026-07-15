@@ -478,15 +478,10 @@ std::string getExtraPins()
 std::string setDisplayOptions(DisplayOptions& displayOptions)
 {
     DynamicJsonDocument doc = get_post_data();
-    Config& config = Storage::getInstance().getConfig();
     readDoc(displayOptions.enabled, doc, "enabled");
     readDoc(displayOptions.flip, doc, "flipDisplay");
     readDoc(displayOptions.invert, doc, "invertDisplay");
-    // Forward buttonLayout writes to shared config
-    readDoc(config.buttonLayout, doc, "buttonLayout");
-    readDoc(config.buttonLayoutRight, doc, "buttonLayoutRight");
-    displayOptions.buttonLayout = config.buttonLayout;
-    displayOptions.buttonLayoutRight = config.buttonLayoutRight;
+
     readDoc(displayOptions.splashMode, doc, "splashMode");
     readDoc(displayOptions.splashChoice, doc, "splashChoice");
     readDoc(displayOptions.splashDuration, doc, "splashDuration");
