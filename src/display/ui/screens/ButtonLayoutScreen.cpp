@@ -271,8 +271,9 @@ void ButtonLayoutScreen::generateHeader() {
 		}
 	}
 
+    statusBarRight.clear();
+
     if (showInputMode) {
-        // Display standard header
         switch (inputMode)
         {
             case INPUT_MODE_PS3:    statusBar += "PS3"; break;
@@ -318,15 +319,29 @@ void ButtonLayoutScreen::generateHeader() {
         }
     }
 
+    if (showProfileMode) {
+        statusBarRight += " Pr:";
+        std::string profile;
+        profile.assign(storage.currentProfileLabel(), strlen(storage.currentProfileLabel()));
+        if (profile.empty()) {
+            statusBarRight += std::to_string(getGamepad()->getOptions().profileNumber);
+        } else {
+            for (auto &c : profile) c = toupper(c);
+            statusBarRight += profile;
+        }
+    }
+
+    if (showMacroMode && macroEnabled) statusBarRight += " M";
+
     if (showTurboMode) {
         const TurboOptions& turboOptions = storage.getAddonOptions().turboOptions;
         if ( turboOptions.enabled ) {
-            statusBar += " T";
-            if ( turboOptions.shotCount < 10 ) // padding
-                statusBar += "0";
-            statusBar += std::to_string(turboOptions.shotCount);
+            statusBarRight += " T";
+            if ( turboOptions.shotCount < 10 )
+                statusBarRight += "0";
+            statusBarRight += std::to_string(turboOptions.shotCount);
         } else {
-            statusBar += "    "; // no turbo, don't show Txx setting
+            statusBarRight += "    ";
         }
     }
 
@@ -335,39 +350,25 @@ void ButtonLayoutScreen::generateHeader() {
     if (showDpadMode) {
         switch (gamepad->getActiveDpadMode())
         {
-            case DPAD_MODE_DIGITAL:      statusBar += " D"; break;
-            case DPAD_MODE_LEFT_ANALOG:  statusBar += " L"; break;
-            case DPAD_MODE_RIGHT_ANALOG: statusBar += " R"; break;
+            case DPAD_MODE_DIGITAL:      statusBarRight += " D"; break;
+            case DPAD_MODE_LEFT_ANALOG:  statusBarRight += " L"; break;
+            case DPAD_MODE_RIGHT_ANALOG: statusBarRight += " R"; break;
         }
     }
 
     if (showSocdMode) {
         switch (Gamepad::resolveSOCDMode(gamepad->getOptions()))
         {
-            case SOCD_MODE_NEUTRAL:               statusBar += " SOCD-N"; break;
-            case SOCD_MODE_UP_PRIORITY:           statusBar += " SOCD-U"; break;
-            case SOCD_MODE_SECOND_INPUT_PRIORITY: statusBar += " SOCD-L"; break;
-            case SOCD_MODE_FIRST_INPUT_PRIORITY:  statusBar += " SOCD-F"; break;
-            case SOCD_MODE_BYPASS:                statusBar += " SOCD-X"; break;
-        }
-    }
-
-    if (showMacroMode && macroEnabled) statusBar += " M";
-
-    if (showProfileMode) {
-        statusBar += " Pr:";
-
-        std::string profile;
-        profile.assign(storage.currentProfileLabel(), strlen(storage.currentProfileLabel()));
-        if (profile.empty()) {
-            statusBar += std::to_string(getGamepad()->getOptions().profileNumber);
-		} else {
-            for (auto &c : profile) c = toupper(c);
-            statusBar += profile;
+            case SOCD_MODE_NEUTRAL:               statusBarRight += " SOCD-N"; break;
+            case SOCD_MODE_UP_PRIORITY:           statusBarRight += " SOCD-U"; break;
+            case SOCD_MODE_SECOND_INPUT_PRIORITY: statusBarRight += " SOCD-L"; break;
+            case SOCD_MODE_FIRST_INPUT_PRIORITY:  statusBarRight += " SOCD-F"; break;
+            case SOCD_MODE_BYPASS:                statusBarRight += " SOCD-X"; break;
         }
     }
 
     trim(statusBar);
+    trim(statusBarRight);
 }
 
 void ButtonLayoutScreen::drawScreen() {
@@ -375,7 +376,10 @@ void ButtonLayoutScreen::drawScreen() {
         getRenderer()->drawRectangle(0, 0, 128, 7, false, true);
     	getRenderer()->drawText(0, 0, statusBar, false);
     } else {
+        uint8_t rightX = 21 - statusBarRight.length();
 		getRenderer()->drawText(0, 0, statusBar);
+        if (!statusBarRight.empty())
+            getRenderer()->drawText(rightX, 0, statusBarRight);
 	}
     getRenderer()->drawText(0, 7, footer);
 }

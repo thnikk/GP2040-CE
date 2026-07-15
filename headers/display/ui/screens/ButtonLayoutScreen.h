@@ -140,6 +140,7 @@ class ButtonLayoutScreen : public GPScreen {
         Gamepad* gamepad;
         InputMode inputMode;
         std::string statusBar;
+        std::string statusBarRight;
         std::string footer;
 
         bool isInputHistoryEnabled = false;
