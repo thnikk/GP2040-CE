@@ -46,17 +46,11 @@ void DisplaySaverScreen::drawScreen() {
 
 int8_t DisplaySaverScreen::update() {
     if (!Storage::getInstance().GetConfigMode()) {
-        bool buttonState = getGamepad()->state.any;
-        if (prevButtonState && !buttonState) {
-            if (prevButtonState != 0) {
-                prevButtonState = 0;
-                return DisplayMode::BUTTONS;
-            }
-        }
-        prevButtonState = buttonState;
+        if (getGamepad()->state.any)
+            return DisplayMode::BUTTONS;
     }
 
-    return -1; // -1 means no change in screen state
+    return -1;
 }
 
 void DisplaySaverScreen::initSnowScene() {
