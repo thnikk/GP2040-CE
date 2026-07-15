@@ -24,14 +24,15 @@
 	},
 	"scripts": {
 		"analyze": "npx vite-bundle-visualizer",
-		"build": "npm run build-proto && vite build && npm run makefsdata",
+		"build": "npm run build-proto && vite build && npm run copy-board-svg build && npm run makefsdata",
 		"dev-server": "nodemon -r dotenv/config ./server/app.js",
 		"dev": "concurrently --kill-others \"npm run dev-server\" \"npm start\"",
 		"dev-board": "cross-env VITE_DEV_BASE_URL=http://192.168.7.1 npm start ",
 		"format": "prettier --write \"{src,server}/**/*.{tsx,ts,jsx,js,json,scss}\"",
 		"lint": "eslint src --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"makefsdata": "node makefsdata.js",
-		"start": "npm run build-proto && vite",
+		"copy-board-svg": "node copy-board-svg.js",
+		"start": "node copy-board-svg.js public && npm run build-proto && vite",
 		"build-proto": "npx pbjs --no-create --no-encode --no-decode --no-convert --no-verify --no-delimited --sparse -t static-module -w commonjs --path ../lib/nanopb/generator/proto/ ../proto/enums.proto | npx pbts --no-comments -m -o ./src_gen/enums.ts -"
 	},
 	"devDependencies": {

@@ -100,6 +100,7 @@ else()
           -D NPM_EXECUTABLE=${NPM_EXECUTABLE}
           -D VITE_GP2040_BOARD=${GP2040_BOARD_LOWER}
           -D VITE_GP2040_BOARD_HAS_SVG=${BOARD_HAS_SVG}
+          -D GP2040_BOARDCONFIG=${GP2040_BOARDCONFIG}
           -P ${CMAKE_SOURCE_DIR}/modules/web-build.cmake
         COMMENT "Building web interface..."
       )
