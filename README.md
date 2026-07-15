@@ -1,50 +1,42 @@
 <p align="center">
-  <a href="https://gp2040-ce.info">
-    <img alt="GP2040-CE" src="https://raw.githubusercontent.com/OpenStickCommunity/Site/main/docs/assets/images/gp2040-ce-logo.png" />
+  <a href="https://github.com/thnikk/GP2040-CE">
+    <img alt="Logo" src="www/public/images/logo.svg" />
   </a>
 </p>
 
 <p align="center">
-  Multi-Platform Gamepad Firmware for RP2040
+  Fork of <a href="https://github.com/OpenStickCommunity/GP2040-CE">GP2040-CE</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/OpenStickCommunity/GP2040-CE" />
-  <img src="https://img.shields.io/github/actions/workflow/status/OpenStickCommunity/GP2040-CE/cmake.yml" />
+  <img src="https://img.shields.io/github/license/thnikk/GP2040-CE" />
+  <img src="https://img.shields.io/github/actions/workflow/status/thnikk/GP2040-CE/cmake.yml" />
   <br />
   <img src="https://img.shields.io/badge/inputlag.science-0.86%20ms-blue" />
   <img src="https://img.shields.io/badge/MiSTer%20latency-0.765%20ms-blue" />
 </p>
 
-<p>
-  GP2040-CE (Community Edition) is a gamepad firmware for the Raspberry Pi Pico and other boards based on the RP2040 microcontrollers that combines multi-platform compatibility, low latency and a rich feature set to provide endless customization possibilities without sacrificing performance.
+This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes are for broader compatibility, so I wanted my own fork for changes that are more specific to my controllers. Original description:
+
+> [!NOTE]
+> GP2040-CE (Community Edition) is a gamepad firmware for the Raspberry Pi Pico and other boards based on the RP2040 microcontrollers that combines multi-platform compatibility, low latency and a rich feature set to provide endless customization possibilities without sacrificing performance.
+>
+> GP2040-CE is compatible with PC, PS3, PS4, PS5, Nintendo Switch, Xbox One, Steam Deck, MiSTer and Android.
+
+## New Features
+
+<p align="center">
+  <img alt="Web Config Screenshot" src="assets/web-config.png" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" />
 </p>
 
-<p>
-  GP2040-CE is compatible with PC, PS3, PS4, PS5, Nintendo Switch, Xbox One, Steam Deck, MiSTer and Android.
-</p>
+### SVG Remapper
+Instead of using pin remapping, a board SVG can be used to define pins for their positions on the board and that will be displayed on the pin remapping page of the web config instead of the list of pins. This is a lot more intuitive for remapping, since it mirrors what you see on the controller.
 
-## Links
-
-[Downloads](https://gp2040-ce.info/downloads) | [Installation](https://gp2040-ce.info/installation) | [Wiring](https://gp2040-ce.info/controller-build/wiring) | [Usage](https://gp2040-ce.info/usage) | [FAQ](https://gp2040-ce.info/faq/faq-general) | [GitHub](https://github.com/OpenStickCommunity/GP2040-CE)
-
-Full documentation can be found at [https://gp2040-ce.info](https://gp2040-ce.info)
-
-## Fork
-This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes are for broader compatibility, so I wanted my own fork for changes that are more specific to my controllers.
-
-![Web Config Screenshot](assets/web-config.png)
-
-### Fork-specific features
-
-#### Button remapping with SVGs
-Instead of using pin remapping, a board SVG can be used to define pins for their positions on the board and that will be displayed on the pin remapping page of the web config instead of the list of pins. This is a lot more intuitive for remapping.
-
-#### Board LED addon
+### Board LED addon
 The Waveshare RP2040-Zero includes an on-board LED and this addon sets the color based on the input mode.
 
-#### Revamped Web Config
-The new config is designed for easy configuration of supported boards.
+### Revamped Web Config
+The web config has been streamlined for configuring a premade board rather than configuring a custom board.
 
 ### Per-profile Keyboard Mapping
 Unique keyboard mapping for each profile.
@@ -53,7 +45,22 @@ Unique keyboard mapping for each profile.
 Map each button to a key and multiple modifiers.
 
 ### Keyboard Widget
+
+<p align="center">
+  <img alt="Keyboard widget" src="assets/keyboard-widget.png" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" />
+</p>
+
 Instead of setting keys with a dropdown, you can just click on the keyboard keys you'd like to use.
+
+## Installation
+
+1. Download the `.uf2` firmware file for your board from the [latest release](https://github.com/thnikk/GP2040-CE/releases/latest)
+2. Unplug your device
+3. Enter BOOTSEL mode — hold the BOOTSEL button while plugging in (or hold S1 + S2 + Up)
+4. A removable drive named `RPI-RP2` will appear — drag the `.uf2` file onto it
+5. The device will disconnect automatically once flashing is complete
+
+> If the device was previously used for other firmware, [flash nuke](tools/flash_nuke.uf2) it first to clear memory.
 
 ## Features
 
@@ -91,23 +98,6 @@ Full results can be found in the [GP2040-CE v0.7.10 Firmware Latency Test Result
 
 Results from v0.7.9 can be found [HERE](https://github.com/OpenStickCommunity/Site/raw/main/latency_testing/GP2040-CE_Firmware_Latency_Test_Results_v0.7.9.xlsx). Previous results can be found in the `latency_testing` folder.
 
-## Support
-
-If you would like to discuss features, issues or anything else related to GP2040-CE please [create an issue](https://github.com/OpenStickCommunity/GP2040-CE/issues/new) or join the [OpenStick GP2040-CE Discord](https://discord.gg/k2pxhke7q8) support channel.
-
-## Contributing
-
-Want to help improve GP2040-CE? There are a bunch of ways to contribute!
-
-### Community Participation
-
-Have an idea for a cool new feature, or just want to discuss some technical details with the developers? Join the [OpenStick GP2040-CE Discord](https://discord.gg/k2pxhke7q8) server to participate in our active and ever-growing community!
-
-### Pull Requests
-
-Pull requests are welcome and encouraged for enhancements, bug fixes and documentation updates.
-
-Please respect the coding style of the file(s) you are working in, and enforce the use of the `.editorconfig` file when present.
 
 ## Acknowledgements
 
