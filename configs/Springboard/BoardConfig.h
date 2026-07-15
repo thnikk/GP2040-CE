@@ -111,6 +111,9 @@
 #define BOARD_LEDS_RGB_PIN 16
 #define BOARD_LEDS_RGB_FORMAT LED_FORMAT_RGB
 #define BOARD_LEDS_RGB_BRIGHTNESS 16
+#define BOARD_LEDS_RGB_COLOR_PS4 0xFFFF00      // yellow
+#define BOARD_LEDS_RGB_COLOR_PS5 0xFF00FF      // purple
+#define BOARD_LEDS_RGB_COLOR_KEYBOARD 0xFF8000 // orange
 
 // Boot-hold pin-based input mode overrides
 #define DEFAULT_INPUT_MODE_XINPUT_PIN 6   // B1 (GP6)
