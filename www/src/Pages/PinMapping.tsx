@@ -300,6 +300,7 @@ const PinSection = memo(function PinSection({
 						inputMode={inputMode}
 						pinLedIndices={pinLedIndices}
 						ledButtonOrder={ledButtonOrder}
+						modeColors={modeColors}
 					/>
 					) : (
 						<div className="alert alert-info">
@@ -391,6 +392,7 @@ export default function PinMapping() {
 	const [ledsEnabled, setLedsEnabled] = useState(false);
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
 	const [pinLedIndices, setPinLedIndices] = useState<Record<string, number> | undefined>(undefined);
+	const [modeColors, setModeColors] = useState<Record<number, string> | undefined>(undefined);
 
 	const { setLoading } = useContext(AppContext);
 
@@ -422,9 +424,16 @@ export default function PinMapping() {
 		async function fetchLedOptions() {
 			const options = await WebApi.getLedOptions(setLoading);
 			const gamepadOptions = await WebApi.getGamepadOptions(setLoading);
+			const modeColorsRaw = await WebApi.getBoardLedModeColors();
 			setLedsEnabled(options?.dataPin > -1);
 			setPinLedIndices(options?.pinLedIndices);
 			setInputMode(gamepadOptions?.inputMode);
+			if (modeColorsRaw) {
+				const parsed: Record<number, string> = {};
+				for (const [k, v] of Object.entries(modeColorsRaw))
+					parsed[Number(k)] = v as string;
+				setModeColors(parsed);
+			}
 		}
 		fetchLedOptions();
 	}, []);

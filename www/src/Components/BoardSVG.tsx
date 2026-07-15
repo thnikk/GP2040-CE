@@ -58,6 +58,7 @@ type BoardSVGProps = {
 	onPinClick: (pinNumber: number) => void;
 	highlightedPin?: number | null;
 	dirtyPins?: Set<number>;
+	modeColors?: Record<number, string>;
 	customTheme?: Record<string, { normal: string; pressed: string }>;
 	animationMode?: number;
 	themeIndex?: number;
@@ -504,13 +505,13 @@ export default function BoardSVG({
 		if (!containerRef.current) return;
 		const ledEl = containerRef.current.querySelector('#board-led') as HTMLElement | null;
 		if (!ledEl) return;
-		const color = inputMode !== undefined ? INPUT_MODE_COLORS[inputMode] : undefined;
+		const color = inputMode !== undefined ? (modeColors?.[inputMode] ?? INPUT_MODE_COLORS[inputMode]) : undefined;
 		if (color) {
 			ledEl.style.setProperty('fill', color, 'important');
 		} else {
 			ledEl.style.removeProperty('fill');
 		}
-	}, [inputMode]);
+	}, [inputMode, modeColors]);
 
 	const processedSvg = useMemo(() => prepareSvg(svgContent), [svgContent]);
 

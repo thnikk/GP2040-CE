@@ -449,6 +449,15 @@ async function setPinMappings(mappings) {
 	return Http.post(`${baseUrl}/api/setPinMappings`, mappings);
 }
 
+async function getBoardLedModeColors() {
+	try {
+		const { data } = await Http.get(`${baseUrl}/api/getBoardLedModeColors`);
+		return data;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 async function getProfileOptions() {
 	try {
 		const { data } = await Http.get(`${baseUrl}/api/getProfileOptions`);
@@ -707,6 +716,7 @@ export default {
 	setCustomTheme,
 	getPinMappings,
 	setPinMappings,
+	getBoardLedModeColors,
 	getProfileOptions,
 	setProfileOptions,
 	getAddonsOptions,

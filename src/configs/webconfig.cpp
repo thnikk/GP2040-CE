@@ -2,6 +2,7 @@
 #include "config.pb.h"
 #include "configs/base64.h"
 
+#include "addons/board_led_rgb.h"
 #include "storagemanager.h"
 #include "configmanager.h"
 #include "eventmanager.h"
@@ -2190,6 +2191,32 @@ std::string getMacroAddonOptions()
     return serialize_json(doc);
 }
 
+std::string getBoardLedModeColors()
+{
+    DynamicJsonDocument doc(512);
+    auto addColor = [&](const char* key, uint32_t rgb) {
+        char buf[8];
+        snprintf(buf, sizeof(buf), "#%06X", (unsigned int)rgb);
+        doc[key] = buf;
+    };
+    addColor("0",  BOARD_LEDS_RGB_COLOR_XINPUT);
+    addColor("1",  BOARD_LEDS_RGB_COLOR_SWITCH);
+    addColor("2",  BOARD_LEDS_RGB_COLOR_PS3);
+    addColor("3",  BOARD_LEDS_RGB_COLOR_KEYBOARD);
+    addColor("4",  BOARD_LEDS_RGB_COLOR_PS4);
+    addColor("5",  BOARD_LEDS_RGB_COLOR_XBONE);
+    addColor("6",  BOARD_LEDS_RGB_COLOR_MDMINI);
+    addColor("7",  BOARD_LEDS_RGB_COLOR_NEOGEO);
+    addColor("8",  BOARD_LEDS_RGB_COLOR_PCEMINI);
+    addColor("9",  BOARD_LEDS_RGB_COLOR_EGRET);
+    addColor("10", BOARD_LEDS_RGB_COLOR_ASTRO);
+    addColor("11", BOARD_LEDS_RGB_COLOR_PSCLASSIC);
+    addColor("12", BOARD_LEDS_RGB_COLOR_XBOXORIGINAL);
+    addColor("13", BOARD_LEDS_RGB_COLOR_PS5);
+    addColor("14", BOARD_LEDS_RGB_COLOR_GENERIC);
+    return serialize_json(doc);
+}
+
 std::string getFirmwareVersion()
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
@@ -2397,6 +2424,7 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/getMacroAddonOptions", getMacroAddonOptions },
     { "/api/resetSettings", resetSettings },
     { "/api/getSplashImage", getSplashImage },
+    { "/api/getBoardLedModeColors", getBoardLedModeColors },
     { "/api/getFirmwareVersion", getFirmwareVersion },
     { "/api/getMemoryReport", getMemoryReport },
     { "/api/getHeldPins", getHeldPins },
