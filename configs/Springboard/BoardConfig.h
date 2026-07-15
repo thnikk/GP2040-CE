@@ -112,11 +112,9 @@
 #define BOARD_LEDS_RGB_FORMAT LED_FORMAT_RGB
 #define BOARD_LEDS_RGB_BRIGHTNESS 16
 
-// Boot-hold input mode overrides:
-// holding B1 (A) selects XInput,
-// holding B2 (B) selects Switch.
-#define DEFAULT_INPUT_MODE_B1 INPUT_MODE_XINPUT
-#define DEFAULT_INPUT_MODE_B2 INPUT_MODE_SWITCH
+// Boot-hold pin-based input mode overrides
+#define DEFAULT_INPUT_MODE_XINPUT_PIN 6  // B1 (GP6)
+#define DEFAULT_INPUT_MODE_SWITCH_PIN 7  // B2 (GP7)
 
 #define DEFAULT_BOARD_LAYOUT_A {\
 	{GP_ELEMENT_PIN_BUTTON, {7,  20, 8, 8, 1, 1, 27, GP_SHAPE_ELLIPSE}},\

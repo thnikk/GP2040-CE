@@ -81,29 +81,23 @@
 #ifndef DEFAULT_INPUT_MODE
     #define DEFAULT_INPUT_MODE INPUT_MODE_XINPUT
 #endif
-#ifndef DEFAULT_INPUT_MODE_B1
-    #define DEFAULT_INPUT_MODE_B1 INPUT_MODE_SWITCH
+#ifndef DEFAULT_INPUT_MODE_XINPUT_PIN
+    #define DEFAULT_INPUT_MODE_XINPUT_PIN -1
 #endif
-#ifndef DEFAULT_INPUT_MODE_B2
-    #define DEFAULT_INPUT_MODE_B2 INPUT_MODE_XINPUT
+#ifndef DEFAULT_INPUT_MODE_SWITCH_PIN
+    #define DEFAULT_INPUT_MODE_SWITCH_PIN -1
 #endif
-#ifndef DEFAULT_INPUT_MODE_B3
-    #define DEFAULT_INPUT_MODE_B3 INPUT_MODE_PS3
+#ifndef DEFAULT_INPUT_MODE_PS3_PIN
+    #define DEFAULT_INPUT_MODE_PS3_PIN -1
 #endif
-#ifndef DEFAULT_INPUT_MODE_B4
-    #define DEFAULT_INPUT_MODE_B4 INPUT_MODE_PS4
+#ifndef DEFAULT_INPUT_MODE_PS4_PIN
+    #define DEFAULT_INPUT_MODE_PS4_PIN -1
 #endif
-#ifndef DEFAULT_INPUT_MODE_L1
-    #define DEFAULT_INPUT_MODE_L1 -1
+#ifndef DEFAULT_INPUT_MODE_PS5_PIN
+    #define DEFAULT_INPUT_MODE_PS5_PIN -1
 #endif
-#ifndef DEFAULT_INPUT_MODE_L2
-    #define DEFAULT_INPUT_MODE_L2 -1
-#endif
-#ifndef DEFAULT_INPUT_MODE_R1
-    #define DEFAULT_INPUT_MODE_R1 -1
-#endif
-#ifndef DEFAULT_INPUT_MODE_R2
-    #define DEFAULT_INPUT_MODE_R2 INPUT_MODE_KEYBOARD
+#ifndef DEFAULT_INPUT_MODE_KEYBOARD_PIN
+    #define DEFAULT_INPUT_MODE_KEYBOARD_PIN -1
 #endif
 #ifndef DEFAULT_DPAD_MODE
     #define DEFAULT_DPAD_MODE DPAD_MODE_DIGITAL
@@ -294,14 +288,12 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.gamepadOptions, profileNumber, 1);
     INIT_UNSET_PROPERTY(config.gamepadOptions, ps4ControllerType, DEFAULT_PS4CONTROLLER_TYPE);
     INIT_UNSET_PROPERTY(config.gamepadOptions, debounceDelay, DEFAULT_DEBOUNCE_DELAY);
-    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeB1, DEFAULT_INPUT_MODE_B1);
-    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeB2, DEFAULT_INPUT_MODE_B2);
-    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeB3, DEFAULT_INPUT_MODE_B3);
-    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeB4, DEFAULT_INPUT_MODE_B4);
-    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeL1, DEFAULT_INPUT_MODE_L1);
-    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeL2, DEFAULT_INPUT_MODE_L2);
-    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeR1, DEFAULT_INPUT_MODE_R1);
-    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeR2, DEFAULT_INPUT_MODE_R2);
+    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeXinputPin, DEFAULT_INPUT_MODE_XINPUT_PIN);
+    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeSwitchPin, DEFAULT_INPUT_MODE_SWITCH_PIN);
+    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModePs3Pin, DEFAULT_INPUT_MODE_PS3_PIN);
+    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModePs4Pin, DEFAULT_INPUT_MODE_PS4_PIN);
+    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModePs5Pin, DEFAULT_INPUT_MODE_PS5_PIN);
+    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeKeyboardPin, DEFAULT_INPUT_MODE_KEYBOARD_PIN);
     INIT_UNSET_PROPERTY(config.gamepadOptions, ps4AuthType, DEFAULT_PS4AUTHENTICATION_TYPE);
     INIT_UNSET_PROPERTY(config.gamepadOptions, ps5AuthType, DEFAULT_PS5AUTHENTICATION_TYPE);
     INIT_UNSET_PROPERTY(config.gamepadOptions, xinputAuthType, DEFAULT_XINPUTAUTHENTICATION_TYPE);
@@ -1502,15 +1494,10 @@ void migrateAuthenticationMethods(Config& config) {
         if ( gamepadOptions.inputMode == INPUT_MODE_PS4 ) {
             gamepadOptions.inputMode = INPUT_MODE_PS5;
         }
-        // Also update our boot mode from PS4 to PS5 if set
-        int32_t * bootModes[8] = { &config.gamepadOptions.inputModeB1, &config.gamepadOptions.inputModeB2,
-            &config.gamepadOptions.inputModeB3, &config.gamepadOptions.inputModeB4,
-            &config.gamepadOptions.inputModeL1, &config.gamepadOptions.inputModeL2,
-            &config.gamepadOptions.inputModeR1, &config.gamepadOptions.inputModeR2};
-        for(int32_t i = 0; i < 8; i++ ) {
-            if ( *bootModes[i] == INPUT_MODE_PS4 ) {
-                *bootModes[i] = INPUT_MODE_PS5; // modify ps4 -> ps5
-            }
+        // Boot mode pin migration: if PS4 pin was set, move it to PS5 pin
+        if (gamepadOptions.inputModePs4Pin >= 0) {
+            gamepadOptions.inputModePs5Pin = gamepadOptions.inputModePs4Pin;
+            gamepadOptions.inputModePs4Pin = -1;
         }
         psPassthroughOptions.enabled = false; // disable PS-Passthrough add-on permanently
     }

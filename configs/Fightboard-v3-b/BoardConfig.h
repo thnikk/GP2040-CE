@@ -58,11 +58,9 @@
 #define KEY_BUTTON_A1   HID_KEY_9             // A1     | Guide  | Home    | PS       | 13     | ~      |
 #define KEY_BUTTON_FN   -1                    // Hotkey Function                                        |
 
-// Boot-hold input mode overrides:
-// holding B1 (A) selects XInput,
-// holding B2 (B) selects Switch.
-#define DEFAULT_INPUT_MODE_B1 INPUT_MODE_XINPUT
-#define DEFAULT_INPUT_MODE_B2 INPUT_MODE_SWITCH
+// Boot-hold pin-based input mode overrides
+#define DEFAULT_INPUT_MODE_XINPUT_PIN 5  // B1 (GP5)
+#define DEFAULT_INPUT_MODE_SWITCH_PIN 6  // B2 (GP6)
 
 // Hotkeys
 #define HOTKEY_08_BUTTONS_MASK 3072  // L3+R3

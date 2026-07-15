@@ -305,15 +305,18 @@ const FORCED_SETUP_MODES = [
 	{ labelKey: 'forced-setup-mode-options.disable-both', value: 3 },
 ];
 
-const INPUT_MODES_BINDS = [
-	{ value: 'B1' },
-	{ value: 'B2' },
-	{ value: 'B3' },
-	{ value: 'B4' },
-	{ value: 'L1' },
-	{ value: 'L2' },
-	{ value: 'R1' },
-	{ value: 'R2' },
+const INPUT_MODE_PINS = [
+	{ value: 'XinputPin', labelKey: 'input-mode-options.xinput' },
+	{ value: 'SwitchPin', labelKey: 'input-mode-options.nintendo-switch' },
+	{ value: 'Ps3Pin', labelKey: 'input-mode-options.ps3' },
+	{ value: 'Ps4Pin', labelKey: 'input-mode-options.ps4' },
+	{ value: 'Ps5Pin', labelKey: 'input-mode-options.ps5' },
+	{ value: 'KeyboardPin', labelKey: 'input-mode-options.keyboard' },
+];
+
+const INPUT_MODE_PIN_OPTIONS = [
+	{ labelKey: 'input-mode-options.none', value: -1 },
+	...Array.from({ length: 30 }, (_, i) => ({ value: i, label: `GP${i}` })),
 ];
 
 const LABEL_TO_ACTION = {
@@ -326,6 +329,10 @@ const LABEL_TO_ACTION = {
 	E5: 47, E6: 48, E7: 49, E8: 50,
 	E9: 51, E10: 52, E11: 53, E12: 54,
 };
+
+const ACTION_TO_LABEL = Object.fromEntries(
+	Object.entries(LABEL_TO_ACTION).map(([k, v]) => [v, k]),
+);
 
 const hotkeySchema = {
 	action: yup
@@ -420,46 +427,36 @@ const schema = yup.object().shape({
 		.oneOf(AUTHENTICATION_TYPES.map((o) => o.value))
 		.label('X-Input Authentication Type'),
 	debounceDelay: yup.number().required().label('Debounce Delay'),
-	inputModeB1: yup
+	inputModeXinputPin: yup
 		.number()
 		.required()
-		.oneOf(INPUT_BOOT_MODES.map((o) => o.value))
-		.label('B1 Input Mode'),
-	inputModeB2: yup
+		.oneOf(INPUT_MODE_PIN_OPTIONS.map((o) => o.value))
+		.label('XINPUT Pin'),
+	inputModeSwitchPin: yup
 		.number()
 		.required()
-		.oneOf(INPUT_BOOT_MODES.map((o) => o.value))
-		.label('B2 Input Mode'),
-	inputModeB3: yup
+		.oneOf(INPUT_MODE_PIN_OPTIONS.map((o) => o.value))
+		.label('Switch Pin'),
+	inputModePs3Pin: yup
 		.number()
 		.required()
-		.oneOf(INPUT_BOOT_MODES.map((o) => o.value))
-		.label('B3 Input Mode'),
-	inputModeB4: yup
+		.oneOf(INPUT_MODE_PIN_OPTIONS.map((o) => o.value))
+		.label('PS3 Pin'),
+	inputModePs4Pin: yup
 		.number()
 		.required()
-		.oneOf(INPUT_BOOT_MODES.map((o) => o.value))
-		.label('B4 Input Mode'),
-	inputModeL1: yup
+		.oneOf(INPUT_MODE_PIN_OPTIONS.map((o) => o.value))
+		.label('PS4 Pin'),
+	inputModePs5Pin: yup
 		.number()
 		.required()
-		.oneOf(INPUT_BOOT_MODES.map((o) => o.value))
-		.label('L1 Input Mode'),
-	inputModeL2: yup
+		.oneOf(INPUT_MODE_PIN_OPTIONS.map((o) => o.value))
+		.label('PS5 Pin'),
+	inputModeKeyboardPin: yup
 		.number()
 		.required()
-		.oneOf(INPUT_BOOT_MODES.map((o) => o.value))
-		.label('L2 Input Mode'),
-	inputModeR1: yup
-		.number()
-		.required()
-		.oneOf(INPUT_BOOT_MODES.map((o) => o.value))
-		.label('R1 Input Mode'),
-	inputModeR2: yup
-		.number()
-		.required()
-		.oneOf(INPUT_BOOT_MODES.map((o) => o.value))
-		.label('R2 Input Mode'),
+		.oneOf(INPUT_MODE_PIN_OPTIONS.map((o) => o.value))
+		.label('Keyboard Pin'),
 	usbDescProduct: yup.string().label('USB Description: Product Name'),
 	usbDescManufacturer: yup.string().label('USB Description: Manufacturer'),
 	usbDescVersion: yup.string().label('USB Description: Version'),
@@ -537,9 +534,19 @@ export default function SettingsPage() {
 	const profiles = useProfilesStore((state) => state.profiles);
 	const saveProfiles = useProfilesStore((state) => state.saveProfiles);
 
+	const [pinActions, setPinActions] = useState({});
+
 	useEffect(() => {
 		fetchProfiles();
 		updatePeripherals();
+		WebApi.getPinMappings().then((data) => {
+			const actions = {};
+			for (let i = 0; i < 30; i++) {
+				const key = `pin${i.toString().padStart(2, '0')}`;
+				actions[i] = data[key]?.action ?? 0;
+			}
+			setPinActions(actions);
+		});
 	}, []);
 
 	const { pinElements } = useBoardSVG();
@@ -1618,15 +1625,13 @@ export default function SettingsPage() {
 												<Section
 													title={t('SettingsPage:boot-input-mode-label')}
 												>
-													{INPUT_MODES_BINDS.map((mode, index) => (
+													{INPUT_MODE_PINS.map((mode, index) => (
 														<div
 															key={`input-mode-${index}`}
 															className="d-flex flex-column gap-1"
 														>
 															<Form.Label>
-																{mode.value in currentButtonLabels
-																	? currentButtonLabels[mode.value]
-																	: mode.value}
+																{t(`SettingsPage:${mode.labelKey}`)}
 															</Form.Label>
 															<Form.Select
 																name={`inputMode${mode.value}`}
@@ -1635,31 +1640,18 @@ export default function SettingsPage() {
 																onChange={handleChange}
 																isInvalid={errors[`inputMode${mode.value}`]}
 															>
-																{translatedInputModeGroups.map((o, i) => (
-																	<optgroup
-																		label={o.label}
-																		key={`optgroup-${o.label}-${i}`}
-																	>
-																		{translatedInputBootModes
-																			.filter(
-																				({ group }) => group == o.group,
-																			)
-																			.map((o, i) => (
-																				<option
-																					key={`button-inputMode-${mode.value
-																						.toString()
-																						.toLowerCase()}-option-${i}`}
-																					value={o.value}
-																					disabled={o.disabled}
-																				>
-																					{o.label}
-																					{o.disabled && o.reason != ''
-																						? ' (' + o.reason + ')'
-																						: ''}
-																				</option>
-																			))}
-																	</optgroup>
-																))}
+																<option value={-1}>Unmapped</option>
+																{Array.from({ length: 30 }, (_, i) => {
+																	const actionLabel = ACTION_TO_LABEL[pinActions[i]];
+																	const buttonLabel = actionLabel in currentButtonLabels
+																		? currentButtonLabels[actionLabel]
+																		: actionLabel;
+																	return (
+																		<option key={`pin-${i}`} value={i}>
+																			{buttonLabel ? `GP${i} (${buttonLabel})` : `GP${i}`}
+																		</option>
+																	);
+																})}
 															</Form.Select>
 															<Form.Control.Feedback type="invalid">
 																{errors[`inputMode${mode.value}`]}

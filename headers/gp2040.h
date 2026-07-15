@@ -74,9 +74,6 @@ private:
     void checkRawState(GamepadState prevState, GamepadState currState);
     void checkProcessedState(GamepadState prevState, GamepadState currState);
 
-    // input mask, action
-    std::map<uint32_t, int32_t> bootActions;
-
     bool saveRequested = false;
     bool saveSuccessful = false;
     void handleStorageSave(GPEvent* e);

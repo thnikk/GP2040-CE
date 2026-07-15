@@ -77,18 +77,7 @@ void GP2040::setup() {
 	// new set of GPIOs to use...
     this->initializeStandardGpio();
 
-    const GamepadOptions& gamepadOptions = Storage::getInstance().getGamepadOptions();
-
-    // check setup options and add modes to the list
-    // user modes
-    bootActions.insert({GAMEPAD_MASK_B1, gamepadOptions.inputModeB1});
-    bootActions.insert({GAMEPAD_MASK_B2, gamepadOptions.inputModeB2});
-    bootActions.insert({GAMEPAD_MASK_B3, gamepadOptions.inputModeB3});
-    bootActions.insert({GAMEPAD_MASK_B4, gamepadOptions.inputModeB4});
-    bootActions.insert({GAMEPAD_MASK_L1, gamepadOptions.inputModeL1});
-    bootActions.insert({GAMEPAD_MASK_L2, gamepadOptions.inputModeL2});
-    bootActions.insert({GAMEPAD_MASK_R1, gamepadOptions.inputModeR1});
-    bootActions.insert({GAMEPAD_MASK_R2, gamepadOptions.inputModeR2});
+    // Pin-based boot shortcuts are handled in getBootAction()
 
 	// Initialize our ADC (various add-ons)
 	adc_init();
@@ -421,40 +410,22 @@ GP2040::BootAction GP2040::getBootAction() {
 					return BootAction::ENTER_WEBCONFIG_MODE;
                 } else {
                     if (!modeSwitchLocked) {
-                        if (auto search = bootActions.find(gamepad->state.buttons); search != bootActions.end()) {
-                            switch (search->second) {
-                                case INPUT_MODE_XINPUT: 
-                                    return BootAction::SET_INPUT_MODE_XINPUT;
-                                case INPUT_MODE_SWITCH: 
-                                    return BootAction::SET_INPUT_MODE_SWITCH;
-                                case INPUT_MODE_KEYBOARD: 
-                                    return BootAction::SET_INPUT_MODE_KEYBOARD;
-                                case INPUT_MODE_GENERIC:
-                                    return BootAction::SET_INPUT_MODE_GENERIC;
-                                case INPUT_MODE_PS3:
-                                    return BootAction::SET_INPUT_MODE_PS3;
-                                case INPUT_MODE_PS4: 
-                                    return BootAction::SET_INPUT_MODE_PS4;
-                                case INPUT_MODE_PS5: 
-                                    return BootAction::SET_INPUT_MODE_PS5;
-                                case INPUT_MODE_NEOGEO: 
-                                    return BootAction::SET_INPUT_MODE_NEOGEO;
-                                case INPUT_MODE_MDMINI: 
-                                    return BootAction::SET_INPUT_MODE_MDMINI;
-                                case INPUT_MODE_PCEMINI: 
-                                    return BootAction::SET_INPUT_MODE_PCEMINI;
-                                case INPUT_MODE_EGRET: 
-                                    return BootAction::SET_INPUT_MODE_EGRET;
-                                case INPUT_MODE_ASTRO: 
-                                    return BootAction::SET_INPUT_MODE_ASTRO;
-                                case INPUT_MODE_PSCLASSIC: 
-                                    return BootAction::SET_INPUT_MODE_PSCLASSIC;
-                                case INPUT_MODE_XBOXORIGINAL: 
-                                    return BootAction::SET_INPUT_MODE_XBOXORIGINAL;
-                                case INPUT_MODE_XBONE:
-                                    return BootAction::SET_INPUT_MODE_XBONE;
-                                default:
-                                    return BootAction::NONE;
+                        const GamepadOptions& opts = Storage::getInstance().getGamepadOptions();
+                        struct { int32_t pin; BootAction action; } pinActions[] = {
+                            {opts.inputModeXinputPin,  BootAction::SET_INPUT_MODE_XINPUT},
+                            {opts.inputModeSwitchPin,  BootAction::SET_INPUT_MODE_SWITCH},
+                            {opts.inputModePs3Pin,     BootAction::SET_INPUT_MODE_PS3},
+                            {opts.inputModePs4Pin,     BootAction::SET_INPUT_MODE_PS4},
+                            {opts.inputModePs5Pin,     BootAction::SET_INPUT_MODE_PS5},
+                            {opts.inputModeKeyboardPin,BootAction::SET_INPUT_MODE_KEYBOARD},
+                        };
+                        for (auto& pa : pinActions) {
+                            if (pa.pin >= 0) {
+                                gpio_init(pa.pin);
+                                gpio_set_dir(pa.pin, GPIO_IN);
+                                gpio_pull_up(pa.pin);
+                                if (!gpio_get(pa.pin))
+                                    return pa.action;
                             }
                         }
                     }

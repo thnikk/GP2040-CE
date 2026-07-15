@@ -14,11 +14,9 @@
 
 #define BOARD_EXTRA_PINS {17, 18, 19, 20, 21, 22, 23, 24, 25}
 
-// Boot-hold input mode overrides: holding B1 (A) selects XInput,
-// holding B2 (B) selects Switch. This matches the board's silkscreen
-// button coloring (A=green/XInput, B=red/Switch).
-#define DEFAULT_INPUT_MODE_B1 INPUT_MODE_XINPUT
-#define DEFAULT_INPUT_MODE_B2 INPUT_MODE_SWITCH
+// Boot-hold pin-based input mode overrides
+#define DEFAULT_INPUT_MODE_XINPUT_PIN 9   // B1 (GP9)
+#define DEFAULT_INPUT_MODE_SWITCH_PIN 12  // B2 (GP12)
 
 // Main pin mapping Configuration
 //                                                  // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
@@ -85,10 +83,8 @@
 #define BOARD_LEDS_RGB_FORMAT LED_FORMAT_RGB
 #define BOARD_LEDS_RGB_BRIGHTNESS 16
 
-// Boot-hold input mode overrides:
-// holding B1 (A) selects XInput,
-// holding B2 (B) selects Switch.
-#define DEFAULT_INPUT_MODE_B1 INPUT_MODE_XINPUT
-#define DEFAULT_INPUT_MODE_B2 INPUT_MODE_SWITCH
+// Boot-hold pin-based input mode overrides
+#define DEFAULT_INPUT_MODE_XINPUT_PIN 9   // B1 (GP9)
+#define DEFAULT_INPUT_MODE_SWITCH_PIN 12  // B2 (GP12)
 
 #endif
