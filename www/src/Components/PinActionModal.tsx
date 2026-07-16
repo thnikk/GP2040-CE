@@ -115,8 +115,6 @@ export default function PinActionModal({
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
 	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
-	const isKeyboardMode = inputMode === 3;
-
 	const options = useMemo(buildOptions, []);
 	const groupedOptions = useMemo(
 		() => [
@@ -350,34 +348,6 @@ export default function PinActionModal({
 		[options],
 	);
 
-	const handleControllerActionSelect = useCallback((action: PinActionValues) => {
-		setPendingAction(action);
-		setPendingCustomButtonMask(0);
-		setPendingCustomDpadMask(0);
-	}, []);
-
-	const actionOptions = useMemo(
-		() => options.filter(({ type }) => type === 'action'),
-		[options],
-	);
-
-	const currentActionOption = useMemo(() => {
-		if (pendingAction === BUTTON_ACTIONS.NONE || pendingAction === BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO) return null;
-		return actionOptions.find((o) => o.value === pendingAction) || null;
-	}, [pendingAction, actionOptions]);
-
-	const handleActionDropdownChange = useCallback(
-		(selected: MultiValue<OptionType> | SingleValue<OptionType>) => {
-			if (!selected || (Array.isArray(selected) && !selected.length)) {
-				handleControllerActionSelect(BUTTON_ACTIONS.NONE);
-				return;
-			}
-			const single = Array.isArray(selected) ? selected[0] : selected;
-			handleControllerActionSelect(single.value as PinActionValues);
-		},
-		[handleControllerActionSelect],
-	);
-
 	const handleSave = useCallback(() => {
 		onAssign(pinNumber!, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, pendingKeyboardKeycode, pendingKeyboardModifierMask);
 		onSaveColor?.();
@@ -464,34 +434,23 @@ export default function PinActionModal({
 				</div>
 				{activeTab === 'controller' && (
 					<div className="pin-action-section">
-						{useWidget && !disabled ? (
-							<>
-								<ControllerWidget
-									buttonMask={currentBtnMask}
-									dpadMask={currentDpadMask}
-									onMaskChange={handleControllerMaskChange}
-									buttonNames={buttonNames}
-								/>
-								<CustomSelect
-									isClearable
-									options={actionOptions}
-									isDisabled={disabled}
-									getOptionLabel={getOptionLabel}
-									onChange={handleActionDropdownChange}
-									value={currentActionOption}
-									placeholder={t('PinMapping:actions.NONE')}
-								/>
-							</>
-						) : (
+						{useWidget && !disabled && (
+							<ControllerWidget
+								buttonMask={currentBtnMask}
+								dpadMask={currentDpadMask}
+								onMaskChange={handleControllerMaskChange}
+								buttonNames={buttonNames}
+							/>
+						)}
+						{!disabled && (
 							<CustomSelect
 								isClearable
-								isMulti={!disabled}
+								isMulti
 								options={groupedOptions}
 								isDisabled={disabled}
 								getOptionLabel={getOptionLabel}
 								onChange={handleChange}
 								value={getMultiValue()}
-								autoFocus
 							/>
 						)}
 						{hasCustomTheme && !disabled && !isButtonPress && pendingAction !== BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO && (
