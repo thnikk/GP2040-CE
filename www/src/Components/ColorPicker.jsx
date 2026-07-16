@@ -1,132 +1,28 @@
-import React, { useContext, useEffect, useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Overlay from 'react-bootstrap/Overlay';
-import Popover from 'react-bootstrap/Popover';
-import Row from 'react-bootstrap/Row';
-import { SketchPicker } from '@hello-pangea/color-picker';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
 
-import { AppContext } from '../Contexts/AppContext';
-import LEDColors from '../Data/LEDColors';
-
-import './ColorPicker.scss';
-
-const ledColors = LEDColors.map((c) => ({ title: c.name, color: c.value }));
-const customColors = (colors) => colors.map((c) => ({ title: c, color: c }));
-
-const ColorPicker = ({
-	types,
-	onChange,
-	onDismiss,
-	pickerOnly,
-	placement,
-	show,
-	target,
-	title,
-	...props
-}) => {
-	const { savedColors, setSavedColors } = useContext(AppContext);
-	const [colorPalette, setColorPalette] = useState([
-		...ledColors,
-		...customColors(savedColors),
-	]);
-	const [colorTypes, setColorTypes] = useState(types);
-	const [selectedColor, setSelectedColor] = useState('#000000');
-	const [selectedColorType, setSelectedColorType] = useState(types[0]);
-
-	const { t } = useTranslation('');
-
-	const deleteCurrentColor = () => {
-		const colorIndex = savedColors.indexOf(selectedColor);
-		if (colorIndex < 0) return;
-
-		const newColors = [...savedColors];
-		newColors.splice(colorIndex, 1);
-		setSavedColors(newColors);
-		setColorPalette([...ledColors, ...customColors(newColors)]);
-	};
-
-	const saveCurrentColor = () => {
-		if (
-			!selectedColor ||
-			colorPalette.filter((c) => c.color === selectedColor).length > 0
-		)
-			return;
-
-		const newColors = [...savedColors];
-		newColors.push(selectedColor);
-		setSavedColors(newColors);
-		setColorPalette([...ledColors, ...customColors(newColors)]);
-	};
-
-	const selectColor = (c, e) => {
-		if (onChange) onChange(c.hex, e);
-
-		selectedColorType.value = c.hex;
-
-		setSelectedColor(c.hex);
-		setColorTypes(colorTypes);
-	};
-
-	useEffect(() => {
-		// Hide color picker when anywhere but picker is clicked
-		window.addEventListener('click', (e) => onDismiss(e));
-		setSelectedColorType(colorTypes[0]);
-		setSelectedColor(colorTypes[0].value);
-	}, []);
-
+const ColorPicker = ({ value, onChange, title }) => {
 	return (
-		<Overlay
-			show={show}
-			target={target}
-			placement={placement || 'bottom'}
-			container={this}
-			containerPadding={20}
-		>
-			<Popover onClick={(e) => e.stopPropagation()}>
-				<Container className="color-picker">
-					<h6 className="text-center">{title}</h6>
-					<Row>
-						{colorTypes.map((o, i) => (
-							<Form.Group
-								as={Col}
-								key={`colorType${i}`}
-								className={`${o === selectedColorType ? 'selected' : ''}`}
-								onClick={() => setSelectedColorType(o)}
-							>
-								{o.title && <Form.Label>{o.title}</Form.Label>}
-								<div
-									className={`color color-normal`}
-									style={{ backgroundColor: o.value }}
-								></div>
-							</Form.Group>
-						))}
-					</Row>
-					<Row>
-						<Col>
-							<SketchPicker
-								color={selectedColorType.value}
-								onChange={(c, e) => selectColor(c, e)}
-								disableAlpha={true}
-								presetColors={colorPalette}
-								width={180}
-							/>
-						</Col>
-					</Row>
-					<div className="button-group d-flex justify-content-between mt-2">
-						<Button size="sm" onClick={() => saveCurrentColor()}>
-							{t('Common:button-save-color-label')}
-						</Button>
-						<Button size="sm" onClick={() => deleteCurrentColor()}>
-							{t('Common:button-delete-color-label')}
-						</Button>
-					</div>
-				</Container>
-			</Popover>
-		</Overlay>
+		<div className="d-inline-flex align-items-center gap-1" style={{ position: 'relative' }}>
+			{title && <small className="text-muted">{title}</small>}
+			<div
+				className="color-swatch"
+				style={{ backgroundColor: value || '#000000' }}
+			/>
+			<input
+				type="color"
+				value={value || '#000000'}
+				onChange={(e) => onChange?.(e.target.value)}
+				style={{
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					width: '100%',
+					height: '100%',
+					opacity: 0,
+					cursor: 'pointer',
+				}}
+			/>
+		</div>
 	);
 };
 

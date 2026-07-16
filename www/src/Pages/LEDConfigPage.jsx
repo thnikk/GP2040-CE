@@ -17,7 +17,6 @@ import Section from '../Components/Section';
 import FormControl from '../Components/FormControl';
 import FormSelect from '../Components/FormSelect';
 import { BUTTON_ACTIONS } from '../Data/Pins';
-import LEDColors from '../Data/LEDColors';
 import { hexToInt } from '../Services/Utilities';
 import WebApi from '../Services/WebApi';
 import useProfilesStore from '../Store/useProfilesStore';
@@ -228,8 +227,6 @@ const FormContext = () => {
 export default function LEDConfigPage() {
 	const { buttonLabels, updateUsedPins } = useContext(AppContext);
 	const [saveMessage, setSaveMessage] = useState('');
-	const [colorPickerTarget, setColorPickerTarget] = useState(null);
-	const [showPicker, setShowPicker] = useState(false);
 	const [boardLedFormat, setBoardLedFormat] = useState(0);
 	const [boardLedBrightness, setBoardLedBrightness] = useState(128);
 	const [boardLedEnabled, setBoardLedEnabled] = useState(false);
@@ -293,12 +290,6 @@ export default function LEDConfigPage() {
 		if (success) {
 			setTimeout(() => setBoardLedSaveMessage(''), 3000);
 		}
-	};
-
-	const toggleRgbPledPicker = (e) => {
-		e.stopPropagation();
-		setColorPickerTarget(e.target);
-		setShowPicker(!showPicker);
 	};
 
 	const onSuccess = async (values) => {
@@ -679,25 +670,12 @@ export default function LEDConfigPage() {
 									error={errors.pledColor}
 									isInvalid={errors.pledColor}
 									onBlur={handleBlur}
-									onClick={toggleRgbPledPicker}
-									onChange={(e) => {
-										handleChange(e);
-										setShowPicker(false);
-									}}
+									onChange={handleChange}
 								/>
 								<ColorPicker
-									name="pledColor"
-									types={[{ value: values.pledColor }]}
+									value={values.pledColor}
 									onChange={(c) => setFieldValue('pledColor', c)}
-									onDismiss={() => setShowPicker(false)}
-									placement="top"
-									presetColors={LEDColors.map((c) => ({
-										title: c.name,
-										color: c.value,
-									}))}
-									show={showPicker}
-									target={colorPickerTarget}
-								></ColorPicker>
+								/>
 								<div className="col-sm-3">
 									<Form.Check
 										label={t('LedConfig:turn-off-when-suspended')}
@@ -789,25 +767,12 @@ export default function LEDConfigPage() {
 									error={errors.caseRGBColor}
 									isInvalid={errors.caseRGBColor}
 									onBlur={handleBlur}
-									onClick={toggleRgbPledPicker}
-									onChange={(e) => {
-										handleChange(e);
-										setShowPicker(false);
-									}}
+									onChange={handleChange}
 								/>
 								<ColorPicker
-									name="caseRGBColor"
-									types={[{ value: values.caseRGBColor }]}
+									value={values.caseRGBColor}
 									onChange={(c) => setFieldValue('caseRGBColor', c)}
-									onDismiss={() => setShowPicker(false)}
-									placement="top"
-									presetColors={LEDColors.map((c) => ({
-										title: c.name,
-										color: c.value,
-									}))}
-									show={showPicker}
-									target={colorPickerTarget}
-								></ColorPicker>
+								/>
 							</Row>
 							<p >
 								{t('LedConfig:case.sub-header-text')}

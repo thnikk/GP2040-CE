@@ -1,15 +1,13 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Button, Form, Modal, Overlay, Popover } from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import invert from 'lodash/invert';
 import omit from 'lodash/omit';
 import { useContext } from 'react';
-import { SketchPicker } from '@hello-pangea/color-picker';
 import CustomSelect from './CustomSelect';
 import { AppContext } from '../Contexts/AppContext';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../Data/Buttons';
-import LEDColors from '../Data/LEDColors';
 import { MultiValue, SingleValue } from 'react-select';
 import { KEY_CODES } from '../Data/Keyboard';
 import KeyboardWidget from './KeyboardWidget';
@@ -111,7 +109,7 @@ export default function PinActionModal({
 	inputMode,
 }: PinActionModalProps) {
 	const { t } = useTranslation('');
-	const { buttonLabels, savedColors, setSavedColors } = useContext(AppContext);
+	const { buttonLabels } = useContext(AppContext);
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
 	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
@@ -135,10 +133,6 @@ export default function PinActionModal({
 	const [pendingCustomDpadMask, setPendingCustomDpadMask] = useState(currentCustomDpadMask);
 	const [pendingKeyboardKeycode, setPendingKeyboardKeycode] = useState(currentKeyboardKeycode);
 	const [pendingKeyboardModifierMask, setPendingKeyboardModifierMask] = useState(currentKeyboardModifierMask);
-	const [pickerVisible, setPickerVisible] = useState(false);
-	const [pickerColorType, setPickerColorType] = useState<'normal' | 'pressed'>('normal');
-	const [ledOverlayTarget, setLedOverlayTarget] = useState<HTMLElement | null>(null);
-	const [pickerPlacement, setPickerPlacement] = useState<'bottom' | 'top'>('bottom');
 
 	useEffect(() => {
 		if (show) {
@@ -148,7 +142,6 @@ export default function PinActionModal({
 			setPendingKeyboardKeycode(currentKeyboardKeycode);
 			setPendingKeyboardModifierMask(currentKeyboardModifierMask);
 			setActiveTab(inputMode === 3 ? 'keyboard' : 'controller');
-			setPickerVisible(false);
 		}
 	}, [show, currentAction, currentCustomButtonMask, currentCustomDpadMask, currentKeyboardKeycode, currentKeyboardModifierMask, inputMode]);
 
@@ -167,11 +160,6 @@ export default function PinActionModal({
 		if (!isButtonPress || !customTheme || !buttonName) return null;
 		return customTheme[buttonName] || { normal: '#000000', pressed: '#000000' };
 	}, [isButtonPress, customTheme, buttonName]);
-
-	const selectedColor = useMemo(() => {
-		if (!currentLedColors) return '#000000';
-		return pickerColorType === 'normal' ? currentLedColors.normal : currentLedColors.pressed;
-	}, [currentLedColors, pickerColorType]);
 
 	const getOptionLabel = useCallback(
 		(option: OptionType) => {
@@ -357,42 +345,7 @@ export default function PinActionModal({
 
 	const isAssignable = pendingAction !== BUTTON_ACTIONS.NONE || currentAction !== BUTTON_ACTIONS.NONE;
 
-	const handleColorSwatchClick = useCallback((e: React.MouseEvent<HTMLElement>, colorType: 'normal' | 'pressed') => {
-		e.stopPropagation();
-		const rect = e.currentTarget.getBoundingClientRect();
-		setPickerPlacement(rect.top < window.innerHeight / 2 ? 'bottom' : 'top');
-		setLedOverlayTarget(e.currentTarget);
-		setPickerColorType(colorType);
-		setPickerVisible((prev) => !prev);
-	}, []);
-
-	const handleColorChange = useCallback((c: { hex: string }) => {
-		if (!onLedColorChange || !buttonName || !customTheme) return;
-		const current = customTheme[buttonName] || { normal: '#000000', pressed: '#000000' };
-		const newColors = { ...current, [pickerColorType]: c.hex };
-		onLedColorChange(buttonName, newColors);
-	}, [onLedColorChange, buttonName, customTheme, pickerColorType]);
-
-	const handleColorPickerClose = useCallback(() => {
-		setPickerVisible(false);
-	}, []);
-
-	const saveCurrentColor = useCallback(() => {
-		if (!selectedColor || selectedColor === '#000000') return;
-		if (savedColors.includes(selectedColor)) return;
-		const newColors = [...savedColors, selectedColor];
-		setSavedColors(newColors);
-	}, [selectedColor, savedColors, setSavedColors]);
-
-	const deleteCurrentColor = useCallback(() => {
-		const colorIndex = savedColors.indexOf(selectedColor);
-		if (colorIndex < 0) return;
-		const newColors = [...savedColors];
-		newColors.splice(colorIndex, 1);
-		setSavedColors(newColors);
-	}, [selectedColor, savedColors, setSavedColors]);
-
-	const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinLedIndices[String(pinNumber)] >= 0;
+const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinLedIndices[String(pinNumber)] >= 0;
 	const showLedSection = isButtonPress && !disabled && !!onLedColorChange && hasLed;
 
 	const [activeTab, setActiveTab] = useState<'controller' | 'keyboard'>(inputMode === 3 ? 'keyboard' : 'controller');
@@ -489,65 +442,51 @@ export default function PinActionModal({
 							{t('CustomTheme:custom-theme-colors')}
 						</Form.Label>
 						<div className="d-flex gap-3">
-							<div
-								className="led-color-swatch"
-								style={{ backgroundColor: currentLedColors?.normal || '#000000' }}
-								onClick={(e) => handleColorSwatchClick(e, 'normal')}
-								role="button"
-								tabIndex={0}
-								onKeyDown={(e) => { if (e.key === 'Enter') handleColorSwatchClick(e as any, 'normal'); }}
-							>
-								<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
+							<div style={{ position: 'relative' }}>
+								<div
+									className="led-color-swatch"
+									style={{ backgroundColor: currentLedColors?.normal || '#000000' }}
+									role="button"
+									tabIndex={0}
+								>
+									<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
+								</div>
+								<input
+									type="color"
+									value={currentLedColors?.normal || '#000000'}
+									onChange={(e) => {
+										if (!onLedColorChange || !buttonName || !customTheme) return;
+										const current = customTheme[buttonName] || { normal: '#000000', pressed: '#000000' };
+										onLedColorChange(buttonName, { ...current, normal: e.target.value });
+									}}
+									style={{
+										position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+									}}
+								/>
 							</div>
-							<div
-								className="led-color-swatch"
-								style={{ backgroundColor: currentLedColors?.pressed || '#000000' }}
-								onClick={(e) => handleColorSwatchClick(e, 'pressed')}
-								role="button"
-								tabIndex={0}
-								onKeyDown={(e) => { if (e.key === 'Enter') handleColorSwatchClick(e as any, 'pressed'); }}
-							>
-								<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
+							<div style={{ position: 'relative' }}>
+								<div
+									className="led-color-swatch"
+									style={{ backgroundColor: currentLedColors?.pressed || '#000000' }}
+									role="button"
+									tabIndex={0}
+								>
+									<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
+								</div>
+								<input
+									type="color"
+									value={currentLedColors?.pressed || '#000000'}
+									onChange={(e) => {
+										if (!onLedColorChange || !buttonName || !customTheme) return;
+										const current = customTheme[buttonName] || { normal: '#000000', pressed: '#000000' };
+										onLedColorChange(buttonName, { ...current, pressed: e.target.value });
+									}}
+									style={{
+										position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+									}}
+								/>
 							</div>
 						</div>
-
-						<Overlay
-							show={pickerVisible}
-							target={ledOverlayTarget}
-							placement={pickerPlacement}
-							container={document.body}
-							popperConfig={{
-								strategy: 'fixed',
-								modifiers: [
-									{ name: 'offset', options: { offset: [0, 10] } },
-								],
-							}}
-							rootClose
-							onHide={handleColorPickerClose}
-						>
-							<Popover onClick={(e) => e.stopPropagation()} style={{ zIndex: 9999 }}>
-								<Popover.Body>
-									<SketchPicker
-										color={selectedColor}
-										onChange={(c) => handleColorChange(c)}
-										disableAlpha={true}
-										presetColors={[
-											...LEDColors.map((c) => ({ title: c.name, color: c.value })),
-											...savedColors.map((c) => ({ title: c, color: c })),
-										]}
-										width={180}
-									/>
-									<div className="d-flex justify-content-between mt-2">
-										<Button size="sm" onClick={saveCurrentColor}>
-											{t('Common:button-save-color-label')}
-										</Button>
-										<Button size="sm" variant="outline-danger" onClick={deleteCurrentColor}>
-											{t('Common:button-delete-color-label')}
-										</Button>
-									</div>
-								</Popover.Body>
-							</Popover>
-						</Overlay>
 					</div>
 				)}
 			</Modal.Body>

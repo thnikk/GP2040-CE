@@ -12,9 +12,7 @@ import {
 	Button,
 	Form,
 	FormCheck,
-	Overlay,
 	OverlayTrigger,
-	Popover,
 	Tooltip,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -35,8 +33,6 @@ import { useBoardSVG } from '../hooks/useBoardSVG';
 import WebApi from '../Services/WebApi';
 import './PinMapping.scss';
 import InfoCircle from '../Icons/InfoCircle';
-import { SketchPicker } from '@hello-pangea/color-picker';
-import LEDColors from '../Data/LEDColors';
 
 const ProfileLabel = memo(function ProfileLabel({
 	profileIndex,
@@ -376,16 +372,12 @@ export default function PinMapping() {
 	const [activeProfile, setActiveProfile] = useState('profile-0');
 	const [pressedPin, setPressedPin] = useState<number | null>(null);
 	const { t } = useTranslation('');
-	const { savedColors, setSavedColors } = useContext(AppContext);
 
 	const [customTheme, setCustomTheme] = useState({ ...defaultCustomTheme });
 	const [animationMode, setAnimationMode] = useState(0);
 	const [themeIndex, setThemeIndex] = useState(0);
 	const [staticColorNormal, setStaticColorNormal] = useState('#ff0000');
 	const [staticColorPressed, setStaticColorPressed] = useState('#ffffff');
-	const [staticColorPickerTarget, setStaticColorPickerTarget] = useState<HTMLElement | null>(null);
-	const [staticColorPickerType, setStaticColorPickerType] = useState<'normal' | 'pressed'>('normal');
-	const [staticColorPickerPlacement, setStaticColorPickerPlacement] = useState<'bottom' | 'top'>('bottom');
 	const [themeSaveMessage, setThemeSaveMessage] = useState('');
 	useEffect(() => {
 		if (!themeSaveMessage) return;
@@ -456,22 +448,7 @@ export default function PinMapping() {
 		setThemeIndex(Number(e.target.value));
 	}, []);
 
-	const handleStaticColorSwatchClick = useCallback((e: React.MouseEvent<HTMLElement>, type: 'normal' | 'pressed') => {
-		const rect = e.currentTarget.getBoundingClientRect();
-		setStaticColorPickerPlacement(rect.top < window.innerHeight / 2 ? 'bottom' : 'top');
-		setStaticColorPickerTarget(e.currentTarget);
-		setStaticColorPickerType(type);
-	}, []);
-
-	const handleStaticColorChange = useCallback((c: { hex: string }) => {
-		if (staticColorPickerType === 'normal') {
-			setStaticColorNormal(c.hex);
-		} else {
-			setStaticColorPressed(c.hex);
-		}
-	}, [staticColorPickerType]);
-
-	const submitTheme = useCallback(async () => {
+const submitTheme = useCallback(async () => {
 		const leds = { ...customTheme };
 		delete leds['ALL'];
 		delete leds['GRADIENT NORMAL'];
@@ -543,75 +520,42 @@ export default function PinMapping() {
 						)}
 						{animationMode === 0 && (
 							<div className="d-flex align-items-center gap-3">
-								<div
-									className="led-color-swatch"
-									style={{ backgroundColor: staticColorNormal }}
-									onClick={(e) => handleStaticColorSwatchClick(e, 'normal')}
-									role="button"
-									tabIndex={0}
-									onKeyDown={(e) => { if (e.key === 'Enter') handleStaticColorSwatchClick(e as any, 'normal'); }}
-								>
-									<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
+								<div style={{ position: 'relative' }}>
+									<div
+										className="led-color-swatch"
+										style={{ backgroundColor: staticColorNormal }}
+										role="button"
+										tabIndex={0}
+									>
+										<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
+									</div>
+									<input
+										type="color"
+										value={staticColorNormal}
+										onChange={(e) => setStaticColorNormal(e.target.value)}
+										style={{
+											position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+										}}
+									/>
 								</div>
-								<div
-									className="led-color-swatch"
-									style={{ backgroundColor: staticColorPressed }}
-									onClick={(e) => handleStaticColorSwatchClick(e, 'pressed')}
-									role="button"
-									tabIndex={0}
-									onKeyDown={(e) => { if (e.key === 'Enter') handleStaticColorSwatchClick(e as any, 'pressed'); }}
-								>
-									<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
+								<div style={{ position: 'relative' }}>
+									<div
+										className="led-color-swatch"
+										style={{ backgroundColor: staticColorPressed }}
+										role="button"
+										tabIndex={0}
+									>
+										<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
+									</div>
+									<input
+										type="color"
+										value={staticColorPressed}
+										onChange={(e) => setStaticColorPressed(e.target.value)}
+										style={{
+											position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+										}}
+									/>
 								</div>
-								<Overlay
-									show={staticColorPickerTarget !== null}
-									target={staticColorPickerTarget}
-									placement={staticColorPickerPlacement}
-									popperConfig={{
-										strategy: 'fixed',
-										modifiers: [
-											{ name: 'offset', options: { offset: [0, 10] } },
-										],
-									}}
-									rootClose
-									onHide={() => setStaticColorPickerTarget(null)}
-								>
-									<Popover onClick={(e) => e.stopPropagation()} style={{ zIndex: 9999 }}>
-										<Popover.Body>
-											<SketchPicker
-												color={staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed}
-												onChange={(c) => handleStaticColorChange(c)}
-												disableAlpha={true}
-												presetColors={[
-													...LEDColors.map((c) => ({ title: c.name, color: c.value })),
-													...savedColors.map((c) => ({ title: c, color: c })),
-												]}
-												width={180}
-											/>
-											<div className="d-flex justify-content-between mt-2">
-												<Button size="sm" onClick={() => {
-													const color = staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed;
-													if (color && color !== '#000000' && !savedColors.includes(color)) {
-														setSavedColors([...savedColors, color]);
-													}
-												}}>
-													{t('Common:button-save-color-label')}
-												</Button>
-												<Button size="sm" variant="outline-danger" onClick={() => {
-													const color = staticColorPickerType === 'normal' ? staticColorNormal : staticColorPressed;
-													const idx = savedColors.indexOf(color);
-													if (idx >= 0) {
-														const newColors = [...savedColors];
-														newColors.splice(idx, 1);
-														setSavedColors(newColors);
-													}
-												}}>
-													{t('Common:button-delete-color-label')}
-												</Button>
-											</div>
-										</Popover.Body>
-									</Popover>
-								</Overlay>
 							</div>
 						)}
 						<div className="d-flex align-items-stretch gap-3 ms-auto">

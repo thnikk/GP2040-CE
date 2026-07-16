@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormCheck, Row } from 'react-bootstrap';
 import * as yup from 'yup';
@@ -11,7 +11,6 @@ import FormControl from '../Components/FormControl';
 import AnalogPinOptions from '../Components/AnalogPinOptions';
 import { BUTTON_MASKS_OPTIONS } from '../Data/Buttons';
 import { DUAL_STICK_MODES } from '../Data/Addons';
-import LEDColors from '../Data/LEDColors';
 
 const SHMUP_MIXED_MODES = [
 	{ label: 'Turbo Priority', value: 0 },
@@ -137,15 +136,6 @@ export const turboState = {
 const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFieldValue}) => {
 	const { t } = useTranslation();
 
-    const [colorPickerTarget, setColorPickerTarget] = useState(null);
-    const [showPicker, setShowPicker] = useState(false);
-
-    const toggleRgbPledPicker = (e) => {
-		e.stopPropagation();
-		setColorPickerTarget(e.target);
-		setShowPicker(!showPicker);
-	};
-
 	return (
 		<Section title={t('AddonsConfig:turbo-header-text')}>
 			<div id="TurboInputOptions" hidden={!values.TurboInputEnabled}>
@@ -211,25 +201,12 @@ const Turbo = ({ values, errors, handleChange, handleCheckbox, handleBlur, setFi
                         error={errors.turboLedColor}
                         isInvalid={errors.turboLedColor}
                         onBlur={handleBlur}
-                        onClick={toggleRgbPledPicker}
-                        onChange={(e) => {
-                            handleChange(e);
-                            setShowPicker(false);
-                        }}
+                        onChange={handleChange}
                     />
                     <ColorPicker
-                        name="turboLedColor"
-                        types={[{ value: values.turboLedColor }]}
+                        value={values.turboLedColor}
                         onChange={(c) => setFieldValue('turboLedColor', c)}
-                        onDismiss={() => setShowPicker(false)}
-                        placement="top"
-                        presetColors={LEDColors.map((c) => ({
-                            title: c.name,
-                            color: c.value,
-                        }))}
-                        show={showPicker}
-                        target={colorPickerTarget}
-                    ></ColorPicker>
+                    />
                 </Row>
                 <Row>
 					<FormControl

@@ -4,7 +4,6 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"@hello-pangea/color-picker": "^3.2.2",
 		"bootstrap": "^5.3.0-alpha3",
 		"formik": "^2.2.9",
 		"i18next": "^23.1.0",
