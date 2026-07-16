@@ -212,7 +212,6 @@ export default function ControllerWidget({
 				text.setAttribute('stroke-width', '3');
 				text.setAttribute('stroke-linejoin', 'round');
 				text.setAttribute('paint-order', 'stroke fill');
-				text.setAttribute('font-size', String(pos.fontSize));
 				text.setAttribute('font-family', 'Nunito, sans-serif');
 				text.setAttribute('font-weight', '700');
 				text.style.pointerEvents = 'none';
