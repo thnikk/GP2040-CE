@@ -138,6 +138,7 @@ export default function PinActionModal({
 	const [pickerVisible, setPickerVisible] = useState(false);
 	const [pickerColorType, setPickerColorType] = useState<'normal' | 'pressed'>('normal');
 	const [ledOverlayTarget, setLedOverlayTarget] = useState<HTMLElement | null>(null);
+	const [pickerPlacement, setPickerPlacement] = useState<'bottom' | 'top'>('bottom');
 
 	useEffect(() => {
 		if (show) {
@@ -358,6 +359,8 @@ export default function PinActionModal({
 
 	const handleColorSwatchClick = useCallback((e: React.MouseEvent<HTMLElement>, colorType: 'normal' | 'pressed') => {
 		e.stopPropagation();
+		const rect = e.currentTarget.getBoundingClientRect();
+		setPickerPlacement(rect.top < window.innerHeight / 2 ? 'bottom' : 'top');
 		setLedOverlayTarget(e.currentTarget);
 		setPickerColorType(colorType);
 		setPickerVisible((prev) => !prev);
@@ -511,10 +514,13 @@ export default function PinActionModal({
 						<Overlay
 							show={pickerVisible}
 							target={ledOverlayTarget}
-							placement="bottom"
+							placement={pickerPlacement}
+							container={document.body}
 							popperConfig={{
 								strategy: 'fixed',
-								modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+								modifiers: [
+									{ name: 'offset', options: { offset: [0, 10] } },
+								],
 							}}
 							rootClose
 							onHide={handleColorPickerClose}

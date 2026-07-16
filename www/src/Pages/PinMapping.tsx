@@ -385,6 +385,7 @@ export default function PinMapping() {
 	const [staticColorPressed, setStaticColorPressed] = useState('#ffffff');
 	const [staticColorPickerTarget, setStaticColorPickerTarget] = useState<HTMLElement | null>(null);
 	const [staticColorPickerType, setStaticColorPickerType] = useState<'normal' | 'pressed'>('normal');
+	const [staticColorPickerPlacement, setStaticColorPickerPlacement] = useState<'bottom' | 'top'>('bottom');
 	const [themeSaveMessage, setThemeSaveMessage] = useState('');
 	useEffect(() => {
 		if (!themeSaveMessage) return;
@@ -456,6 +457,8 @@ export default function PinMapping() {
 	}, []);
 
 	const handleStaticColorSwatchClick = useCallback((e: React.MouseEvent<HTMLElement>, type: 'normal' | 'pressed') => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		setStaticColorPickerPlacement(rect.top < window.innerHeight / 2 ? 'bottom' : 'top');
 		setStaticColorPickerTarget(e.currentTarget);
 		setStaticColorPickerType(type);
 	}, []);
@@ -563,10 +566,12 @@ export default function PinMapping() {
 								<Overlay
 									show={staticColorPickerTarget !== null}
 									target={staticColorPickerTarget}
-									placement="bottom"
+									placement={staticColorPickerPlacement}
 									popperConfig={{
 										strategy: 'fixed',
-										modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+										modifiers: [
+											{ name: 'offset', options: { offset: [0, 10] } },
+										],
 									}}
 									rootClose
 									onHide={() => setStaticColorPickerTarget(null)}
