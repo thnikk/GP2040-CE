@@ -207,16 +207,10 @@ export default function ControllerWidget({
 				text.setAttribute('y', String(pos.cy + 1 + (el.labelDy ?? 0)));
 				text.setAttribute('text-anchor', 'middle');
 				text.setAttribute('dominant-baseline', 'central');
-				text.setAttribute('fill', '#1c1f26');
-				text.setAttribute('stroke', '#ffffff');
-				text.setAttribute('stroke-width', '3');
-				text.setAttribute('stroke-linejoin', 'round');
-				text.setAttribute('paint-order', 'stroke fill');
 				text.setAttribute('font-family', 'Nunito, sans-serif');
 				text.setAttribute('font-weight', '700');
-				text.style.pointerEvents = 'none';
-				text.style.userSelect = 'none';
 				text.classList.add('cgp-label');
+				text.setAttribute('id', `label-${el.id}`);
 				text.textContent = label;
 				svg.appendChild(text);
 			}
@@ -236,8 +230,14 @@ export default function ControllerWidget({
 				? (dpadMask & el.mask) !== 0
 				: (buttonMask & el.mask) !== 0;
 
-			(node as HTMLElement).style.fill = sel ? '#5e81ac' : defaultFill(el.id);
-			(node as HTMLElement).style.stroke = sel ? '#81a1c1' : defaultStroke(el.id);
+			(node as HTMLElement).style.fill = defaultFill(el.id);
+			(node as HTMLElement).style.stroke = sel ? '#ffffff' : defaultStroke(el.id);
+
+			const label = svg.getElementById(`label-${el.id}`);
+			if (label) {
+				(label as HTMLElement).style.fill = sel ? '#1c1f26' : '#ffffff';
+				(label as HTMLElement).style.stroke = sel ? '#ffffff' : '#1c1f26';
+			}
 		}
 	}, [buttonMask, dpadMask, svgMarkup]);
 
@@ -245,6 +245,16 @@ export default function ControllerWidget({
 		const svg = svgRef.current;
 		if (!svg || !svgMarkup) return;
 		updateLabels(svg);
+
+		for (const el of SVG_ELS) {
+			const label = svg.getElementById(`label-${el.id}`);
+			if (!label) continue;
+			const sel = el.isDpad
+				? (dpadMask & el.mask) !== 0
+				: (buttonMask & el.mask) !== 0;
+			(label as HTMLElement).style.fill = sel ? '#1c1f26' : '#ffffff';
+			(label as HTMLElement).style.stroke = sel ? '#ffffff' : '#1c1f26';
+		}
 	}, [svgMarkup, updateLabels]);
 
 	const handleSvgClick = useCallback(

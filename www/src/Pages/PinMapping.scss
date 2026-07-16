@@ -405,5 +405,12 @@ $danger: #7b2d26;
 
 	.cgp-label {
 		font-size: 12px;
+		fill: #ffffff;
+		stroke: #1c1f26;
+		stroke-width: 3;
+		stroke-linejoin: round;
+		paint-order: stroke fill;
+		pointer-events: none;
+		user-select: none;
 	}
 }

@@ -117,7 +117,7 @@
      cx="144"
      cy="148.5"
      class="fill-stone-200 dark:fill-stone-700"
-     id="btn-s2"
+     id="btn-s1"
      style="fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
      r="10" />
   <circle
@@ -125,7 +125,7 @@
      cy="148.5"
      r="10"
      class="fill-stone-200 dark:fill-stone-700"
-     id="btn-s1"
+     id="btn-s2"
      style="fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
   <rect
      x="164.5"
