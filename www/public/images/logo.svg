@@ -5,7 +5,7 @@
    height="121.94489"
    version="1.1"
    id="svg56"
-   sodipodi:docname="logo-thnikk-merged.svg"
+   sodipodi:docname="logo.svg"
    inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -20,19 +20,29 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.3382934"
-     inkscape:cx="131.0785"
-     inkscape:cy="119.53162"
-     inkscape:window-width="3840"
-     inkscape:window-height="2160"
+     inkscape:zoom="4.6765868"
+     inkscape:cx="81.042011"
+     inkscape:cy="68.532888"
+     inkscape:window-width="2560"
+     inkscape:window-height="1440"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g6" />
+     inkscape:current-layer="svg56" />
   <desc
      id="desc1">logo-thnikk.dxf - scale = 1.000000, origin = (0.000000, 0.000000), method = manual</desc>
   <defs
      id="defs4">
+    <inkscape:path-effect
+       effect="powermask"
+       id="path-effect5"
+       is_visible="true"
+       lpeversion="1"
+       uri="#mask-powermask-path-effect5"
+       invert="false"
+       hide_mask="false"
+       background="true"
+       background_color="#ffffffff" />
     <inkscape:path-effect
        effect="powermask"
        id="path-effect7"
@@ -84,20 +94,6 @@
        id="*MODEL_SPACE" />
     <symbol
        id="*PAPER_SPACE" />
-    <mask
-       maskUnits="userSpaceOnUse"
-       id="mask-powermask-path-effect7">
-      <path
-         id="mask-powermask-path-effect7_box"
-         style="fill:#ffffff;fill-opacity:1"
-         d="M -1,-1 H 229.84601 V 122.94489 H -1 Z" />
-      <path
-         fill="none"
-         stroke="#000000"
-         d="m 141.1483,87.697756 a 37.795276,37.795276 0 1 0 0,-53.4506 l -53.4506,53.45 a 37.7953,37.7953 0 1 1 0,-53.4506"
-         id="path7"
-         style="stroke:#1c1f26;stroke-width:20;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1" />
-    </mask>
     <filter
        id="mask-powermask-path-effect7_inverse"
        inkscape:label="filtermask-powermask-path-effect7"
@@ -116,6 +112,38 @@
          values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0 "
          in="fbSourceGraphic" />
     </filter>
+    <mask
+       maskUnits="userSpaceOnUse"
+       id="mask-powermask-path-effect5">
+      <path
+         id="mask-powermask-path-effect5_box"
+         style="fill:#ffffff;fill-opacity:1"
+         d="M -1,-1 H 229.84601 V 122.94489 H -1 Z" />
+      <path
+         fill="none"
+         stroke="#000000"
+         d="m 141.1483,87.697756 a 37.795276,37.795276 0 1 0 0,-53.4506 l -53.4506,53.45 a 37.7953,37.7953 0 1 1 0,-53.4506"
+         id="path5"
+         style="stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1" />
+    </mask>
+    <filter
+       id="mask-powermask-path-effect5_inverse"
+       inkscape:label="filtermask-powermask-path-effect5"
+       style="color-interpolation-filters:sRGB"
+       height="100"
+       width="100"
+       x="-50"
+       y="-50">
+      <feColorMatrix
+         id="mask-powermask-path-effect5_primitive1"
+         values="1"
+         type="saturate"
+         result="fbSourceGraphic" />
+      <feColorMatrix
+         id="mask-powermask-path-effect5_primitive2"
+         values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0 "
+         in="fbSourceGraphic" />
+    </filter>
   </defs>
   <g
      id="g6">
@@ -127,9 +155,9 @@
        x="0"
        y="0"
        ry="60.972446"
-       mask="url(#mask-powermask-path-effect7)"
-       inkscape:path-effect="#path-effect7"
+       mask="url(#mask-powermask-path-effect5)"
        sodipodi:type="rect"
+       inkscape:path-effect="#path-effect5"
        d="M 60.972446,0 H 167.87356 c 33.77874,0 60.97245,27.193711 60.97245,60.972446 0,33.778736 -27.19371,60.972444 -60.97245,60.972444 H 60.972446 C 27.193711,121.94489 0,94.751182 0,60.972446 0,27.193711 27.193711,0 60.972446,0 Z" />
   </g>
 </svg>
