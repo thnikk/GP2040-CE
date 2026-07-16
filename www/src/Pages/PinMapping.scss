@@ -388,3 +388,17 @@ $danger: #7b2d26;
 			}
 		}
 }
+
+.controller-widget {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	user-select: none;
+
+	.cgp-svg {
+		width: 100%;
+		max-width: 460px;
+		height: auto;
+	}
+}

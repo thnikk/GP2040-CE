@@ -13,10 +13,16 @@ import LEDColors from '../Data/LEDColors';
 import { MultiValue, SingleValue } from 'react-select';
 import { KEY_CODES } from '../Data/Keyboard';
 import KeyboardWidget from './KeyboardWidget';
+import ControllerWidget from './ControllerWidget';
 
 const MODIFIER_MIN = 0xe0;
 const isModifierKey = (value: number) => value >= MODIFIER_MIN && value <= 0xe7;
 const WIDGET_BREAKPOINT = 992;
+const bitCount = (n: number) => {
+	let c = 0;
+	while (n) { c += n & 1; n >>>= 1; }
+	return c;
+};
 
 type OptionType = {
 	label: string;
@@ -299,6 +305,79 @@ export default function PinActionModal({
 		[],
 	);
 
+	const currentBtnMask = useMemo(() => {
+		if (pendingAction === BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO) return pendingCustomButtonMask;
+		if (pendingAction === BUTTON_ACTIONS.NONE) return 0;
+		const opt = options.find((o) => o.value === pendingAction);
+		if (opt && opt.type === 'customButtonMask') return opt.customButtonMask;
+		return 0;
+	}, [pendingAction, pendingCustomButtonMask, options]);
+
+	const currentDpadMask = useMemo(() => {
+		if (pendingAction === BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO) return pendingCustomDpadMask;
+		if (pendingAction === BUTTON_ACTIONS.NONE) return 0;
+		const opt = options.find((o) => o.value === pendingAction);
+		if (opt && opt.type === 'customDpadMask') return opt.customDpadMask;
+		return 0;
+	}, [pendingAction, pendingCustomDpadMask, options]);
+
+	const handleControllerMaskChange = useCallback(
+		(btnMask: number, dpMask: number) => {
+			const total = bitCount(btnMask) + bitCount(dpMask);
+			if (total === 0) {
+				setPendingAction(BUTTON_ACTIONS.NONE);
+				setPendingCustomButtonMask(0);
+				setPendingCustomDpadMask(0);
+				return;
+			}
+			if (total === 1) {
+				const opt = options.find(
+					(o) =>
+						(o.type === 'customButtonMask' && o.customButtonMask === btnMask && btnMask !== 0) ||
+						(o.type === 'customDpadMask' && o.customDpadMask === dpMask && dpMask !== 0),
+				);
+				if (opt) {
+					setPendingAction(opt.value as PinActionValues);
+					setPendingCustomButtonMask(0);
+					setPendingCustomDpadMask(0);
+					return;
+				}
+			}
+			setPendingAction(BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO);
+			setPendingCustomButtonMask(btnMask);
+			setPendingCustomDpadMask(dpMask);
+		},
+		[options],
+	);
+
+	const handleControllerActionSelect = useCallback((action: PinActionValues) => {
+		setPendingAction(action);
+		setPendingCustomButtonMask(0);
+		setPendingCustomDpadMask(0);
+	}, []);
+
+	const actionOptions = useMemo(
+		() => options.filter(({ type }) => type === 'action'),
+		[options],
+	);
+
+	const currentActionOption = useMemo(() => {
+		if (pendingAction === BUTTON_ACTIONS.NONE || pendingAction === BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO) return null;
+		return actionOptions.find((o) => o.value === pendingAction) || null;
+	}, [pendingAction, actionOptions]);
+
+	const handleActionDropdownChange = useCallback(
+		(selected: MultiValue<OptionType> | SingleValue<OptionType>) => {
+			if (!selected || (Array.isArray(selected) && !selected.length)) {
+				handleControllerActionSelect(BUTTON_ACTIONS.NONE);
+				return;
+			}
+			const single = Array.isArray(selected) ? selected[0] : selected;
+			handleControllerActionSelect(single.value as PinActionValues);
+		},
+		[handleControllerActionSelect],
+	);
+
 	const handleSave = useCallback(() => {
 		onAssign(pinNumber!, pendingAction, pendingCustomButtonMask, pendingCustomDpadMask, pendingKeyboardKeycode, pendingKeyboardModifierMask);
 		onSaveColor?.();
@@ -385,16 +464,36 @@ export default function PinActionModal({
 				</div>
 				{activeTab === 'controller' && (
 					<div className="pin-action-section">
-						<CustomSelect
-							isClearable
-							isMulti={!disabled}
-							options={groupedOptions}
-							isDisabled={disabled}
-							getOptionLabel={getOptionLabel}
-							onChange={handleChange}
-							value={getMultiValue()}
-							autoFocus
-						/>
+						{useWidget && !disabled ? (
+							<>
+								<ControllerWidget
+									buttonMask={currentBtnMask}
+									dpadMask={currentDpadMask}
+									onMaskChange={handleControllerMaskChange}
+									buttonNames={buttonNames}
+								/>
+								<CustomSelect
+									isClearable
+									options={actionOptions}
+									isDisabled={disabled}
+									getOptionLabel={getOptionLabel}
+									onChange={handleActionDropdownChange}
+									value={currentActionOption}
+									placeholder={t('PinMapping:actions.NONE')}
+								/>
+							</>
+						) : (
+							<CustomSelect
+								isClearable
+								isMulti={!disabled}
+								options={groupedOptions}
+								isDisabled={disabled}
+								getOptionLabel={getOptionLabel}
+								onChange={handleChange}
+								value={getMultiValue()}
+								autoFocus
+							/>
+						)}
 						{hasCustomTheme && !disabled && !isButtonPress && pendingAction !== BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO && (
 							<div className="mt-3 text-muted small">
 								{t('CustomTheme:no-led-for-action')}
