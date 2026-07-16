@@ -224,6 +224,7 @@ export default function BoardSVG({
 	inputMode,
 	pinLedIndices,
 	ledButtonOrder,
+	modeColors,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels } = useContext(AppContext);

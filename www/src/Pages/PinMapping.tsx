@@ -113,6 +113,7 @@ const PinSection = memo(function PinSection({
 	staticColorNormal,
 	inputMode,
 	pinLedIndices,
+	modeColors,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
@@ -125,6 +126,7 @@ const PinSection = memo(function PinSection({
 	staticColorNormal?: string;
 	inputMode?: number;
 	pinLedIndices?: Record<string, number>;
+	modeColors?: Record<number, string>;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -653,6 +655,7 @@ export default function PinMapping() {
 							staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
 							inputMode={inputMode}
 							pinLedIndices={pinLedIndices}
+							modeColors={modeColors}
 						/>
 						)
 					))}

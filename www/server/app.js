@@ -175,6 +175,29 @@ app.get('/api/getGamepadOptions', (req, res) => {
 	return res.send(gamepadOptionsStore);
 });
 
+app.get('/api/getBoardLedModeColors', (req, res) => {
+	const colors = {};
+	for (let i = 0; i <= 14; i++) {
+		colors[i] = '#000000';
+	}
+	colors[0] = '#00FF00'; // XInput
+	colors[1] = '#FF0000'; // Switch
+	colors[2] = '#0000FF'; // PS3
+	colors[3] = '#FFFF00'; // Keyboard
+	colors[4] = '#FFFF00'; // PS4
+	colors[5] = '#00FF00'; // XBone
+	colors[6] = '#00FFFF'; // MD Mini
+	colors[7] = '#FF8000'; // NeoGeo
+	colors[8] = '#FF00FF'; // PCE Mini
+	colors[9] = '#FF8000'; // Egret
+	colors[10] = '#FF8000'; // Astro
+	colors[11] = '#0000FF'; // PS Classic
+	colors[12] = '#00FF00'; // Xbox Original
+	colors[13] = '#FF00FF'; // PS5
+	colors[14] = '#FFFFFF'; // Generic
+	res.json(colors);
+});
+
 app.get('/api/getLedOptions', (req, res) => {
 	return res.send({
 		brightnessMaximum: 255,
