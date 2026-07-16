@@ -12,6 +12,7 @@
 #include "version.h"
 #include "addons/analog.h"
 #include "addons/board_led.h"
+#include "addons/board_led_rgb.h"
 #include "addons/bootsel_button.h"
 #include "addons/buzzerspeaker.h"
 #include "addons/dualdirectional.h"
@@ -499,6 +500,8 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.ledOptions, brightnessMaximum, LED_BRIGHTNESS_MAXIMUM);
     INIT_UNSET_PROPERTY(config.ledOptions, brightnessSteps, LED_BRIGHTNESS_STEPS);
     INIT_UNSET_PROPERTY(config.ledOptions, turnOffWhenSuspended, LEDS_TURN_OFF_WHEN_SUSPENDED);
+    INIT_UNSET_PROPERTY(config.ledOptions, boardLedFormat, static_cast<LEDFormat_Proto>(BOARD_LEDS_RGB_FORMAT));
+    INIT_UNSET_PROPERTY(config.ledOptions, boardLedBrightness, BOARD_LEDS_RGB_BRIGHTNESS);
 
     // Initialize pin-led mapping (all pins start with no LED assigned)
     if (config.ledOptions.pinLedIndices_count == 0)

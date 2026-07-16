@@ -2217,6 +2217,42 @@ std::string getBoardLedModeColors()
     return serialize_json(doc);
 }
 
+std::string getBoardLedOptions()
+{
+    DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
+    const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
+    int fmt = ledOptions.has_boardLedFormat
+        ? ledOptions.boardLedFormat
+        : BOARD_LEDS_RGB_FORMAT;
+    int brt = ledOptions.has_boardLedBrightness
+        ? ledOptions.boardLedBrightness
+        : BOARD_LEDS_RGB_BRIGHTNESS;
+    writeDoc(doc, "boardLedFormat", fmt);
+    writeDoc(doc, "boardLedBrightness", brt);
+    writeDoc(doc, "boardLedEnabled", BOARD_LEDS_RGB_ENABLED);
+    return serialize_json(doc);
+}
+
+std::string setBoardLedOptions()
+{
+    DynamicJsonDocument doc = get_post_data();
+    LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
+    int fmtVal = 0;
+    readDocIfPresent(fmtVal, doc, "boardLedFormat");
+    if (doc["boardLedFormat"] != nullptr) {
+        ledOptions.boardLedFormat = static_cast<LEDFormat_Proto>(fmtVal);
+        ledOptions.has_boardLedFormat = true;
+    }
+    int brtVal = 0;
+    readDocIfPresent(brtVal, doc, "boardLedBrightness");
+    if (doc["boardLedBrightness"] != nullptr) {
+        ledOptions.boardLedBrightness = brtVal;
+        ledOptions.has_boardLedBrightness = true;
+    }
+    Storage::getInstance().save(true);
+    return serialize_json(doc);
+}
+
 std::string getFirmwareVersion()
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
@@ -2425,6 +2461,8 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/resetSettings", resetSettings },
     { "/api/getSplashImage", getSplashImage },
     { "/api/getBoardLedModeColors", getBoardLedModeColors },
+    { "/api/getBoardLedOptions", getBoardLedOptions },
+    { "/api/setBoardLedOptions", setBoardLedOptions },
     { "/api/getFirmwareVersion", getFirmwareVersion },
     { "/api/getMemoryReport", getMemoryReport },
     { "/api/getHeldPins", getHeldPins },

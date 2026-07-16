@@ -309,6 +309,9 @@ message LEDOptions
 
     // Pin-to-LED mapping: LED strip index per GPIO pin (0-29), -1 = no LED
     repeated int32 pinLedIndices = 40 [(nanopb).max_count = 30];
+
+    optional LEDFormat_Proto boardLedFormat = 41;
+    optional uint32 boardLedBrightness = 42;
 };
 
 // This has to be kept in sync with AnimationOptions in AnimationStation.hpp

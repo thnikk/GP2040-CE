@@ -25,6 +25,8 @@ void BoardLedRgbAddon::setup() {
     prevInputMode = static_cast<InputMode>(-1);
     prevConfigMode = false;
     isConfigMode = Storage::getInstance().GetConfigMode();
+    resolvedFormat = BOARD_LEDS_RGB_FORMAT;
+    resolvedBrightness = BOARD_LEDS_RGB_BRIGHTNESS;
     timeSinceBlink = getMillis();
     blinkState = false;
 }
@@ -55,9 +57,9 @@ void BoardLedRgbAddon::showColor(uint32_t color) {
     if (neoPico == nullptr) {
         return;
     }
-    float brightness = BOARD_LEDS_RGB_BRIGHTNESS / 255.0f;
+    float brightness = resolvedBrightness / 255.0f;
     uint32_t frame[100] = {0};
-    frame[0] = RGB(color).value(BOARD_LEDS_RGB_FORMAT, brightness);
+    frame[0] = RGB(color).value(resolvedFormat, brightness);
     neoPico->SetFrame(frame);
     neoPico->Show();
 }
@@ -70,17 +72,30 @@ void BoardLedRgbAddon::process() {
         return;
     }
 
+    // Read runtime config (with compile-time fallback)
+    const LEDOptions& ledOpts = Storage::getInstance().getLedOptions();
+    LEDFormat fmt = ledOpts.has_boardLedFormat
+        ? static_cast<LEDFormat>(ledOpts.boardLedFormat)
+        : BOARD_LEDS_RGB_FORMAT;
+    uint32_t brt = ledOpts.has_boardLedBrightness
+        ? ledOpts.boardLedBrightness
+        : BOARD_LEDS_RGB_BRIGHTNESS;
+    bool fmtChanged = fmt != resolvedFormat;
+    bool brtChanged = brt != resolvedBrightness;
+    resolvedFormat = fmt;
+    resolvedBrightness = brt;
+
     // Lazy-init NeoPico on the first process() call outside config
     // mode. Defers loading the WS2812 PIO program until we are past
     // web config init, which avoids the config-mode hang.
     if (neoPico == nullptr) {
-        neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, BOARD_LEDS_RGB_FORMAT, BOARD_LEDS_RGB_PIO_SM, BOARD_LEDS_RGB_PIO_BLOCK);
+        neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, resolvedFormat, BOARD_LEDS_RGB_PIO_SM, BOARD_LEDS_RGB_PIO_BLOCK);
     }
 
     Gamepad * processedGamepad = Storage::getInstance().GetProcessedGamepad();
     InputMode mode = processedGamepad->getOptions().inputMode;
 
-    if (prevConfigMode || mode != prevInputMode) {
+    if (prevConfigMode || mode != prevInputMode || fmtChanged || brtChanged) {
         showColor(colorForInputMode(mode));
         prevInputMode = mode;
     }

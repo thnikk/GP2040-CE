@@ -33,6 +33,11 @@ export default {
     },
 	'pled-pin-label': 'PLED #{{pin}} Pin',
 	'pled-index-label': 'PLED #{{index}} Index',
+	'board-led': {
+		'header-text': 'Board LED Configuration',
+		'format-label': 'Board LED Format',
+		'brightness-label': 'Board LED Brightness',
+	},
 	'pin-led': {
 		'header-text': 'Pin LED Mapping',
 		'sub-header-text':

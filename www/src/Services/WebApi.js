@@ -458,6 +458,31 @@ async function getBoardLedModeColors() {
 	}
 }
 
+async function getBoardLedOptions(setLoading) {
+	setLoading(true);
+
+	try {
+		const response = await Http.get(`${baseUrl}/api/getBoardLedOptions`);
+		setLoading(false);
+		return response.data;
+	} catch (error) {
+		setLoading(false);
+		console.error(error);
+	}
+}
+
+async function setBoardLedOptions(options) {
+	return Http.post(`${baseUrl}/api/setBoardLedOptions`, sanitizeRequest(options))
+		.then((response) => {
+			console.log(response.data);
+			return true;
+		})
+		.catch((err) => {
+			console.error(err);
+			return false;
+		});
+}
+
 async function getProfileOptions() {
 	try {
 		const { data } = await Http.get(`${baseUrl}/api/getProfileOptions`);
@@ -717,6 +742,8 @@ export default {
 	getPinMappings,
 	setPinMappings,
 	getBoardLedModeColors,
+	getBoardLedOptions,
+	setBoardLedOptions,
 	getProfileOptions,
 	setProfileOptions,
 	getAddonsOptions,

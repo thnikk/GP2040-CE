@@ -230,6 +230,11 @@ export default function LEDConfigPage() {
 	const [saveMessage, setSaveMessage] = useState('');
 	const [colorPickerTarget, setColorPickerTarget] = useState(null);
 	const [showPicker, setShowPicker] = useState(false);
+	const [boardLedFormat, setBoardLedFormat] = useState(0);
+	const [boardLedBrightness, setBoardLedBrightness] = useState(128);
+	const [boardLedEnabled, setBoardLedEnabled] = useState(false);
+	const [boardLedSaveMessage, setBoardLedSaveMessage] = useState('');
+	const [boardLedLoaded, setBoardLedLoaded] = useState(false);
 
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 
@@ -260,6 +265,35 @@ export default function LEDConfigPage() {
 		p[0] = t(`LedConfig:pled-pin-label`, { pin: ++n });
 		p[1] = t(`LedConfig:pled-index-label`, { index: n });
 	});
+
+	// Fetch board LED options
+	useEffect(() => {
+		async function fetchBoardLed() {
+			const data = await WebApi.getBoardLedOptions(() => {});
+			if (data) {
+				setBoardLedFormat(data.boardLedFormat);
+				setBoardLedBrightness(data.boardLedBrightness);
+				setBoardLedEnabled(data.boardLedEnabled);
+				setBoardLedLoaded(true);
+			}
+		}
+		fetchBoardLed();
+	}, []);
+
+	const onBoardLedSave = async () => {
+		const success = await WebApi.setBoardLedOptions({
+			boardLedFormat,
+			boardLedBrightness,
+		});
+		setBoardLedSaveMessage(
+			success
+				? t('Common:saved-success-message')
+				: t('Common:saved-error-message'),
+		);
+		if (success) {
+			setTimeout(() => setBoardLedSaveMessage(''), 3000);
+		}
+	};
 
 	const toggleRgbPledPicker = (e) => {
 		e.stopPropagation();
@@ -400,6 +434,47 @@ export default function LEDConfigPage() {
 							</div>
 						</Row>
 					</Section>
+					{boardLedLoaded && boardLedEnabled ? (
+						<Section title={t('LedConfig:board-led.header-text')}>
+							<Row>
+								<FormSelect
+									label={t('LedConfig:board-led.format-label')}
+									className="form-select-sm"
+									groupClassName="col-sm-4"
+									value={boardLedFormat}
+									onChange={(e) =>
+										setBoardLedFormat(parseInt(e.target.value))
+									}
+								>
+									{LED_FORMATS.map((o, i) => (
+										<option key={`boardLedFormat-option-${i}`} value={o.value}>
+											{o.label}
+										</option>
+									))}
+								</FormSelect>
+								<FormControl
+									type="number"
+									label={t('LedConfig:board-led.brightness-label')}
+									className="form-control-sm"
+									groupClassName="col-sm-4"
+									value={boardLedBrightness}
+									onChange={(e) =>
+										setBoardLedBrightness(parseInt(e.target.value))
+									}
+									min={0}
+									max={255}
+								/>
+							</Row>
+							<Row>
+								<Col>
+									<Button onClick={onBoardLedSave} type="button" size="sm" variant="secondary">
+										{t('Common:button-save-label')}
+									</Button>
+									{boardLedSaveMessage ? <span className="alert alert-info ms-2">{boardLedSaveMessage}</span> : null}
+								</Col>
+							</Row>
+						</Section>
+					) : null}
 					<Section title={t('LedConfig:pin-led.header-text')}>
 						<p className="card-text">
 							{t('LedConfig:pin-led.sub-header-text')}

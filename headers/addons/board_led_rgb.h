@@ -124,6 +124,8 @@ private:
 	void showColor(uint32_t color);
 	NeoPico *neoPico = nullptr;
 	InputMode prevInputMode;
+	LEDFormat resolvedFormat;
+	uint32_t resolvedBrightness;
 	bool prevConfigMode;
 	bool isConfigMode;
 	uint32_t timeSinceBlink;
