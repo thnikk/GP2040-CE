@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { BUTTON_MASKS, DPAD_MASKS } from '../Data/Buttons';
 
 type ControllerWidgetProps = {
@@ -17,15 +17,6 @@ const DPAD = DPAD_MASKS.reduce((acc, { label, value }) => {
 	acc[label] = value;
 	return acc;
 }, {} as Record<string, number>);
-
-type BtnDef = {
-	labelKey: string;
-	mask: number;
-	isDpad: boolean;
-	cx: number;
-	cy: number;
-	fontSize: number;
-};
 
 type SvgEl = {
 	id: string;
@@ -60,13 +51,11 @@ function parsePathBounds(d: string): { cx: number; cy: number; w: number; h: num
 		if (!cmd) continue;
 		const rel = cmd === cmd.toLowerCase();
 		const cc = cmd.toLowerCase();
-
 		const take = (n: number) => {
 			const out: number[] = [];
 			for (let j = 0; j < n; j++) out.push(parseFloat(tokens[i++]));
 			return out;
 		};
-
 		switch (cc) {
 			case 'm': {
 				const [nx, ny] = take(2);
@@ -108,7 +97,6 @@ function parsePathBounds(d: string): { cx: number; cy: number; w: number; h: num
 			case 'z': break;
 		}
 	}
-
 	if (minX === Infinity) return null;
 	return { cx: (minX + maxX) / 2, cy: (minY + maxY) / 2, w: maxX - minX, h: maxY - minY };
 }
@@ -143,26 +131,47 @@ const SVG_ELS: SvgEl[] = [
 	{ id: 'btn-b3', labelKey: 'B3',  mask: BTN.B3,  isDpad: false, type: 'circle', attrs: { cx: 260.5, cy: 146.5, r: 13 } },
 	{ id: 'btn-b2', labelKey: 'B2',  mask: BTN.B2,  isDpad: false, type: 'circle', attrs: { cx: 309.5, cy: 146.5, r: 13 } },
 	{ id: 'btn-b1', labelKey: 'B1',  mask: BTN.B1,  isDpad: false, type: 'circle', attrs: { cx: 285, cy: 171, r: 13 } },
-	{ id: 'btn-up',  labelKey: 'Up',  mask: DPAD.Up,   isDpad: true, type: 'path', attrs: { d: 'm 130.31444,199.3086 c 0,-2.77763 -2.23605,-5.01368 -5.01367,-5.01368 h -6.52344 c -2.77762,0 -5.01367,2.23605 -5.01367,5.01368 v 16.83789 l 8.27539,8.31445 8.27539,-8.31445 z' } },
-	{ id: 'btn-down', labelKey: 'Down', mask: DPAD.Down, isDpad: true, type: 'path', attrs: { d: 'm 130.31444,249.61328 c 0,2.77763 -2.23605,5.01368 -5.01367,5.01368 h -6.52344 c -2.77762,0 -5.01367,-2.23605 -5.01367,-5.01368 v -16.83789 l 8.27539,-8.31445 8.27539,8.31445 z' } },
-	{ id: 'btn-left', labelKey: 'Left', mask: DPAD.Left, isDpad: true, type: 'path', attrs: { d: 'm 96.847652,216.22461 c -2.77763,0 -5.01368,2.23605 -5.01368,5.01367 v 6.52344 c 0,2.77762 2.23605,5.01367 5.01368,5.01367 h 16.837888 l 8.31445,-8.27539 -8.31445,-8.27539 z' } },
-	{ id: 'btn-right', labelKey: 'Right', mask: DPAD.Right, isDpad: true, type: 'path', attrs: { d: 'm 147.15233,216.22461 c 2.77763,0 5.01368,2.23605 5.01368,5.01367 v 6.52344 c 0,2.77762 -2.23605,5.01367 -5.01368,5.01367 h -16.83789 l -8.31445,-8.27539 8.31445,-8.27539 z' } },
-	{ id: 'analog-left',  labelKey: 'L3', mask: BTN.L3, isDpad: false, type: 'circle', attrs: { cx: 69, cy: 146, r: 28 }, strokeW: 4, labelDy: -20 },
+	{ id: 'btn-up',  labelKey: '',  mask: DPAD.Up,   isDpad: true, type: 'path', attrs: { d: 'm 130.31444,199.3086 c 0,-2.77763 -2.23605,-5.01368 -5.01367,-5.01368 h -6.52344 c -2.77762,0 -5.01367,2.23605 -5.01367,5.01368 v 16.83789 l 8.27539,8.31445 8.27539,-8.31445 z' } },
+	{ id: 'btn-down', labelKey: '', mask: DPAD.Down, isDpad: true, type: 'path', attrs: { d: 'm 130.31444,249.61328 c 0,2.77763 -2.23605,5.01368 -5.01367,5.01368 h -6.52344 c -2.77762,0 -5.01367,-2.23605 -5.01367,-5.01368 v -16.83789 l 8.27539,-8.31445 8.27539,8.31445 z' } },
+	{ id: 'btn-left', labelKey: '', mask: DPAD.Left, isDpad: true, type: 'path', attrs: { d: 'm 96.847652,216.22461 c -2.77763,0 -5.01368,2.23605 -5.01368,5.01367 v 6.52344 c 0,2.77762 2.23605,5.01367 5.01368,5.01367 h 16.837888 l 8.31445,-8.27539 -8.31445,-8.27539 z' } },
+	{ id: 'btn-right', labelKey: '', mask: DPAD.Right, isDpad: true, type: 'path', attrs: { d: 'm 147.15233,216.22461 c 2.77763,0 5.01368,2.23605 5.01368,5.01367 v 6.52344 c 0,2.77762 -2.23605,5.01367 -5.01368,5.01367 h -16.83789 l -8.31445,-8.27539 8.31445,-8.27539 z' } },
 	{ id: 'btn-l3',  labelKey: 'L3', mask: BTN.L3, isDpad: false, type: 'circle', attrs: { cx: 69, cy: 146, r: 10 }, strokeW: 4, staticLabel: 'L3' },
-	{ id: 'analog-right', labelKey: 'R3', mask: BTN.R3, isDpad: false, type: 'circle', attrs: { cx: 234, cy: 224, r: 28 }, strokeW: 4, labelDy: -20 },
 	{ id: 'btn-r3',  labelKey: 'R3', mask: BTN.R3, isDpad: false, type: 'circle', attrs: { cx: 234, cy: 224, r: 10 }, strokeW: 4, staticLabel: 'R3' },
 ];
 
+type LabelPos = { cx: number; cy: number; fontSize: number };
+const LABEL_POS = Object.fromEntries(
+	SVG_ELS.map((el) => [el.id, elCenter(el)]),
+) as Record<string, LabelPos>;
+
 const BTN_DEFS = Object.fromEntries(
-	SVG_ELS.map((el) => {
-		const c = elCenter(el);
-		return [el.id, { labelKey: el.labelKey, mask: el.mask, isDpad: el.isDpad, cx: c.cx, cy: c.cy, fontSize: c.fontSize } as BtnDef];
-	}),
-) as Record<string, BtnDef>;
+	SVG_ELS.map((el) => [el.id, { labelKey: el.labelKey, mask: el.mask, isDpad: el.isDpad }]),
+) as Record<string, { labelKey: string; mask: number; isDpad: boolean }>;
 
 const BTN_IDS = Object.keys(BTN_DEFS);
 const isBtnId = (id: string | null): id is keyof typeof BTN_DEFS =>
 	id != null && BTN_IDS.includes(id);
+
+const defaultFill = (id: string) => {
+	switch (id) {
+		case 'btn-b1': return '#a3be8c';
+		case 'btn-b2': return '#bf616a';
+		case 'btn-b3': return '#5e81ac';
+		case 'btn-b4': return '#ebcb8b';
+		default: return '#d8dee9';
+	}
+};
+
+const defaultStroke = (id: string) => {
+	if (id === 'analog-left' || id === 'analog-right') return '#1c1f26';
+	switch (id) {
+		case 'btn-b1': return '#a3be8c';
+		case 'btn-b2': return '#bf616a';
+		case 'btn-b3': return '#5e81ac';
+		case 'btn-b4': return '#ebcb8b';
+		default: return '#000';
+	}
+};
 
 export default function ControllerWidget({
 	buttonMask,
@@ -170,44 +179,70 @@ export default function ControllerWidget({
 	onMaskChange,
 	buttonNames,
 }: ControllerWidgetProps) {
+	const svgRef = useRef<SVGSVGElement>(null);
+	const [svgMarkup, setSvgMarkup] = useState('');
 
-	const isSelected = useCallback(
-		(def: BtnDef) => {
-			if (def.isDpad) return (dpadMask & def.mask) !== 0;
-			return (buttonMask & def.mask) !== 0;
-		},
-		[buttonMask, dpadMask],
-	);
+	useEffect(() => {
+		fetch('/images/controller.svg')
+			.then((r) => r.text())
+			.then((text) => {
+				const inner = text
+					.replace(/<\?xml[^>]*\?>\s*/i, '')
+					.replace(/<svg[^>]*>/, '')
+					.replace(/<\/svg>\s*$/, '');
+				setSvgMarkup(inner);
+			});
+	}, []);
 
-	const fillNormal = useCallback(
-		(id: keyof typeof BTN_DEFS) => {
-			const def = BTN_DEFS[id];
-			if (isSelected(def)) return '#5e81ac';
-			switch (id) {
-				case 'btn-b1': return '#a3be8c';
-				case 'btn-b2': return '#bf616a';
-				case 'btn-b3': return '#5e81ac';
-				case 'btn-b4': return '#ebcb8b';
-				default: return '#d8dee9';
+	const updateLabels = useCallback(
+		(svg: SVGSVGElement) => {
+			svg.querySelectorAll('.cgp-label').forEach((el) => el.remove());
+			const ns = 'http://www.w3.org/2000/svg';
+			for (const el of SVG_ELS) {
+				const pos = LABEL_POS[el.id];
+				if (!pos) continue;
+				const label = el.staticLabel || buttonNames[el.labelKey] || el.labelKey;
+				const text = document.createElementNS(ns, 'text');
+				text.setAttribute('x', String(pos.cx));
+				text.setAttribute('y', String(pos.cy + 1 + (el.labelDy ?? 0)));
+				text.setAttribute('text-anchor', 'middle');
+				text.setAttribute('dominant-baseline', 'central');
+				text.setAttribute('fill', '#1c1f26');
+				text.setAttribute('font-size', String(pos.fontSize));
+				text.setAttribute('font-family', 'Nunito, sans-serif');
+				text.setAttribute('font-weight', '700');
+				text.style.pointerEvents = 'none';
+				text.style.userSelect = 'none';
+				text.classList.add('cgp-label');
+				text.textContent = label;
+				svg.appendChild(text);
 			}
 		},
-		[isSelected],
+		[buttonNames],
 	);
 
-	const strokeNormal = useCallback(
-		(id: keyof typeof BTN_DEFS) => {
-			if (isSelected(BTN_DEFS[id])) return '#81a1c1';
-			if (id === 'analog-left' || id === 'analog-right') return '#1c1f26';
-			switch (id) {
-				case 'btn-b1': return '#a3be8c';
-				case 'btn-b2': return '#bf616a';
-				case 'btn-b3': return '#5e81ac';
-				case 'btn-b4': return '#ebcb8b';
-				default: return '#000';
-			}
-		},
-		[isSelected],
-	);
+	useEffect(() => {
+		const svg = svgRef.current;
+		if (!svg) return;
+
+		for (const el of SVG_ELS) {
+			const node = svg.getElementById(el.id);
+			if (!node) continue;
+
+			const sel = el.isDpad
+				? (dpadMask & el.mask) !== 0
+				: (buttonMask & el.mask) !== 0;
+
+			(node as HTMLElement).style.fill = sel ? '#5e81ac' : defaultFill(el.id);
+			(node as HTMLElement).style.stroke = sel ? '#81a1c1' : defaultStroke(el.id);
+		}
+	}, [buttonMask, dpadMask, svgMarkup]);
+
+	useEffect(() => {
+		const svg = svgRef.current;
+		if (!svg || !svgMarkup) return;
+		updateLabels(svg);
+	}, [svgMarkup, updateLabels]);
 
 	const handleSvgClick = useCallback(
 		(e: React.MouseEvent<SVGSVGElement>) => {
@@ -229,78 +264,20 @@ export default function ControllerWidget({
 		[buttonMask, dpadMask, onMaskChange],
 	);
 
-	const labelColor = useCallback(
-		(id: keyof typeof BTN_DEFS) => {
-			if (isSelected(BTN_DEFS[id])) return '#fff';
-			return '#1c1f26';
-		},
-		[isSelected],
-	);
-
-	const btnJsx = (el: SvgEl) => {
-		const sw = el.strokeW ?? 2;
-		const a = el.attrs;
-		const fill = fillNormal(el.id as keyof typeof BTN_DEFS);
-		const stroke = strokeNormal(el.id as keyof typeof BTN_DEFS);
-		const style = { cursor: 'pointer' };
-
-		switch (el.type) {
-			case 'circle':
-				return <circle key={el.id} id={el.id} cx={a.cx as number} cy={a.cy as number} r={a.r as number} fill={fill} stroke={stroke} strokeWidth={sw} style={style} />;
-			case 'ellipse':
-				return <ellipse key={el.id} id={el.id} cx={a.cx as number} cy={a.cy as number} rx={a.rx as number} ry={a.ry as number} fill={fill} stroke={stroke} strokeWidth={sw} style={style} />;
-			case 'rect':
-				return <rect key={el.id} id={el.id} x={a.x as number} y={a.y as number} width={a.width as number} height={a.height as number} rx={(a.rx as number) ?? 0} fill={fill} stroke={stroke} strokeWidth={sw} style={style} />;
-			case 'path':
-				return <path key={el.id} id={el.id} d={a.d as string} fill={fill} stroke={stroke} strokeWidth={sw} style={style} />;
-		}
-	};
-
-	const svg = (
-		<svg
-			className="cgp-svg"
-			viewBox="0 0 352 279.5"
-			xmlns="http://www.w3.org/2000/svg"
-			onClick={handleSvgClick}
-		>
-			<rect
-				style={{ fill: '#1c1f26', stroke: '#000', strokeWidth: 2, strokeLinecap: 'round' }}
-				width="350" height="200" x="1" y="78.5" rx="50" ry="50" />
-			<circle cx="234" cy="224.5" r="37.5"
-				style={{ fill: '#2b303b', stroke: '#000', strokeWidth: 2 }} />
-			<circle cx="69" cy="146.5" r="37.5"
-				style={{ fill: '#2b303b', stroke: '#000', strokeWidth: 2 }} />
-			<circle cx="122" cy="224.5" r="37.5"
-				style={{ fill: '#2b303b', stroke: '#000', strokeWidth: 2 }} />
-
-			{SVG_ELS.map(btnJsx)}
-
-			{SVG_ELS.map((el) => {
-				const def = BTN_DEFS[el.id];
-				const label = el.staticLabel || buttonNames[def.labelKey] || def.labelKey;
-				return (
-					<text
-						key={`lbl-${el.id}`}
-						x={def.cx}
-						y={def.cy + 1 + (el.labelDy ?? 0)}
-						textAnchor="middle"
-						dominantBaseline="central"
-						fill={labelColor(el.id as keyof typeof BTN_DEFS)}
-						fontSize={def.fontSize}
-						fontFamily="Nunito, sans-serif"
-						fontWeight="700"
-						style={{ pointerEvents: 'none', userSelect: 'none' }}
-					>
-						{label}
-					</text>
-				);
-			})}
-		</svg>
-	);
-
 	return (
 		<div className="controller-widget">
-			{svg}
+			{svgMarkup ? (
+				<svg
+					ref={svgRef}
+					className="cgp-svg"
+					viewBox="0 0 352 279.5"
+					xmlns="http://www.w3.org/2000/svg"
+					onClick={handleSvgClick}
+					dangerouslySetInnerHTML={{ __html: svgMarkup }}
+				/>
+			) : (
+				<svg ref={svgRef} className="cgp-svg" viewBox="0 0 352 279.5" />
+			)}
 		</div>
 	);
 }

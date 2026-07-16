@@ -73,61 +73,59 @@
      class="fill-stone-200 dark:fill-stone-700 stroke-stone-300 dark:stroke-stone-600 stroke-2"
      id="btn-r1"
      style="fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
-  <circle
-     cx="68.85936"
-     cy="145.73972"
-     r="28"
-     class="fill-stone-300 dark:fill-stone-600 transition-colors duration-100 stroke-white dark:stroke-stone-800 stroke-2"
+  <path
      id="analog-left"
-     style="fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
-  <circle
-     cx="233.67314"
-     cy="224.36761"
-     r="28"
+     mask="none"
+     style="fill:#d8dee9;fill-opacity:0.2;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
      class="fill-stone-300 dark:fill-stone-600 transition-colors duration-100 stroke-white dark:stroke-stone-800 stroke-2"
+     d="m 68.859375,117.74023 a 28,28 0 0 0 -28,28 28,28 0 0 0 28,28 28,28 0 0 0 28,-28 28,28 0 0 0 -28,-28 z m 0,18 a 10,10 0 0 1 10,10 10,10 0 0 1 -10,10 10,10 0 0 1 -10,-10 10,10 0 0 1 10,-10 z" />
+  <path
      id="analog-right"
-     style="fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     mask="none"
+     style="fill:#d8dee9;fill-opacity:0.2;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+     class="fill-stone-300 dark:fill-stone-600 transition-colors duration-100 stroke-white dark:stroke-stone-800 stroke-2"
+     d="m 233.67383,196.36719 a 28,28 0 0 0 -28,28 28,28 0 0 0 28,28 28,28 0 0 0 28,-28 28,28 0 0 0 -28,-28 z m 0,18 a 10,10 0 0 1 10,10 10,10 0 0 1 -10,10 10,10 0 0 1 -10,-10 10,10 0 0 1 10,-10 z" />
   <circle
      cx="285"
      cy="122"
-     r="13"
      class="fill-transparent stroke-yellow-500/50 stroke-2"
      id="btn-b4"
-     style="fill:#ebcb8b;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     style="fill:#ebcb8b;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+     r="14" />
   <circle
      cx="260.5"
      cy="146.5"
-     r="13"
      class="fill-transparent stroke-blue-500/50 stroke-2"
      id="btn-b3"
-     style="fill:#5e81ac;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     style="fill:#5e81ac;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+     r="14" />
   <circle
      cx="309.5"
      cy="146.5"
-     r="13"
      class="fill-transparent stroke-red-500/50 stroke-2"
      id="btn-b2"
-     style="fill:#bf616a;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     style="fill:#bf616a;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+     r="14" />
   <circle
      cx="285"
      cy="171"
-     r="13"
      class="fill-transparent stroke-green-600/50 stroke-2"
      id="btn-b1"
-     style="fill:#a3be8c;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     style="fill:#a3be8c;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+     r="14" />
   <circle
      cx="144"
      cy="148.5"
-     r="10"
      class="fill-stone-200 dark:fill-stone-700"
-     id="btn-s1"
-     style="fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     id="btn-s2"
+     style="fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+     r="10" />
   <circle
      cx="209"
      cy="148.5"
      r="10"
      class="fill-stone-200 dark:fill-stone-700"
-     id="btn-s2"
+     id="btn-s1"
      style="fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
   <rect
      x="164.5"
@@ -170,13 +168,13 @@
      style="display:inline;fill:#d8dee9;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
      d="m 130.31444,249.61328 c 0,2.77763 -2.23605,5.01368 -5.01367,5.01368 h -6.52344 c -2.77762,0 -5.01367,-2.23605 -5.01367,-5.01368 v -16.83789 l 8.27539,-8.31445 8.27539,8.31445 z" />
   <circle
-     style="fill:#d8dee9;fill-opacity:1;stroke:#1c1f26;stroke-width:4;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+     style="display:inline;fill:#d8dee9;fill-opacity:1;stroke:#1c1f26;stroke-width:2;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
      id="btn-l3"
      cx="68.85936"
      cy="145.73972"
      r="10" />
   <circle
-     style="fill:#d8dee9;fill-opacity:1;stroke:#1c1f26;stroke-width:4;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+     style="display:inline;fill:#d8dee9;fill-opacity:1;stroke:#1c1f26;stroke-width:2;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
      id="btn-r3"
      cx="233.67314"
      cy="224.36761"
