@@ -31,8 +31,8 @@
 		"format": "prettier --write \"{src,server}/**/*.{tsx,ts,jsx,js,json,scss}\"",
 		"lint": "eslint src --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"makefsdata": "node makefsdata.js",
-		"copy-board-svg": "node copy-board-svg.js",
-		"start": "node copy-board-svg.js public && npm run build-proto && vite",
+		"copy-board-svg": "node -r dotenv/config copy-board-svg.js",
+		"start": "node -r dotenv/config copy-board-svg.js public && npm run build-proto && vite",
 		"build-proto": "npx pbjs --no-create --no-encode --no-decode --no-convert --no-verify --no-delimited --sparse -t static-module -w commonjs --path ../lib/nanopb/generator/proto/ ../proto/enums.proto | npx pbts --no-comments -m -o ./src_gen/enums.ts -"
 	},
 	"devDependencies": {
