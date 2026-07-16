@@ -186,6 +186,10 @@ nav.navbar .navbar-brand {
 	border-radius: 1.25rem 1.25rem 0 0;
 }
 
+.badge.bg-info {
+	background-color: #{$nord10} !important;
+}
+
 .popover {
 	z-index: 2;
 

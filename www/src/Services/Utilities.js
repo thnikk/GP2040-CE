@@ -1,3 +1,28 @@
+// Compare two semver strings (e.g. "v1.0.0" > "v0.7.10-1")
+// Returns true if version a is newer than version b
+const isNewerVersion = (a, b) => {
+	const parse = (v) => {
+		const s = v.replace(/^v/i, '').split(/[.-]/);
+		return s.map((p) => {
+			const n = parseInt(p, 10);
+			return isNaN(n) ? p : n;
+		});
+	};
+
+	const pa = parse(a);
+	const pb = parse(b);
+
+	for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+		const left = i < pa.length ? pa[i] : 0;
+		const right = i < pb.length ? pb[i] : 0;
+		if (left === right) continue;
+		if (typeof left === 'number' && typeof right === 'number') return left > right;
+		if (typeof left === 'string' && typeof right === 'string') return left > right;
+		return typeof left === 'number';
+	}
+	return false;
+};
+
 // Convert a hex string to a number
 const hexToInt = (hex) => {
 	return parseInt(hex.replace('#', ''), 16);
@@ -41,4 +66,4 @@ const rgbWheel = (pos) => {
 	}
 };
 
-export { hexToInt, intToHex, rgbArrayToHex, rgbIntToHex, rgbWheel };
+export { hexToInt, intToHex, isNewerVersion, rgbArrayToHex, rgbIntToHex, rgbWheel };

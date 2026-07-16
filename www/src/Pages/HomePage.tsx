@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { isNewerVersion } from '../Services/Utilities';
 import { Alert, ProgressBar } from 'react-bootstrap';
 
 import useSystemStats from '../Store/useSystemStats';
@@ -47,15 +48,18 @@ export default function HomePage() {
 				<div>
 					<strong className="system-text">{t('HomePage:version-text')}</strong>
 					<div className="system-text">{`${boardConfigProperties.label} (${boardConfigProperties.fileName}.uf2)`}</div>
-					<div className="system-text">
-						{t('HomePage:current-text', { version: currentVersion })}
+					<div className="system-text d-flex align-items-center gap-2">
+						<span>{t('HomePage:current-text', { version: currentVersion })}</span>
+						{latestVersion && isNewerVersion(currentVersion, latestVersion) && (
+							<span className="badge bg-info">{t('HomePage:pre-release-badge-text')}</span>
+						)}
 					</div>
 					<div className="system-text">
 						{t('HomePage:latest-text', { version: latestVersion })}
 					</div>
 					{latestVersion &&
 						currentVersion?.split('-').length == 1 &&
-						currentVersion !== latestVersion && (
+						isNewerVersion(latestVersion, currentVersion) && (
 							<div className="mt-3 mb-3">
 								<a
 									target="_blank"

@@ -11,4 +11,5 @@ export default {
 	'sub-header-text': 'Please select a menu option to proceed.',
 	'system-stats-header-text': 'System Stats',
 	'version-text': 'Version',
+	'pre-release-badge-text': 'Pre-release',
 };
