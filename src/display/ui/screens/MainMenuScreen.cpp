@@ -90,7 +90,7 @@ void MainMenuScreen::init() {
     prevTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
     updateTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
 
-    prevButtonState = 0;
+    prevValues = Storage::getInstance().GetGamepad()->debouncedGpio;
 }
 
 void MainMenuScreen::shutdown() {
