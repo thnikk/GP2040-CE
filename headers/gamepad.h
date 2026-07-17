@@ -196,6 +196,9 @@ public:
 
 	bool userRequestedReinit = false;
 
+	// Shared flag for menu input blocking (set by DisplayAddon, read by Core0)
+	volatile bool menuActive = false;
+
 	// These are special to SOCD
 	inline static const SOCDMode resolveSOCDMode(const GamepadOptions& options) {
 		return (options.socdMode == SOCD_MODE_BYPASS &&

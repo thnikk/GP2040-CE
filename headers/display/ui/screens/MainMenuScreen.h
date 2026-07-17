@@ -76,8 +76,9 @@ class MainMenuScreen : public GPScreen {
         uint32_t checkDebounce;
         std::vector<MenuEntry>* currentMenu;
         std::vector<MenuEntry>* previousMenu;
-        uint16_t prevButtonState = 0;
-        Mask_t prevValues;
+		uint16_t prevButtonState = 0;
+		uint8_t prevDpad = 0;
+		Mask_t prevValues;
         GPMenu* gpMenu;
 
         bool screenIsPrompting = false;

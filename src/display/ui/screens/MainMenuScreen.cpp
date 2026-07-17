@@ -1,4 +1,6 @@
 #include "MainMenuScreen.h"
+#include "gamepad.h"
+#include "GamepadState.h"
 #include "hardware/watchdog.h"
 #include "system.h"
 
@@ -83,6 +85,11 @@ void MainMenuScreen::init() {
     
     prevTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
     updateTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
+
+    // Snapshot gamepad state so held hotkey buttons don't auto-trigger on menu open
+    Gamepad * gamepad = Storage::getInstance().GetGamepad();
+    prevButtonState = gamepad->state.buttons;
+    prevDpad = gamepad->state.dpad;
 }
 
 void MainMenuScreen::shutdown() {
@@ -121,28 +128,63 @@ void MainMenuScreen::setMenu(std::vector<MenuEntry>* menu) {
 int8_t MainMenuScreen::update() {
 	Gamepad * gamepad = Storage::getInstance().GetGamepad();
     Mask_t values = Storage::getInstance().GetGamepad()->debouncedGpio;
+    uint32_t buttons = gamepad->state.buttons;
+    uint8_t dpad = gamepad->state.dpad;
 
-    uint16_t buttonState = getGamepad()->state.buttons;
+    bool actionFired = false;
 
+    // Check dedicated menu GPIO pins
     if (!isPressed && prevValues != values) {
         if (values & mapMenuUp->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_UP);
+            actionFired = true;
         } else if (values & mapMenuDown->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_DOWN);
+            actionFired = true;
         } else if (values & mapMenuSelect->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_SELECT);
+            actionFired = true;
         } else if (values & mapMenuBack->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_BACK);
+            actionFired = true;
         }
-    } else {
-        isPressed = false;
     }
 
-    prevButtonState = buttonState;
+    // Check gamepad buttons (B1 = select, B2 = back)
+    if (!actionFired && !isPressed && prevButtonState != buttons) {
+        if (buttons & GAMEPAD_MASK_B1) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_SELECT);
+            actionFired = true;
+        } else if (buttons & GAMEPAD_MASK_B2) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_BACK);
+            actionFired = true;
+        }
+    }
+
+    // Check gamepad dpad (up/down/left/right)
+    if (!actionFired && !isPressed && prevDpad != dpad) {
+        if (dpad & GAMEPAD_MASK_UP) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_UP);
+            actionFired = true;
+        } else if (dpad & GAMEPAD_MASK_DOWN) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_DOWN);
+            actionFired = true;
+        } else if (dpad & GAMEPAD_MASK_LEFT) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_LEFT);
+            actionFired = true;
+        } else if (dpad & GAMEPAD_MASK_RIGHT) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_RIGHT);
+            actionFired = true;
+        }
+    }
+
+    isPressed = actionFired;
+
+    prevButtonState = buttons;
+    prevDpad = dpad;
     prevValues = values;
 
     if ((exitToScreen != -1) && ((changeRequiresSave) || (changeRequiresReboot))) {
-        // trying to exit menu but a change requires a save/reboot
         exitToScreenBeforePrompt = exitToScreen;
         exitToScreen = -1;
         screenIsPrompting = true;

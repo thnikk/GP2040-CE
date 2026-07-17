@@ -300,6 +300,18 @@ void GP2040::run() {
 		// (Post) Process for add-ons
 		addons.ProcessAddons(ADDON_PROCESS::CORE0_INPUT);
 
+		// Block all inputs from reaching USB while menu is open
+		if (gamepad->menuActive) {
+			gamepad->state.dpad = 0;
+			gamepad->state.buttons = 0;
+			gamepad->state.lx = GAMEPAD_JOYSTICK_MID;
+			gamepad->state.ly = GAMEPAD_JOYSTICK_MID;
+			gamepad->state.rx = GAMEPAD_JOYSTICK_MID;
+			gamepad->state.ry = GAMEPAD_JOYSTICK_MID;
+			gamepad->state.lt = 0;
+			gamepad->state.rt = 0;
+		}
+
 		checkProcessedState(processedGamepad->state, gamepad->state);
 
 		// Copy Processed Gamepad for Core1 (race condition otherwise)

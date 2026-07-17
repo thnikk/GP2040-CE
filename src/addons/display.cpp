@@ -217,6 +217,9 @@ void DisplayAddon::process() {
         // Screen wants to change to something else
         if (screenReturn != currDisplayMode) {
             currDisplayMode = (DisplayMode)screenReturn;
+            if (currDisplayMode != DisplayMode::MAIN_MENU) {
+                gamepad->menuActive = false;
+            }
             updateDisplayScreen();
         }
     }
@@ -238,6 +241,7 @@ void DisplayAddon::handleMenuNavigation(GPEvent* e) {
     if (currDisplayMode != MAIN_MENU) {
         if (((GPMenuNavigateEvent*)e)->menuAction == GpioAction::MENU_NAVIGATION_TOGGLE) {
             currDisplayMode = MAIN_MENU;
+            gamepad->menuActive = true;
             updateDisplayScreen();
         }
     } else {
@@ -245,6 +249,7 @@ void DisplayAddon::handleMenuNavigation(GPEvent* e) {
             ((MainMenuScreen*)gpScreen)->updateMenuNavigation(((GPMenuNavigateEvent*)e)->menuAction);
         } else {
             currDisplayMode = BUTTONS;
+            gamepad->menuActive = false;
             updateDisplayScreen();
         }
     }
