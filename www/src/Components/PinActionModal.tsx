@@ -390,14 +390,6 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 				</div>
 				{activeTab === 'controller' && (
 					<div className="pin-action-section">
-						{useWidget && !disabled && (
-							<ControllerWidget
-								buttonMask={currentBtnMask}
-								dpadMask={currentDpadMask}
-								onMaskChange={handleControllerMaskChange}
-								buttonNames={buttonNames}
-							/>
-						)}
 						{!disabled && (
 							<CustomSelect
 								isClearable
@@ -409,6 +401,14 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 								value={getMultiValue()}
 							/>
 						)}
+						{useWidget && !disabled && (
+							<ControllerWidget
+								buttonMask={currentBtnMask}
+								dpadMask={currentDpadMask}
+								onMaskChange={handleControllerMaskChange}
+								buttonNames={buttonNames}
+							/>
+						)}
 						{hasCustomTheme && !disabled && !isButtonPress && pendingAction !== BUTTON_ACTIONS.CUSTOM_BUTTON_COMBO && (
 							<div className="mt-3 text-muted small">
 								{t('CustomTheme:no-led-for-action')}
@@ -418,13 +418,7 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 				)}
 				{activeTab === 'keyboard' && (
 					<div className="pin-action-section">
-						{useWidget ? (
-							<KeyboardWidget
-								keycode={pendingKeyboardKeycode}
-								modifierMask={pendingKeyboardModifierMask}
-								onChange={handleKeyboardChange}
-							/>
-						) : (
+						{!disabled && (
 							<CustomSelect
 								isMulti
 								options={keyboardDropdownOptions}
@@ -432,6 +426,13 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 								value={keyboardDropdownValue}
 								getOptionLabel={(o: { label: string }) => o.label}
 								autoFocus
+							/>
+						)}
+						{useWidget && !disabled && (
+							<KeyboardWidget
+								keycode={pendingKeyboardKeycode}
+								modifierMask={pendingKeyboardModifierMask}
+								onChange={handleKeyboardChange}
 							/>
 						)}
 					</div>

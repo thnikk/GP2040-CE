@@ -125,10 +125,9 @@ $danger: #7b2d26;
 }
 
 .led-color-swatch {
-	width: 48px;
-	height: 48px;
-	border-radius: 6px;
-	border: 2px solid #666;
+	border-radius: 999px;
+	border: 1px solid #{$nord3};
+	padding: 10px 20px;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
@@ -141,12 +140,13 @@ $danger: #7b2d26;
 	}
 
 	.swatch-label {
-		color: #fff;
-		text-shadow: 0 0 3px #000, 0 0 3px #000;
+		color: #000;
+		-webkit-text-stroke: 4px white;
+		paint-order: stroke fill;
 		font-weight: 600;
-		font-size: 0.7rem;
+/*		font-size: 0.7rem; */
 		text-align: center;
-		line-height: 1.1;
+/*		line-height: 1.1; */
 		pointer-events: none;
 	}
 }
@@ -223,6 +223,7 @@ $danger: #7b2d26;
 	display: flex;
 	flex-direction: column;
 	gap: 3px;
+	margin-top: 20px;
 	user-select: none;
 
 	.kb-main-centered {
@@ -395,6 +396,7 @@ $danger: #7b2d26;
 	align-items: center;
 	gap: 12px;
 	padding: 0 20px;
+	margin-top: 20px;
 	margin-bottom: 20px;
 	user-select: none;
 
