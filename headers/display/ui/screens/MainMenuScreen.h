@@ -68,6 +68,7 @@ class MainMenuScreen : public GPScreen {
         int32_t currentTurboMode();
 
         void updateMenuNavigation(GpioAction action);
+        void queueAction(GpioAction action) { pendingNavAction = (uint8_t)action; }
     protected:
         virtual void drawScreen();
     private:
@@ -85,6 +86,7 @@ class MainMenuScreen : public GPScreen {
 		uint32_t navLeftPinMask = 0;
 		uint32_t navRightPinMask = 0;
         GPMenu* gpMenu;
+        volatile uint8_t pendingNavAction = 0xFF; // 0xFF = none, otherwise GpioAction
 
         bool screenIsPrompting = false;
         bool promptChoice = false;

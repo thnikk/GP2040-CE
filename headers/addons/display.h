@@ -227,6 +227,7 @@ private:
 	GPGFX_DisplayTypeOptions gpOptions;
 
 	GamepadButtonMapping *mapMenuToggle;
+	volatile int8_t pendingScreenReturn; // -1 = none, >=0 = requested DisplayMode (Core0→Core1)
 };
 
 #endif

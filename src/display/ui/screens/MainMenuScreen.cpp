@@ -168,6 +168,13 @@ int8_t MainMenuScreen::update() {
         isPressed = false;
     }
 
+    // Check for pending navigation actions from Core0 hotkeys
+    if (pendingNavAction != 0xFF) {
+        updateMenuNavigation((GpioAction)pendingNavAction);
+        pendingNavAction = 0xFF;
+        actionFired = true;
+    }
+
     isPressed = actionFired;
 
     prevValues = values;

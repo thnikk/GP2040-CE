@@ -75,6 +75,7 @@ void DisplayAddon::setup() {
         currDisplayMode = DisplayMode::CONFIG_INSTRUCTION;
     }
     gpScreen = nullptr;
+    pendingScreenReturn = -1;
     updateDisplayScreen();
 
     EventManager::getInstance().registerEventHandler(GP_EVENT_RESTART, GPEVENT_CALLBACK(this->handleSystemRestart(event)));
@@ -200,6 +201,17 @@ void DisplayAddon::process() {
         return;
     }
 
+    // Handle deferred screen transitions from Core0 events
+    if (pendingScreenReturn != -1) {
+        currDisplayMode = (DisplayMode)pendingScreenReturn;
+        pendingScreenReturn = -1;
+        if (currDisplayMode != DisplayMode::MAIN_MENU)
+            gamepad->menuActive = false;
+        else
+            gamepad->menuActive = true;
+        updateDisplayScreen();
+    }
+
     int8_t screenReturn = gpScreen->update();
     gpScreen->draw();
 
@@ -232,25 +244,18 @@ const DisplayOptions& DisplayAddon::getDisplayOptions() {
 
 
 void DisplayAddon::handleSystemRestart(GPEvent* e) {
-    currDisplayMode = DisplayMode::RESTART;
     bootMode = (uint32_t)((GPRestartEvent*)e)->bootMode;
-    updateDisplayScreen();
+    pendingScreenReturn = DisplayMode::RESTART;
 }
 
 void DisplayAddon::handleMenuNavigation(GPEvent* e) {
-    if (currDisplayMode != MAIN_MENU) {
-        if (((GPMenuNavigateEvent*)e)->menuAction == GpioAction::MENU_NAVIGATION_TOGGLE) {
-            currDisplayMode = MAIN_MENU;
-            gamepad->menuActive = true;
-            updateDisplayScreen();
-        }
-    } else {
-        if (((GPMenuNavigateEvent*)e)->menuAction != GpioAction::MENU_NAVIGATION_TOGGLE) {
-            ((MainMenuScreen*)gpScreen)->updateMenuNavigation(((GPMenuNavigateEvent*)e)->menuAction);
-        } else {
-            currDisplayMode = BUTTONS;
-            gamepad->menuActive = false;
-            updateDisplayScreen();
-        }
+    GpioAction action = ((GPMenuNavigateEvent*)e)->menuAction;
+    if (action == GpioAction::MENU_NAVIGATION_TOGGLE) {
+        if (currDisplayMode != MAIN_MENU)
+            pendingScreenReturn = MAIN_MENU;
+        else
+            pendingScreenReturn = BUTTONS;
+    } else if (gamepad->menuActive) {
+        ((MainMenuScreen*)gpScreen)->queueAction(action);
     }
 }
