@@ -108,6 +108,12 @@
 #define BOARD_LEDS_RGB_PROFILE_BLINK_MS 100
 #endif
 
+// Delay before profile blink starts, to avoid running during the
+// blocking reinit+save window on Core0. 100ms is enough to clear it.
+#ifndef BOARD_LEDS_RGB_PROFILE_BLINK_DELAY_MS
+#define BOARD_LEDS_RGB_PROFILE_BLINK_DELAY_MS 100
+#endif
+
 // BoardLedRgb Module Name
 #define BoardLedRgbName "BoardLedRgb"
 
@@ -138,6 +144,8 @@ private:
 	uint8_t prevProfile;
 	uint8_t profileBlinkCount;
 	uint8_t profileBlinkTarget;
+	uint32_t profileBlinkTimer;
+	bool profileBlinkStarted;
 };
 
 #endif  // _BoardLedRgb_H

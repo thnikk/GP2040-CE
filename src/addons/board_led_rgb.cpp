@@ -32,6 +32,7 @@ void BoardLedRgbAddon::setup() {
     prevProfile = Storage::getInstance().getGamepadOptions().profileNumber;
     profileBlinkCount = 0;
     profileBlinkTarget = 0;
+    profileBlinkStarted = false;
 }
 
 uint32_t BoardLedRgbAddon::colorForInputMode(InputMode mode) {
@@ -103,28 +104,42 @@ void BoardLedRgbAddon::process() {
         prevProfile = profile;
         profileBlinkCount = 0;
         profileBlinkTarget = profile;
-        timeSinceBlink = getMillis();
-        blinkState = true;
-        showColor(0xFFFFFF);
+        profileBlinkTimer = getMillis();
+        blinkState = false;
+        profileBlinkStarted = false;
     }
 
     if (profileBlinkTarget > 0 && profileBlinkCount < profileBlinkTarget) {
-        if (blinkState) {
-            if (getMillis() - timeSinceBlink >= BOARD_LEDS_RGB_PROFILE_BLINK_MS) {
+        uint32_t now = getMillis();
+
+        if (now - profileBlinkTimer < BOARD_LEDS_RGB_PROFILE_BLINK_DELAY_MS) {
+            prevInputMode = mode;
+            prevConfigMode = false;
+            return;
+        }
+
+        if (!profileBlinkStarted) {
+            showColor(0xFFFFFF);
+            profileBlinkStarted = true;
+            blinkState = true;
+            timeSinceBlink = now;
+        } else if (blinkState) {
+            if (now - timeSinceBlink >= BOARD_LEDS_RGB_PROFILE_BLINK_MS) {
                 showColor(0);
                 blinkState = false;
-                timeSinceBlink = getMillis();
+                timeSinceBlink = now;
             }
         } else {
-            if (getMillis() - timeSinceBlink >= BOARD_LEDS_RGB_PROFILE_BLINK_MS) {
+            if (now - timeSinceBlink >= BOARD_LEDS_RGB_PROFILE_BLINK_MS) {
                 profileBlinkCount++;
                 if (profileBlinkCount >= profileBlinkTarget) {
                     showColor(colorForInputMode(mode));
                     profileBlinkTarget = 0;
+                    profileBlinkStarted = false;
                 } else {
                     showColor(0xFFFFFF);
                     blinkState = true;
-                    timeSinceBlink = getMillis();
+                    timeSinceBlink = now;
                 }
             }
         }
