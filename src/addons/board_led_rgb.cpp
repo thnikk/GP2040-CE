@@ -29,6 +29,9 @@ void BoardLedRgbAddon::setup() {
     resolvedBrightness = BOARD_LEDS_RGB_BRIGHTNESS;
     timeSinceBlink = getMillis();
     blinkState = false;
+    prevProfile = Storage::getInstance().getGamepadOptions().profileNumber;
+    profileBlinkCount = 0;
+    profileBlinkTarget = 0;
 }
 
 uint32_t BoardLedRgbAddon::colorForInputMode(InputMode mode) {
@@ -94,6 +97,41 @@ void BoardLedRgbAddon::process() {
 
     Gamepad * processedGamepad = Storage::getInstance().GetProcessedGamepad();
     InputMode mode = processedGamepad->getOptions().inputMode;
+
+    uint8_t profile = Storage::getInstance().getGamepadOptions().profileNumber;
+    if (profile != prevProfile) {
+        prevProfile = profile;
+        profileBlinkCount = 0;
+        profileBlinkTarget = profile;
+        timeSinceBlink = getMillis();
+        blinkState = true;
+        showColor(0xFFFFFF);
+    }
+
+    if (profileBlinkTarget > 0 && profileBlinkCount < profileBlinkTarget) {
+        if (blinkState) {
+            if (getMillis() - timeSinceBlink >= BOARD_LEDS_RGB_PROFILE_BLINK_MS) {
+                showColor(0);
+                blinkState = false;
+                timeSinceBlink = getMillis();
+            }
+        } else {
+            if (getMillis() - timeSinceBlink >= BOARD_LEDS_RGB_PROFILE_BLINK_MS) {
+                profileBlinkCount++;
+                if (profileBlinkCount >= profileBlinkTarget) {
+                    showColor(colorForInputMode(mode));
+                    profileBlinkTarget = 0;
+                } else {
+                    showColor(0xFFFFFF);
+                    blinkState = true;
+                    timeSinceBlink = getMillis();
+                }
+            }
+        }
+        prevInputMode = mode;
+        prevConfigMode = false;
+        return;
+    }
 
     if (prevConfigMode || mode != prevInputMode || fmtChanged || brtChanged) {
         showColor(colorForInputMode(mode));

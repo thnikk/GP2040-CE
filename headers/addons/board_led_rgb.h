@@ -103,6 +103,11 @@
 #define BOARD_LEDS_RGB_CONFIG_BLINK_MS 500
 #endif
 
+// Blink interval for profile-change animation (white flashes).
+#ifndef BOARD_LEDS_RGB_PROFILE_BLINK_MS
+#define BOARD_LEDS_RGB_PROFILE_BLINK_MS 100
+#endif
+
 // BoardLedRgb Module Name
 #define BoardLedRgbName "BoardLedRgb"
 
@@ -130,6 +135,9 @@ private:
 	bool isConfigMode;
 	uint32_t timeSinceBlink;
 	bool blinkState;
+	uint8_t prevProfile;
+	uint8_t profileBlinkCount;
+	uint8_t profileBlinkTarget;
 };
 
 #endif  // _BoardLedRgb_H
