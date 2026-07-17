@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AppContext } from '../Contexts/AppContext';
 import './Section.scss';
 
-const Section = ({ children, title }) => {
+const Section = ({ children, title, description }) => {
 	const { loading } = useContext(AppContext);
 	const { t } = useTranslation('');
 
@@ -13,6 +13,7 @@ const Section = ({ children, title }) => {
 				<strong>{title}</strong>
 			</div>
 			<div className="card-body">
+				{description && <div className="card-text text-muted">{description}</div>}
 				{loading ? (
 					<div className="d-flex justify-content-center align-items-center loading">
 						<div className="spinner-border" role="status">

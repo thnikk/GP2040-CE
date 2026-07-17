@@ -210,3 +210,13 @@ nav.navbar .navbar-brand {
 		margin-left: 10px;
 	}
 }
+
+.progress {
+	background-color: #{$nord1};
+	border-radius: 999px;
+	border: 1px solid #{$nord2};
+}
+.progress-bar {
+	background-color: #{$nord10};
+	border-radius: 999px;
+}

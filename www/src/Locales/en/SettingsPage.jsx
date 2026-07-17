@@ -2,7 +2,9 @@ export default {
 	'auth-settings-label': 'Authentication Settings',
 	'no-mode-settings-text': 'There are no input mode settings for {{mode}}.',
 	'settings-header-text': 'Input Mode Settings',
+	'settings-description-text': 'Choose how your controller communicates with your console or PC.',
 	'gamepad-settings-header-text': 'Gamepad Settings',
+	'gamepad-settings-description-text': 'Customize your gamepad\'s controls and behavior.',
 	'input-mode-label': 'Input Mode',
 	'current-input-mode-label': 'Current Input Mode',
 	'input-mode-extra-label': 'Switch Touchpad and Share',
@@ -29,6 +31,7 @@ export default {
 		mini: 'Mini/Classic Console Modes',
 	},
 	'boot-input-mode-label': 'Boot Input Modes',
+	'boot-input-mode-description-text': 'Set which input mode your controller starts in when powered on.',
 	'ps4-mode-options': {
 		controller: 'Controller',
 		arcadestick: 'Arcade Stick',
@@ -83,6 +86,7 @@ export default {
 	'xinput-mode-auth-text':
 		'To use on Xbox 360, select USB authentication and attach an Xbox 360 controller dongle.',
 	'hotkey-settings-label': 'Hotkey Settings',
+	'hotkey-settings-description-text': 'Assign button combinations to quickly perform actions.',
 	'hotkey-actions': {
 		'no-action': 'No Action',
 		'dpad-digital': 'Dpad Digital',
@@ -148,6 +152,8 @@ export default {
 		'If you reboot to Controller mode after saving, you will no longer have access to the web-config. Please type "<strong>{{warningCheckText}}</strong>" below to unlock the Save button if you fully acknowledge this and intend it. Clicking on Dismiss will revert this setting which then is to be saved.',
 	'4-way-joystick-mode-label': '4-Way Joystick Mode',
 	'lock-hotkeys-label': 'Lock Hotkeys',
+	'extra-pins-label': 'Extra Pins',
+	'extra-pins-description-text': 'Make additional pins available for connecting custom buttons or controls.',
     'usb-override': {
         'advanced-override': '⚠️ Advanced USB Override',
         'invalid-warning-danger':

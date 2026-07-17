@@ -1410,7 +1410,7 @@ export default function SettingsPage() {
 											</Nav.Item>
 											<Nav.Item>
 												<Nav.Link eventKey="extrapins">
-													Extra pins
+													{t('SettingsPage:extra-pins-label')}
 												</Nav.Link>
 											</Nav.Item>
 										</Nav>
@@ -1418,7 +1418,9 @@ export default function SettingsPage() {
 									<Col md={9}>
 										<Tab.Content>
 											<Tab.Pane eventKey="inputmode">
-												<Section title={t('SettingsPage:settings-header-text')}>
+												<Section
+													title={t('SettingsPage:settings-header-text')}
+													description={t('SettingsPage:settings-description-text')}>
 													<div className="d-flex flex-column gap-1">
 														<Form.Label>
 															{t('SettingsPage:current-input-mode-label')}
@@ -1476,6 +1478,7 @@ export default function SettingsPage() {
 											<Tab.Pane eventKey="gamepad">
 												<Section
 													title={t('SettingsPage:gamepad-settings-header-text')}
+													description={t('SettingsPage:gamepad-settings-description-text')}
 												>
 													<Form.Group className="row">
 														<Form.Label>
@@ -1624,6 +1627,7 @@ export default function SettingsPage() {
 											<Tab.Pane eventKey="bootmode">
 												<Section
 													title={t('SettingsPage:boot-input-mode-label')}
+													description={t('SettingsPage:boot-input-mode-description-text')}
 												>
 													{INPUT_MODE_PINS.map((mode, index) => (
 														<div
@@ -1671,6 +1675,7 @@ export default function SettingsPage() {
 											<Tab.Pane eventKey="hotkey">
 												<Section
 													title={t('SettingsPage:hotkey-settings-label')}
+													description={t('SettingsPage:hotkey-settings-description-text')}
 												>
 													{Object.keys(hotkeyFields).map((o, i) => (
 														<div
@@ -1785,7 +1790,10 @@ export default function SettingsPage() {
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="extrapins">
-												<Section title="Extra pins">
+												<Section
+													title={t('SettingsPage:extra-pins-label')}
+													description={t('SettingsPage:extra-pins-description-text')}
+												>
 													<Alert variant="info">
 														These pins are accessible on the back of the RP2040-Zero via the small surface-mount pads.
 													</Alert>
