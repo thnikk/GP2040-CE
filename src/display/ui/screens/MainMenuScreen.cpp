@@ -303,6 +303,13 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
                     gpMenu->setMenuData(currentMenu);
                     gpMenu->setMenuTitle(previousMenu->at(menuIndex).label);
                     menuIndex = 0;
+                    for (size_t i = 0; i < currentMenu->size(); i++) {
+                        if (currentMenu->at(i).optionValue != -1 &&
+                            currentMenu->at(i).currentValue() == currentMenu->at(i).optionValue) {
+                            menuIndex = i;
+                            break;
+                        }
+                    }
                     changeIndex = true;
                 } else {
                     currentMenu->at(menuIndex).action();
