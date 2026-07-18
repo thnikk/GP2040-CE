@@ -1,26 +1,206 @@
 #include "RemapScreen.h"
 
-static const char* actionNames[] = {
-	"UP", "DN", "LT", "RT",
-	"B1", "B2", "B3", "B4",
-	"L1", "R1", "L2", "R2",
-	"S1", "S2", "A1", "A2",
-	"L3", "R3", "FN",
-	"DDIU", "DDID", "DDIL", "DDIR",
-	"A3", "A4",
-	"E1", "E2", "E3", "E4", "E5",
-	"E6", "E7", "E8", "E9", "E10", "E11", "E12",
-	"TRB", "MAC", "M1", "M2", "M3", "M4", "M5", "M6",
-	"REV",
-	"SDP", "SLS", "SRS",
-	"SUP", "SN", "S2W", "S1W", "SBP",
-	"FOC",
-	"4/8W",
-	"DUP", "DDN", "DLT", "DRT",
-	"LS-X", "LS+X", "LS-Y", "LS+Y",
-	"RS-X", "RS+X", "RS-Y", "RS+Y",
-	"MODL", "MODH",
-};
+static const char* getActionName(GpioAction action, InputMode mode) {
+	switch (action) {
+		// --- Face buttons (mode-dependent) ---
+		case GpioAction::BUTTON_PRESS_B1:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "A";
+				case INPUT_MODE_SWITCH:        return "B";
+				case INPUT_MODE_PS3:
+				case INPUT_MODE_PS4:
+				case INPUT_MODE_PS5:
+				case INPUT_MODE_PSCLASSIC:     return "Cross";
+				case INPUT_MODE_NEOGEO:        return "A";
+				case INPUT_MODE_MDMINI:        return "A";
+				default:                       return "B1";
+			}
+		case GpioAction::BUTTON_PRESS_B2:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "B";
+				case INPUT_MODE_SWITCH:        return "A";
+				case INPUT_MODE_PS3:
+				case INPUT_MODE_PS4:
+				case INPUT_MODE_PS5:
+				case INPUT_MODE_PSCLASSIC:     return "Circle";
+				case INPUT_MODE_NEOGEO:        return "B";
+				case INPUT_MODE_MDMINI:        return "B";
+				default:                       return "B2";
+			}
+		case GpioAction::BUTTON_PRESS_B3:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "X";
+				case INPUT_MODE_SWITCH:        return "Y";
+				case INPUT_MODE_PS3:
+				case INPUT_MODE_PS4:
+				case INPUT_MODE_PS5:
+				case INPUT_MODE_PSCLASSIC:     return "Square";
+				case INPUT_MODE_NEOGEO:        return "C";
+				case INPUT_MODE_MDMINI:        return "C";
+				default:                       return "B3";
+			}
+		case GpioAction::BUTTON_PRESS_B4:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "Y";
+				case INPUT_MODE_SWITCH:        return "X";
+				case INPUT_MODE_PS3:
+				case INPUT_MODE_PS4:
+				case INPUT_MODE_PS5:
+				case INPUT_MODE_PSCLASSIC:     return "Triangle";
+				case INPUT_MODE_NEOGEO:        return "D";
+				case INPUT_MODE_MDMINI:        return "Start";
+				default:                       return "B4";
+			}
+		// --- Shoulder buttons (mode-dependent) ---
+		case GpioAction::BUTTON_PRESS_L1:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "LB";
+				case INPUT_MODE_SWITCH:        return "L";
+				default:                       return "L1";
+			}
+		case GpioAction::BUTTON_PRESS_R1:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "RB";
+				case INPUT_MODE_SWITCH:        return "R";
+				default:                       return "R1";
+			}
+		case GpioAction::BUTTON_PRESS_L2:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "LT";
+				case INPUT_MODE_SWITCH:        return "ZL";
+				default:                       return "L2";
+			}
+		case GpioAction::BUTTON_PRESS_R2:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "RT";
+				case INPUT_MODE_SWITCH:        return "ZR";
+				default:                       return "R2";
+			}
+		// --- Stick clicks (mode-dependent) ---
+		case GpioAction::BUTTON_PRESS_L3:
+			switch (mode) {
+				case INPUT_MODE_SWITCH:        return "LS";
+				default:                       return "L3";
+			}
+		case GpioAction::BUTTON_PRESS_R3:
+			switch (mode) {
+				case INPUT_MODE_SWITCH:        return "RS";
+				default:                       return "R3";
+			}
+		// --- System/aux buttons (mode-dependent) ---
+		case GpioAction::BUTTON_PRESS_S1:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "Back";
+				case INPUT_MODE_SWITCH:        return "\x2D"; // '-'
+				case INPUT_MODE_PS3:
+				case INPUT_MODE_PS4:
+				case INPUT_MODE_PS5:
+				case INPUT_MODE_PSCLASSIC:
+				case INPUT_MODE_NEOGEO:        return "Select";
+				case INPUT_MODE_MDMINI:        return "Mode";
+				default:                       return "S1";
+			}
+		case GpioAction::BUTTON_PRESS_S2:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return "Start";
+				case INPUT_MODE_SWITCH:        return "\x2B"; // '+'
+				default:                       return "S2";
+			}
+		case GpioAction::BUTTON_PRESS_A1:
+		case GpioAction::BUTTON_PRESS_A2:
+			switch (mode) {
+				case INPUT_MODE_XINPUT:
+				case INPUT_MODE_XBONE:
+				case INPUT_MODE_XBOXORIGINAL: return action == GpioAction::BUTTON_PRESS_A1 ?
+					"L-Thumb" : "R-Thumb";
+				case INPUT_MODE_SWITCH:        return action == GpioAction::BUTTON_PRESS_A1 ?
+					"LS" : "RS";
+				default:                       return action == GpioAction::BUTTON_PRESS_A1 ?
+					"A1" : "A2";
+			}
+		// --- Readable universal names ---
+		case GpioAction::BUTTON_PRESS_UP:     return "Up";
+		case GpioAction::BUTTON_PRESS_DOWN:   return "Down";
+		case GpioAction::BUTTON_PRESS_LEFT:   return "Left";
+		case GpioAction::BUTTON_PRESS_RIGHT:  return "Right";
+		case GpioAction::BUTTON_PRESS_FN:     return "Fn";
+		case GpioAction::BUTTON_PRESS_DDI_UP:   return "DDI Up";
+		case GpioAction::BUTTON_PRESS_DDI_DOWN: return "DDI Down";
+		case GpioAction::BUTTON_PRESS_DDI_LEFT: return "DDI Left";
+		case GpioAction::BUTTON_PRESS_DDI_RIGHT:return "DDI Right";
+		case GpioAction::BUTTON_PRESS_A3:     return "Aux 3";
+		case GpioAction::BUTTON_PRESS_A4:     return "Aux 4";
+		case GpioAction::BUTTON_PRESS_E1:     return "Ext 1";
+		case GpioAction::BUTTON_PRESS_E2:     return "Ext 2";
+		case GpioAction::BUTTON_PRESS_E3:     return "Ext 3";
+		case GpioAction::BUTTON_PRESS_E4:     return "Ext 4";
+		case GpioAction::BUTTON_PRESS_E5:     return "Ext 5";
+		case GpioAction::BUTTON_PRESS_E6:     return "Ext 6";
+		case GpioAction::BUTTON_PRESS_E7:     return "Ext 7";
+		case GpioAction::BUTTON_PRESS_E8:     return "Ext 8";
+		case GpioAction::BUTTON_PRESS_E9:     return "Ext 9";
+		case GpioAction::BUTTON_PRESS_E10:    return "Ext 10";
+		case GpioAction::BUTTON_PRESS_E11:    return "Ext 11";
+		case GpioAction::BUTTON_PRESS_E12:    return "Ext 12";
+		case GpioAction::BUTTON_PRESS_TURBO:  return "Turbo";
+		case GpioAction::BUTTON_PRESS_MACRO:  return "Macro";
+		case GpioAction::BUTTON_PRESS_MACRO_1: return "Macro 1";
+		case GpioAction::BUTTON_PRESS_MACRO_2: return "Macro 2";
+		case GpioAction::BUTTON_PRESS_MACRO_3: return "Macro 3";
+		case GpioAction::BUTTON_PRESS_MACRO_4: return "Macro 4";
+		case GpioAction::BUTTON_PRESS_MACRO_5: return "Macro 5";
+		case GpioAction::BUTTON_PRESS_MACRO_6: return "Macro 6";
+		case GpioAction::BUTTON_PRESS_INPUT_REVERSE: return "Reverse";
+		case GpioAction::SUSTAIN_DP_MODE_DP:  return "D-Pad";
+		case GpioAction::SUSTAIN_DP_MODE_LS:  return "L-Stick";
+		case GpioAction::SUSTAIN_DP_MODE_RS:  return "R-Stick";
+		case GpioAction::SUSTAIN_SOCD_MODE_UP_PRIO:    return "Up Prio";
+		case GpioAction::SUSTAIN_SOCD_MODE_NEUTRAL:    return "Neutral";
+		case GpioAction::SUSTAIN_SOCD_MODE_SECOND_WIN: return "Last Win";
+		case GpioAction::SUSTAIN_SOCD_MODE_FIRST_WIN:  return "First Win";
+		case GpioAction::SUSTAIN_SOCD_MODE_BYPASS:     return "Bypass";
+		case GpioAction::SUSTAIN_FOCUS_MODE:  return "Focus";
+		case GpioAction::SUSTAIN_4_8_WAY_MODE: return "4/8 Way";
+		case GpioAction::DIGITAL_DIRECTION_UP:    return "D-Up";
+		case GpioAction::DIGITAL_DIRECTION_DOWN:  return "D-Dn";
+		case GpioAction::DIGITAL_DIRECTION_LEFT:  return "D-Lt";
+		case GpioAction::DIGITAL_DIRECTION_RIGHT: return "D-Rt";
+		case GpioAction::ANALOG_DIRECTION_LS_X_NEG: return "L-Stk L";
+		case GpioAction::ANALOG_DIRECTION_LS_X_POS: return "L-Stk R";
+		case GpioAction::ANALOG_DIRECTION_LS_Y_NEG: return "L-Stk U";
+		case GpioAction::ANALOG_DIRECTION_LS_Y_POS: return "L-Stk D";
+		case GpioAction::ANALOG_DIRECTION_RS_X_NEG: return "R-Stk L";
+		case GpioAction::ANALOG_DIRECTION_RS_X_POS: return "R-Stk R";
+		case GpioAction::ANALOG_DIRECTION_RS_Y_NEG: return "R-Stk U";
+		case GpioAction::ANALOG_DIRECTION_RS_Y_POS: return "R-Stk D";
+		case GpioAction::ANALOG_DIRECTION_MOD_LOW:  return "Mod Low";
+		case GpioAction::ANALOG_DIRECTION_MOD_HIGH: return "Mod High";
+		case GpioAction::NONE:                return "NONE";
+		case GpioAction::RESERVED:            return "RSRV";
+		case GpioAction::ASSIGNED_TO_ADDON:   return "ADDON";
+		default:                              return "?";
+	}
+}
 
 static const GpioAction actionValues[] = {
 	GpioAction::BUTTON_PRESS_UP,
@@ -168,10 +348,11 @@ void RemapScreen::shutdown() {
 }
 
 void RemapScreen::buildActionMenu() {
+	InputMode currentMode = DriverManager::getInstance().getInputMode();
 	actionMenu.clear();
 	for (uint8_t i = 0; i < actionCount; i++) {
 		MenuEntry entry;
-		entry.label = actionNames[i];
+		entry.label = getActionName(actionValues[i], currentMode);
 		entry.icon = nullptr;
 		entry.submenu = nullptr;
 		entry.currentValue = [this]() -> int32_t {
@@ -367,21 +548,8 @@ void RemapScreen::drawScreen() {
 			uint8_t pinNum = layoutElements[cursorIndex].parameters.value;
 			GpioAction action = pinMappings[pinNum].action;
 
-			const char* label = NULL;
-			for (uint8_t i = 0; i < actionCount; i++) {
-				if (actionValues[i] == action) {
-					label = actionNames[i];
-					break;
-				}
-			}
-			if (label == NULL) {
-				switch (action) {
-					case GpioAction::NONE:				label = "NONE"; break;
-					case GpioAction::RESERVED:			label = "RSRV"; break;
-					case GpioAction::ASSIGNED_TO_ADDON:	label = "ADDON"; break;
-					default:							label = "?"; break;
-				}
-			}
+			InputMode currentMode = DriverManager::getInstance().getInputMode();
+			const char* label = getActionName(action, currentMode);
 
 			char topBuf[22];
 			snprintf(topBuf, sizeof(topBuf), "GP%02d:%s", pinNum, label);

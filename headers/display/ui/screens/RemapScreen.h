@@ -8,6 +8,7 @@
 #include "storagemanager.h"
 #include "eventmanager.h"
 #include "GPStorageSaveEvent.h"
+#include "drivermanager.h"
 
 enum RemapMode {
 	REMAP_LAYOUT,
