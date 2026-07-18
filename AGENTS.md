@@ -6,6 +6,7 @@
   - `python3 docker-build.py -b <Board>` — board from `configs/` dir names (default: `Pico`)
   - `-c` clean build, `-v` verbose, `-f` flash to board, `-n` nuke first, `-p <path>` flash mount
   - Boards: Pico, Fightboard-v3[-m|-b|-b-m], KB2040, WaveshareZero, Springboard, Blank
+	- When testing, use `Fightboard-v3`
 - Output: `build/GP2040-CE_<version>_<sha>_<Board>.uf2`
 
 ## Build (web configurator)

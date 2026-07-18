@@ -436,7 +436,19 @@ int8_t RemapScreen::update() {
 				} else if (values & navB1PinMask) {
 					mode = REMAP_ACTION_SELECT;
 					gpMenu->setVisibility(true);
-					gpMenu->setIndex(0);
+					{
+						GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
+						uint8_t pin = layoutElements[cursorIndex].parameters.value;
+						GpioAction currentAction = pinMappings[pin].action;
+						uint16_t actionIndex = 0;
+						for (uint8_t i = 0; i < actionCount; i++) {
+							if (actionValues[i] == currentAction) {
+								actionIndex = i;
+								break;
+							}
+						}
+						gpMenu->setIndex(actionIndex);
+					}
 					actionFired = true;
 				} else if (values & navB2PinMask) {
 					return DisplayMode::MAIN_MENU;
