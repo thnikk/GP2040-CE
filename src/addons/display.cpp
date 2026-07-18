@@ -95,6 +95,9 @@ bool DisplayAddon::updateDisplayScreen() {
             case MAIN_MENU:
                 delete (MainMenuScreen*)gpScreen;
                 break;
+            case REMAP:
+                delete (RemapScreen*)gpScreen;
+                break;
             case BUTTONS:
                 delete (ButtonLayoutScreen*)gpScreen;
                 break;
@@ -124,6 +127,9 @@ bool DisplayAddon::updateDisplayScreen() {
             break;
         case MAIN_MENU:
             gpScreen = new MainMenuScreen(gpDisplay);
+            break;
+        case REMAP:
+            gpScreen = new RemapScreen(gpDisplay);
             break;
         case BUTTONS:
             gpScreen = new ButtonLayoutScreen(gpDisplay);

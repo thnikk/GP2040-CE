@@ -67,6 +67,8 @@ class MainMenuScreen : public GPScreen {
         void selectTurboMode();
         int32_t currentTurboMode();
 
+        void selectRemap();
+
         void updateMenuNavigation(GpioAction action);
         void queueAction(GpioAction action) { pendingNavAction = (uint8_t)action; }
     protected:
@@ -154,6 +156,7 @@ class MainMenuScreen : public GPScreen {
             {"Profile",    NULL, &profilesMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"Focus Mode", NULL, &focusModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"Turbo",      NULL, &turboModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
+            {"Remap",      NULL, nullptr,        std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::selectRemap, this)},
             {"Save & Exit",NULL, &saveMenu,      std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
         };
 

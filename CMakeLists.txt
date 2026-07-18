@@ -219,6 +219,7 @@ src/display/ui/screens/ButtonLayoutScreen.cpp
 src/display/ui/screens/ConfigScreen.cpp
 src/display/ui/screens/MainMenuScreen.cpp
 src/display/ui/screens/PinViewerScreen.cpp
+src/display/ui/screens/RemapScreen.cpp
 src/display/ui/screens/RestartScreen.cpp
 src/display/ui/screens/StatsScreen.cpp
 src/display/ui/screens/SplashScreen.cpp

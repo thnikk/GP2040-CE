@@ -437,3 +437,7 @@ void MainMenuScreen::selectTurboMode() {
 int32_t MainMenuScreen::currentTurboMode() {
     return updateTurbo;
 }
+
+void MainMenuScreen::selectRemap() {
+    exitToScreen = DisplayMode::REMAP;
+}
