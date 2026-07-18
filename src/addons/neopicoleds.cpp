@@ -267,7 +267,7 @@ void NeoPicoLEDAddon::process()
 
     as.Animate();
 
-		if (gamepad->state.any) prevMillis = getMillis();
+		if (gamepad->state.any || gamepad->menuActive) prevMillis = getMillis();
 		float diffTime = getMillis() - prevMillis;
     // if (turnOffWhenSuspended && get_usb_suspended()) {
 		uint32_t timeout = Storage::getInstance().getDisplayOptions().displaySaverTimeout;

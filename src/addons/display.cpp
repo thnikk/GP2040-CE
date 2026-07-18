@@ -171,6 +171,13 @@ bool DisplayAddon::isDisplayPowerOff()
 
     if (!displaySaverTimeout) return false;
 
+    if (gamepad->menuActive) {
+        displaySaverTimer = displaySaverTimeout;
+        if (!displayIsPowerOn) setDisplayPower(1);
+        prevMillis = getMillis();
+        return false;
+    }
+
     float diffTime = getMillis() - prevMillis;
     displaySaverTimer -= diffTime;
     if (!!displaySaverTimeout && (gamepad->state.buttons || gamepad->state.dpad)) {

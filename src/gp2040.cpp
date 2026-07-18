@@ -316,6 +316,7 @@ void GP2040::run() {
 
 		// Copy Processed Gamepad for Core1 (race condition otherwise)
 		memcpy(&processedGamepad->state, &gamepad->state, sizeof(GamepadState));
+		processedGamepad->menuActive = gamepad->menuActive;
 
 		// Process Input Driver
 		inputDriver->process(gamepad);
