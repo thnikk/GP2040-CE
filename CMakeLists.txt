@@ -232,6 +232,7 @@ src/layoutmanager.cpp
 src/peripheralmanager.cpp
 src/storagemanager.cpp
 src/system.cpp
+src/wake.cpp
 src/usbdriver.cpp
 src/usbhostmanager.cpp
 src/config_legacy.cpp

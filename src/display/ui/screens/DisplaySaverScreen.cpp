@@ -2,10 +2,12 @@
 
 #include "pico/stdlib.h"
 #include "version.h"
+#include "wake.h"
 
 void DisplaySaverScreen::init() {
     const DisplayOptions& options = Storage::getInstance().getDisplayOptions();
     displaySaverMode = options.displaySaverMode;
+    enteredSaverTime = getLastActivity();
 
     getRenderer()->clearScreen();
 
@@ -46,7 +48,7 @@ void DisplaySaverScreen::drawScreen() {
 
 int8_t DisplaySaverScreen::update() {
     if (!Storage::getInstance().GetConfigMode()) {
-        if (getGamepad()->state.any)
+        if (getLastActivity() > enteredSaverTime)
             return DisplayMode::BUTTONS;
     }
 

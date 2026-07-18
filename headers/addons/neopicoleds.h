@@ -109,7 +109,6 @@ public:
 private:
 	uint32_t getBaseButtonMaskForPin(Pin_t pin);
 	std::vector<std::vector<Pixel>> createPinLEDLayout(uint8_t ledsPerPixel);
-	uint32_t prevMillis;
 	const uint32_t intervalMS = 10;
 	absolute_time_t nextRunTime;
 	uint8_t ledCount;

@@ -15,6 +15,7 @@
 #include "version.h"
 #include "config.pb.h"
 #include "class/hid/hid.h"
+#include "wake.h"
 
 bool DisplayAddon::available() {
     const DisplayOptions& options = Storage::getInstance().getDisplayOptions();
@@ -49,8 +50,7 @@ void DisplayAddon::setup() {
 
     gamepad = Storage::getInstance().GetGamepad();
 
-    displaySaverTimer = options.displaySaverTimeout;
-    displaySaverTimeout = displaySaverTimer;
+    displaySaverTimeout = options.displaySaverTimeout;
     configMode = Storage::getInstance().GetConfigMode();
     turnOffWhenSuspended = options.turnOffWhenSuspended;
     displaySaverMode = options.displaySaverMode;
@@ -172,31 +172,22 @@ bool DisplayAddon::isDisplayPowerOff()
     if (!displaySaverTimeout) return false;
 
     if (gamepad->menuActive) {
-        displaySaverTimer = displaySaverTimeout;
         if (!displayIsPowerOn) setDisplayPower(1);
-        prevMillis = getMillis();
         return false;
     }
 
-    float diffTime = getMillis() - prevMillis;
-    displaySaverTimer -= diffTime;
-    if (!!displaySaverTimeout && (gamepad->state.buttons || gamepad->state.dpad)) {
-        displaySaverTimer = displaySaverTimeout;
+    bool timedOut = (getMillis() - getLastActivity()) > displaySaverTimeout;
+
+    if (!timedOut) {
         setDisplayPower(1);
-    } else if (!!displaySaverTimeout && displaySaverTimer <= 0) {
-        if (displaySaverMode == DisplaySaverMode::DISPLAY_SAVER_DISPLAY_OFF) {
-            setDisplayPower(0);
-        } else {
-            if (currDisplayMode != DISPLAY_SAVER) {
-                currDisplayMode = DISPLAY_SAVER;
-                updateDisplayScreen();
-            }
-        }
+    } else if (displaySaverMode == DisplaySaverMode::DISPLAY_SAVER_DISPLAY_OFF) {
+        setDisplayPower(0);
+    } else if (currDisplayMode != DISPLAY_SAVER) {
+        currDisplayMode = DISPLAY_SAVER;
+        updateDisplayScreen();
     }
 
-    prevMillis = getMillis();
-
-    return ((!!displaySaverTimeout && displaySaverTimer <= 0) && (displaySaverMode == DisplaySaverMode::DISPLAY_SAVER_DISPLAY_OFF));
+    return (timedOut && displaySaverMode == DisplaySaverMode::DISPLAY_SAVER_DISPLAY_OFF);
 }
 
 void DisplayAddon::setDisplayPower(uint8_t status)

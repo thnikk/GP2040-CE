@@ -16,6 +16,7 @@
 #include "usbdriver.h"
 #include "enums.h"
 #include "helper.h"
+#include "wake.h"
 
 uint32_t rgbPLEDValues[4];
 
@@ -267,11 +268,8 @@ void NeoPicoLEDAddon::process()
 
     as.Animate();
 
-		if (gamepad->state.any || gamepad->menuActive) prevMillis = getMillis();
-		float diffTime = getMillis() - prevMillis;
-    // if (turnOffWhenSuspended && get_usb_suspended()) {
 		uint32_t timeout = Storage::getInstance().getDisplayOptions().displaySaverTimeout;
-		if (diffTime > timeout) {
+		if ((getMillis() - getLastActivity()) > timeout) {
         as.DimBrightnessTo0();
     } else {
         as.SetBrightness(AnimationStation::GetBrightness());

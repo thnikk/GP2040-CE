@@ -31,6 +31,7 @@
 #include "addons/rotaryencoder.h"
 #include "addons/i2c_gpio_pcf8575.h"
 #include "addons/gamepad_usb_host.h"
+#include "wake.h"
 
 
 // Pico includes
@@ -311,6 +312,9 @@ void GP2040::run() {
 			gamepad->state.lt = 0;
 			gamepad->state.rt = 0;
 		}
+
+		if (gamepad->state.any || gamepad->menuActive)
+			setLastActivity(to_ms_since_boot(get_absolute_time()));
 
 		checkProcessedState(processedGamepad->state, gamepad->state);
 
