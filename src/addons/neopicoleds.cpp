@@ -268,11 +268,13 @@ void NeoPicoLEDAddon::process()
 
     as.Animate();
 
+		if (!Storage::getInstance().GetConfigMode()) {
 		uint32_t timeout = Storage::getInstance().getDisplayOptions().displaySaverTimeout;
 		if ((getMillis() - getLastActivity()) > timeout) {
-        as.DimBrightnessTo0();
-    } else {
-        as.SetBrightness(AnimationStation::GetBrightness());
+            as.DimBrightnessTo0();
+        } else {
+            as.SetBrightness(AnimationStation::GetBrightness());
+        }
     }
 
     as.ApplyBrightness(frame);
