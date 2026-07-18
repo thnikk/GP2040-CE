@@ -345,7 +345,12 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
 }
 
 void MainMenuScreen::saveAndExit() {
-    saveOptions();
+    savedMenuIndex = menuIndex;
+    if (changeRequiresSave) {
+        saveOptions();
+    } else {
+        exitToScreen = DisplayMode::BUTTONS;
+    }
 }
 
 int32_t MainMenuScreen::modeValue() {
