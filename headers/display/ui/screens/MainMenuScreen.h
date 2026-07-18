@@ -5,6 +5,7 @@
 #include "GPGFX_UI_types.h"
 #include "enums.pb.h"
 #include "AnimationStation.hpp"
+#include "AnimationStorage.hpp"
 #include "eventmanager.h"
 
 #define INPUT_MODE_XINPUT_NAME "XInput"
@@ -35,6 +36,12 @@
 #define DPAD_MODE_RIGHT_ANALOG_NAME "Right Analog"
 
 #define MAIN_MENU_NAME "GP2040-CE Mini Menu"
+
+#define ANIMATION_STATIC_NAME "Static"
+#define ANIMATION_RAINBOW_NAME "Rainbow"
+#define ANIMATION_CHASE_NAME "Chase"
+#define ANIMATION_STATIC_THEME_NAME "Static Theme"
+#define ANIMATION_CUSTOM_THEME_NAME "Custom Theme"
 
 class MainMenuScreen : public GPScreen {
     public:
@@ -68,6 +75,13 @@ class MainMenuScreen : public GPScreen {
         int32_t currentTurboMode();
 
         void selectRemap();
+
+        void selectAnimation();
+        int32_t currentAnimation();
+        void selectTheme();
+        int32_t currentTheme();
+        void selectBrightness();
+        int32_t currentBrightness();
 
         void updateMenuNavigation(GpioAction action);
         void queueAction(GpioAction action) { pendingNavAction = (uint8_t)action; }
@@ -149,6 +163,29 @@ class MainMenuScreen : public GPScreen {
         bool prevTurbo;
         bool updateTurbo;
 
+        uint8_t prevAnimationIndex;
+        uint8_t updateAnimationIndex;
+        uint8_t prevThemeIndex;
+        uint8_t updateThemeIndex;
+        uint8_t prevBrightness;
+        uint8_t updateBrightness;
+
+        std::vector<MenuEntry> animationMenu = {
+            {ANIMATION_STATIC_NAME,       NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 0},
+            {ANIMATION_RAINBOW_NAME,      NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 1},
+            {ANIMATION_CHASE_NAME,        NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 2},
+            {ANIMATION_STATIC_THEME_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 3},
+            {ANIMATION_CUSTOM_THEME_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 4},
+        };
+        std::vector<MenuEntry> themeMenu;
+        std::vector<MenuEntry> brightnessMenu;
+
+        std::vector<MenuEntry> ledMenu = {
+            {"Animation",  NULL, &animationMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
+            {"Theme",      NULL, &themeMenu,       std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
+            {"Brightness", NULL, &brightnessMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
+        };
+
         std::vector<MenuEntry> mainMenu = {
             {"Input Mode", NULL, &inputModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"D-Pad Mode", NULL, &dpadModeMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
@@ -156,6 +193,7 @@ class MainMenuScreen : public GPScreen {
             {"Profile",    NULL, &profilesMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"Focus Mode", NULL, &focusModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"Turbo",      NULL, &turboModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
+            {"LED Config", NULL, &ledMenu,       std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"Remap",      NULL, nullptr,        std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::selectRemap, this)},
             {"Save & Exit",NULL, &saveMenu,      std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
         };

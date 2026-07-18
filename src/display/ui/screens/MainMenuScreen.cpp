@@ -6,6 +6,18 @@
 
 extern uint32_t getMillis();
 
+static const char* themeNames[] = {
+    "Static Rainbow", "Xbox", "Xbox (All)", "Super Famicom",
+    "Super Famicom (All)", "PlayStation", "PlayStation (All)",
+    "NeoGeo", "NeoGeo Curved", "NeoGeo Modern",
+    "6 Button Fighter", "6 Button Fighter+",
+    "Street Fighter 2", "Tekken",
+    "Guilty Gear A", "Guilty Gear B", "Guilty Gear C",
+    "Guilty Gear D", "Guilty Gear E",
+    "Fightboard", "Springboard",
+};
+static const int themeCount = sizeof(themeNames) / sizeof(themeNames[0]);
+
 void MainMenuScreen::init() {
     getRenderer()->clearScreen();
     currentMenu = &mainMenu;
@@ -89,6 +101,31 @@ void MainMenuScreen::init() {
     
     prevTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
     updateTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
+
+    AnimationOptions animOpts = AnimationStore.getAnimationOptions();
+    prevAnimationIndex = animOpts.baseAnimationIndex;
+    updateAnimationIndex = animOpts.baseAnimationIndex;
+    prevThemeIndex = animOpts.themeIndex;
+    updateThemeIndex = animOpts.themeIndex;
+    prevBrightness = animOpts.brightness;
+    updateBrightness = animOpts.brightness;
+
+    themeMenu.clear();
+    for (int i = 0; i < themeCount; i++) {
+        std::string name = themeNames[i];
+        for (auto &c : name) c = toupper(c);
+        themeMenu.push_back({name, NULL, nullptr,
+            std::bind(&MainMenuScreen::currentTheme, this),
+            std::bind(&MainMenuScreen::selectTheme, this), i});
+    }
+
+    brightnessMenu.clear();
+    for (uint8_t i = 0; i <= AnimationStation::brightnessSteps; i++) {
+        std::string label = std::to_string(i);
+        brightnessMenu.push_back({label, NULL, nullptr,
+            std::bind(&MainMenuScreen::currentBrightness, this),
+            std::bind(&MainMenuScreen::selectBrightness, this), i});
+    }
 
     prevValues = Storage::getInstance().GetGamepad()->debouncedGpio;
 }
@@ -345,6 +382,9 @@ void MainMenuScreen::resetOptions() {
         if (prevProfile != updateProfile) updateProfile = prevProfile;
         if (prevFocus != updateFocus) updateFocus = prevFocus;
         if (prevTurbo != updateTurbo) updateTurbo = prevTurbo;
+        if (prevAnimationIndex != updateAnimationIndex) updateAnimationIndex = prevAnimationIndex;
+        if (prevThemeIndex != updateThemeIndex) updateThemeIndex = prevThemeIndex;
+        if (prevBrightness != updateBrightness) updateBrightness = prevBrightness;
     }
 
     changeRequiresSave = false;
@@ -357,6 +397,7 @@ void MainMenuScreen::saveOptions() {
 
     if (changeRequiresSave) {
         bool saveHasChanged = false;
+        bool animHasChanged = false;
         if (prevInputMode != updateInputMode) {
             options.inputMode = updateInputMode;
             saveHasChanged = true;
@@ -380,6 +421,24 @@ void MainMenuScreen::saveOptions() {
         if (prevTurbo != updateTurbo) {
             Storage::getInstance().getAddonOptions().turboOptions.enabled = updateTurbo;
             saveHasChanged = true;
+        }
+
+        if (prevAnimationIndex != updateAnimationIndex) {
+            AnimationStation::options.baseAnimationIndex = updateAnimationIndex;
+            animHasChanged = true;
+        }
+        if (prevThemeIndex != updateThemeIndex) {
+            AnimationStation::options.themeIndex = updateThemeIndex;
+            animHasChanged = true;
+        }
+        if (prevBrightness != updateBrightness) {
+            AnimationStation::options.brightness = updateBrightness;
+            AnimationStation::SetBrightness(AnimationStation::options.brightness);
+            animHasChanged = true;
+        }
+
+        if (animHasChanged) {
+            AnimationStore.save();
         }
 
         if (saveHasChanged) {
@@ -436,6 +495,45 @@ void MainMenuScreen::selectTurboMode() {
 
 int32_t MainMenuScreen::currentTurboMode() {
     return updateTurbo;
+}
+
+void MainMenuScreen::selectAnimation() {
+    if (currentMenu->at(menuIndex).optionValue != -1) {
+        uint8_t valueToSave = currentMenu->at(menuIndex).optionValue;
+        prevAnimationIndex = AnimationStation::options.baseAnimationIndex;
+        updateAnimationIndex = valueToSave;
+        if (prevAnimationIndex != valueToSave) changeRequiresSave = true;
+    }
+}
+
+int32_t MainMenuScreen::currentAnimation() {
+    return updateAnimationIndex;
+}
+
+void MainMenuScreen::selectTheme() {
+    if (currentMenu->at(menuIndex).optionValue != -1) {
+        uint8_t valueToSave = currentMenu->at(menuIndex).optionValue;
+        prevThemeIndex = AnimationStation::options.themeIndex;
+        updateThemeIndex = valueToSave;
+        if (prevThemeIndex != valueToSave) changeRequiresSave = true;
+    }
+}
+
+int32_t MainMenuScreen::currentTheme() {
+    return updateThemeIndex;
+}
+
+void MainMenuScreen::selectBrightness() {
+    if (currentMenu->at(menuIndex).optionValue != -1) {
+        uint8_t valueToSave = currentMenu->at(menuIndex).optionValue;
+        prevBrightness = AnimationStation::options.brightness;
+        updateBrightness = valueToSave;
+        if (prevBrightness != valueToSave) changeRequiresSave = true;
+    }
+}
+
+int32_t MainMenuScreen::currentBrightness() {
+    return updateBrightness;
 }
 
 void MainMenuScreen::selectRemap() {

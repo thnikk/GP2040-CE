@@ -127,13 +127,13 @@ public:
   static AnimationOptions options;
   static absolute_time_t nextChange;
   static uint8_t effectCount;
+  static uint8_t brightnessMax;
+  static uint8_t brightnessSteps;
+  static float brightnessX;
   RGB frame[100];
 
 protected:
   inline static uint8_t getBrightnessStepSize() { return (brightnessMax / brightnessSteps); }
-  static uint8_t brightnessMax;
-  static uint8_t brightnessSteps;
-  static float brightnessX;
   PixelMatrix matrix;
 };
 
