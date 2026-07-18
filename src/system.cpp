@@ -64,7 +64,7 @@ void System::reboot(BootMode bootMode) {
 
     // Make sure that the other core is halted
     // We do not want it to be talking to devices (e.g. OLED display) while we reboot
-	multicore_lockout_start_timeout_us(0xfffffffffffffff);
+	multicore_lockout_start_timeout_us(1000000); // 1 second timeout
 
 	watchdog_hw->scratch[5] = static_cast<uint32_t>(bootMode);
 
