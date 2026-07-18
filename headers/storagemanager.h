@@ -64,6 +64,9 @@ public:
 	void SetConfigMode(bool); 			// Config Mode (on-boot)
 	bool GetConfigMode();
 
+	void SetConfigButtonVisible(bool);	// Config button visibility (on-boot)
+	bool GetConfigButtonVisible();
+
 	void SetGamepad(Gamepad *); 		// MPGS Gamepad Get/Set
 	Gamepad * GetGamepad();
 
@@ -81,6 +84,7 @@ public:
 private:
 	Storage() {}
 	bool CONFIG_MODE = false; 			// Config mode (boot)
+	bool CONFIG_BUTTON_VISIBLE = false; // Config button visible (boot)
 	Gamepad * gamepad = nullptr;    		// Gamepad data
 	Gamepad * processedGamepad = nullptr; // Gamepad with ONLY processed data
 	uint8_t featureData[32]; // USB X-Input Feature Data

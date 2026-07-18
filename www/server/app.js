@@ -640,6 +640,7 @@ app.get('/api/getFirmwareVersion', (req, res) => {
 		boardConfigFileName: `GP2040_local-dev-server_${boardLabel}`,
 		boardConfig: boardLabel,
 		version: 'local-dev-server',
+		showConfigButton: true,
 	});
 });
 

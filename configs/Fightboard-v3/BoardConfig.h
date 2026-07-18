@@ -39,6 +39,9 @@
 // Set physical pin to open webconfig
 #define PIN_WEBCONFIG 12
 
+// Hold this pin + PIN_WEBCONFIG at boot to show the configuration button in webconfig
+#define PIN_WEBCONFIG_ADVANCED 10
+
 // Setting GPIO pins to assigned by add-on
 //
 #define GPIO_PIN_00 GpioAction::ASSIGNED_TO_ADDON

@@ -2262,6 +2262,7 @@ std::string getFirmwareVersion()
     writeDoc(doc, "boardConfigLabel", BOARD_CONFIG_LABEL);
     writeDoc(doc, "boardConfigFileName", BOARD_CONFIG_FILE_NAME);
     writeDoc(doc, "boardConfig", GP2040_BOARDCONFIG);
+    writeDoc(doc, "showConfigButton", Storage::getInstance().GetConfigButtonVisible());
     return serialize_json(doc);
 }
 

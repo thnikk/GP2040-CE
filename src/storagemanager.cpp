@@ -225,6 +225,16 @@ bool Storage::GetConfigMode()
 	return CONFIG_MODE;
 }
 
+void Storage::SetConfigButtonVisible(bool visible)
+{
+	CONFIG_BUTTON_VISIBLE = visible;
+}
+
+bool Storage::GetConfigButtonVisible()
+{
+	return CONFIG_BUTTON_VISIBLE;
+}
+
 void Storage::SetGamepad(Gamepad * newpad)
 {
 	gamepad = newpad;

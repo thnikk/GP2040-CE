@@ -416,14 +416,33 @@ GP2040::BootAction GP2040::getBootAction() {
 						gpio_init(wcPin);
 						gpio_set_dir(wcPin, GPIO_IN);
 						gpio_pull_up(wcPin);
-						if (!gpio_get(wcPin))
+						if (!gpio_get(wcPin)) {
+#ifdef PIN_WEBCONFIG_ADVANCED
+							int advPin = PIN_WEBCONFIG_ADVANCED;
+							gpio_init(advPin);
+							gpio_set_dir(advPin, GPIO_IN);
+							gpio_pull_up(advPin);
+							Storage::getInstance().SetConfigButtonVisible(!gpio_get(advPin));
+#else
+							Storage::getInstance().SetConfigButtonVisible(false);
+#endif
 							return BootAction::ENTER_WEBCONFIG_MODE;
+						}
 					}
 				}
 
 				if (gamepad->pressedS1() && gamepad->pressedS2() && gamepad->pressedUp()) {
 					return BootAction::ENTER_USB_MODE;
 				} else if (!webConfigLocked && gamepad->pressedS2()) {
+#ifdef PIN_WEBCONFIG_ADVANCED
+					int advPin = PIN_WEBCONFIG_ADVANCED;
+					gpio_init(advPin);
+					gpio_set_dir(advPin, GPIO_IN);
+					gpio_pull_up(advPin);
+					Storage::getInstance().SetConfigButtonVisible(!gpio_get(advPin));
+#else
+					Storage::getInstance().SetConfigButtonVisible(false);
+#endif
 					return BootAction::ENTER_WEBCONFIG_MODE;
                 } else {
                     if (!modeSwitchLocked) {

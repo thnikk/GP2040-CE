@@ -37,6 +37,9 @@
 // Set physical pin to open webconfig
 #define PIN_WEBCONFIG 12
 
+// Hold this pin + PIN_WEBCONFIG at boot to show the configuration button in webconfig
+#define PIN_WEBCONFIG_ADVANCED 10
+
 // Keyboard Mapping Configuration
 //                                            // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
 #define KEY_DPAD_UP     HID_KEY_ARROW_UP      // UP     | UP     | UP      | UP       | UP     | UP     |

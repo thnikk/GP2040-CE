@@ -12,6 +12,7 @@ type State = {
 		label: string;
 		fileName: string;
 	};
+	showConfigButton: boolean;
 	memoryReport: {
 		percentageFlash: number;
 		percentageHeap: number;
@@ -38,6 +39,7 @@ const INITIAL_STATE: State = {
 		label: '',
 		fileName: '',
 	},
+	showConfigButton: false,
 	memoryReport: {
 		percentageFlash: 0,
 		percentageHeap: 0,
@@ -92,6 +94,7 @@ const useSystemStats = create<State & Actions>()((set) => ({
 					label: firmwareVersion.boardConfigLabel,
 					fileName: firmwareVersion.boardConfigFileName,
 				},
+				showConfigButton: firmwareVersion.showConfigButton === 1 || firmwareVersion.showConfigButton === true,
 				memoryReport: {
 					physicalFlash: toKB(memoryReport.physicalFlash),
 					staticAllocs: toKB(memoryReport.staticAllocs),
