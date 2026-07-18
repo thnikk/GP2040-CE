@@ -186,17 +186,7 @@ class MainMenuScreen : public GPScreen {
             {"Brightness", NULL, &brightnessMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
         };
 
-        std::vector<MenuEntry> mainMenu = {
-            {"Input Mode", NULL, &inputModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
-            {"D-Pad Mode", NULL, &dpadModeMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
-            {"SOCD Mode",  NULL, &socdModeMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
-            {"Profile",    NULL, &profilesMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
-            {"Focus Mode", NULL, &focusModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
-            {"Turbo",      NULL, &turboModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
-            {"LED Config", NULL, &ledMenu,       std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
-            {"Remap",      NULL, nullptr,        std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::selectRemap, this)},
-            {"Save & Exit",NULL, &saveMenu,      std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
-        };
+        std::vector<MenuEntry> mainMenu;
 
         std::vector<MenuEntry> saveMenu = {
             {"Yes",        NULL, nullptr,        std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::saveAndExit, this), 1},
