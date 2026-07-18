@@ -6,6 +6,8 @@
 
 extern uint32_t getMillis();
 
+static uint8_t savedMenuIndex = 0;
+
 static const char* themeNames[] = {
     "Static Rainbow", "Xbox", "Xbox (All)", "Super Famicom",
     "Super Famicom (All)", "PlayStation", "PlayStation (All)",
@@ -20,8 +22,9 @@ static const int themeCount = sizeof(themeNames) / sizeof(themeNames[0]);
 
 void MainMenuScreen::init() {
     getRenderer()->clearScreen();
-    currentMenu = &mainMenu;
+	currentMenu = &mainMenu;
     previousMenu = nullptr;
+    menuIndex = savedMenuIndex;
 
     exitToScreen = -1;
 
@@ -143,6 +146,9 @@ void MainMenuScreen::init() {
 
     gpMenu->setMenuData(currentMenu);
     gpMenu->setMenuTitle(MAIN_MENU_NAME);
+    if (menuIndex >= gpMenu->getDataSize())
+        menuIndex = 0;
+    gpMenu->setIndex(menuIndex);
 
     prevValues = Storage::getInstance().GetGamepad()->debouncedGpio;
 }
@@ -289,6 +295,7 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
             if (!screenIsPrompting) {
                 if (currentMenu->at(menuIndex).submenu != nullptr) {
                     previousMenu = currentMenu;
+                    prevMenuIndex = menuIndex;
                     currentMenu = currentMenu->at(menuIndex).submenu;
                     gpMenu->setMenuData(currentMenu);
                     gpMenu->setMenuTitle(previousMenu->at(menuIndex).label);
@@ -314,7 +321,7 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
                 if (previousMenu != nullptr) {
                     currentMenu = previousMenu;
                     previousMenu = nullptr;
-                    menuIndex = 0;
+                    menuIndex = prevMenuIndex;
                     changeIndex = true;
                     gpMenu->setMenuData(currentMenu);
                     gpMenu->setMenuTitle(MAIN_MENU_NAME);
@@ -554,5 +561,6 @@ int32_t MainMenuScreen::currentBrightness() {
 }
 
 void MainMenuScreen::selectRemap() {
+    savedMenuIndex = menuIndex;
     exitToScreen = DisplayMode::REMAP;
 }
