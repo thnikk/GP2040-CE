@@ -129,4 +129,5 @@ export default {
 	'input-history-length-label': 'Verlaufslänge (Zeichen)',
 	'input-history-col-label': 'Spalte',
 	'input-history-row-label': 'Reihe',
+	'input-history-timeout-label': 'Auszeit (s)',
 };

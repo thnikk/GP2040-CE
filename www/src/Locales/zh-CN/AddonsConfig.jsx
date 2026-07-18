@@ -131,6 +131,7 @@ export default {
 	'input-history-length-label': '历史长度 (字符)',
 	'input-history-col-label': '列',
 	'input-history-row-label': '行',
+	'input-history-timeout-label': '超时 (秒)',
 	'analog1256-header-text': 'Analog ADS1256 (SPI)',
 	'analog1256-block-label': 'SPI 模块',
 	'analog1256-cs-pin': 'Chip Select (CS) 引脚',

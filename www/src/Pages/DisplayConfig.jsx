@@ -82,6 +82,7 @@ const defaultValues = {
 	inputHistoryLength: 21,
 	inputHistoryCol: 0,
 	inputHistoryRow: 7,
+	inputHistoryTimeout: 0,
 };
 
 let buttonLayoutDefinitions = { buttonLayout: {}, buttonLayoutRight: {} };
@@ -156,6 +157,7 @@ const schema = yup.object().shape({
 	inputHistoryLength: yup.number().label('Input History Length'),
 	inputHistoryCol: yup.number().label('Input History Column Position'),
 	inputHistoryRow: yup.number().label('Input History Row Position'),
+	inputHistoryTimeout: yup.number().label('Input History Timeout'),
 });
 
 const FormContext = () => {
@@ -204,6 +206,7 @@ const FormContext = () => {
 			if (!!values.inputHistoryLength) values.inputHistoryLength = parseInt(values.inputHistoryLength);
 			if (!!values.inputHistoryCol) values.inputHistoryCol = parseInt(values.inputHistoryCol);
 			if (!!values.inputHistoryRow) values.inputHistoryRow = parseInt(values.inputHistoryRow);
+			if (!!values.inputHistoryTimeout) values.inputHistoryTimeout = parseInt(values.inputHistoryTimeout);
 
 			await WebApi.setDisplayOptions(values, true);
 		}
@@ -239,6 +242,7 @@ const FormContext = () => {
 			if (!!values.inputHistoryLength) values.inputHistoryLength = parseInt(values.inputHistoryLength);
 			if (!!values.inputHistoryCol) values.inputHistoryCol = parseInt(values.inputHistoryCol);
 			if (!!values.inputHistoryRow) values.inputHistoryRow = parseInt(values.inputHistoryRow);
+			if (!!values.inputHistoryTimeout) values.inputHistoryTimeout = parseInt(values.inputHistoryTimeout);
 
 			await WebApi.setDisplayOptions(values, true);
 		}
@@ -807,6 +811,19 @@ export default function DisplayConfigPage() {
 														onChange={handleChange}
 														min={0}
 														max={7}
+													/>
+													<FormControl
+														type="number"
+														label={t('AddonsConfig:input-history-timeout-label')}
+														name="inputHistoryTimeout"
+														className="form-control-sm"
+														groupClassName="col-sm-3"
+														value={values.inputHistoryTimeout}
+														error={errors.inputHistoryTimeout}
+														isInvalid={errors.inputHistoryTimeout}
+														onChange={handleChange}
+														min={0}
+														max={300}
 													/>
 												</Row>
 											</Tab>

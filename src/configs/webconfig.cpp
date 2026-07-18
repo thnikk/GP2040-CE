@@ -500,6 +500,7 @@ std::string setDisplayOptions(DisplayOptions& displayOptions)
     readDoc(displayOptions.inputHistoryLength, doc, "inputHistoryLength");
     readDoc(displayOptions.inputHistoryCol, doc, "inputHistoryCol");
     readDoc(displayOptions.inputHistoryRow, doc, "inputHistoryRow");
+    readDoc(displayOptions.inputHistoryTimeout, doc, "inputHistoryTimeout");
 
     readDoc(displayOptions.buttonLayoutCustomOptions.paramsLeft.layout, doc, "buttonLayoutCustomOptions", "params", "layout");
     readDoc(displayOptions.buttonLayoutCustomOptions.paramsLeft.common.startX, doc, "buttonLayoutCustomOptions", "params", "startX");
@@ -555,6 +556,7 @@ std::string getDisplayOptions() // Manually set Document Attributes for the disp
     writeDoc(doc, "inputHistoryLength", displayOptions.inputHistoryLength);
     writeDoc(doc, "inputHistoryCol", displayOptions.inputHistoryCol);
     writeDoc(doc, "inputHistoryRow", displayOptions.inputHistoryRow);
+    writeDoc(doc, "inputHistoryTimeout", displayOptions.inputHistoryTimeout);
 
     writeDoc(doc, "buttonLayoutCustomOptions", "params", "layout", displayOptions.buttonLayoutCustomOptions.paramsLeft.layout);
     writeDoc(doc, "buttonLayoutCustomOptions", "params", "startX", displayOptions.buttonLayoutCustomOptions.paramsLeft.common.startX);

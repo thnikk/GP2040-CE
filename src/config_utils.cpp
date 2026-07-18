@@ -431,6 +431,7 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.displayOptions, inputHistoryLength, INPUT_HISTORY_LENGTH);
     INIT_UNSET_PROPERTY(config.displayOptions, inputHistoryCol, INPUT_HISTORY_COL);
     INIT_UNSET_PROPERTY(config.displayOptions, inputHistoryRow, INPUT_HISTORY_ROW);
+    INIT_UNSET_PROPERTY(config.displayOptions, inputHistoryTimeout, INPUT_HISTORY_TIMEOUT);
 
     ButtonLayoutParamsLeft& paramsLeft = config.displayOptions.buttonLayoutCustomOptions.paramsLeft;
     INIT_UNSET_PROPERTY(paramsLeft, layout, BUTTON_LAYOUT);

@@ -138,6 +138,7 @@ export default {
 	'input-history-length-label': '履歴数（文字数）',
 	'input-history-col-label': '開始列',
 	'input-history-row-label': '開始行',
+	'input-history-timeout-label': 'タイムアウト (秒)',
 	'analog1256-header-text': 'A/D変換 ADS1256 (SPI)',
 	'analog1256-block-label': 'SPI ブロック',
 	'analog1256-cs-pin': 'Chip Select (CS) 端子',

@@ -147,6 +147,8 @@ class ButtonLayoutScreen : public GPScreen {
         uint16_t inputHistoryX = 0;
         uint16_t inputHistoryY = 0;
         size_t inputHistoryLength = 0;
+        uint32_t inputHistoryTimeout = 0;
+        uint32_t lastInputTime = 0;
         std::string historyString;
         std::deque<std::string> inputHistory;
         std::array<bool, INPUT_HISTORY_MAX_INPUTS> lastInput;

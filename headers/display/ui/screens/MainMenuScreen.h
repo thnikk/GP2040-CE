@@ -76,6 +76,9 @@ class MainMenuScreen : public GPScreen {
 
         void selectRemap();
 
+        void selectInputHistoryTimeout();
+        int32_t currentInputHistoryTimeout();
+
         void selectAnimation();
         int32_t currentAnimation();
         void selectTheme();
@@ -186,6 +189,11 @@ class MainMenuScreen : public GPScreen {
             {"Theme",      NULL, &themeMenu,       std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"Brightness", NULL, &brightnessMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
         };
+
+        std::vector<MenuEntry> displayMenu;
+        std::vector<MenuEntry> histTimeoutMenu;
+        uint16_t prevInputHistoryTimeout;
+        uint16_t updateInputHistoryTimeout;
 
         std::vector<MenuEntry> mainMenu;
 

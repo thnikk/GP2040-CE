@@ -137,6 +137,7 @@ export default {
 	'input-history-length-label': '기록 분량 (문자)',
 	'input-history-col-label': '열',
 	'input-history-row-label': '행',
+	'input-history-timeout-label': '타임아웃 (초)',
 	'analog1256-header-text': '아날로그 ADS1256 (SPI)',
 	'analog1256-block-label': 'SPI 블록',
 	'analog1256-cs-pin': '칩 선택 (CS) 핀',

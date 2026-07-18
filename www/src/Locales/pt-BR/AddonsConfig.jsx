@@ -134,4 +134,5 @@ export default {
 	'input-history-length-label': 'Comprimento do histórico (caracteres)',
 	'input-history-col-label': 'Coluna',
 	'input-history-row-label': 'Linha',
+	'input-history-timeout-label': 'Tempo limite (s)',
 };

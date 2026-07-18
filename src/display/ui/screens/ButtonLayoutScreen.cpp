@@ -129,6 +129,8 @@ void ButtonLayoutScreen::init() {
     inputHistoryX = Storage::getInstance().getDisplayOptions().inputHistoryRow;
     inputHistoryY = Storage::getInstance().getDisplayOptions().inputHistoryCol;
     inputHistoryLength = Storage::getInstance().getDisplayOptions().inputHistoryLength;
+    inputHistoryTimeout = Storage::getInstance().getDisplayOptions().inputHistoryTimeout;
+    lastInputTime = getMillis();
     bannerDelayStart = getMillis();
     gamepad = Storage::getInstance().GetGamepad();
     inputMode = DriverManager::getInstance().getInputMode();
@@ -490,6 +492,11 @@ void ButtonLayoutScreen::processInputHistory() {
 		getProcessedGamepad()->pressedA2(),
 	};
 
+	// Track last input time
+	for (auto b : currentInput) {
+		if (b) { lastInputTime = getMillis(); break; }
+	}
+
 	uint8_t mode = ((displayModeLookup.count(getGamepad()->getOptions().inputMode) > 0) ? displayModeLookup.at(getGamepad()->getOptions().inputMode) : 0);
 
 	// Check if any new keys have been pressed
@@ -547,6 +554,14 @@ void ButtonLayoutScreen::processInputHistory() {
 		historyString = ret.substr(ret.size() - inputHistoryLength);
 	} else {
 		historyString = ret;
+	}
+
+	// Clear history on inactivity timeout
+	if (inputHistoryTimeout > 0 && !inputHistory.empty()) {
+		if ((getMillis() - lastInputTime) > (inputHistoryTimeout * 1000)) {
+			inputHistory.clear();
+			historyString.clear();
+		}
 	}
 
     footer = historyString;

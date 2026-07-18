@@ -142,6 +142,7 @@ export default {
 	'input-history-length-label': 'History length (characters)',
 	'input-history-col-label': 'Column',
 	'input-history-row-label': 'Row',
+	'input-history-timeout-label': 'Timeout (s)',
 	'analog1256-header-text': 'Analog ADS1256 (SPI)',
 	'analog1256-block-label': 'SPI Block',
 	'analog1256-cs-pin': 'Chip Select (CS) Pin',

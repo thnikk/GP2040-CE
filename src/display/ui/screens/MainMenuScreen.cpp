@@ -117,6 +117,9 @@ void MainMenuScreen::init() {
     prevBrightness = animOpts.brightness;
     updateBrightness = animOpts.brightness;
 
+    prevInputHistoryTimeout = Storage::getInstance().getDisplayOptions().inputHistoryTimeout;
+    updateInputHistoryTimeout = prevInputHistoryTimeout;
+
     themeMenu.clear();
     for (int i = 0; i < themeCount; i++) {
         std::string name = themeNames[i];
@@ -134,6 +137,20 @@ void MainMenuScreen::init() {
             std::bind(&MainMenuScreen::selectBrightness, this), i});
     }
 
+    static const uint16_t timeoutValues[] = {0, 1, 3, 5, 10, 30};
+    static const char* timeoutLabels[] = {"Off", "1s", "3s", "5s", "10s", "30s"};
+    histTimeoutMenu.clear();
+    for (size_t i = 0; i < sizeof(timeoutValues) / sizeof(timeoutValues[0]); i++) {
+        std::string label = timeoutLabels[i];
+        histTimeoutMenu.push_back({label, NULL, nullptr,
+            std::bind(&MainMenuScreen::currentInputHistoryTimeout, this),
+            std::bind(&MainMenuScreen::selectInputHistoryTimeout, this), timeoutValues[i]});
+    }
+    displayMenu.clear();
+    displayMenu.push_back({"Hist Timeout", NULL, &histTimeoutMenu,
+        std::bind(&MainMenuScreen::modeValue, this),
+        std::bind(&MainMenuScreen::testMenu, this)});
+
     mainMenu.clear();
     mainMenu.push_back({"Input Mode", NULL, &inputModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
     mainMenu.push_back({"D-Pad Mode", NULL, &dpadModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
@@ -143,6 +160,7 @@ void MainMenuScreen::init() {
         mainMenu.push_back({"Focus Mode", NULL, &focusModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
     if (turboPinFound)
         mainMenu.push_back({"Turbo", NULL, &turboModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
+    mainMenu.push_back({"Display", NULL, &displayMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
     mainMenu.push_back({"LED Config", NULL, &ledMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
     mainMenu.push_back({"Remap", NULL, nullptr, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::selectRemap, this)});
     mainMenu.push_back({"Save & Exit", NULL, &saveMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
@@ -424,6 +442,7 @@ void MainMenuScreen::resetOptions() {
         if (prevAnimationIndex != updateAnimationIndex) updateAnimationIndex = prevAnimationIndex;
         if (prevThemeIndex != updateThemeIndex) updateThemeIndex = prevThemeIndex;
         if (prevBrightness != updateBrightness) updateBrightness = prevBrightness;
+        if (prevInputHistoryTimeout != updateInputHistoryTimeout) updateInputHistoryTimeout = prevInputHistoryTimeout;
     }
 
     changeRequiresSave = false;
@@ -459,6 +478,10 @@ void MainMenuScreen::saveOptions() {
         }
         if (prevTurbo != updateTurbo) {
             Storage::getInstance().getAddonOptions().turboOptions.enabled = updateTurbo;
+            saveHasChanged = true;
+        }
+        if (prevInputHistoryTimeout != updateInputHistoryTimeout) {
+            Storage::getInstance().getDisplayOptions().inputHistoryTimeout = updateInputHistoryTimeout;
             saveHasChanged = true;
         }
 
@@ -573,6 +596,20 @@ void MainMenuScreen::selectBrightness() {
 
 int32_t MainMenuScreen::currentBrightness() {
     return updateBrightness;
+}
+
+void MainMenuScreen::selectInputHistoryTimeout() {
+    if (currentMenu->at(menuIndex).optionValue != -1) {
+        uint16_t valueToSave = currentMenu->at(menuIndex).optionValue;
+        prevInputHistoryTimeout = Storage::getInstance().getDisplayOptions().inputHistoryTimeout;
+        updateInputHistoryTimeout = valueToSave;
+
+        if (prevInputHistoryTimeout != valueToSave) changeRequiresSave = true;
+    }
+}
+
+int32_t MainMenuScreen::currentInputHistoryTimeout() {
+    return updateInputHistoryTimeout;
 }
 
 void MainMenuScreen::selectRemap() {
