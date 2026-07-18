@@ -66,6 +66,7 @@ void MainMenuScreen::init() {
     }
 
     bool focusPinFound = false;
+    bool turboPinFound = false;
     GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
         switch (pinMappings[pin].action) {
@@ -82,6 +83,7 @@ void MainMenuScreen::init() {
             case GpioAction::BUTTON_PRESS_DOWN: navDownPinMask |= 1 << pin; break;
             case GpioAction::BUTTON_PRESS_LEFT: navLeftPinMask |= 1 << pin; break;
             case GpioAction::BUTTON_PRESS_RIGHT: navRightPinMask |= 1 << pin; break;
+            case GpioAction::BUTTON_PRESS_TURBO: turboPinFound = true; break;
             case GpioAction::SUSTAIN_FOCUS_MODE: focusPinFound = true; break;
             default:    break;
         }
@@ -139,7 +141,8 @@ void MainMenuScreen::init() {
     mainMenu.push_back({"Profile", NULL, &profilesMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
     if (focusPinFound && Storage::getInstance().getAddonOptions().focusModeOptions.buttonLockMask != 0)
         mainMenu.push_back({"Focus Mode", NULL, &focusModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
-    mainMenu.push_back({"Turbo", NULL, &turboModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
+    if (turboPinFound)
+        mainMenu.push_back({"Turbo", NULL, &turboModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
     mainMenu.push_back({"LED Config", NULL, &ledMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
     mainMenu.push_back({"Remap", NULL, nullptr, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::selectRemap, this)});
     mainMenu.push_back({"Save & Exit", NULL, &saveMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
@@ -518,7 +521,7 @@ void MainMenuScreen::selectTurboMode() {
         prevTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
         updateTurbo = valueToSave;
 
-        if (updateTurbo != valueToSave) changeRequiresSave = true;
+        if (prevTurbo != valueToSave) changeRequiresSave = true;
     }
 }
 
