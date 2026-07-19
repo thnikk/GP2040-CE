@@ -275,6 +275,14 @@ enum GpioAction
     MENU_NAVIGATION_TOGGLE       = 78;
 }
 
+enum PinSource
+{
+    option (nanopb_enumopt).long_names = false;
+
+    PIN_SOURCE_PHYSICAL = 0;
+    PIN_SOURCE_ADDON    = 1;
+}
+
 enum GpioDirection
 {
     option (nanopb_enumopt).long_names = false;

@@ -1208,6 +1208,7 @@ std::string setPinMappings()
             gpioMappings.pins[pin].action = (GpioAction)doc[pinName]["action"];
             gpioMappings.pins[pin].customButtonMask = (uint32_t)doc[pinName]["customButtonMask"];
             gpioMappings.pins[pin].customDpadMask = (uint32_t)doc[pinName]["customDpadMask"];
+            gpioMappings.pins[pin].source = (PinSource)((int)doc[pinName]["source"]);
         }
         gpioMappings.keyboardKeycodes[pin] = (uint32_t)doc["keyboardKeycodes"][pin];
         gpioMappings.keyboardModifierMasks[pin] = (uint32_t)doc["keyboardModifierMasks"][pin];
@@ -1235,6 +1236,7 @@ std::string getPinMappings()
         writeDoc(doc, key, "action", value.action);
         writeDoc(doc, key, "customButtonMask", value.customButtonMask);
         writeDoc(doc, key, "customDpadMask", value.customDpadMask);
+        writeDoc(doc, key, "source", value.source);
     };
 
     writePinDoc("pin00", gpioMappings.pins[0]);

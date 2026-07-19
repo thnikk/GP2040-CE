@@ -190,6 +190,11 @@ void GP2040::initializeStandardGpio() {
 	buttonGpios = 0;
 	for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++)
 	{
+		// Skip pins that are assigned to addons as a source
+		// (they have a valid action but are driven by an addon, not physical GPIO)
+		if (pinMappings[pin].source == PinSource::PIN_SOURCE_ADDON)
+			continue;
+
 		// (NONE=-10, RESERVED=-5, ASSIGNED_TO_ADDON=0, everything else is ours)
 		if (pinMappings[pin].action > 0)
 		{
@@ -274,6 +279,11 @@ void GP2040::run() {
 		
 		// Debounce
 		debounceGpioGetAll();
+
+		// Apply virtual pin provider overrides (matrix, cap touch, etc.)
+		// This lets addons set/clear debouncedGpio bits before gamepad->read()
+		vpinMgr.applyAll(gamepad->debouncedGpio);
+
 		// Read Gamepad
 		gamepad->read();
 

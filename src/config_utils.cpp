@@ -1394,6 +1394,12 @@ void gpioMappingsMigrationCore(Config& config)
 
     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
         config.gpioMappings.pins[pin].action = actions[pin];
+        // If the action is ASSIGNED_TO_ADDON, mark the source accordingly;
+        // all other pins default to PIN_SOURCE_PHYSICAL (0).
+        if (actions[pin] == GpioAction::ASSIGNED_TO_ADDON)
+            config.gpioMappings.pins[pin].source = PinSource::PIN_SOURCE_ADDON;
+        else
+            config.gpioMappings.pins[pin].source = PinSource::PIN_SOURCE_PHYSICAL;
     }
     // reminder that this must be set or else nanopb won't retain anything
     config.gpioMappings.pins_count = NUM_BANK0_GPIOS;

@@ -174,6 +174,7 @@ src/gp2040aux.cpp
 src/gamepad.cpp
 src/gamepad/GamepadState.cpp
 src/addonmanager.cpp
+src/virtualpinmanager.cpp
 src/configmanager.cpp
 src/drivers/shared/xinput_host.cpp
 src/drivers/shared/xgip_protocol.cpp

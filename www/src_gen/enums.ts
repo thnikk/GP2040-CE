@@ -234,6 +234,11 @@ export enum GpioAction {
     MENU_NAVIGATION_TOGGLE = 78
 }
 
+export enum PinSource {
+    PIN_SOURCE_PHYSICAL = 0,
+    PIN_SOURCE_ADDON = 1
+}
+
 export enum GpioDirection {
     GPIO_DIRECTION_INPUT = 0,
     GPIO_DIRECTION_OUTPUT = 1

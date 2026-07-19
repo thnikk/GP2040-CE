@@ -13,6 +13,7 @@
 #include "addonmanager.h"
 #include "eventmanager.h"
 #include "gpdriver.h"
+#include "virtualpinmanager.h"
 
 #include "pico/types.h"
 
@@ -22,9 +23,11 @@ public:
     ~GP2040(){}
     void setup();           // setup core0
     void run();             // loop core0
+    VirtualPinManager& getVirtualPinManager() { return vpinMgr; }
 private:
     Gamepad snapshot;
     AddonManager addons;
+    VirtualPinManager vpinMgr;
     // GPIO debouncer
     void debounceGpioGetAll();
     Mask_t buttonGpios;
