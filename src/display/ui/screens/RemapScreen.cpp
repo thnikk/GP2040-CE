@@ -740,7 +740,12 @@ bool RemapScreen::updateKbdManage(Mask_t values) {
 			uint8_t addIdx = itemCount - 1;
 
 			if (kbdManageIndex == addIdx) {
-				enterKbdSelect();
+				if (kc) {
+					kbdPendingKeycode = kc;
+					enterKbdModifier();
+				} else {
+					enterKbdSelect();
+				}
 			} else if (kbdManageIndex == keyIdx) {
 				clearKeyboardKey();
 			} else if (kbdManageIndex == modIdx) {
@@ -933,7 +938,7 @@ void RemapScreen::drawKbdManage() {
 	}
 	uint8_t addIdx = (kc ? 1 : 0) + (mod ? 1 : 0);
 	getRenderer()->drawText(1, y, (kbdManageIndex == addIdx) ? CHAR_RIGHT : " ");
-	getRenderer()->drawText(3, y, "+ Add Key");
+	getRenderer()->drawText(3, y, kc ? "+ Add Mod" : "+ Add Key");
 }
 
 void RemapScreen::drawKbdSelect() {
