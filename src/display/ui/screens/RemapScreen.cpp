@@ -551,7 +551,7 @@ int8_t RemapScreen::findNearestPin(int8_t dirX, int8_t dirY) {
 
 		int32_t primaryDist = (dirX != 0) ? abs(dx) : abs(dy);
 		int32_t perpDist = (dirX != 0) ? abs(dy) : abs(dx);
-		int32_t score = perpDist * 256 + primaryDist;
+		int32_t score = perpDist * 6 + primaryDist;
 
 		if (score < bestScore) {
 			bestScore = score;
