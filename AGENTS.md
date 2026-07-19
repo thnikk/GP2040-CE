@@ -37,3 +37,5 @@
 - No test framework, no C++ linter, no typechecker for firmware
 - Web: ESLint (react + TS + i18next), Prettier (`npm run format`)
 
+## Fixing issues and implementing features
+When the user confirms that an issue is fixed or feature is implemented, check the repo's open issues with `gh issue list`. If there's a matching issue, provide a commit message following the 50/72 rule, meaning the top line shouldn't exceed 52 characters and subsequent lines should wrap at 72 characters. Include Closes/Fixes #<issue number> at the bottom of the commit message.
