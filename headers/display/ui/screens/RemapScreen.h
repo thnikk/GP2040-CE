@@ -32,8 +32,8 @@ class RemapScreen : public GPScreen {
 		std::vector<GPButtonLayout> layoutElements;
 		size_t cursorIndex = 0;
 
-		GPMenu* gpMenu;
-		std::vector<MenuEntry> actionMenu;
+		uint8_t actionCategory = 0;
+		uint16_t actionCategoryIndex = 0;
 
 		bool isPressed = false;
 		Mask_t prevValues = 0;
@@ -53,9 +53,9 @@ class RemapScreen : public GPScreen {
 		uint16_t kbdCategoryIndex = 0;
 		uint8_t kbdModifierIndex = 0;
 
-		void buildActionMenu();
 		void assignAction(GpioAction action);
-		bool updateActionNavigation(Mask_t values);
+		void enterActionSelect();
+		bool updateActionSelect(Mask_t values);
 		int8_t findNearestPin(int8_t dirX, int8_t dirY);
 
 		bool updateKbdManage(Mask_t values);
@@ -70,6 +70,7 @@ class RemapScreen : public GPScreen {
 		void persistKeyboardKeyToConfig(uint8_t pin);
 		void persistPinMappingToConfig(uint8_t pin);
 
+		void drawActionSelect();
 		void drawKbdManage();
 		void drawKbdSelect();
 		void drawKbdModifier();

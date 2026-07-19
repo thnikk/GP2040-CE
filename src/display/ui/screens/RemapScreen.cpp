@@ -132,9 +132,18 @@ static const char* getActionName(GpioAction action, InputMode mode) {
 				case INPUT_MODE_XINPUT:
 				case INPUT_MODE_XBONE:
 				case INPUT_MODE_XBOXORIGINAL: return action == GpioAction::BUTTON_PRESS_A1 ?
-					"L-Thumb" : "R-Thumb";
+					"Guide" : "A2";
 				case INPUT_MODE_SWITCH:        return action == GpioAction::BUTTON_PRESS_A1 ?
-					"LS" : "RS";
+					"Home" : "Capture";
+				case INPUT_MODE_PS4:           return action == GpioAction::BUTTON_PRESS_A1 ?
+					"PS" : "Touchpad";
+				case INPUT_MODE_PS3:
+				case INPUT_MODE_PS5:
+				case INPUT_MODE_PSCLASSIC:     return action == GpioAction::BUTTON_PRESS_A1 ?
+					"PS" : "A2";
+				case INPUT_MODE_NEOGEO:
+				case INPUT_MODE_MDMINI:        return action == GpioAction::BUTTON_PRESS_A1 ?
+					"Select" : "A2";
 				default:                       return action == GpioAction::BUTTON_PRESS_A1 ?
 					"A1" : "A2";
 			}
@@ -202,7 +211,8 @@ static const char* getActionName(GpioAction action, InputMode mode) {
 	}
 }
 
-static const GpioAction actionValues[] = {
+// --- Action category arrays (replaces flat actionValues[]) ---
+static const GpioAction normalActions[] = {
 	GpioAction::BUTTON_PRESS_UP,
 	GpioAction::BUTTON_PRESS_DOWN,
 	GpioAction::BUTTON_PRESS_LEFT,
@@ -217,15 +227,13 @@ static const GpioAction actionValues[] = {
 	GpioAction::BUTTON_PRESS_R2,
 	GpioAction::BUTTON_PRESS_S1,
 	GpioAction::BUTTON_PRESS_S2,
-	GpioAction::BUTTON_PRESS_A1,
-	GpioAction::BUTTON_PRESS_A2,
 	GpioAction::BUTTON_PRESS_L3,
 	GpioAction::BUTTON_PRESS_R3,
-	GpioAction::BUTTON_PRESS_FN,
-	GpioAction::BUTTON_PRESS_DDI_UP,
-	GpioAction::BUTTON_PRESS_DDI_DOWN,
-	GpioAction::BUTTON_PRESS_DDI_LEFT,
-	GpioAction::BUTTON_PRESS_DDI_RIGHT,
+	GpioAction::BUTTON_PRESS_A1,
+	GpioAction::BUTTON_PRESS_A2,
+};
+
+static const GpioAction extActions[] = {
 	GpioAction::BUTTON_PRESS_A3,
 	GpioAction::BUTTON_PRESS_A4,
 	GpioAction::BUTTON_PRESS_E1,
@@ -240,7 +248,9 @@ static const GpioAction actionValues[] = {
 	GpioAction::BUTTON_PRESS_E10,
 	GpioAction::BUTTON_PRESS_E11,
 	GpioAction::BUTTON_PRESS_E12,
-	GpioAction::BUTTON_PRESS_TURBO,
+};
+
+static const GpioAction macroActions[] = {
 	GpioAction::BUTTON_PRESS_MACRO,
 	GpioAction::BUTTON_PRESS_MACRO_1,
 	GpioAction::BUTTON_PRESS_MACRO_2,
@@ -248,6 +258,11 @@ static const GpioAction actionValues[] = {
 	GpioAction::BUTTON_PRESS_MACRO_4,
 	GpioAction::BUTTON_PRESS_MACRO_5,
 	GpioAction::BUTTON_PRESS_MACRO_6,
+};
+
+static const GpioAction otherActions[] = {
+	GpioAction::BUTTON_PRESS_FN,
+	GpioAction::BUTTON_PRESS_TURBO,
 	GpioAction::BUTTON_PRESS_INPUT_REVERSE,
 	GpioAction::SUSTAIN_DP_MODE_DP,
 	GpioAction::SUSTAIN_DP_MODE_LS,
@@ -275,7 +290,20 @@ static const GpioAction actionValues[] = {
 	GpioAction::ANALOG_DIRECTION_MOD_HIGH,
 };
 
-static const uint8_t actionCount = sizeof(actionValues) / sizeof(actionValues[0]);
+struct ActionCategory {
+	const char* name;
+	const GpioAction* entries;
+	uint8_t count;
+};
+
+static const ActionCategory actionCategories[] = {
+	{ "Buttons",  normalActions, sizeof(normalActions)/sizeof(normalActions[0]) },
+	{ "Extended", extActions,    sizeof(extActions)/sizeof(extActions[0]) },
+	{ "Macro",    macroActions,  sizeof(macroActions)/sizeof(macroActions[0]) },
+	{ "Other",    otherActions,  sizeof(otherActions)/sizeof(otherActions[0]) },
+};
+
+static const uint8_t actionCategoryCount = sizeof(actionCategories)/sizeof(actionCategories[0]);
 
 struct KeyEntry {
 	uint8_t code;
@@ -432,21 +460,8 @@ void RemapScreen::init() {
 			layoutElements.push_back(elem);
 	}
 
-	// Build action selection menu
-	buildActionMenu();
-
-	gpMenu = new GPMenu();
-	gpMenu->setRenderer(getRenderer());
-	gpMenu->setPosition(8, 16);
-	gpMenu->setStrokeColor(1);
-	gpMenu->setFillColor(1);
-	gpMenu->setMenuSize(18, 4);
-	gpMenu->setViewport(this->getViewport());
-	gpMenu->setShape(GPShape_Type::GP_SHAPE_SQUARE);
-	gpMenu->setMenuData(&actionMenu);
-	gpMenu->setMenuTitle("SELECT ACTION");
-	gpMenu->setVisibility(false);
-	addElement(gpMenu);
+	actionCategory = 0;
+	actionCategoryIndex = 0;
 
 	// Build navigation masks
 	GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
@@ -493,26 +508,23 @@ void RemapScreen::shutdown() {
 	clearElements();
 }
 
-void RemapScreen::buildActionMenu() {
-	InputMode currentMode = DriverManager::getInstance().getInputMode();
-	actionMenu.clear();
-	for (uint8_t i = 0; i < actionCount; i++) {
-		MenuEntry entry;
-		entry.label = getActionName(actionValues[i], currentMode);
-		entry.icon = nullptr;
-		entry.submenu = nullptr;
-		entry.currentValue = [this]() -> int32_t {
-			if (this->cursorIndex < this->layoutElements.size()) {
-				uint8_t pin = this->layoutElements[this->cursorIndex].parameters.value;
-				return (int32_t)Storage::getInstance().getProfilePinMappings()[pin].action;
+void RemapScreen::enterActionSelect() {
+	mode = REMAP_ACTION_SELECT;
+	actionCategory = 0;
+	actionCategoryIndex = 0;
+
+	if (cursorIndex >= layoutElements.size()) return;
+	uint8_t pin = layoutElements[cursorIndex].parameters.value;
+	GpioAction currentAction = Storage::getInstance().getProfilePinMappings()[pin].action;
+
+	for (uint8_t c = 0; c < actionCategoryCount; c++) {
+		for (uint16_t i = 0; i < actionCategories[c].count; i++) {
+			if (actionCategories[c].entries[i] == currentAction) {
+				actionCategory = c;
+				actionCategoryIndex = i;
+				return;
 			}
-			return (int32_t)GpioAction::NONE;
-		};
-		entry.action = [this, i]() {
-			this->assignAction(actionValues[i]);
-		};
-		entry.optionValue = (int32_t)actionValues[i];
-		actionMenu.push_back(entry);
+		}
 	}
 }
 
@@ -564,7 +576,6 @@ int8_t RemapScreen::findNearestPin(int8_t dirX, int8_t dirY) {
 void RemapScreen::enterKbdManage() {
 	mode = REMAP_KBD_MANAGE;
 	kbdManageIndex = 0;
-	gpMenu->setVisibility(false);
 }
 
 void RemapScreen::enterKbdSelect() {
@@ -629,7 +640,7 @@ int8_t RemapScreen::update() {
 	bool actionFired = false;
 
 	if (mode == REMAP_ACTION_SELECT) {
-		actionFired = updateActionNavigation(values);
+		actionFired = updateActionSelect(values);
 	} else if (mode == REMAP_KBD_MANAGE) {
 		actionFired = updateKbdManage(values);
 	} else if (mode == REMAP_KBD_SELECT) {
@@ -653,21 +664,7 @@ int8_t RemapScreen::update() {
 					if (DriverManager::getInstance().getInputMode() == INPUT_MODE_KEYBOARD) {
 						enterKbdManage();
 					} else {
-						mode = REMAP_ACTION_SELECT;
-						gpMenu->setVisibility(true);
-						{
-							GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
-							uint8_t pin = layoutElements[cursorIndex].parameters.value;
-							GpioAction currentAction = pinMappings[pin].action;
-							uint16_t actionIndex = 0;
-							for (uint8_t i = 0; i < actionCount; i++) {
-								if (actionValues[i] == currentAction) {
-									actionIndex = i;
-									break;
-								}
-							}
-							gpMenu->setIndex(actionIndex);
-						}
+						enterActionSelect();
 					}
 					actionFired = true;
 				} else if (values & navB2PinMask) {
@@ -694,42 +691,37 @@ int8_t RemapScreen::update() {
 	return -1;
 }
 
-bool RemapScreen::updateActionNavigation(Mask_t values) {
+bool RemapScreen::updateActionSelect(Mask_t values) {
 	if (!isPressed && prevValues != values) {
-		uint16_t menuSize = gpMenu->getDataSize();
-		uint16_t newIndex = gpMenu->getIndex();
+		uint16_t catSize = actionCategories[actionCategory].count;
 
-		if (values & navUpPinMask) {
-			if (newIndex > 0) {
-				newIndex--;
-			} else {
-				newIndex = menuSize - 1;
+		if (values & navLeftPinMask) {
+			if (actionCategory > 0) {
+				actionCategory--;
+				actionCategoryIndex = 0;
 			}
-			gpMenu->setIndex(newIndex);
+			return true;
+		} else if (values & navRightPinMask) {
+			if (actionCategory < actionCategoryCount - 1) {
+				actionCategory++;
+				actionCategoryIndex = 0;
+			}
+			return true;
+		} else if (values & navUpPinMask) {
+			if (actionCategoryIndex > 0) actionCategoryIndex--;
 			return true;
 		} else if (values & navDownPinMask) {
-			if (newIndex < menuSize - 1) {
-				newIndex++;
-			} else {
-				newIndex = 0;
-			}
-			gpMenu->setIndex(newIndex);
+			if (actionCategoryIndex < catSize - 1) actionCategoryIndex++;
 			return true;
 		} else if (values & navB1PinMask) {
-			actionMenu.at(gpMenu->getIndex()).action();
+			assignAction(actionCategories[actionCategory].entries[actionCategoryIndex]);
 			mode = REMAP_LAYOUT;
-			gpMenu->setVisibility(false);
-			if (DriverManager::getInstance().getInputMode() == INPUT_MODE_KEYBOARD) {
-				enterKbdManage();
-			}
 			return true;
 		} else if (values & navB2PinMask) {
 			mode = REMAP_LAYOUT;
-			gpMenu->setVisibility(false);
 			return true;
 		} else if (values & navBackPinMask) {
 			mode = REMAP_LAYOUT;
-			gpMenu->setVisibility(false);
 			return true;
 		}
 	}
@@ -919,6 +911,8 @@ void RemapScreen::drawScreen() {
 		} else {
 			getRenderer()->drawText(0, 7, "B:back");
 		}
+	} else if (mode == REMAP_ACTION_SELECT) {
+		drawActionSelect();
 	} else if (mode == REMAP_KBD_MANAGE) {
 		drawKbdManage();
 	} else if (mode == REMAP_KBD_SELECT) {
@@ -926,7 +920,36 @@ void RemapScreen::drawScreen() {
 	} else if (mode == REMAP_KBD_MODIFIER) {
 		drawKbdModifier();
 	}
-	// Action select mode: no manual drawing needed — GPMenu draws itself on cleared bg
+}
+
+void RemapScreen::drawActionSelect() {
+	char lineBuf[22];
+
+	snprintf(lineBuf, sizeof(lineBuf), "<%s[%d/%d]>",
+		actionCategories[actionCategory].name,
+		actionCategory + 1, actionCategoryCount);
+	getRenderer()->drawText(0, 0, lineBuf);
+
+	uint16_t catSize = actionCategories[actionCategory].count;
+	uint8_t pageSize = 4;
+	uint16_t page = actionCategoryIndex / pageSize;
+	uint16_t pageStart = page * pageSize;
+	uint8_t onPage = catSize - pageStart;
+	if (onPage > pageSize) onPage = pageSize;
+
+	InputMode currentMode = DriverManager::getInstance().getInputMode();
+	for (uint8_t i = 0; i < onPage; i++) {
+		uint16_t idx = pageStart + i;
+		getRenderer()->drawText(1, 2 + i, (idx == actionCategoryIndex) ? CHAR_RIGHT : " ");
+		getRenderer()->drawText(2, 2 + i,
+			getActionName(actionCategories[actionCategory].entries[idx], currentMode));
+	}
+
+	if (catSize > pageSize) {
+		uint16_t totalPages = (catSize + pageSize - 1) / pageSize;
+		snprintf(lineBuf, sizeof(lineBuf), "Page %d/%d", page + 1, totalPages);
+		getRenderer()->drawText(11, 7, lineBuf);
+	}
 }
 
 void RemapScreen::drawKbdManage() {
