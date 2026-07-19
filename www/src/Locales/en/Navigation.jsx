@@ -15,6 +15,7 @@ export default {
 	'multi-mapping-label': 'Multi Mapping',
 	'peripheral-mapping-label': 'Peripheral Mapping',
 	'profile-settings-label': 'Profile Settings',
+	'pin-viewer-label': 'Pin Viewer',
 	'reboot-label': 'Reboot',
 	'reboot-modal-body': 'Select a mode to reboot to',
 	'reboot-modal-button-bootsel-label': 'USB (BOOTSEL)',

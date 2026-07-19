@@ -2390,6 +2390,37 @@ std::string getMemoryReport()
 
 static bool _abortGetHeldPins = false;
 
+std::string getPinState()
+{
+    DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
+
+    for (uint32_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
+        switch (pin) {
+            case 23:
+            case 24:
+            case 25:
+            case 29:
+                continue;
+        }
+        if (gpio_get_function(pin) == GPIO_FUNC_NULL) {
+            gpio_init(pin);
+            gpio_set_dir(pin, GPIO_IN);
+            gpio_pull_up(pin);
+        }
+    }
+
+    uint32_t newState = ~gpio_get_all();
+    JsonArray heldPins = doc.createNestedArray("heldPins");
+    for (uint32_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
+        if (gpio_get_function(pin) == GPIO_FUNC_SIO &&
+           !gpio_is_dir_out(pin) && (newState & (1 << pin))) {
+            heldPins.add(pin);
+        }
+    }
+
+    return serialize_json(doc);
+}
+
 std::string getHeldPins()
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
@@ -2579,6 +2610,7 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/setBoardLedOptions", setBoardLedOptions },
     { "/api/getFirmwareVersion", getFirmwareVersion },
     { "/api/getMemoryReport", getMemoryReport },
+    { "/api/getPinState", getPinState },
     { "/api/getHeldPins", getHeldPins },
     { "/api/abortGetHeldPins", abortGetHeldPins },
     { "/api/getUsedPins", getUsedPins },

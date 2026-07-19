@@ -706,6 +706,16 @@ async function setExpansionPins(mappings) {
 	return Http.post(`${baseUrl}/api/setExpansionPins`, mappings);
 }
 
+async function getPinState() {
+	try {
+		const response = await Http.get(`${baseUrl}/api/getPinState`);
+		return response.data;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+}
+
 async function getHeldPins(abortSignal) {
 	try {
 		const response = await Http.get(`${baseUrl}/api/getHeldPins`, {
@@ -777,6 +787,7 @@ export default {
 	setSplashImage,
 	getUsedPins,
 	getExtraPins,
+	getPinState,
 	getHeldPins,
 	abortGetHeldPins,
 	reboot,

@@ -107,6 +107,18 @@ const Navigation = () => {
 							{t('Navigation:settings-label')}
 						</span>
 					</Nav.Link>
+					<Nav.Link as={NavLink} to="/pin-viewer" eventKey="/pin-viewer">
+						<span style={{ display: 'inline-flex', alignItems: 'center' }}>
+							<svg
+								viewBox="0 0 512 512"
+								fill="currentColor"
+								style={{ marginRight: '0.5rem' }}
+							>
+								<path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zm97.6-353.4c4.7-2.7 10.6-2.1 14.6 1.4s5.4 9.1 3.5 13.9l-46.4 116 116-46.4c4.8-1.9 9.3-1 12.8 2.6s4.1 9.4 1.4 14.1l-160 272c-3.1 5.3-9 8.2-15.1 7.6s-11.4-4.2-13.6-9.9l-45.7-114.2L106.8 371c-5.8 2.2-12.2 .9-16.4-3.4s-5.1-10.7-2.3-16L248 192c3.4-6.4 10.6-9.8 17.8-8.5s12.8 6.5 14.5 13.6l32.2 128.7 121.2-181.8c2.9-4.3 8-6.5 13.1-6.1l6.8 .5z"/>
+							</svg>
+							{t('Navigation:pin-viewer-label')}
+						</span>
+					</Nav.Link>
 					
 					{/* <NavDropdown title={t('Navigation:links-label')}>
 						<NavDropdown.Item href="https://gp2040-ce.info/" target="_blank">

@@ -57,6 +57,7 @@ type BoardSVGProps = {
 	profileIndex: number;
 	onPinClick: (pinNumber: number) => void;
 	highlightedPin?: number | null;
+	highlightedPins?: number[];
 	dirtyPins?: Set<number>;
 	modeColors?: Record<number, string>;
 	customTheme?: Record<string, { normal: string; pressed: string }>;
@@ -216,6 +217,7 @@ export default function BoardSVG({
 	profileIndex,
 	onPinClick,
 	highlightedPin,
+	highlightedPins,
 	dirtyPins,
 	customTheme,
 	animationMode = 0,
@@ -397,7 +399,7 @@ export default function BoardSVG({
 				labelEl.removeAttribute('transform');
 			}
 
-			const isHighlighted = highlightedPin !== null && highlightedPin === pinNumber;
+			const isHighlighted = (highlightedPin !== null && highlightedPin !== undefined && highlightedPin === pinNumber) || (highlightedPins && highlightedPins.includes(pinNumber));
 
 			const pinStr = String(pinNumber);
 			const hasLed = pinLedIndices && pinLedIndices[pinStr] != null && pinLedIndices[pinStr] >= 0;
@@ -457,7 +459,7 @@ export default function BoardSVG({
 	            }
 	        });
 		});
-	}, [pinElements, pins, buttonNames, highlightedPin, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices, ledButtonOrder]);
+	}, [pinElements, pins, buttonNames, highlightedPin, highlightedPins, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices, ledButtonOrder]);
 
 	useEffect(() => {
 		if (!containerRef.current || !svgContent) return;
