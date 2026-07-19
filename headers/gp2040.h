@@ -23,11 +23,10 @@ public:
     ~GP2040(){}
     void setup();           // setup core0
     void run();             // loop core0
-    VirtualPinManager& getVirtualPinManager() { return vpinMgr; }
+    VirtualPinManager& getVirtualPinManager() { return VirtualPinManager::getInstance(); }
 private:
     Gamepad snapshot;
     AddonManager addons;
-    VirtualPinManager vpinMgr;
     // GPIO debouncer
     void debounceGpioGetAll();
     Mask_t buttonGpios;

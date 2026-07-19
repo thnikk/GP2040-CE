@@ -855,6 +855,21 @@ message AddonOptions
     optional DRV8833RumbleOptions drv8833RumbleOptions = 26;
     optional ReactiveLEDOptions reactiveLEDOptions = 27;
     optional GamepadUSBHostOptions gamepadUSBHostOptions = 28;
+    optional MatrixOptions matrixOptions = 29;
+}
+
+message MatrixOptions
+{
+    optional bool enabled = 1;
+    repeated uint32 rowPins = 2 [(nanopb).max_count = 8];
+    repeated uint32 colPins = 3 [(nanopb).max_count = 8];
+    message MatrixEntry
+    {
+        optional uint32 row = 1;
+        optional uint32 col = 2;
+        optional uint32 targetPin = 3;
+    }
+    repeated MatrixEntry mapping = 4 [(nanopb).max_count = 64];
 }
 
 message MigrationHistory

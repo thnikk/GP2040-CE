@@ -8,7 +8,14 @@
 class VirtualPinManager
 {
 public:
-    VirtualPinManager() {}
+    static VirtualPinManager & getInstance()
+    {
+        static VirtualPinManager instance;
+        return instance;
+    }
+
+    VirtualPinManager(VirtualPinManager const &) = delete;
+    void operator=(VirtualPinManager const &) = delete;
 
     void registerProvider(VirtualPinProvider * provider);
     void unregisterProvider(VirtualPinProvider * provider);
@@ -16,6 +23,7 @@ public:
     bool isPinAddonManaged(Pin_t pin);
 
 private:
+    VirtualPinManager() {}
     std::vector<VirtualPinProvider *> providers;
 };
 
