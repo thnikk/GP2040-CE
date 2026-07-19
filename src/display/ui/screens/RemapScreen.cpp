@@ -277,12 +277,143 @@ static const GpioAction actionValues[] = {
 
 static const uint8_t actionCount = sizeof(actionValues) / sizeof(actionValues[0]);
 
+struct KeyEntry {
+	uint8_t code;
+	const char* name;
+};
+
+struct KeyCategory {
+	const char* name;
+	const KeyEntry* entries;
+	uint8_t count;
+};
+
+static const KeyEntry lettersKeys[] = {
+	{ 0x04, "A" }, { 0x05, "B" }, { 0x06, "C" }, { 0x07, "D" },
+	{ 0x08, "E" }, { 0x09, "F" }, { 0x0A, "G" }, { 0x0B, "H" },
+	{ 0x0C, "I" }, { 0x0D, "J" }, { 0x0E, "K" }, { 0x0F, "L" },
+	{ 0x10, "M" }, { 0x11, "N" }, { 0x12, "O" }, { 0x13, "P" },
+	{ 0x14, "Q" }, { 0x15, "R" }, { 0x16, "S" }, { 0x17, "T" },
+	{ 0x18, "U" }, { 0x19, "V" }, { 0x1A, "W" }, { 0x1B, "X" },
+	{ 0x1C, "Y" }, { 0x1D, "Z" },
+};
+
+static const KeyEntry numbersKeys[] = {
+	{ 0x1E, "1" }, { 0x1F, "2" }, { 0x20, "3" }, { 0x21, "4" },
+	{ 0x22, "5" }, { 0x23, "6" }, { 0x24, "7" }, { 0x25, "8" },
+	{ 0x26, "9" }, { 0x27, "0" },
+};
+
+static const KeyEntry punctKeys[] = {
+	{ 0x2D, "-" },   { 0x2E, "=" },    { 0x2F, "[" },  { 0x30, "]" },
+	{ 0x31, "\\" },  { 0x33, ";" },    { 0x34, "'" },  { 0x35, "`" },
+	{ 0x36, "," },   { 0x37, "." },    { 0x38, "/" },
+};
+
+static const KeyEntry navKeys[] = {
+	{ 0x52, "Up" },    { 0x51, "Down" },  { 0x50, "Left" },
+	{ 0x4F, "Right" }, { 0x4A, "Home" },  { 0x4D, "End" },
+	{ 0x4B, "PgUp" },  { 0x4E, "PgDn" },  { 0x49, "Ins" },
+	{ 0x4C, "Del" },
+};
+
+static const KeyEntry funcKeys[] = {
+	{ 0x3A, "F1" },  { 0x3B, "F2" },  { 0x3C, "F3" },  { 0x3D, "F4" },
+	{ 0x3E, "F5" },  { 0x3F, "F6" },  { 0x40, "F7" },  { 0x41, "F8" },
+	{ 0x42, "F9" },  { 0x43, "F10" }, { 0x44, "F11" }, { 0x45, "F12" },
+	{ 0x68, "F13" }, { 0x69, "F14" }, { 0x6A, "F15" }, { 0x6B, "F16" },
+	{ 0x6C, "F17" }, { 0x6D, "F18" }, { 0x6E, "F19" }, { 0x6F, "F20" },
+	{ 0x70, "F21" }, { 0x71, "F22" }, { 0x72, "F23" }, { 0x73, "F24" },
+};
+
+static const KeyEntry numpadKeys[] = {
+	{ 0x53, "NumLk" }, { 0x54, "N/" },  { 0x55, "N*" },
+	{ 0x56, "N-" },    { 0x57, "N+" },  { 0x58, "NEn" },
+	{ 0x59, "N1" },    { 0x5A, "N2" },  { 0x5B, "N3" },
+	{ 0x5C, "N4" },    { 0x5D, "N5" },  { 0x5E, "N6" },
+	{ 0x5F, "N7" },    { 0x60, "N8" },  { 0x61, "N9" },
+	{ 0x62, "N0" },    { 0x63, "N." },
+};
+
+static const KeyEntry sysKeys[] = {
+	{ 0x29, "Esc" },    { 0x2B, "Tab" },   { 0x39, "Caps" },
+	{ 0x28, "Enter" },  { 0x2A, "Bksp" },  { 0x2C, "Space" },
+	{ 0x46, "PrtSc" },  { 0x47, "ScrlLk" },{ 0x48, "Pause" },
+	{ 0x65, "App" },    { 0x66, "Power" },
+};
+
+static const KeyEntry mediaKeys[] = {
+	{ 0xE8, "NextTrk" }, { 0xE9, "PrevTrk" }, { 0xF0, "Stop" },
+	{ 0xF1, "Play/P" },  { 0xF2, "Mute" },    { 0xF3, "Vol+" },
+	{ 0xF4, "Vol-" },
+};
+
+static const KeyCategory keyCategories[] = {
+	{ "Letters", lettersKeys, sizeof(lettersKeys)/sizeof(lettersKeys[0]) },
+	{ "Numbers", numbersKeys, sizeof(numbersKeys)/sizeof(numbersKeys[0]) },
+	{ "Punct",   punctKeys,   sizeof(punctKeys)/sizeof(punctKeys[0]) },
+	{ "Navigate",navKeys,     sizeof(navKeys)/sizeof(navKeys[0]) },
+	{ "Function",funcKeys,    sizeof(funcKeys)/sizeof(funcKeys[0]) },
+	{ "Numpad",  numpadKeys,  sizeof(numpadKeys)/sizeof(numpadKeys[0]) },
+	{ "System",  sysKeys,     sizeof(sysKeys)/sizeof(sysKeys[0]) },
+	{ "Media",   mediaKeys,   sizeof(mediaKeys)/sizeof(mediaKeys[0]) },
+};
+
+static const uint8_t kbdCategoryCount = sizeof(keyCategories)/sizeof(keyCategories[0]);
+static const uint8_t kbdSelectCategoryCount = 7;
+
+struct ModifierEntry {
+	uint8_t mask;
+	const char* name;
+};
+
+static const ModifierEntry modifierPresets[] = {
+	{ 0x00, "None" },
+	{ 0x02, "Shift" },
+	{ 0x01, "Ctrl" },
+	{ 0x04, "Alt" },
+	{ 0x08, "Win" },
+	{ 0x03, "S+C" },
+	{ 0x06, "S+A" },
+	{ 0x05, "C+A" },
+	{ 0x0A, "W+S" },
+	{ 0x09, "W+C" },
+	{ 0x0C, "W+A" },
+};
+
+static const uint8_t modifierCount = sizeof(modifierPresets)/sizeof(modifierPresets[0]);
+
+static const char* getKeyName(uint8_t code) {
+	if (code == 0) return "None";
+	for (uint8_t c = 0; c < kbdCategoryCount; c++) {
+		for (uint8_t i = 0; i < keyCategories[c].count; i++) {
+			if (keyCategories[c].entries[i].code == code)
+				return keyCategories[c].entries[i].name;
+		}
+	}
+	return "Key";
+}
+
+static const char* getModifierName(uint8_t mask) {
+	for (uint8_t i = 0; i < modifierCount; i++) {
+		if (modifierPresets[i].mask == mask)
+			return modifierPresets[i].name;
+	}
+	return "Mod";
+}
+
 void RemapScreen::init() {
 	getRenderer()->clearScreen();
 	mode = REMAP_LAYOUT;
 	cursorIndex = 0;
 	hasChanges = false;
 	isPressed = false;
+
+	kbdManageIndex = 0;
+	kbdPendingKeycode = 0;
+	kbdCategory = 0;
+	kbdCategoryIndex = 0;
+	kbdModifierIndex = 0;
 
 	// Viewport with vertical compression matching main ButtonLayoutScreen
 	uint16_t screenW = getRenderer()->getDriver()->getMetrics()->width;
@@ -341,10 +472,10 @@ void RemapScreen::init() {
 }
 
 void RemapScreen::shutdown() {
-	clearElements();
 	if (hasChanges) {
 		EventManager::getInstance().triggerEvent(new GPStorageSaveEvent(true, false));
 	}
+	clearElements();
 }
 
 void RemapScreen::buildActionMenu() {
@@ -378,6 +509,7 @@ void RemapScreen::assignAction(GpioAction action) {
 	pinMappings[pin].action = action;
 	pinMappings[pin].customButtonMask = 0;
 	pinMappings[pin].customDpadMask = 0;
+	persistPinMappingToConfig(pin);
 	hasChanges = true;
 }
 
@@ -414,12 +546,81 @@ int8_t RemapScreen::findNearestPin(int8_t dirX, int8_t dirY) {
 	return bestIdx;
 }
 
+void RemapScreen::enterKbdManage() {
+	mode = REMAP_KBD_MANAGE;
+	kbdManageIndex = 0;
+	gpMenu->setVisibility(false);
+}
+
+void RemapScreen::enterKbdSelect() {
+	mode = REMAP_KBD_SELECT;
+	kbdCategory = 0;
+	kbdCategoryIndex = 0;
+}
+
+void RemapScreen::enterKbdModifier() {
+	mode = REMAP_KBD_MODIFIER;
+	kbdModifierIndex = 0;
+}
+
+void RemapScreen::clearKeyboardKey() {
+	if (cursorIndex >= layoutElements.size()) return;
+	uint8_t pin = layoutElements[cursorIndex].parameters.value;
+	Storage::getInstance().getKeyboardKeycodes()[pin] = 0;
+	Storage::getInstance().getKeyboardModifierMasks()[pin] = 0;
+	persistKeyboardKeyToConfig(pin);
+	hasChanges = true;
+}
+
+void RemapScreen::persistKeyboardKeyToConfig(uint8_t pin) {
+	GpioMappings* active = &Storage::getInstance().getGpioMappings();
+	uint32_t profileNum = Storage::getInstance().getGamepadOptions().profileNumber;
+	if (profileNum >= 2) {
+		uint32_t profileIdx = profileNum - 2;
+		ProfileOptions& profiles = Storage::getInstance().getProfileOptions();
+		if (profileIdx < profiles.gpioMappingsSets_count && profiles.gpioMappingsSets[profileIdx].enabled)
+			active = &profiles.gpioMappingsSets[profileIdx];
+	}
+	active->keyboardKeycodes[pin] = Storage::getInstance().getKeyboardKeycodes()[pin];
+	active->keyboardKeycodes_count = NUM_BANK0_GPIOS;
+	active->keyboardModifierMasks[pin] = Storage::getInstance().getKeyboardModifierMasks()[pin];
+	active->keyboardModifierMasks_count = NUM_BANK0_GPIOS;
+}
+
+void RemapScreen::persistPinMappingToConfig(uint8_t pin) {
+	GpioMappings* active = &Storage::getInstance().getGpioMappings();
+	uint32_t profileNum = Storage::getInstance().getGamepadOptions().profileNumber;
+	if (profileNum >= 2) {
+		uint32_t profileIdx = profileNum - 2;
+		ProfileOptions& profiles = Storage::getInstance().getProfileOptions();
+		if (profileIdx < profiles.gpioMappingsSets_count && profiles.gpioMappingsSets[profileIdx].enabled)
+			active = &profiles.gpioMappingsSets[profileIdx];
+	}
+	active->pins[pin] = Storage::getInstance().getProfilePinMappings()[pin];
+	active->pins_count = NUM_BANK0_GPIOS;
+}
+
+void RemapScreen::assignKeyboardKey(uint8_t keycode, uint8_t modifierMask) {
+	if (cursorIndex >= layoutElements.size()) return;
+	uint8_t pin = layoutElements[cursorIndex].parameters.value;
+	Storage::getInstance().getKeyboardKeycodes()[pin] = keycode;
+	Storage::getInstance().getKeyboardModifierMasks()[pin] = modifierMask;
+	persistKeyboardKeyToConfig(pin);
+	hasChanges = true;
+}
+
 int8_t RemapScreen::update() {
 	Mask_t values = Storage::getInstance().GetGamepad()->debouncedGpio;
 	bool actionFired = false;
 
 	if (mode == REMAP_ACTION_SELECT) {
 		actionFired = updateActionNavigation(values);
+	} else if (mode == REMAP_KBD_MANAGE) {
+		actionFired = updateKbdManage(values);
+	} else if (mode == REMAP_KBD_SELECT) {
+		actionFired = updateKbdSelect(values);
+	} else if (mode == REMAP_KBD_MODIFIER) {
+		actionFired = updateKbdModifier(values);
 	} else {
 		if (!isPressed && prevValues != values) {
 			if (layoutElements.size() > 0) {
@@ -434,20 +635,24 @@ int8_t RemapScreen::update() {
 				} else if (values & navRightPinMask) {
 					newIdx = findNearestPin(1, 0);
 				} else if (values & navB1PinMask) {
-					mode = REMAP_ACTION_SELECT;
-					gpMenu->setVisibility(true);
-					{
-						GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
-						uint8_t pin = layoutElements[cursorIndex].parameters.value;
-						GpioAction currentAction = pinMappings[pin].action;
-						uint16_t actionIndex = 0;
-						for (uint8_t i = 0; i < actionCount; i++) {
-							if (actionValues[i] == currentAction) {
-								actionIndex = i;
-								break;
+					if (DriverManager::getInstance().getInputMode() == INPUT_MODE_KEYBOARD) {
+						enterKbdManage();
+					} else {
+						mode = REMAP_ACTION_SELECT;
+						gpMenu->setVisibility(true);
+						{
+							GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
+							uint8_t pin = layoutElements[cursorIndex].parameters.value;
+							GpioAction currentAction = pinMappings[pin].action;
+							uint16_t actionIndex = 0;
+							for (uint8_t i = 0; i < actionCount; i++) {
+								if (actionValues[i] == currentAction) {
+									actionIndex = i;
+									break;
+								}
 							}
+							gpMenu->setIndex(actionIndex);
 						}
-						gpMenu->setIndex(actionIndex);
 					}
 					actionFired = true;
 				} else if (values & navB2PinMask) {
@@ -499,6 +704,9 @@ bool RemapScreen::updateActionNavigation(Mask_t values) {
 			actionMenu.at(gpMenu->getIndex()).action();
 			mode = REMAP_LAYOUT;
 			gpMenu->setVisibility(false);
+			if (DriverManager::getInstance().getInputMode() == INPUT_MODE_KEYBOARD) {
+				enterKbdManage();
+			}
 			return true;
 		} else if (values & navB2PinMask) {
 			mode = REMAP_LAYOUT;
@@ -507,6 +715,107 @@ bool RemapScreen::updateActionNavigation(Mask_t values) {
 		} else if (values & navBackPinMask) {
 			mode = REMAP_LAYOUT;
 			gpMenu->setVisibility(false);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool RemapScreen::updateKbdManage(Mask_t values) {
+	if (!isPressed && prevValues != values) {
+		uint8_t pin = layoutElements[cursorIndex].parameters.value;
+		uint8_t kc = Storage::getInstance().getKeyboardKeycodes()[pin];
+		uint8_t mod = Storage::getInstance().getKeyboardModifierMasks()[pin];
+		uint8_t itemCount = (kc ? 1 : 0) + (mod ? 1 : 0) + 1;
+
+		if (values & navUpPinMask) {
+			if (kbdManageIndex > 0) kbdManageIndex--;
+			return true;
+		} else if (values & navDownPinMask) {
+			if (kbdManageIndex < itemCount - 1) kbdManageIndex++;
+			return true;
+		} else if (values & navB1PinMask) {
+			uint8_t keyIdx = kc ? 0 : 255;
+			uint8_t modIdx = (kc && mod) ? 1 : (mod ? 0 : 255);
+			uint8_t addIdx = itemCount - 1;
+
+			if (kbdManageIndex == addIdx) {
+				enterKbdSelect();
+			} else if (kbdManageIndex == keyIdx) {
+				clearKeyboardKey();
+			} else if (kbdManageIndex == modIdx) {
+				Storage::getInstance().getKeyboardModifierMasks()[pin] = 0;
+				persistKeyboardKeyToConfig(pin);
+				hasChanges = true;
+			}
+			kbdManageIndex = 0;
+			return true;
+		} else if (values & navB2PinMask) {
+			mode = REMAP_LAYOUT;
+			return true;
+		} else if (values & navBackPinMask) {
+			mode = REMAP_LAYOUT;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool RemapScreen::updateKbdSelect(Mask_t values) {
+	if (!isPressed && prevValues != values) {
+		uint16_t catSize = keyCategories[kbdCategory].count;
+
+		if (values & navLeftPinMask) {
+			if (kbdCategory > 0) {
+				kbdCategory--;
+				kbdCategoryIndex = 0;
+			}
+			return true;
+		} else if (values & navRightPinMask) {
+			if (kbdCategory < kbdSelectCategoryCount - 1) {
+				kbdCategory++;
+				kbdCategoryIndex = 0;
+			}
+			return true;
+		} else if (values & navUpPinMask) {
+			if (kbdCategoryIndex > 0) kbdCategoryIndex--;
+			return true;
+		} else if (values & navDownPinMask) {
+			if (kbdCategoryIndex < catSize - 1) kbdCategoryIndex++;
+			return true;
+		} else if (values & navB1PinMask) {
+			assignKeyboardKey(keyCategories[kbdCategory].entries[kbdCategoryIndex].code, 0);
+			enterKbdManage();
+			return true;
+		} else if (values & navB2PinMask) {
+			enterKbdManage();
+			return true;
+		} else if (values & navBackPinMask) {
+			enterKbdManage();
+			return true;
+		}
+	}
+	return false;
+}
+
+bool RemapScreen::updateKbdModifier(Mask_t values) {
+	if (!isPressed && prevValues != values) {
+		if (values & navUpPinMask) {
+			if (kbdModifierIndex > 0) kbdModifierIndex--;
+			return true;
+		} else if (values & navDownPinMask) {
+			if (kbdModifierIndex < modifierCount - 1) kbdModifierIndex++;
+			return true;
+		} else if (values & navB1PinMask) {
+			assignKeyboardKey(kbdPendingKeycode, modifierPresets[kbdModifierIndex].mask);
+			kbdPendingKeycode = 0;
+			enterKbdManage();
+			return true;
+		} else if (values & navB2PinMask) {
+			enterKbdManage();
+			return true;
+		} else if (values & navBackPinMask) {
+			enterKbdManage();
 			return true;
 		}
 	}
@@ -564,7 +873,21 @@ void RemapScreen::drawScreen() {
 			const char* label = getActionName(action, currentMode);
 
 			char topBuf[22];
-			snprintf(topBuf, sizeof(topBuf), "GP%02d:%s", pinNum, label);
+			if (currentMode == INPUT_MODE_KEYBOARD) {
+				uint8_t kc = Storage::getInstance().getKeyboardKeycodes()[pinNum];
+				uint8_t mod = Storage::getInstance().getKeyboardModifierMasks()[pinNum];
+				if (kc != 0) {
+					if (mod) {
+						snprintf(topBuf, sizeof(topBuf), "GP%02d:%s %s", pinNum, getKeyName(kc), getModifierName(mod));
+					} else {
+						snprintf(topBuf, sizeof(topBuf), "GP%02d:%s", pinNum, getKeyName(kc));
+					}
+				} else {
+					snprintf(topBuf, sizeof(topBuf), "GP%02d:--", pinNum);
+				}
+			} else {
+				snprintf(topBuf, sizeof(topBuf), "GP%02d:%s", pinNum, label);
+			}
 			getRenderer()->drawText(0, 0, topBuf);
 		} else {
 			getRenderer()->drawText(0, 0, "No board layout");
@@ -576,6 +899,91 @@ void RemapScreen::drawScreen() {
 		} else {
 			getRenderer()->drawText(0, 7, "B:back");
 		}
+	} else if (mode == REMAP_KBD_MANAGE) {
+		drawKbdManage();
+	} else if (mode == REMAP_KBD_SELECT) {
+		drawKbdSelect();
+	} else if (mode == REMAP_KBD_MODIFIER) {
+		drawKbdModifier();
 	}
 	// Action select mode: no manual drawing needed — GPMenu draws itself on cleared bg
+}
+
+void RemapScreen::drawKbdManage() {
+	if (cursorIndex >= layoutElements.size()) return;
+	uint8_t pin = layoutElements[cursorIndex].parameters.value;
+	uint8_t kc = Storage::getInstance().getKeyboardKeycodes()[pin];
+	uint8_t mod = Storage::getInstance().getKeyboardModifierMasks()[pin];
+
+	getRenderer()->drawText(0, 0, "Key mapping:");
+
+	uint8_t y = 2;
+	if (kc) {
+		getRenderer()->drawText(1, y, (kbdManageIndex == 0) ? CHAR_RIGHT : " ");
+		getRenderer()->drawText(3, y, "x");
+		getRenderer()->drawText(5, y, getKeyName(kc));
+		y++;
+	}
+	if (mod) {
+		uint8_t idx = (kc ? 1 : 0);
+		getRenderer()->drawText(1, y, (kbdManageIndex == idx) ? CHAR_RIGHT : " ");
+		getRenderer()->drawText(3, y, "x");
+		getRenderer()->drawText(5, y, getModifierName(mod));
+		y++;
+	}
+	uint8_t addIdx = (kc ? 1 : 0) + (mod ? 1 : 0);
+	getRenderer()->drawText(1, y, (kbdManageIndex == addIdx) ? CHAR_RIGHT : " ");
+	getRenderer()->drawText(3, y, "+ Add Key");
+}
+
+void RemapScreen::drawKbdSelect() {
+	char lineBuf[22];
+
+	snprintf(lineBuf, sizeof(lineBuf), "<%s[%d/%d]>",
+		keyCategories[kbdCategory].name,
+		kbdCategory + 1, kbdSelectCategoryCount);
+	getRenderer()->drawText(0, 0, lineBuf);
+
+	uint16_t catSize = keyCategories[kbdCategory].count;
+	uint8_t pageSize = 4;
+	uint16_t page = kbdCategoryIndex / pageSize;
+	uint16_t pageStart = page * pageSize;
+	uint8_t onPage = catSize - pageStart;
+	if (onPage > pageSize) onPage = pageSize;
+
+	for (uint8_t i = 0; i < onPage; i++) {
+		uint16_t idx = pageStart + i;
+		getRenderer()->drawText(1, 2 + i, (idx == kbdCategoryIndex) ? CHAR_RIGHT : " ");
+		getRenderer()->drawText(2, 2 + i, keyCategories[kbdCategory].entries[idx].name);
+	}
+
+	if (catSize > pageSize) {
+		uint16_t totalPages = (catSize + pageSize - 1) / pageSize;
+		snprintf(lineBuf, sizeof(lineBuf), "Page %d/%d", page + 1, totalPages);
+		getRenderer()->drawText(11, 7, lineBuf);
+	}
+}
+
+void RemapScreen::drawKbdModifier() {
+	char lineBuf[22];
+
+	getRenderer()->drawText(0, 0, "Modifier");
+
+	uint8_t pageSize = 4;
+	uint8_t page = kbdModifierIndex / pageSize;
+	uint8_t pageStart = page * pageSize;
+	uint8_t onPage = modifierCount - pageStart;
+	if (onPage > pageSize) onPage = pageSize;
+
+	for (uint8_t i = 0; i < onPage; i++) {
+		uint8_t idx = pageStart + i;
+		getRenderer()->drawText(1, 2 + i, (idx == kbdModifierIndex) ? CHAR_RIGHT : " ");
+		getRenderer()->drawText(2, 2 + i, modifierPresets[idx].name);
+	}
+
+	if (modifierCount > pageSize) {
+		uint8_t totalPages = (modifierCount + pageSize - 1) / pageSize;
+		snprintf(lineBuf, sizeof(lineBuf), "Page %d/%d", page + 1, totalPages);
+		getRenderer()->drawText(11, 7, lineBuf);
+	}
 }

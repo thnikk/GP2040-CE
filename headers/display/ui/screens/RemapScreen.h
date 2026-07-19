@@ -12,7 +12,10 @@
 
 enum RemapMode {
 	REMAP_LAYOUT,
-	REMAP_ACTION_SELECT
+	REMAP_ACTION_SELECT,
+	REMAP_KBD_MANAGE,
+	REMAP_KBD_SELECT,
+	REMAP_KBD_MODIFIER
 };
 
 class RemapScreen : public GPScreen {
@@ -44,10 +47,32 @@ class RemapScreen : public GPScreen {
 
 		bool hasChanges = false;
 
+		uint8_t kbdManageIndex = 0;
+		uint8_t kbdPendingKeycode = 0;
+		uint8_t kbdCategory = 0;
+		uint16_t kbdCategoryIndex = 0;
+		uint8_t kbdModifierIndex = 0;
+
 		void buildActionMenu();
 		void assignAction(GpioAction action);
 		bool updateActionNavigation(Mask_t values);
 		int8_t findNearestPin(int8_t dirX, int8_t dirY);
+
+		bool updateKbdManage(Mask_t values);
+		bool updateKbdSelect(Mask_t values);
+		bool updateKbdModifier(Mask_t values);
+
+		void enterKbdManage();
+		void enterKbdSelect();
+		void enterKbdModifier();
+		void clearKeyboardKey();
+		void assignKeyboardKey(uint8_t keycode, uint8_t modifierMask);
+		void persistKeyboardKeyToConfig(uint8_t pin);
+		void persistPinMappingToConfig(uint8_t pin);
+
+		void drawKbdManage();
+		void drawKbdSelect();
+		void drawKbdModifier();
 };
 
 #endif
