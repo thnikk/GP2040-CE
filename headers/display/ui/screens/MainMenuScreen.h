@@ -99,12 +99,6 @@ class MainMenuScreen : public GPScreen {
         std::vector<MenuEntry>* previousMenu;
 		uint16_t prevButtonState = 0;
 		Mask_t prevValues;
-		uint32_t navB1PinMask = 0;
-		uint32_t navB2PinMask = 0;
-		uint32_t navUpPinMask = 0;
-		uint32_t navDownPinMask = 0;
-		uint32_t navLeftPinMask = 0;
-		uint32_t navRightPinMask = 0;
         GPMenu* gpMenu;
         volatile uint8_t pendingNavAction = 0xFF; // 0xFF = none, otherwise GpioAction
 

@@ -92,4 +92,11 @@
 #define BOARD_LEDS_RGB_COLOR_PS5 0xFF00FF      // purple
 #define BOARD_LEDS_RGB_COLOR_KEYBOARD 0xFF8000 // orange
 
+// Mini menu navigation pins (compile-time, not remappable)
+#define PIN_MENU_UP     29  // matches BUTTON_PRESS_UP
+#define PIN_MENU_DOWN   27  // matches BUTTON_PRESS_DOWN
+#define PIN_MENU_LEFT   28  // matches BUTTON_PRESS_LEFT
+#define PIN_MENU_RIGHT  26  // matches BUTTON_PRESS_RIGHT
+#define PIN_MENU_SELECT 5   // matches BUTTON_PRESS_B1
+#define PIN_MENU_BACK   6   // matches BUTTON_PRESS_B2
 #endif

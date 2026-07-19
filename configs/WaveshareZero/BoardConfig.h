@@ -64,4 +64,12 @@
 #define KEY_BUTTON_A2   HID_KEY_F2            // A2     | ~      | Capture | ~        | 14     | ~      |
 #define KEY_BUTTON_FN   -1                    // Hotkey Function                                        |
 
+// Mini menu navigation pins (compile-time, not remappable)
+#define PIN_MENU_UP     2  // matches BUTTON_PRESS_UP
+#define PIN_MENU_DOWN   3  // matches BUTTON_PRESS_DOWN
+#define PIN_MENU_LEFT   5  // matches BUTTON_PRESS_LEFT
+#define PIN_MENU_RIGHT  4  // matches BUTTON_PRESS_RIGHT
+#define PIN_MENU_SELECT 6  // matches BUTTON_PRESS_B1
+#define PIN_MENU_BACK   7  // matches BUTTON_PRESS_B2
+
 #endif

@@ -458,15 +458,29 @@ void RemapScreen::init() {
 			case GpioAction::MENU_NAVIGATION_RIGHT:		navRightPinMask |= 1 << pin; break;
 			case GpioAction::MENU_NAVIGATION_SELECT:	navB1PinMask |= 1 << pin; break;
 			case GpioAction::MENU_NAVIGATION_BACK:		navBackPinMask |= 1 << pin; break;
-			case GpioAction::BUTTON_PRESS_B1:			navB1PinMask |= 1 << pin; break;
-			case GpioAction::BUTTON_PRESS_B2:			navB2PinMask |= 1 << pin; break;
-			case GpioAction::BUTTON_PRESS_UP:			navUpPinMask |= 1 << pin; break;
-			case GpioAction::BUTTON_PRESS_DOWN:			navDownPinMask |= 1 << pin; break;
-			case GpioAction::BUTTON_PRESS_LEFT:			navLeftPinMask |= 1 << pin; break;
-			case GpioAction::BUTTON_PRESS_RIGHT:		navRightPinMask |= 1 << pin; break;
 			default: break;
 		}
 	}
+
+	// Compile-time menu nav pins (not affected by runtime remapping)
+#ifdef PIN_MENU_UP
+	navUpPinMask |= 1 << PIN_MENU_UP;
+#endif
+#ifdef PIN_MENU_DOWN
+	navDownPinMask |= 1 << PIN_MENU_DOWN;
+#endif
+#ifdef PIN_MENU_LEFT
+	navLeftPinMask |= 1 << PIN_MENU_LEFT;
+#endif
+#ifdef PIN_MENU_RIGHT
+	navRightPinMask |= 1 << PIN_MENU_RIGHT;
+#endif
+#ifdef PIN_MENU_SELECT
+	navB1PinMask |= 1 << PIN_MENU_SELECT;
+#endif
+#ifdef PIN_MENU_BACK
+	navB2PinMask |= 1 << PIN_MENU_BACK;
+#endif
 
 	prevValues = Storage::getInstance().GetGamepad()->debouncedGpio;
 }

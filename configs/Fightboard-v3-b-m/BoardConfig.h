@@ -101,4 +101,11 @@
 #define DEFAULT_INPUT_MODE_PS5_PIN 27      // R1 (GP27)
 #define DEFAULT_INPUT_MODE_KEYBOARD_PIN 26 // L1 (GP26)
 
+// Mini menu navigation pins (compile-time, not remappable)
+#define PIN_MENU_UP     0   // matches BUTTON_PRESS_UP
+#define PIN_MENU_DOWN   2   // matches BUTTON_PRESS_DOWN
+#define PIN_MENU_LEFT   1   // matches BUTTON_PRESS_LEFT
+#define PIN_MENU_RIGHT  3   // matches BUTTON_PRESS_RIGHT
+#define PIN_MENU_SELECT 9   // matches BUTTON_PRESS_B1
+#define PIN_MENU_BACK   12  // matches BUTTON_PRESS_B2
 #endif

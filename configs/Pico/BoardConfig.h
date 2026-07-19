@@ -96,4 +96,12 @@
 #define BUTTON_LAYOUT BUTTON_LAYOUT_STICKLESS
 #define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_STICKLESSB
 
+// Mini menu navigation pins (compile-time, not remappable)
+#define PIN_MENU_UP     2  // matches BUTTON_PRESS_UP
+#define PIN_MENU_DOWN   3  // matches BUTTON_PRESS_DOWN
+#define PIN_MENU_LEFT   5  // matches BUTTON_PRESS_LEFT
+#define PIN_MENU_RIGHT  4  // matches BUTTON_PRESS_RIGHT
+#define PIN_MENU_SELECT 6  // matches BUTTON_PRESS_B1
+#define PIN_MENU_BACK   7  // matches BUTTON_PRESS_B2
+
 #endif

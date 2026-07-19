@@ -77,18 +77,31 @@ void MainMenuScreen::init() {
             case GpioAction::MENU_NAVIGATION_SELECT: mapMenuSelect->pinMask |= 1 << pin; break;
             case GpioAction::MENU_NAVIGATION_BACK: mapMenuBack->pinMask |= 1 << pin; break;
             case GpioAction::MENU_NAVIGATION_TOGGLE: mapMenuToggle->pinMask |= 1 << pin; break;
-            case GpioAction::BUTTON_PRESS_B1: navB1PinMask |= 1 << pin; break;
-            case GpioAction::BUTTON_PRESS_B2: navB2PinMask |= 1 << pin; break;
-            case GpioAction::BUTTON_PRESS_UP: navUpPinMask |= 1 << pin; break;
-            case GpioAction::BUTTON_PRESS_DOWN: navDownPinMask |= 1 << pin; break;
-            case GpioAction::BUTTON_PRESS_LEFT: navLeftPinMask |= 1 << pin; break;
-            case GpioAction::BUTTON_PRESS_RIGHT: navRightPinMask |= 1 << pin; break;
             case GpioAction::BUTTON_PRESS_TURBO: turboPinFound = true; break;
             case GpioAction::SUSTAIN_FOCUS_MODE: focusPinFound = true; break;
             default:    break;
         }
     }
 
+    // Compile-time menu nav pins (not affected by runtime remapping)
+#ifdef PIN_MENU_UP
+    mapMenuUp->pinMask |= 1 << PIN_MENU_UP;
+#endif
+#ifdef PIN_MENU_DOWN
+    mapMenuDown->pinMask |= 1 << PIN_MENU_DOWN;
+#endif
+#ifdef PIN_MENU_LEFT
+    mapMenuLeft->pinMask |= 1 << PIN_MENU_LEFT;
+#endif
+#ifdef PIN_MENU_RIGHT
+    mapMenuRight->pinMask |= 1 << PIN_MENU_RIGHT;
+#endif
+#ifdef PIN_MENU_SELECT
+    mapMenuSelect->pinMask |= 1 << PIN_MENU_SELECT;
+#endif
+#ifdef PIN_MENU_BACK
+    mapMenuBack->pinMask |= 1 << PIN_MENU_BACK;
+#endif
     changeRequiresReboot = false;
     changeRequiresSave = false;
     prevInputMode = Storage::getInstance().GetGamepad()->getOptions().inputMode;
@@ -225,24 +238,6 @@ int8_t MainMenuScreen::update() {
             actionFired = true;
         } else if (values & mapMenuBack->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_BACK);
-            actionFired = true;
-        } else if (values & navB1PinMask) {
-            updateMenuNavigation(GpioAction::MENU_NAVIGATION_SELECT);
-            actionFired = true;
-        } else if (values & navB2PinMask) {
-            updateMenuNavigation(GpioAction::MENU_NAVIGATION_BACK);
-            actionFired = true;
-        } else if (values & navUpPinMask) {
-            updateMenuNavigation(GpioAction::MENU_NAVIGATION_UP);
-            actionFired = true;
-        } else if (values & navDownPinMask) {
-            updateMenuNavigation(GpioAction::MENU_NAVIGATION_DOWN);
-            actionFired = true;
-        } else if (values & navLeftPinMask) {
-            updateMenuNavigation(GpioAction::MENU_NAVIGATION_LEFT);
-            actionFired = true;
-        } else if (values & navRightPinMask) {
-            updateMenuNavigation(GpioAction::MENU_NAVIGATION_RIGHT);
             actionFired = true;
         }
     } else {

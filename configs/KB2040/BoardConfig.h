@@ -67,4 +67,12 @@
 
 #define LED_BRIGHTNESS_MAXIMUM 50
 
+// Mini menu navigation pins (compile-time, not remappable)
+#define PIN_MENU_UP     27  // matches BUTTON_PRESS_UP
+#define PIN_MENU_DOWN   29  // matches BUTTON_PRESS_DOWN
+#define PIN_MENU_LEFT   26  // matches BUTTON_PRESS_LEFT
+#define PIN_MENU_RIGHT  28  // matches BUTTON_PRESS_RIGHT
+#define PIN_MENU_SELECT 3   // matches BUTTON_PRESS_B1
+#define PIN_MENU_BACK   2   // matches BUTTON_PRESS_B2
+
 #endif
