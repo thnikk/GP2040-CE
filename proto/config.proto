@@ -856,6 +856,20 @@ message AddonOptions
     optional ReactiveLEDOptions reactiveLEDOptions = 27;
     optional GamepadUSBHostOptions gamepadUSBHostOptions = 28;
     optional MatrixOptions matrixOptions = 29;
+    optional CapTouchOptions capTouchOptions = 30;
+}
+
+message CapTouchOptions
+{
+    optional bool enabled = 1;
+    optional uint32 threshold = 2;
+    optional uint32 chargeTimeUs = 3;
+    message CapTouchEntry
+    {
+        optional uint32 sensePin = 1;
+        optional uint32 targetPin = 2;
+    }
+    repeated CapTouchEntry mapping = 4 [(nanopb).max_count = 16];
 }
 
 message MatrixOptions
