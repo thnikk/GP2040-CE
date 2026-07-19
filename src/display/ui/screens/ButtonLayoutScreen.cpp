@@ -95,6 +95,18 @@ static std::string keycodeToName(uint8_t code) {
 	return "";
 }
 
+static std::string modifierPrefix(uint8_t mask) {
+	static const char* names[] = {"CL", "SL", "AL", "GL", "CR", "SR", "AR", "GR"};
+	std::string prefix;
+	for (uint8_t bit = 0; bit < 8; bit++) {
+		if (mask & (1 << bit)) {
+			prefix += names[bit];
+			prefix += "+";
+		}
+	}
+	return prefix;
+}
+
 static std::string keyboardInputName(const KeyboardMapping& mapping, uint8_t index) {
 	uint32_t keycode = 0;
 	switch (index) {
@@ -503,15 +515,45 @@ void ButtonLayoutScreen::processInputHistory() {
 	if (lastInput != currentInput) {
 		// Load keyboard mapping if in keyboard mode
 		const KeyboardMapping* kbMapping = nullptr;
-		if (mode == 3)
+		uint8_t perPinKeycode[INPUT_HISTORY_MAX_INPUTS] = {0};
+		uint8_t perPinModifier[INPUT_HISTORY_MAX_INPUTS] = {0};
+		if (mode == 3) {
 			kbMapping = &Storage::getInstance().getKeyboardMapping();
+			static const GpioAction idxAction[] = {
+				GpioAction::BUTTON_PRESS_UP, GpioAction::BUTTON_PRESS_DOWN,
+				GpioAction::BUTTON_PRESS_LEFT, GpioAction::BUTTON_PRESS_RIGHT,
+				GpioAction::RESERVED, GpioAction::RESERVED,
+				GpioAction::RESERVED, GpioAction::RESERVED,
+				GpioAction::BUTTON_PRESS_B1, GpioAction::BUTTON_PRESS_B2,
+				GpioAction::BUTTON_PRESS_B3, GpioAction::BUTTON_PRESS_B4,
+				GpioAction::BUTTON_PRESS_L1, GpioAction::BUTTON_PRESS_R1,
+				GpioAction::BUTTON_PRESS_L2, GpioAction::BUTTON_PRESS_R2,
+				GpioAction::BUTTON_PRESS_S1, GpioAction::BUTTON_PRESS_S2,
+				GpioAction::BUTTON_PRESS_L3, GpioAction::BUTTON_PRESS_R3,
+				GpioAction::BUTTON_PRESS_A1, GpioAction::BUTTON_PRESS_A2,
+			};
+			uint32_t* keycodes = Storage::getInstance().getKeyboardKeycodes();
+			uint32_t* modMasks = Storage::getInstance().getKeyboardModifierMasks();
+			GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
+			for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+				uint8_t kc = (uint8_t)keycodes[pin];
+				if (kc == 0) continue;
+				for (uint8_t i = 0; i < INPUT_HISTORY_MAX_INPUTS; i++) {
+					if (pinMappings[pin].action == idxAction[i]) {
+						perPinKeycode[i] = kc;
+						perPinModifier[i] = (uint8_t)modMasks[pin];
+						break;
+					}
+				}
+			}
+		}
 
 		// Iterate through array
 		for (uint8_t x=0; x<INPUT_HISTORY_MAX_INPUTS; x++) {
 			// Add any pressed keys to deque
 			std::string inputChar;
 			if (kbMapping != nullptr)
-				inputChar = keyboardInputName(*kbMapping, x);
+				inputChar = perPinKeycode[x] ? modifierPrefix(perPinModifier[x]) + keycodeToName(perPinKeycode[x]) : keyboardInputName(*kbMapping, x);
 			else
 				inputChar = std::string(displayNames[mode][x]);
 			if (currentInput[x] && (inputChar != "")) pressed.push_back(inputChar);
