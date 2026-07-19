@@ -1,153 +1,144 @@
 #include "RemapScreen.h"
 
+// --- Mode-dependent name lookup table ---
+struct ActionNameEntry {
+	GpioAction action;
+	InputMode mode;
+	const char* name;
+};
+
+static const ActionNameEntry actionNameOverrides[] = {
+	// Face buttons
+	{ BUTTON_PRESS_B1, INPUT_MODE_XINPUT, "A" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_XBONE, "A" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_XBOXORIGINAL, "A" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_SWITCH, "B" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_PS3, "Cross" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_PS4, "Cross" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_PS5, "Cross" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_PSCLASSIC, "Cross" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_NEOGEO, "A" },
+	{ BUTTON_PRESS_B1, INPUT_MODE_MDMINI, "A" },
+
+	{ BUTTON_PRESS_B2, INPUT_MODE_XINPUT, "B" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_XBONE, "B" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_XBOXORIGINAL, "B" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_SWITCH, "A" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_PS3, "Circle" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_PS4, "Circle" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_PS5, "Circle" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_PSCLASSIC, "Circle" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_NEOGEO, "B" },
+	{ BUTTON_PRESS_B2, INPUT_MODE_MDMINI, "B" },
+
+	{ BUTTON_PRESS_B3, INPUT_MODE_XINPUT, "X" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_XBONE, "X" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_XBOXORIGINAL, "X" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_SWITCH, "Y" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_PS3, "Square" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_PS4, "Square" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_PS5, "Square" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_PSCLASSIC, "Square" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_NEOGEO, "C" },
+	{ BUTTON_PRESS_B3, INPUT_MODE_MDMINI, "C" },
+
+	{ BUTTON_PRESS_B4, INPUT_MODE_XINPUT, "Y" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_XBONE, "Y" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_XBOXORIGINAL, "Y" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_SWITCH, "X" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_PS3, "Triangle" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_PS4, "Triangle" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_PS5, "Triangle" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_PSCLASSIC, "Triangle" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_NEOGEO, "D" },
+	{ BUTTON_PRESS_B4, INPUT_MODE_MDMINI, "Start" },
+
+	// Shoulders
+	{ BUTTON_PRESS_L1, INPUT_MODE_XINPUT, "LB" },
+	{ BUTTON_PRESS_L1, INPUT_MODE_XBONE, "LB" },
+	{ BUTTON_PRESS_L1, INPUT_MODE_XBOXORIGINAL, "LB" },
+	{ BUTTON_PRESS_L1, INPUT_MODE_SWITCH, "L" },
+
+	{ BUTTON_PRESS_R1, INPUT_MODE_XINPUT, "RB" },
+	{ BUTTON_PRESS_R1, INPUT_MODE_XBONE, "RB" },
+	{ BUTTON_PRESS_R1, INPUT_MODE_XBOXORIGINAL, "RB" },
+	{ BUTTON_PRESS_R1, INPUT_MODE_SWITCH, "R" },
+
+	{ BUTTON_PRESS_L2, INPUT_MODE_XINPUT, "LT" },
+	{ BUTTON_PRESS_L2, INPUT_MODE_XBONE, "LT" },
+	{ BUTTON_PRESS_L2, INPUT_MODE_XBOXORIGINAL, "LT" },
+	{ BUTTON_PRESS_L2, INPUT_MODE_SWITCH, "ZL" },
+
+	{ BUTTON_PRESS_R2, INPUT_MODE_XINPUT, "RT" },
+	{ BUTTON_PRESS_R2, INPUT_MODE_XBONE, "RT" },
+	{ BUTTON_PRESS_R2, INPUT_MODE_XBOXORIGINAL, "RT" },
+	{ BUTTON_PRESS_R2, INPUT_MODE_SWITCH, "ZR" },
+
+	// Stick clicks
+	{ BUTTON_PRESS_L3, INPUT_MODE_SWITCH, "LS" },
+	{ BUTTON_PRESS_R3, INPUT_MODE_SWITCH, "RS" },
+
+	// System
+	{ BUTTON_PRESS_S1, INPUT_MODE_XINPUT, "Back" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_XBONE, "Back" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_XBOXORIGINAL, "Back" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_SWITCH, "-" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_PS3, "Select" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_PS4, "Select" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_PS5, "Select" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_PSCLASSIC, "Select" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_NEOGEO, "Select" },
+	{ BUTTON_PRESS_S1, INPUT_MODE_MDMINI, "Mode" },
+
+	{ BUTTON_PRESS_S2, INPUT_MODE_XINPUT, "Start" },
+	{ BUTTON_PRESS_S2, INPUT_MODE_XBONE, "Start" },
+	{ BUTTON_PRESS_S2, INPUT_MODE_XBOXORIGINAL, "Start" },
+	{ BUTTON_PRESS_S2, INPUT_MODE_SWITCH, "+" },
+
+	// Aux
+	{ BUTTON_PRESS_A1, INPUT_MODE_XINPUT, "Guide" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_XBONE, "Guide" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_XBOXORIGINAL, "Guide" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_SWITCH, "Home" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_PS3, "PS" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_PS4, "PS" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_PS5, "PS" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_PSCLASSIC, "PS" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_NEOGEO, "Select" },
+	{ BUTTON_PRESS_A1, INPUT_MODE_MDMINI, "Select" },
+
+	{ BUTTON_PRESS_A2, INPUT_MODE_SWITCH, "Capture" },
+	{ BUTTON_PRESS_A2, INPUT_MODE_PS4, "Touchpad" },
+};
+
+static const char* lookupOverride(GpioAction action, InputMode mode) {
+	for (auto& entry : actionNameOverrides)
+		if (entry.action == action && entry.mode == mode)
+			return entry.name;
+	return nullptr;
+}
+
 static const char* getActionName(GpioAction action, InputMode mode) {
+	const char* name = lookupOverride(action, mode);
+	if (name) return name;
+
 	switch (action) {
-		// --- Face buttons (mode-dependent) ---
-		case GpioAction::BUTTON_PRESS_B1:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "A";
-				case INPUT_MODE_SWITCH:        return "B";
-				case INPUT_MODE_PS3:
-				case INPUT_MODE_PS4:
-				case INPUT_MODE_PS5:
-				case INPUT_MODE_PSCLASSIC:     return "Cross";
-				case INPUT_MODE_NEOGEO:        return "A";
-				case INPUT_MODE_MDMINI:        return "A";
-				default:                       return "B1";
-			}
-		case GpioAction::BUTTON_PRESS_B2:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "B";
-				case INPUT_MODE_SWITCH:        return "A";
-				case INPUT_MODE_PS3:
-				case INPUT_MODE_PS4:
-				case INPUT_MODE_PS5:
-				case INPUT_MODE_PSCLASSIC:     return "Circle";
-				case INPUT_MODE_NEOGEO:        return "B";
-				case INPUT_MODE_MDMINI:        return "B";
-				default:                       return "B2";
-			}
-		case GpioAction::BUTTON_PRESS_B3:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "X";
-				case INPUT_MODE_SWITCH:        return "Y";
-				case INPUT_MODE_PS3:
-				case INPUT_MODE_PS4:
-				case INPUT_MODE_PS5:
-				case INPUT_MODE_PSCLASSIC:     return "Square";
-				case INPUT_MODE_NEOGEO:        return "C";
-				case INPUT_MODE_MDMINI:        return "C";
-				default:                       return "B3";
-			}
-		case GpioAction::BUTTON_PRESS_B4:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "Y";
-				case INPUT_MODE_SWITCH:        return "X";
-				case INPUT_MODE_PS3:
-				case INPUT_MODE_PS4:
-				case INPUT_MODE_PS5:
-				case INPUT_MODE_PSCLASSIC:     return "Triangle";
-				case INPUT_MODE_NEOGEO:        return "D";
-				case INPUT_MODE_MDMINI:        return "Start";
-				default:                       return "B4";
-			}
-		// --- Shoulder buttons (mode-dependent) ---
-		case GpioAction::BUTTON_PRESS_L1:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "LB";
-				case INPUT_MODE_SWITCH:        return "L";
-				default:                       return "L1";
-			}
-		case GpioAction::BUTTON_PRESS_R1:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "RB";
-				case INPUT_MODE_SWITCH:        return "R";
-				default:                       return "R1";
-			}
-		case GpioAction::BUTTON_PRESS_L2:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "LT";
-				case INPUT_MODE_SWITCH:        return "ZL";
-				default:                       return "L2";
-			}
-		case GpioAction::BUTTON_PRESS_R2:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "RT";
-				case INPUT_MODE_SWITCH:        return "ZR";
-				default:                       return "R2";
-			}
-		// --- Stick clicks (mode-dependent) ---
-		case GpioAction::BUTTON_PRESS_L3:
-			switch (mode) {
-				case INPUT_MODE_SWITCH:        return "LS";
-				default:                       return "L3";
-			}
-		case GpioAction::BUTTON_PRESS_R3:
-			switch (mode) {
-				case INPUT_MODE_SWITCH:        return "RS";
-				default:                       return "R3";
-			}
-		// --- System/aux buttons (mode-dependent) ---
-		case GpioAction::BUTTON_PRESS_S1:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "Back";
-				case INPUT_MODE_SWITCH:        return "\x2D"; // '-'
-				case INPUT_MODE_PS3:
-				case INPUT_MODE_PS4:
-				case INPUT_MODE_PS5:
-				case INPUT_MODE_PSCLASSIC:
-				case INPUT_MODE_NEOGEO:        return "Select";
-				case INPUT_MODE_MDMINI:        return "Mode";
-				default:                       return "S1";
-			}
-		case GpioAction::BUTTON_PRESS_S2:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return "Start";
-				case INPUT_MODE_SWITCH:        return "\x2B"; // '+'
-				default:                       return "S2";
-			}
-		case GpioAction::BUTTON_PRESS_A1:
-		case GpioAction::BUTTON_PRESS_A2:
-			switch (mode) {
-				case INPUT_MODE_XINPUT:
-				case INPUT_MODE_XBONE:
-				case INPUT_MODE_XBOXORIGINAL: return action == GpioAction::BUTTON_PRESS_A1 ?
-					"Guide" : "A2";
-				case INPUT_MODE_SWITCH:        return action == GpioAction::BUTTON_PRESS_A1 ?
-					"Home" : "Capture";
-				case INPUT_MODE_PS4:           return action == GpioAction::BUTTON_PRESS_A1 ?
-					"PS" : "Touchpad";
-				case INPUT_MODE_PS3:
-				case INPUT_MODE_PS5:
-				case INPUT_MODE_PSCLASSIC:     return action == GpioAction::BUTTON_PRESS_A1 ?
-					"PS" : "A2";
-				case INPUT_MODE_NEOGEO:
-				case INPUT_MODE_MDMINI:        return action == GpioAction::BUTTON_PRESS_A1 ?
-					"Select" : "A2";
-				default:                       return action == GpioAction::BUTTON_PRESS_A1 ?
-					"A1" : "A2";
-			}
-		// --- Readable universal names ---
+		// GP2040 default names (fallback when no mode override matches)
+		case GpioAction::BUTTON_PRESS_B1:     return "B1";
+		case GpioAction::BUTTON_PRESS_B2:     return "B2";
+		case GpioAction::BUTTON_PRESS_B3:     return "B3";
+		case GpioAction::BUTTON_PRESS_B4:     return "B4";
+		case GpioAction::BUTTON_PRESS_L1:     return "L1";
+		case GpioAction::BUTTON_PRESS_R1:     return "R1";
+		case GpioAction::BUTTON_PRESS_L2:     return "L2";
+		case GpioAction::BUTTON_PRESS_R2:     return "R2";
+		case GpioAction::BUTTON_PRESS_S1:     return "S1";
+		case GpioAction::BUTTON_PRESS_S2:     return "S2";
+		case GpioAction::BUTTON_PRESS_A1:     return "A1";
+		case GpioAction::BUTTON_PRESS_A2:     return "A2";
+		case GpioAction::BUTTON_PRESS_L3:     return "L3";
+		case GpioAction::BUTTON_PRESS_R3:     return "R3";
+		// Readable universal names
 		case GpioAction::BUTTON_PRESS_UP:     return "Up";
 		case GpioAction::BUTTON_PRESS_DOWN:   return "Down";
 		case GpioAction::BUTTON_PRESS_LEFT:   return "Left";

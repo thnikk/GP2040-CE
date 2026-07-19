@@ -230,10 +230,16 @@ int8_t MainMenuScreen::update() {
         if (values & mapMenuUp->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_UP);
             actionFired = true;
-        } else if (values & mapMenuDown->pinMask) {
-            updateMenuNavigation(GpioAction::MENU_NAVIGATION_DOWN);
-            actionFired = true;
-        } else if (values & mapMenuSelect->pinMask) {
+	} else if (values & mapMenuDown->pinMask) {
+			updateMenuNavigation(GpioAction::MENU_NAVIGATION_DOWN);
+			actionFired = true;
+		} else if (values & mapMenuLeft->pinMask) {
+			updateMenuNavigation(GpioAction::MENU_NAVIGATION_LEFT);
+			actionFired = true;
+		} else if (values & mapMenuRight->pinMask) {
+			updateMenuNavigation(GpioAction::MENU_NAVIGATION_RIGHT);
+			actionFired = true;
+		} else if (values & mapMenuSelect->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_SELECT);
             actionFired = true;
         } else if (values & mapMenuBack->pinMask) {
