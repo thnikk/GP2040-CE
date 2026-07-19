@@ -110,6 +110,7 @@ const PinSection = memo(function PinSection({
 	inputMode,
 	pinLedIndices,
 	modeColors,
+	boardPinDefaults,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
@@ -123,6 +124,7 @@ const PinSection = memo(function PinSection({
 	inputMode?: number;
 	pinLedIndices?: Record<string, number>;
 	modeColors?: Record<number, string>;
+	boardPinDefaults?: number[] | null;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -215,13 +217,6 @@ const PinSection = memo(function PinSection({
 		? profilePins[`pin${modalPin.toString().padStart(2, '0')}`]
 		: null;
 
-	const baseProfilePins = useProfilesStore(
-		useShallow((state) => {
-			const p = state.profiles[0];
-			return p ? omit(p, ['profileLabel', 'enabled']) : {};
-		}),
-	);
-
 	const getButtonNameFromAction = useCallback((action: number): string | null => {
 		const actionKey = invert(BUTTON_ACTIONS)[action as PinActionValues];
 		const btnKey = actionKey?.split('BUTTON_PRESS_')?.pop();
@@ -231,18 +226,16 @@ const PinSection = memo(function PinSection({
 
 	const ledButtonOrder = useMemo(() => {
 		const order: (string | undefined)[] = [];
-		if (!pinLedIndices) return order;
+		if (!pinLedIndices || !boardPinDefaults) return order;
 		for (let pin = 0; pin < 30; pin++) {
 			const ledIndex = pinLedIndices[String(pin)];
 			if (ledIndex == null || ledIndex < 0) continue;
-			const pinKey = `pin${pin.toString().padStart(2, '0')}`;
-			const action = baseProfilePins[pinKey]?.action;
-			if (action == null) continue;
+			const action = boardPinDefaults[pin] as PinActionValues;
 			const btnKey = getButtonNameFromAction(action);
 			if (btnKey) order[ledIndex] = btnKey;
 		}
 		return order;
-	}, [pinLedIndices, baseProfilePins, getButtonNameFromAction]);
+	}, [pinLedIndices, boardPinDefaults, getButtonNameFromAction]);
 
 	return (
 		<Form onSubmit={handleSubmit}>
@@ -388,11 +381,17 @@ export default function PinMapping() {
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
 	const [pinLedIndices, setPinLedIndices] = useState<Record<string, number> | undefined>(undefined);
 	const [modeColors, setModeColors] = useState<Record<number, string> | undefined>(undefined);
+	const [boardPinDefaults, setBoardPinDefaults] = useState<number[] | null>(null);
 
 	const { setLoading } = useContext(AppContext);
 
 	useEffect(() => {
 		fetchProfiles();
+		async function fetchBoardDefaults() {
+			const data = await WebApi.getBoardPinDefaults();
+			if (data?.pins) setBoardPinDefaults(data.pins);
+		}
+		fetchBoardDefaults();
 		async function fetchTheme() {
 			const data = await WebApi.getCustomTheme(setLoading);
 			if (data) {
@@ -605,6 +604,7 @@ const submitTheme = useCallback(async () => {
 							inputMode={inputMode}
 							pinLedIndices={pinLedIndices}
 							modeColors={modeColors}
+							boardPinDefaults={boardPinDefaults}
 						/>
 						)
 					))}

@@ -458,6 +458,15 @@ async function getBoardLedModeColors() {
 	}
 }
 
+async function getBoardPinDefaults() {
+	try {
+		const { data } = await Http.get(`${baseUrl}/api/getBoardPinDefaults`);
+		return data;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 async function getBoardLedOptions(setLoading) {
 	setLoading(true);
 
@@ -742,6 +751,7 @@ export default {
 	getPinMappings,
 	setPinMappings,
 	getBoardLedModeColors,
+	getBoardPinDefaults,
 	getBoardLedOptions,
 	setBoardLedOptions,
 	getProfileOptions,

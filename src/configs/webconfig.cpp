@@ -2219,6 +2219,116 @@ std::string getBoardLedModeColors()
     return serialize_json(doc);
 }
 
+std::string getBoardPinDefaults()
+{
+    // Board pin defaults (fill in what BoardConfig.h doesn't define)
+#ifndef GPIO_PIN_00
+    #define GPIO_PIN_00 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_01
+    #define GPIO_PIN_01 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_02
+    #define GPIO_PIN_02 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_03
+    #define GPIO_PIN_03 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_04
+    #define GPIO_PIN_04 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_05
+    #define GPIO_PIN_05 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_06
+    #define GPIO_PIN_06 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_07
+    #define GPIO_PIN_07 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_08
+    #define GPIO_PIN_08 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_09
+    #define GPIO_PIN_09 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_10
+    #define GPIO_PIN_10 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_11
+    #define GPIO_PIN_11 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_12
+    #define GPIO_PIN_12 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_13
+    #define GPIO_PIN_13 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_14
+    #define GPIO_PIN_14 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_15
+    #define GPIO_PIN_15 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_16
+    #define GPIO_PIN_16 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_17
+    #define GPIO_PIN_17 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_18
+    #define GPIO_PIN_18 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_19
+    #define GPIO_PIN_19 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_20
+    #define GPIO_PIN_20 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_21
+    #define GPIO_PIN_21 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_22
+    #define GPIO_PIN_22 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_23
+    #define GPIO_PIN_23 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_24
+    #define GPIO_PIN_24 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_25
+    #define GPIO_PIN_25 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_26
+    #define GPIO_PIN_26 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_27
+    #define GPIO_PIN_27 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_28
+    #define GPIO_PIN_28 GpioAction::NONE
+#endif
+#ifndef GPIO_PIN_29
+    #define GPIO_PIN_29 GpioAction::NONE
+#endif
+
+    DynamicJsonDocument doc(1024);
+    GpioAction boardPinDefs[NUM_BANK0_GPIOS] = {
+        GPIO_PIN_00, GPIO_PIN_01, GPIO_PIN_02, GPIO_PIN_03, GPIO_PIN_04,
+        GPIO_PIN_05, GPIO_PIN_06, GPIO_PIN_07, GPIO_PIN_08, GPIO_PIN_09,
+        GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14,
+        GPIO_PIN_15, GPIO_PIN_16, GPIO_PIN_17, GPIO_PIN_18, GPIO_PIN_19,
+        GPIO_PIN_20, GPIO_PIN_21, GPIO_PIN_22, GPIO_PIN_23, GPIO_PIN_24,
+        GPIO_PIN_25, GPIO_PIN_26, GPIO_PIN_27, GPIO_PIN_28, GPIO_PIN_29,
+    };
+    JsonArray arr = doc.createNestedArray("pins");
+    for (auto a : boardPinDefs)
+        arr.add(static_cast<int>(a));
+
+    return serialize_json(doc);
+}
+
 std::string getBoardLedOptions()
 {
     DynamicJsonDocument doc(LWIP_HTTPD_POST_MAX_PAYLOAD_LEN);
@@ -2464,6 +2574,7 @@ static const std::pair<const char*, HandlerFuncPtr> handlerFuncs[] =
     { "/api/resetSettings", resetSettings },
     { "/api/getSplashImage", getSplashImage },
     { "/api/getBoardLedModeColors", getBoardLedModeColors },
+    { "/api/getBoardPinDefaults", getBoardPinDefaults },
     { "/api/getBoardLedOptions", getBoardLedOptions },
     { "/api/setBoardLedOptions", setBoardLedOptions },
     { "/api/getFirmwareVersion", getFirmwareVersion },
