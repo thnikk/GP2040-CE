@@ -488,6 +488,7 @@ void RemapScreen::init() {
 void RemapScreen::shutdown() {
 	if (hasChanges) {
 		EventManager::getInstance().triggerEvent(new GPStorageSaveEvent(true, false));
+		Storage::getInstance().GetGamepad()->userRequestedReinit = true;
 	}
 	clearElements();
 }
