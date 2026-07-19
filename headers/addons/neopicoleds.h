@@ -120,6 +120,7 @@ private:
 	AnimationStation as;
 	uint8_t lastMode = 255;
 	bool turnOffWhenSuspended;
+	uint32_t cachedPinMasks[NUM_BANK0_GPIOS];
     PLEDType ledType;
 };
 
