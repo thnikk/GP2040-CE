@@ -6,8 +6,30 @@
    id="svg25"
    width="352"
    height="279.5"
+   sodipodi:docname="controller.svg"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.2826705"
+     inkscape:cx="50.285714"
+     inkscape:cy="157.87375"
+     inkscape:window-width="2560"
+     inkscape:window-height="1440"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg25" />
   <defs
      id="defs25" />
   <path
@@ -16,7 +38,7 @@
      d="m 83.999992,78.5 c -32.5,0 -61.5,17.5 -73,45.5 -11.49999963,28 -51,133.6 -51,180 0,46.4 13.5,61 45.5000004,61 31.9999996,0 55.4999996,-84 100.4999976,-84 h 70 0.5 70 c 45,0 68.5,84 100.5,84 32,0 45.5,-14.6 45.5,-61 0,-46.4 -39.5,-152 -51,-180 -11.5,-28 -40.5,-45.5 -73,-45.5 h -92 -0.5 z"
      style="display:none;fill:#1c1f26;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
   <rect
-     style="fill:#1c1f26;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+     style="display:inline;fill:#1c1f26;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
      id="rect8"
      width="350"
      height="200"
@@ -30,21 +52,21 @@
      r="37.5"
      class="fill-stone-50 dark:fill-stone-900 stroke-stone-200 dark:stroke-stone-700 stroke-2"
      id="circle6"
-     style="fill:#2b303b;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     style="display:none;fill:#2b303b;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
   <circle
      cx="68.999992"
      cy="146.5"
      r="37.5"
      class="fill-stone-50 dark:fill-stone-900 stroke-stone-200 dark:stroke-stone-700 stroke-2"
      id="circle5"
-     style="fill:#2b303b;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     style="display:none;fill:#2b303b;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
   <circle
      cx="121.99999"
      cy="224.5"
      r="37.5"
      class="fill-stone-50 dark:fill-stone-900 stroke-stone-200 dark:stroke-stone-700 stroke-2"
      id="circle13"
-     style="fill:#2b303b;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
+     style="fill:#2e3440;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1" />
   <path
      d="m 108.49999,39.47 c 0,4.61 -3.35,8.36 -7.5,8.36 H 87.999992 c -4.14,0 -7.5,-3.74 -7.5,-8.36 V 16.61 c 0,-8.62 6.27,-15.61 14,-15.61 7.729998,0 13.999998,6.99 13.999998,15.61 z"
      class="fill-stone-200 dark:fill-stone-700 stroke-stone-300 dark:stroke-stone-600 stroke-2"
@@ -76,13 +98,13 @@
   <path
      id="analog-left"
      mask="none"
-     style="fill:#d8dee9;fill-opacity:0.2;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:#2e3440;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
      class="fill-stone-300 dark:fill-stone-600 transition-colors duration-100 stroke-white dark:stroke-stone-800 stroke-2"
-     d="m 68.859375,117.74023 a 28,28 0 0 0 -28,28 28,28 0 0 0 28,28 28,28 0 0 0 28,-28 28,28 0 0 0 -28,-28 z m 0,18 a 10,10 0 0 1 10,10 10,10 0 0 1 -10,10 10,10 0 0 1 -10,-10 10,10 0 0 1 10,-10 z" />
+     d="m 68.859372,117.74023 a 28,28 0 0 0 -27.999997,28 28,28 0 0 0 27.999997,28 28,28 0 0 0 28,-28 28,28 0 0 0 -28,-28 z m 0,18 a 10,10 0 0 1 10,10 10,10 0 0 1 -10,10 10,10 0 0 1 -9.999997,-10 10,10 0 0 1 9.999997,-10 z" />
   <path
      id="analog-right"
      mask="none"
-     style="fill:#d8dee9;fill-opacity:0.2;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:#2e3440;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
      class="fill-stone-300 dark:fill-stone-600 transition-colors duration-100 stroke-white dark:stroke-stone-800 stroke-2"
      d="m 233.67383,196.36719 a 28,28 0 0 0 -28,28 28,28 0 0 0 28,28 28,28 0 0 0 28,-28 28,28 0 0 0 -28,-28 z m 0,18 a 10,10 0 0 1 10,10 10,10 0 0 1 -10,10 10,10 0 0 1 -10,-10 10,10 0 0 1 10,-10 z" />
   <circle
@@ -176,7 +198,7 @@
   <circle
      style="display:inline;fill:#d8dee9;fill-opacity:1;stroke:#1c1f26;stroke-width:2;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
      id="btn-r3"
-     cx="233.67314"
+     cx="233.67316"
      cy="224.36761"
      r="10" />
 </svg>
