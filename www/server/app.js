@@ -776,6 +776,12 @@ app.get('/api/getMemoryReport', (req, res) => {
 	});
 });
 
+app.get('/api/getPinState', (req, res) => {
+	return res.send({
+		heldPins: [],
+	});
+});
+
 app.get('/api/getHeldPins', async (req, res) => {
 	await new Promise((resolve) => setTimeout(resolve, 2000));
 	return res.send({
