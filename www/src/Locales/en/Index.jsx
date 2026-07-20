@@ -19,7 +19,6 @@ import ReactiveLED from './Addons/ReactiveLED';
 import InputMacroAddon from './InputMacroAddon';
 import LayoutConfig from './LayoutConfig';
 import ConfigurationPage from './ConfigurationPage';
-import PinViewer from './PinViewer';
 
 export default {
 	Common,
@@ -43,5 +42,4 @@ export default {
 	ConfigurationPage,
 	PCF8575,
 	ReactiveLED,
-	PinViewer,
 };

@@ -4,6 +4,7 @@ import React, {
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -174,6 +175,40 @@ const PinSection = memo(function PinSection({
 	);
 	const [modalPin, setModalPin] = useState<number | null>(null);
 
+	const [listening, setListening] = useState(false);
+	const [pressedPins, setPressedPins] = useState<number[]>([]);
+	const stopRef = useRef(false);
+
+	const pollPins = useCallback(async () => {
+		if (stopRef.current) return;
+		try {
+			const data = await WebApi.getPinState();
+			if (data && data.heldPins) {
+				setPressedPins(data.heldPins.filter((p: number) => svgPinSet.has(p)));
+			} else {
+				setPressedPins([]);
+			}
+		} catch (error) {
+			// Ignore errors
+		}
+		if (!stopRef.current) {
+			setTimeout(pollPins, 50);
+		}
+	}, [svgPinSet]);
+
+	useEffect(() => {
+		if (!listening) {
+			stopRef.current = true;
+			setPressedPins([]);
+			return;
+		}
+		stopRef.current = false;
+		pollPins();
+		return () => {
+			stopRef.current = true;
+		};
+	}, [listening, pollPins]);
+
 	const profilePins = useProfilesStore(
 		useShallow((state) => {
 			const p = state.profiles[profileIndex];
@@ -239,10 +274,19 @@ const PinSection = memo(function PinSection({
 
 	return (
 		<Form onSubmit={handleSubmit}>
-			<div className="d-flex justify-content-between">
+			<div className="d-flex justify-content-between align-items-center">
 				<ProfileLabel profileIndex={profileIndex} />
-				{profileIndex > 0 && (
-					<div className="d-flex">
+				<div className="d-flex gap-3 align-items-center">
+					<Button
+						variant={listening ? 'danger' : 'outline-success'}
+						size="sm"
+						onClick={() => setListening(!listening)}
+					>
+						{listening
+							? t('PinMapping:stop-listening')
+							: t('PinMapping:start-listening')}
+					</Button>
+					{profileIndex > 0 && (
 						<FormCheck
 							size={3}
 							label={
@@ -266,8 +310,8 @@ const PinSection = memo(function PinSection({
 								toggleProfileEnabled(profileIndex);
 							}}
 						/>
-					</div>
-				)}
+					)}
+				</div>
 			</div>
 
 			{svgMode ? (
@@ -283,6 +327,7 @@ const PinSection = memo(function PinSection({
 						profileIndex={profileIndex}
 						onPinClick={handlePinClick}
 						highlightedPin={pressedPin}
+						highlightedPins={listening ? pressedPins : undefined}
 						dirtyPins={dirtyPins}
 						customTheme={customTheme}
 						animationMode={animationMode}

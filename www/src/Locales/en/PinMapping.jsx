@@ -1,9 +1,10 @@
 export default {
 	'header-text': 'Pin Mapping',
-	'sub-header-text': `Use Pin Viewer to see button to pin connection.`,
+	'sub-header-text': 'Use the listening toggle to see button-to-pin connections on the board layout.',
 	'alert-text':
 		"Mapping buttons to pins that aren't connected or available can leave the device in non-functional state. To clear the invalid configuration go to the <2>Reset Settings</2> page.",
-	'pin-viewer': 'Pin viewer',
+	'start-listening': 'Start Listening',
+	'stop-listening': 'Stop Listening',
 	'pin-pressed': 'Pressed pin: {{pressedPin}}',
 	'pin-header-label': 'Pin',
 	'profile-label-title': 'Profile name',
