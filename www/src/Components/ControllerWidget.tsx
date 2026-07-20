@@ -220,6 +220,17 @@ export default function ControllerWidget({
 
 	useEffect(() => {
 		const svg = svgRef.current;
+		if (!svg || !svgMarkup) return;
+
+		svg.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, line')
+			.forEach((el) => {
+				el.setAttribute('vector-effect', 'non-scaling-stroke');
+				el.style.setProperty('stroke-width', '2', 'important');
+			});
+	}, [svgMarkup]);
+
+	useEffect(() => {
+		const svg = svgRef.current;
 		if (!svg) return;
 
 		for (const el of SVG_ELS) {
@@ -232,6 +243,11 @@ export default function ControllerWidget({
 
 			(node as HTMLElement).style.fill = defaultFill(el.id);
 			(node as HTMLElement).style.stroke = sel ? '#ffffff' : defaultStroke(el.id);
+			if (sel) {
+				(node as HTMLElement).style.setProperty('stroke-width', '3', 'important');
+			} else {
+				(node as HTMLElement).style.setProperty('stroke-width', '2', 'important');
+			}
 
 			const label = svg.getElementById(`label-${el.id}`);
 			if (label) {
