@@ -133,6 +133,9 @@ void MainMenuScreen::init() {
     prevInputHistoryTimeout = Storage::getInstance().getDisplayOptions().inputHistoryTimeout;
     updateInputHistoryTimeout = prevInputHistoryTimeout;
 
+    prevDisplaySaverTimeout = Storage::getInstance().getDisplayOptions().displaySaverTimeout;
+    updateDisplaySaverTimeout = prevDisplaySaverTimeout;
+
     themeMenu.clear();
     for (int i = 0; i < themeCount; i++) {
         std::string name = themeNames[i];
@@ -159,7 +162,18 @@ void MainMenuScreen::init() {
             std::bind(&MainMenuScreen::currentInputHistoryTimeout, this),
             std::bind(&MainMenuScreen::selectInputHistoryTimeout, this), timeoutValues[i]});
     }
+    static const uint32_t displayTimeoutValues[] = {0, 15000, 30000, 60000, 120000, 300000, 600000};
+    static const char* displayTimeoutLabels[] = {"Off", "15s", "30s", "1m", "2m", "5m", "10m"};
+    displayTimeoutMenu.clear();
+    for (size_t i = 0; i < sizeof(displayTimeoutValues) / sizeof(displayTimeoutValues[0]); i++) {
+        displayTimeoutMenu.push_back({displayTimeoutLabels[i], NULL, nullptr,
+            std::bind(&MainMenuScreen::currentDisplaySaverTimeout, this),
+            std::bind(&MainMenuScreen::selectDisplaySaverTimeout, this), displayTimeoutValues[i]});
+    }
     displayMenu.clear();
+    displayMenu.push_back({"Idle Timeout", NULL, &displayTimeoutMenu,
+        std::bind(&MainMenuScreen::modeValue, this),
+        std::bind(&MainMenuScreen::testMenu, this)});
     displayMenu.push_back({"Hist Timeout", NULL, &histTimeoutMenu,
         std::bind(&MainMenuScreen::modeValue, this),
         std::bind(&MainMenuScreen::testMenu, this)});
@@ -444,6 +458,7 @@ void MainMenuScreen::resetOptions() {
         if (prevThemeIndex != updateThemeIndex) updateThemeIndex = prevThemeIndex;
         if (prevBrightness != updateBrightness) updateBrightness = prevBrightness;
         if (prevInputHistoryTimeout != updateInputHistoryTimeout) updateInputHistoryTimeout = prevInputHistoryTimeout;
+        if (prevDisplaySaverTimeout != updateDisplaySaverTimeout) updateDisplaySaverTimeout = prevDisplaySaverTimeout;
     }
 
     changeRequiresSave = false;
@@ -483,6 +498,10 @@ void MainMenuScreen::saveOptions() {
         }
         if (prevInputHistoryTimeout != updateInputHistoryTimeout) {
             Storage::getInstance().getDisplayOptions().inputHistoryTimeout = updateInputHistoryTimeout;
+            saveHasChanged = true;
+        }
+        if (prevDisplaySaverTimeout != updateDisplaySaverTimeout) {
+            Storage::getInstance().getDisplayOptions().displaySaverTimeout = updateDisplaySaverTimeout;
             saveHasChanged = true;
         }
 
@@ -611,6 +630,20 @@ void MainMenuScreen::selectInputHistoryTimeout() {
 
 int32_t MainMenuScreen::currentInputHistoryTimeout() {
     return updateInputHistoryTimeout;
+}
+
+void MainMenuScreen::selectDisplaySaverTimeout() {
+    if (currentMenu->at(menuIndex).optionValue != -1) {
+        uint32_t valueToSave = currentMenu->at(menuIndex).optionValue;
+        prevDisplaySaverTimeout = Storage::getInstance().getDisplayOptions().displaySaverTimeout;
+        updateDisplaySaverTimeout = valueToSave;
+
+        if (prevDisplaySaverTimeout != valueToSave) changeRequiresSave = true;
+    }
+}
+
+int32_t MainMenuScreen::currentDisplaySaverTimeout() {
+    return updateDisplaySaverTimeout;
 }
 
 void MainMenuScreen::selectRemap() {

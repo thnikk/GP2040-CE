@@ -79,6 +79,9 @@ class MainMenuScreen : public GPScreen {
         void selectInputHistoryTimeout();
         int32_t currentInputHistoryTimeout();
 
+        void selectDisplaySaverTimeout();
+        int32_t currentDisplaySaverTimeout();
+
         void selectAnimation();
         int32_t currentAnimation();
         void selectTheme();
@@ -188,6 +191,10 @@ class MainMenuScreen : public GPScreen {
         std::vector<MenuEntry> histTimeoutMenu;
         uint16_t prevInputHistoryTimeout;
         uint16_t updateInputHistoryTimeout;
+
+        std::vector<MenuEntry> displayTimeoutMenu;
+        uint32_t prevDisplaySaverTimeout;
+        uint32_t updateDisplaySaverTimeout;
 
         std::vector<MenuEntry> mainMenu;
 
