@@ -1696,7 +1696,6 @@ export default function SettingsPage() {
 															hidden={values.lockHotkeys}
 															>
 																<Form.Check
-																	label="Pin"
 																	type="switch"
 																	id={`hotkeyPin-${i}`}
 																	className="text my-auto"
