@@ -521,10 +521,14 @@ const FormContext = ({ setButtonLabels, setInputMode }) => {
 				action: parseInt(value.action),
 				buttonsMask: parseInt(value.buttonsMask),
 				auxMask: parseInt(value.auxMask),
-				usePinTrigger: typeof value.usePinTrigger === 'boolean'
-					? value.usePinTrigger
-					: parseInt(value.usePinTrigger) ? true : false,
-				pinTriggerMask: parseInt(value.pinTriggerMask),
+				usePinTrigger: typeof value.usePinTrigger !== 'undefined'
+					? (typeof value.usePinTrigger === 'boolean'
+						? value.usePinTrigger
+						: parseInt(value.usePinTrigger) ? true : false)
+					: false,
+				pinTriggerMask: typeof value.pinTriggerMask !== 'undefined'
+					? parseInt(value.pinTriggerMask)
+					: 0,
 			};
 		}
 	});
@@ -1814,7 +1818,7 @@ export default function SettingsPage() {
 																	type="invalid"
 																	className={errors[o] ? 'd-block' : ''}
 																>
-																	{errors[o]}
+																	{errors[o] && typeof errors[o] === 'string' ? errors[o] : null}
 																</Form.Control.Feedback>
 															</div>
 														))}
