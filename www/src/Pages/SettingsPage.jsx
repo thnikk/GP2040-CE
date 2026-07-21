@@ -244,6 +244,10 @@ const AUTHENTICATION_TYPES = [
 	{ labelKey: 'input-mode-authentication.i2c', value: 3 },
 ];
 
+const PIN_TRIGGER_OPTIONS = Array(30)
+	.fill(0)
+	.map((_, i) => ({ label: `GPIO ${i}`, value: 1 << i }));
+
 const HOTKEY_ACTIONS = [
 	{ labelKey: 'hotkey-actions.no-action', value: 0 },
 	{ labelKey: 'hotkey-actions.dpad-digital', value: 1 },
@@ -342,6 +346,8 @@ const hotkeySchema = {
 		.label('Hotkey Action'),
 	buttonsMask: yup.number().required().label('Button Mask'),
 	auxMask: yup.number().required().label('Function Key'),
+	usePinTrigger: yup.boolean().required().label('Pin Trigger Mode'),
+	pinTriggerMask: yup.number().required().label('Pin Trigger Mask'),
 };
 
 const hotkeyFields = Array(16)
@@ -352,27 +358,29 @@ const hotkeyFields = Array(16)
 			.object()
 			.label('Hotkey ' + number)
 			.shape({ ...hotkeySchema })
-			.test(
-				'duplicate-hotkeys',
-				'Duplicate button combinations are not allowed',
-				function (currentValue) {
-					return !Object.entries(this.parent).some(
-						([key, { buttonsMask, auxMask }]) => {
-							if (
-								!key.includes('hotkey') || // Skip non-hotkey rows
-								key === 'hotkey' + number || // Skip current hotkey
-								!Boolean(currentValue.buttonsMask + currentValue.auxMask) // Skip unset hotkey rows
-							) {
-								return false;
-							}
-							return (
-								buttonsMask === currentValue.buttonsMask &&
-								auxMask === currentValue.auxMask
-							);
-						},
-					);
-				},
-			);
+		.test(
+			'duplicate-hotkeys',
+			'Duplicate button combinations are not allowed',
+			function (currentValue) {
+				// Skip duplicate check for pin-trigger hotkeys
+				if (currentValue.usePinTrigger) return true;
+				return !Object.entries(this.parent).some(
+					([key, { buttonsMask, auxMask }]) => {
+						if (
+							!key.includes('hotkey') || // Skip non-hotkey rows
+							key === 'hotkey' + number || // Skip current hotkey
+							!Boolean(currentValue.buttonsMask + currentValue.auxMask) // Skip unset hotkey rows
+						) {
+							return false;
+						}
+						return (
+							buttonsMask === currentValue.buttonsMask &&
+							auxMask === currentValue.auxMask
+						);
+					},
+				);
+			},
+		);
 		acc['hotkey' + number] = newSchema;
 		return acc;
 	}, {});
@@ -506,16 +514,20 @@ const FormContext = ({ setButtonLabels, setInputMode }) => {
 				values.switchTpShareForDs4 === 1 && values.inputMode === 4,
 		});
 
-		Object.keys(hotkeyFields).forEach((a) => {
-			const value = values[a];
-			if (value) {
-				values[a] = {
-					action: parseInt(value.action),
-					buttonsMask: parseInt(value.buttonsMask),
-					auxMask: parseInt(value.auxMask),
-				};
-			}
-		});
+	Object.keys(hotkeyFields).forEach((a) => {
+		const value = values[a];
+		if (value) {
+			values[a] = {
+				action: parseInt(value.action),
+				buttonsMask: parseInt(value.buttonsMask),
+				auxMask: parseInt(value.auxMask),
+				usePinTrigger: typeof value.usePinTrigger === 'boolean'
+					? value.usePinTrigger
+					: parseInt(value.usePinTrigger) ? true : false,
+				pinTriggerMask: parseInt(value.pinTriggerMask),
+			};
+		}
+	});
 	}, [values, setValues]);
 
 	return null;
@@ -1683,6 +1695,43 @@ export default function SettingsPage() {
 															className="d-flex flex-wrap align-items-center gap-1"
 															hidden={values.lockHotkeys}
 															>
+																<Form.Check
+																	label="Pin"
+																	type="switch"
+																	id={`hotkeyPin-${i}`}
+																	className="text my-auto"
+																	checked={values[o] && !!values[o]?.usePinTrigger}
+																	onChange={() => {
+																		const newVal = !values[o]?.usePinTrigger;
+																		setFieldValue(
+																			`${o}.usePinTrigger`,
+																			newVal,
+																		);
+																		if (newVal) {
+																			setFieldValue(`${o}.buttonsMask`, 0);
+																			setFieldValue(`${o}.auxMask`, 0);
+																		} else {
+																			setFieldValue(`${o}.pinTriggerMask`, 0);
+																		}
+																	}}
+																/>
+																{values[o]?.usePinTrigger ? (
+																<CustomSelect
+																	isMulti
+																	isClearable
+																	options={PIN_TRIGGER_OPTIONS}
+																	value={PIN_TRIGGER_OPTIONS.filter(
+																		(opt) => values[o]?.pinTriggerMask & opt.value,
+																	)}
+																	onChange={(selected) => {
+																		const mask = selected
+																			? selected.reduce((acc, opt) => acc | opt.value, 0)
+																			: 0;
+																		setFieldValue(`${o}.pinTriggerMask`, mask);
+																	}}
+																/>
+																) : (
+																<>
 																{values.fnButtonPin !== -1 && (
 																<>
 																	<Form.Check
@@ -1720,6 +1769,8 @@ export default function SettingsPage() {
 																		setFieldValue(`${o}.buttonsMask`, mask);
 																	}}
 																/>
+																</>
+																)}
 																<span>=</span>
 																<div className="hotkey-action-column d-flex align-items-center gap-1">
 																	<Form.Select
@@ -1742,13 +1793,18 @@ export default function SettingsPage() {
 																		{errors[o] && errors[o]?.action}
 																	</Form.Control.Feedback>
 																	{Boolean(
-																		values[o]?.buttonsMask || values[o]?.action,
+																		values[o]?.usePinTrigger
+																			? values[o]?.pinTriggerMask || values[o]?.action
+																			: values[o]?.buttonsMask || values[o]?.action,
 																	) && (
 																		<Button
 																			size="sm"
 																			onClick={() => {
 																				setFieldValue(`${o}.action`, 0);
 																				setFieldValue(`${o}.buttonsMask`, 0);
+																				setFieldValue(`${o}.auxMask`, 0);
+																				setFieldValue(`${o}.usePinTrigger`, false);
+																				setFieldValue(`${o}.pinTriggerMask`, 0);
 																			}}
 																		>
 																			{'✕'}

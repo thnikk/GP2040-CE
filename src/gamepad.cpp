@@ -167,6 +167,48 @@ void Gamepad::setup()
 		}
 	}
 
+	// Populate reverse pin-to-action mapping for hotkey pin trigger cleanup
+	for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++)
+	{
+		uint32_t bit = 1 << pin;
+		if (mapDpadUp->pinMask & bit)		pinToDpadMask[pin]	|= mapDpadUp->buttonMask;
+		if (mapDpadDown->pinMask & bit)		pinToDpadMask[pin]	|= mapDpadDown->buttonMask;
+		if (mapDpadLeft->pinMask & bit)		pinToDpadMask[pin]	|= mapDpadLeft->buttonMask;
+		if (mapDpadRight->pinMask & bit)	pinToDpadMask[pin]	|= mapDpadRight->buttonMask;
+		if (mapDigitalUp->pinMask & bit)	pinToDpadMask[pin]	|= mapDigitalUp->buttonMask;
+		if (mapDigitalDown->pinMask & bit)	pinToDpadMask[pin]	|= mapDigitalDown->buttonMask;
+		if (mapDigitalLeft->pinMask & bit)	pinToDpadMask[pin]	|= mapDigitalLeft->buttonMask;
+		if (mapDigitalRight->pinMask & bit)	pinToDpadMask[pin]	|= mapDigitalRight->buttonMask;
+		if (mapButtonB1->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonB1->buttonMask;
+		if (mapButtonB2->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonB2->buttonMask;
+		if (mapButtonB3->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonB3->buttonMask;
+		if (mapButtonB4->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonB4->buttonMask;
+		if (mapButtonL1->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonL1->buttonMask;
+		if (mapButtonR1->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonR1->buttonMask;
+		if (mapButtonL2->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonL2->buttonMask;
+		if (mapButtonR2->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonR2->buttonMask;
+		if (mapButtonS1->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonS1->buttonMask;
+		if (mapButtonS2->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonS2->buttonMask;
+		if (mapButtonL3->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonL3->buttonMask;
+		if (mapButtonR3->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonR3->buttonMask;
+		if (mapButtonA1->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonA1->buttonMask;
+		if (mapButtonA2->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonA2->buttonMask;
+		if (mapButtonA3->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonA3->buttonMask;
+		if (mapButtonA4->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonA4->buttonMask;
+		if (mapButtonE1->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE1->buttonMask;
+		if (mapButtonE2->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE2->buttonMask;
+		if (mapButtonE3->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE3->buttonMask;
+		if (mapButtonE4->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE4->buttonMask;
+		if (mapButtonE5->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE5->buttonMask;
+		if (mapButtonE6->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE6->buttonMask;
+		if (mapButtonE7->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE7->buttonMask;
+		if (mapButtonE8->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE8->buttonMask;
+		if (mapButtonE9->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonE9->buttonMask;
+		if (mapButtonE10->pinMask & bit)	pinToButtonMask[pin]	|= mapButtonE10->buttonMask;
+		if (mapButtonE11->pinMask & bit)	pinToButtonMask[pin]	|= mapButtonE11->buttonMask;
+		if (mapButtonE12->pinMask & bit)	pinToButtonMask[pin]	|= mapButtonE12->buttonMask;
+		if (mapButtonFn->pinMask & bit)		pinToButtonMask[pin]	|= mapButtonFn->buttonMask;
+	}
 }
 
 /**

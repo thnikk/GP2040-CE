@@ -348,6 +348,8 @@ void save_hotkey(HotkeyEntry* hotkey, const DynamicJsonDocument& doc, const stri
     hotkey->dpadMask = dpadMask;
     hotkey->buttonsMask = buttonsMask;
     readDoc(hotkey->action, doc, hotkey_key, "action");
+    readDoc(hotkey->usePinTrigger, doc, hotkey_key, "usePinTrigger");
+    readDoc(hotkey->pinTriggerMask, doc, hotkey_key, "pinTriggerMask");
 }
 
 void load_hotkey(const HotkeyEntry* hotkey, DynamicJsonDocument& doc, const string hotkey_key)
@@ -368,6 +370,8 @@ void load_hotkey(const HotkeyEntry* hotkey, DynamicJsonDocument& doc, const stri
     }
     writeDoc(doc, hotkey_key, "buttonsMask", buttonsMask);
     writeDoc(doc, hotkey_key, "action", hotkey->action);
+    writeDoc(doc, hotkey_key, "usePinTrigger", hotkey->usePinTrigger);
+    writeDoc(doc, hotkey_key, "pinTriggerMask", hotkey->pinTriggerMask);
 }
 
 // LWIP callback on HTTP POST to validate the URI

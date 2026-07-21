@@ -81,10 +81,14 @@
 #define HOTKEY_09_AUX_MASK 0
 #define HOTKEY_09_ACTION 35          // HOTKEY_NEXT_PROFILE
 
-#define HOTKEY_10_BUTTONS_MASK ((1 << 10) | (1 << 11) | (1 << 0)) // L3 + R3 + B1
-#define HOTKEY_10_DPAD_MASK 0
-#define HOTKEY_10_AUX_MASK 0
-#define HOTKEY_10_ACTION 50 // HOTKEY_MENU_NAV_TOGGLE
+// #define HOTKEY_10_BUTTONS_MASK ((1 << 10) | (1 << 11) | (1 << 0)) // L3 + R3 + B1
+// #define HOTKEY_10_DPAD_MASK 0
+// #define HOTKEY_10_AUX_MASK 0
+// #define HOTKEY_10_ACTION 50 // HOTKEY_MENU_NAV_TOGGLE
+
+#define HOTKEY_10_USE_PIN_TRIGGER 1
+#define HOTKEY_10_PIN_TRIGGER_MASK ((1 << 5) | (1 << 9) | (1 << 13))
+#define HOTKEY_10_ACTION 50  // menu toggle
 
 // Per-key LEDs
 #define BOARD_LEDS_PIN 00
