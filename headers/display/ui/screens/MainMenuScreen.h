@@ -135,6 +135,8 @@ class MainMenuScreen : public GPScreen {
         };
         void adjustSpinnerValue(int8_t direction);
         void switchSpinnerUnit(int8_t direction);
+        void saveSpinnerValue();
+        void revertSpinnerValue();
         uint8_t currentSpinnerUnit = 0;
 
         uint32_t repeatTimer = 0;
@@ -214,6 +216,7 @@ class MainMenuScreen : public GPScreen {
         uint32_t prevDisplaySaverTimeout;
         uint32_t updateDisplaySaverTimeout;
         uint32_t spinnerValueSnapshot;
+        uint16_t histSpinnerValueSnapshot;
 
         std::vector<MenuEntry> displaySaverModeMenu;
         uint8_t prevDisplaySaverMode;
