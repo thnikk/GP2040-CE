@@ -209,10 +209,7 @@ void DisplayAddon::process() {
     if (pendingScreenReturn != -1) {
         currDisplayMode = (DisplayMode)pendingScreenReturn;
         pendingScreenReturn = -1;
-        if (currDisplayMode != DisplayMode::MAIN_MENU)
-            gamepad->menuActive = false;
-        else
-            gamepad->menuActive = true;
+        gamepad->menuActive = isMenuScreen(currDisplayMode);
         updateDisplayScreen();
     }
 
@@ -222,7 +219,7 @@ void DisplayAddon::process() {
     if (!configMode && screenReturn < 0) {
         Mask_t values = Storage::getInstance().GetGamepad()->debouncedGpio;
         if (values & mapMenuToggle->pinMask) {
-            if (currDisplayMode != DisplayMode::MAIN_MENU) {
+            if (!isMenuScreen(currDisplayMode)) {
                 screenReturn = DisplayMode::MAIN_MENU;
             }
         }
@@ -233,9 +230,7 @@ void DisplayAddon::process() {
         // Screen wants to change to something else
         if (screenReturn != currDisplayMode) {
             currDisplayMode = (DisplayMode)screenReturn;
-            if (currDisplayMode != DisplayMode::MAIN_MENU) {
-                gamepad->menuActive = false;
-            }
+            gamepad->menuActive = isMenuScreen(currDisplayMode);
             updateDisplayScreen();
         }
     }
@@ -255,11 +250,11 @@ void DisplayAddon::handleSystemRestart(GPEvent* e) {
 void DisplayAddon::handleMenuNavigation(GPEvent* e) {
     GpioAction action = ((GPMenuNavigateEvent*)e)->menuAction;
     if (action == GpioAction::MENU_NAVIGATION_TOGGLE) {
-        if (currDisplayMode != MAIN_MENU)
+        if (!isMenuScreen(currDisplayMode))
             pendingScreenReturn = MAIN_MENU;
         else
             pendingScreenReturn = BUTTONS;
-    } else if (gamepad->menuActive) {
+    } else if (gamepad->menuActive && currDisplayMode == MAIN_MENU) {
         ((MainMenuScreen*)gpScreen)->queueAction(action);
     }
 }

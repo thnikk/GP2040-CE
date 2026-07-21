@@ -13,6 +13,10 @@ enum DisplayMode {
     REMAP
 };
 
+inline bool isMenuScreen(DisplayMode mode) {
+    return mode == DisplayMode::MAIN_MENU || mode == DisplayMode::REMAP;
+}
+
 #include "ui/screens/ButtonLayoutScreen.h"
 #include "ui/screens/ConfigScreen.h"
 #include "ui/screens/DisplaySaverScreen.h"
