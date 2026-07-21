@@ -12,6 +12,12 @@ typedef struct MenuEntry {
     std::function<int32_t()> currentValue;
     std::function<void()> action;
     int32_t optionValue = -1;
+    bool isSpinner = false;
+    int32_t spinnerMin = 0;
+    int32_t spinnerMax = 0;
+    int32_t spinnerStep = 1;
+    std::string spinnerUnit = "";
+    std::function<std::string()> displayValue;
 } MenuEntry;
 
 typedef struct {

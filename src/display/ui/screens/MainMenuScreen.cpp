@@ -168,11 +168,18 @@ void MainMenuScreen::init() {
     static const uint32_t displayTimeoutValues[] = {0, 15000, 30000, 60000, 120000, 300000, 600000};
     static const char* displayTimeoutLabels[] = {"Off", "15s", "30s", "1m", "2m", "5m", "10m"};
     displayTimeoutMenu.clear();
-    for (size_t i = 0; i < sizeof(displayTimeoutValues) / sizeof(displayTimeoutValues[0]); i++) {
-        displayTimeoutMenu.push_back({displayTimeoutLabels[i], NULL, nullptr,
-            std::bind(&MainMenuScreen::currentDisplaySaverTimeout, this),
-            std::bind(&MainMenuScreen::selectDisplaySaverTimeout, this), displayTimeoutValues[i]});
-    }
+    MenuEntry spinnerEntry;
+    spinnerEntry.isSpinner = true;
+    spinnerEntry.currentValue = std::bind(&MainMenuScreen::currentDisplaySaverTimeout, this);
+    spinnerEntry.displayValue = [this]() -> std::string {
+        if (updateDisplaySaverTimeout == 0) return "Off";
+        if (currentSpinnerUnit == 0)
+            return std::to_string(updateDisplaySaverTimeout / 1000) + "s";
+        else
+            return std::to_string(updateDisplaySaverTimeout / 60000) + "m";
+    };
+    displayTimeoutMenu.push_back(spinnerEntry);
+
     displaySaverModeMenu.clear();
     displaySaverModeMenu.push_back({"Display Off", NULL, nullptr,
         std::bind(&MainMenuScreen::currentDisplaySaverMode, this),
@@ -230,10 +237,21 @@ void MainMenuScreen::shutdown() {
 }
 
 void MainMenuScreen::drawScreen() {
-    gpMenu->setVisibility(!screenIsPrompting);
+    bool isSpinnerView = currentMenu->size() > 0 && currentMenu->at(menuIndex).isSpinner;
+    gpMenu->setVisibility(!screenIsPrompting && !isSpinnerView);
 
     if (!screenIsPrompting) {
-
+        if (isSpinnerView) {
+            getRenderer()->drawText(
+                (21 - gpMenu->getMenuTitle().length()) / 2, 0,
+                gpMenu->getMenuTitle().c_str());
+            std::string valueStr = currentMenu->at(0).displayValue();
+            getRenderer()->drawText(
+                (21 - valueStr.length()) / 2, 3, valueStr.c_str());
+            getRenderer()->drawText(2, 5,
+                CHAR_UP CHAR_DOWN ":adjust " CHAR_LEFT CHAR_RIGHT ":unit");
+            getRenderer()->drawText(3, 6, "A:set  B:back");
+        }
     } else {
         getRenderer()->drawText(1, 1, "Config has changed.");
         if (changeRequiresSave && !changeRequiresReboot) {
@@ -259,24 +277,27 @@ void MainMenuScreen::setMenu(std::vector<MenuEntry>* menu) {
 
 int8_t MainMenuScreen::update() {
     Mask_t values = Storage::getInstance().GetGamepad()->debouncedGpio;
-
+    uint32_t now = getMillis();
     bool actionFired = false;
+    bool isSpinnerItem = currentMenu->size() > 0 && currentMenu->at(menuIndex).isSpinner;
 
     // Check dedicated menu GPIO pins + gamepad button pin masks
     if (!isPressed && prevValues != values) {
         if (values & mapMenuUp->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_UP);
             actionFired = true;
-	} else if (values & mapMenuDown->pinMask) {
-			updateMenuNavigation(GpioAction::MENU_NAVIGATION_DOWN);
-			actionFired = true;
-		} else if (values & mapMenuLeft->pinMask) {
-			updateMenuNavigation(GpioAction::MENU_NAVIGATION_LEFT);
-			actionFired = true;
-		} else if (values & mapMenuRight->pinMask) {
-			updateMenuNavigation(GpioAction::MENU_NAVIGATION_RIGHT);
-			actionFired = true;
-		} else if (values & mapMenuSelect->pinMask) {
+            if (isSpinnerItem) { repeatTimer = now; repeatDirection = 1; isRepeating = false; }
+        } else if (values & mapMenuDown->pinMask) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_DOWN);
+            actionFired = true;
+            if (isSpinnerItem) { repeatTimer = now; repeatDirection = -1; isRepeating = false; }
+        } else if (values & mapMenuLeft->pinMask) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_LEFT);
+            actionFired = true;
+        } else if (values & mapMenuRight->pinMask) {
+            updateMenuNavigation(GpioAction::MENU_NAVIGATION_RIGHT);
+            actionFired = true;
+        } else if (values & mapMenuSelect->pinMask) {
             updateMenuNavigation(GpioAction::MENU_NAVIGATION_SELECT);
             actionFired = true;
         } else if (values & mapMenuBack->pinMask) {
@@ -285,6 +306,31 @@ int8_t MainMenuScreen::update() {
         }
     } else {
         isPressed = false;
+    }
+
+    // Hold-to-repeat for UP/DOWN on spinner items
+    if (isSpinnerItem && repeatDirection != 0) {
+        bool stillHeld = false;
+        if (repeatDirection > 0 && (values & mapMenuUp->pinMask)) stillHeld = true;
+        if (repeatDirection < 0 && (values & mapMenuDown->pinMask)) stillHeld = true;
+
+        if (stillHeld) {
+            if (!isRepeating && now - repeatTimer >= 400) {
+                isRepeating = true;
+                repeatTimer = now;
+                repeatInterval = 100;
+                updateMenuNavigation(repeatDirection > 0 ? GpioAction::MENU_NAVIGATION_UP : GpioAction::MENU_NAVIGATION_DOWN);
+                actionFired = true;
+            } else if (isRepeating && now - repeatTimer >= repeatInterval) {
+                repeatTimer = now;
+                repeatInterval = repeatInterval > 35 ? repeatInterval - 5 : 30;
+                updateMenuNavigation(repeatDirection > 0 ? GpioAction::MENU_NAVIGATION_UP : GpioAction::MENU_NAVIGATION_DOWN);
+                actionFired = true;
+            }
+        } else {
+            repeatDirection = 0;
+            isRepeating = false;
+        }
     }
 
     // Check for pending navigation actions from Core0 hotkeys
@@ -310,16 +356,23 @@ int8_t MainMenuScreen::update() {
 void MainMenuScreen::updateMenuNavigation(GpioAction action) {
     bool changeIndex = false;
     uint16_t menuSize = gpMenu->getDataSize();
+    bool isSpinnerItem = false;
+    if (currentMenu->size() > 0 && currentMenu->at(menuIndex).isSpinner)
+        isSpinnerItem = true;
 
     switch (action) { 
         case GpioAction::MENU_NAVIGATION_UP:
             if (!screenIsPrompting) {
-                if (menuIndex > 0) {
-                    menuIndex--;
+                if (isSpinnerItem) {
+                    adjustSpinnerValue(1);
                 } else {
-                    menuIndex = menuSize-1;
+                    if (menuIndex > 0) {
+                        menuIndex--;
+                    } else {
+                        menuIndex = menuSize-1;
+                    }
+                    changeIndex = true;
                 }
-                changeIndex = true;
             } else {
                 promptChoice = !promptChoice;
             }
@@ -327,12 +380,16 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
             break;
         case GpioAction::MENU_NAVIGATION_DOWN:
             if (!screenIsPrompting) {
-                if (menuIndex < menuSize-1) {
-                    menuIndex++;
+                if (isSpinnerItem) {
+                    adjustSpinnerValue(-1);
                 } else {
-                    menuIndex = 0;
+                    if (menuIndex < menuSize-1) {
+                        menuIndex++;
+                    } else {
+                        menuIndex = 0;
+                    }
+                    changeIndex = true;
                 }
-                changeIndex = true;
             } else {
                 promptChoice = !promptChoice;
             }
@@ -341,21 +398,41 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
         case GpioAction::MENU_NAVIGATION_LEFT:
             if (screenIsPrompting) {
                 promptChoice = !promptChoice;
+            } else if (isSpinnerItem) {
+                switchSpinnerUnit(-1);
             }
             isPressed = true;
             break;
         case GpioAction::MENU_NAVIGATION_RIGHT:
             if (screenIsPrompting) {
                 promptChoice = !promptChoice;
+            } else if (isSpinnerItem) {
+                switchSpinnerUnit(1);
             }
             isPressed = true;
             break;
         case GpioAction::MENU_NAVIGATION_SELECT:
             if (!screenIsPrompting) {
-                if (currentMenu->at(menuIndex).submenu != nullptr) {
+                if (isSpinnerItem) {
+                    if (spinnerValueSnapshot != updateDisplaySaverTimeout) {
+                        prevDisplaySaverTimeout = updateDisplaySaverTimeout;
+                        Storage::getInstance().getDisplayOptions().displaySaverTimeout = updateDisplaySaverTimeout;
+                        EventManager::getInstance().triggerEvent(new GPStorageSaveEvent(true, false));
+                    }
+                    if (previousMenu != nullptr) {
+                        currentMenu = previousMenu;
+                        previousMenu = nullptr;
+                        menuIndex = prevMenuIndex;
+                        changeIndex = true;
+                        gpMenu->setMenuData(currentMenu);
+                        gpMenu->setMenuTitle(MAIN_MENU_NAME);
+                    }
+                } else if (currentMenu->at(menuIndex).submenu != nullptr) {
                     previousMenu = currentMenu;
                     prevMenuIndex = menuIndex;
                     currentMenu = currentMenu->at(menuIndex).submenu;
+                    if (currentMenu->size() > 0 && currentMenu->at(0).isSpinner)
+                        spinnerValueSnapshot = updateDisplaySaverTimeout;
                     gpMenu->setMenuData(currentMenu);
                     gpMenu->setMenuTitle(previousMenu->at(menuIndex).label);
                     menuIndex = 0;
@@ -384,6 +461,10 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
             break;
         case GpioAction::MENU_NAVIGATION_BACK:
             if (!screenIsPrompting) {
+                if (isSpinnerItem) {
+                    updateDisplaySaverTimeout = spinnerValueSnapshot;
+                    prevDisplaySaverTimeout = spinnerValueSnapshot;
+                }
                 if (previousMenu != nullptr) {
                     currentMenu = previousMenu;
                     previousMenu = nullptr;
@@ -691,4 +772,45 @@ int32_t MainMenuScreen::currentDisplaySaverMode() {
 void MainMenuScreen::selectRemap() {
     savedMenuIndex = menuIndex;
     exitToScreen = DisplayMode::REMAP;
+}
+
+void MainMenuScreen::adjustSpinnerValue(int8_t direction) {
+    uint32_t raw = updateDisplaySaverTimeout;
+
+    if (raw == 0 && direction > 0) {
+        updateDisplaySaverTimeout = 1000;
+        currentSpinnerUnit = 0;
+        if (prevDisplaySaverTimeout != updateDisplaySaverTimeout)
+            changeRequiresSave = true;
+        return;
+    }
+
+    if (currentSpinnerUnit == 0) {
+        int32_t displayVal = raw / 1000;
+        displayVal += direction;
+        if (displayVal > 59) displayVal = 59;
+        else if (displayVal < 0) displayVal = 0;
+        updateDisplaySaverTimeout = displayVal * 1000;
+    } else {
+        int32_t displayVal = raw / 60000;
+        displayVal += direction;
+        if (displayVal > 10) displayVal = 10;
+        else if (displayVal < 1) displayVal = 1;
+        updateDisplaySaverTimeout = displayVal * 60000;
+    }
+
+    if (prevDisplaySaverTimeout != updateDisplaySaverTimeout)
+        changeRequiresSave = true;
+}
+
+void MainMenuScreen::switchSpinnerUnit(int8_t direction) {
+    if (currentSpinnerUnit == 0 && direction > 0) {
+        if (updateDisplaySaverTimeout > 0 && updateDisplaySaverTimeout < 60000)
+            updateDisplaySaverTimeout = 60000;
+        currentSpinnerUnit = 1;
+    } else if (currentSpinnerUnit == 1 && direction < 0) {
+        if (updateDisplaySaverTimeout / 1000 > 59)
+            updateDisplaySaverTimeout = 59000;
+        currentSpinnerUnit = 0;
+    }
 }

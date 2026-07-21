@@ -127,6 +127,21 @@ class MainMenuScreen : public GPScreen {
         bool changeRequiresReboot = false;
         bool changeRequiresSave = false;
 
+        struct SpinnerUnit {
+            const char* label;
+            int32_t minDisplay;
+            int32_t maxDisplay;
+            int32_t step;
+        };
+        void adjustSpinnerValue(int8_t direction);
+        void switchSpinnerUnit(int8_t direction);
+        uint8_t currentSpinnerUnit = 0;
+
+        uint32_t repeatTimer = 0;
+        int8_t repeatDirection = 0;
+        bool isRepeating = false;
+        uint32_t repeatInterval = 0;
+
         #define INPUT_MODE_ENTRIES(name, value) {name##_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentInputMode, this), std::bind(&MainMenuScreen::selectInputMode, this), value},
         #define DPAD_MODE_ENTRIES(name, value)  {name##_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentDpadMode,  this), std::bind(&MainMenuScreen::selectDPadMode,  this), value},
         #define SOCD_MODE_ENTRIES(name, value)  {name##_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentSOCDMode,  this), std::bind(&MainMenuScreen::selectSOCDMode,  this), value},
@@ -198,6 +213,7 @@ class MainMenuScreen : public GPScreen {
         std::vector<MenuEntry> displayTimeoutMenu;
         uint32_t prevDisplaySaverTimeout;
         uint32_t updateDisplaySaverTimeout;
+        uint32_t spinnerValueSnapshot;
 
         std::vector<MenuEntry> displaySaverModeMenu;
         uint8_t prevDisplaySaverMode;
