@@ -87,6 +87,9 @@ export default {
 		'To use on Xbox 360, select USB authentication and attach an Xbox 360 controller dongle.',
 	'hotkey-settings-label': 'Hotkey Settings',
 	'hotkey-settings-description-text': 'Assign button combinations to quickly perform actions.',
+	'hotkey-column-pin-trigger': 'Pin Mode',
+	'hotkey-column-bindings': 'Bindings',
+	'hotkey-column-action': 'Action',
 	'hotkey-actions': {
 		'no-action': 'No Action',
 		'dpad-digital': 'Dpad Digital',

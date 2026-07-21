@@ -1,9 +1,24 @@
-.hotkey-action-column {
-	width: 210px;
-	flex-shrink: 0;
-	.form-select {
-		flex: 1;
-	}
+.hotkey-grid {
+	display: grid;
+	grid-template-columns: auto 1fr auto auto auto;
+	gap: 6px 8px;
+	align-items: center;
+}
+
+.hotkey-row {
+	display: contents;
+}
+
+.hotkey-header {
+	text-align: center;
+}
+
+.hotkey-header:first-child {
+	text-align: left;
+}
+
+.hotkey-action-select {
+	min-width: 180px;
 }
 
 [data-bs-theme="dark"] {

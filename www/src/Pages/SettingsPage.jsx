@@ -1712,12 +1712,17 @@ export default function SettingsPage() {
 													title={t('SettingsPage:hotkey-settings-label')}
 													description={t('SettingsPage:hotkey-settings-description-text')}
 												>
-													{Object.keys(hotkeyFields).map((o, i) => (
-														<div
-															key={`hotkey-${i}-base`}
-															className="d-flex flex-wrap align-items-center gap-1"
-															hidden={values.lockHotkeys}
-															>
+													<div
+														className="hotkey-grid"
+														hidden={values.lockHotkeys}
+													>
+														<div className="hotkey-header">{t('SettingsPage:hotkey-column-pin-trigger')}</div>
+														<div className="hotkey-header">{t('SettingsPage:hotkey-column-bindings')}</div>
+														<div className="hotkey-header"></div>
+														<div className="hotkey-header">{t('SettingsPage:hotkey-column-action')}</div>
+														<div></div>
+														{Object.keys(hotkeyFields).map((o, i) => (
+															<div key={`hotkey-${i}-base`} className="hotkey-row">
 																<Form.Check
 																	type="switch"
 																	id={`hotkeyPin-${i}`}
@@ -1738,76 +1743,78 @@ export default function SettingsPage() {
 																	}}
 																/>
 																{values[o]?.usePinTrigger ? (
-																<CustomSelect
-																	isMulti
-																	isClearable
-																	options={PIN_TRIGGER_OPTIONS}
-																	value={PIN_TRIGGER_OPTIONS.filter(
-																		(opt) => values[o]?.pinTriggerMask & opt.value,
-																	)}
-																	onChange={(selected) => {
-																		const mask = selected
-																			? selected.reduce((acc, opt) => acc | opt.value, 0)
-																			: 0;
-																		setFieldValue(`${o}.pinTriggerMask`, mask);
-																	}}
-																/>
+																	<span className="d-flex align-items-center gap-1 flex-wrap">
+																		<CustomSelect
+																			isMulti
+																			isClearable
+																			options={PIN_TRIGGER_OPTIONS}
+																			value={PIN_TRIGGER_OPTIONS.filter(
+																				(opt) => values[o]?.pinTriggerMask & opt.value,
+																			)}
+																			onChange={(selected) => {
+																				const mask = selected
+																					? selected.reduce((acc, opt) => acc | opt.value, 0)
+																					: 0;
+																				setFieldValue(`${o}.pinTriggerMask`, mask);
+																			}}
+																		/>
+																	</span>
 																) : (
-																<>
-																{values.fnButtonPin !== -1 && (
-																<>
-																	<Form.Check
-																		name={`${o}.auxMask`}
-																		label="Fn"
-																		type="switch"
-																		className="text my-auto"
-																		checked={values[o] && !!values[o]?.auxMask}
-																		onChange={(e) => {
-																			setFieldValue(
-																				`${o}.auxMask`,
-																				e.target.checked ? 32768 : 0,
-																			);
-																		}}
-																		isInvalid={errors[o] || errors[o]?.auxMask}
-																	/>
-																	<Form.Control.Feedback type="invalid">
-																		{errors[o] && errors[o]?.action}
-																	</Form.Control.Feedback>
-																<span>+</span>
-																</>
-																)}
-																<CustomSelect
-																	isMulti
-																	isClearable
-																	options={hotkeyButtonOptions}
-																	getOptionLabel={getHotkeyButtonLabel}
-																	value={hotkeyButtonOptions.filter(
-																		(opt) => values[o]?.buttonsMask & opt.value,
-																	)}
-																	onChange={(selected) => {
-																		const mask = selected
-																			? selected.reduce((acc, opt) => acc | opt.value, 0)
-																			: 0;
-																		setFieldValue(`${o}.buttonsMask`, mask);
-																	}}
-																/>
-																</>
+																	<span className="d-flex align-items-center gap-1 flex-wrap">
+																		{values.fnButtonPin !== -1 && (
+																			<>
+																				<Form.Check
+																					name={`${o}.auxMask`}
+																					label="Fn"
+																					type="switch"
+																					className="text my-auto"
+																					checked={values[o] && !!values[o]?.auxMask}
+																					onChange={(e) => {
+																						setFieldValue(
+																							`${o}.auxMask`,
+																							e.target.checked ? 32768 : 0,
+																						);
+																					}}
+																					isInvalid={errors[o] || errors[o]?.auxMask}
+																				/>
+																				<Form.Control.Feedback type="invalid">
+																					{errors[o] && errors[o]?.action}
+																				</Form.Control.Feedback>
+																				<span>+</span>
+																			</>
+																		)}
+																		<CustomSelect
+																			isMulti
+																			isClearable
+																			options={hotkeyButtonOptions}
+																			getOptionLabel={getHotkeyButtonLabel}
+																			value={hotkeyButtonOptions.filter(
+																				(opt) => values[o]?.buttonsMask & opt.value,
+																			)}
+																			onChange={(selected) => {
+																				const mask = selected
+																					? selected.reduce((acc, opt) => acc | opt.value, 0)
+																					: 0;
+																				setFieldValue(`${o}.buttonsMask`, mask);
+																			}}
+																		/>
+																	</span>
 																)}
 																<span>=</span>
-																<div className="hotkey-action-column d-flex align-items-center gap-1">
+																<span className="d-flex align-items-center gap-1">
 																	<Form.Select
 																		name={`${o}.action`}
-																		className="form-select-sm"
+																		className="form-select-sm hotkey-action-select"
 																		value={values[o] && values[o]?.action}
 																		onChange={handleChange}
 																		isInvalid={errors[o] && errors[o]?.action}
 																	>
-																		{translatedHotkeyActions.map((o, i) => (
+																		{translatedHotkeyActions.map((a, j) => (
 																			<option
-																				key={`hotkey-action-${i}`}
-																				value={o.value}
+																				key={`hotkey-action-${j}`}
+																				value={a.value}
 																			>
-																				{o.label}
+																				{a.label}
 																			</option>
 																		))}
 																	</Form.Select>
@@ -1832,15 +1839,18 @@ export default function SettingsPage() {
 																			{'✕'}
 																		</Button>
 																	)}
-																</div>
+																</span>
+																<div></div>
 																<Form.Control.Feedback
 																	type="invalid"
 																	className={errors[o] ? 'd-block' : ''}
+																	style={{ gridColumn: '1 / -1' }}
 																>
 																	{errors[o] && typeof errors[o] === 'string' ? errors[o] : null}
 																</Form.Control.Feedback>
 															</div>
 														))}
+													</div>
 													<div className="d-flex justify-content-between align-items-center gap-1">
 														<Form.Check
 															label={t('SettingsPage:lock-hotkeys-label')}
