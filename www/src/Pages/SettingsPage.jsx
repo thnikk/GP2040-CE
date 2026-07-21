@@ -1394,13 +1394,32 @@ export default function SettingsPage() {
 	const translatedInputModeAuthentications =
 		translateArray(AUTHENTICATION_TYPES);
 
+	const [activeTab, setActiveTab] = useState(
+		window.location.hash ? window.location.hash.slice(1) : 'inputmode',
+	);
+
+	useEffect(() => {
+		const onHashChange = () => {
+			const hash = window.location.hash.slice(1);
+			if (hash && hash !== activeTab) setActiveTab(hash);
+		};
+		window.addEventListener('hashchange', onHashChange);
+		return () => window.removeEventListener('hashchange', onHashChange);
+	}, [activeTab]);
+
 	return (
 		<Formik validationSchema={schema} onSubmit={onSubmit} initialValues={{}}>
 			{({ handleSubmit, handleChange, values, errors, setFieldValue }) =>
 				console.log('errors', errors) || (
 					<div>
 						<Form noValidate onSubmit={handleSubmit}>
-							<Tab.Container defaultActiveKey="inputmode">
+							<Tab.Container
+									activeKey={activeTab}
+									onSelect={(k) => {
+										setActiveTab(k);
+										window.location.hash = k;
+									}}
+								>
 								<Row>
 									<Col md={3}>
 										<Nav variant="pills" className="flex-column">
