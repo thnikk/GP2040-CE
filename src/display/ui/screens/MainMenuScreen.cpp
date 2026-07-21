@@ -23,7 +23,7 @@ static const int themeCount = sizeof(themeNames) / sizeof(themeNames[0]);
 void MainMenuScreen::init() {
     getRenderer()->clearScreen();
 	currentMenu = &mainMenu;
-    previousMenu = nullptr;
+    menuBackStack.clear();
     menuIndex = savedMenuIndex;
 
     exitToScreen = -1;
@@ -418,17 +418,17 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
             if (!screenIsPrompting) {
                 if (isSpinnerItem) {
                     saveSpinnerValue();
-                    if (previousMenu != nullptr) {
-                        currentMenu = previousMenu;
-                        previousMenu = nullptr;
-                        menuIndex = prevMenuIndex;
+                    if (!menuBackStack.empty()) {
+                        MenuBackEntry back = menuBackStack.back();
+                        menuBackStack.pop_back();
+                        currentMenu = back.menu;
+                        menuIndex = back.index;
                         changeIndex = true;
                         gpMenu->setMenuData(currentMenu);
-                        gpMenu->setMenuTitle(MAIN_MENU_NAME);
+                        gpMenu->setMenuTitle(back.title);
                     }
                 } else if (currentMenu->at(menuIndex).submenu != nullptr) {
-                    previousMenu = currentMenu;
-                    prevMenuIndex = menuIndex;
+                    menuBackStack.push_back({currentMenu, menuIndex, gpMenu->getMenuTitle()});
                     currentMenu = currentMenu->at(menuIndex).submenu;
                     if (currentMenu->size() > 0 && currentMenu->at(0).isSpinner) {
                         if (currentMenu == &displayTimeoutMenu)
@@ -437,7 +437,7 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
                             histSpinnerValueSnapshot = updateInputHistoryTimeout;
                     }
                     gpMenu->setMenuData(currentMenu);
-                    gpMenu->setMenuTitle(previousMenu->at(menuIndex).label);
+                    gpMenu->setMenuTitle(menuBackStack.back().menu->at(menuBackStack.back().index).label);
                     menuIndex = 0;
                     for (size_t i = 0; i < currentMenu->size(); i++) {
                         if (currentMenu->at(i).optionValue != -1 &&
@@ -466,13 +466,14 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
             if (!screenIsPrompting) {
                 if (isSpinnerItem)
                     revertSpinnerValue();
-                if (previousMenu != nullptr) {
-                    currentMenu = previousMenu;
-                    previousMenu = nullptr;
-                    menuIndex = prevMenuIndex;
+                if (!menuBackStack.empty()) {
+                    MenuBackEntry back = menuBackStack.back();
+                    menuBackStack.pop_back();
+                    currentMenu = back.menu;
+                    menuIndex = back.index;
                     changeIndex = true;
                     gpMenu->setMenuData(currentMenu);
-                    gpMenu->setMenuTitle(MAIN_MENU_NAME);
+                    gpMenu->setMenuTitle(back.title);
                 } else {
                     exitToScreen = DisplayMode::BUTTONS;
                     exitToScreenBeforePrompt = DisplayMode::BUTTONS;

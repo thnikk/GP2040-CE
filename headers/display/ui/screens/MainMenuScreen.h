@@ -98,11 +98,15 @@ class MainMenuScreen : public GPScreen {
         virtual void drawScreen();
     private:
         uint8_t menuIndex = 0;
-        uint8_t prevMenuIndex = 0;
         bool isPressed = false;
         uint32_t checkDebounce;
         std::vector<MenuEntry>* currentMenu;
-        std::vector<MenuEntry>* previousMenu;
+        struct MenuBackEntry {
+            std::vector<MenuEntry>* menu;
+            uint8_t index;
+            std::string title;
+        };
+        std::vector<MenuBackEntry> menuBackStack;
 		uint16_t prevButtonState = 0;
 		Mask_t prevValues;
         GPMenu* gpMenu;
