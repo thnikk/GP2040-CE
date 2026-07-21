@@ -788,7 +788,7 @@ void MainMenuScreen::adjustSpinnerValue(int8_t direction) {
     if (currentSpinnerUnit == 0) {
         int32_t displayVal = raw / 1000;
         displayVal += direction;
-        if (displayVal > 59) displayVal = 59;
+        if (displayVal > 600) displayVal = 600;
         else if (displayVal < 0) displayVal = 0;
         updateDisplaySaverTimeout = displayVal * 1000;
     } else {
@@ -809,8 +809,8 @@ void MainMenuScreen::switchSpinnerUnit(int8_t direction) {
             updateDisplaySaverTimeout = 60000;
         currentSpinnerUnit = 1;
     } else if (currentSpinnerUnit == 1 && direction < 0) {
-        if (updateDisplaySaverTimeout / 1000 > 59)
-            updateDisplaySaverTimeout = 59000;
+        if (updateDisplaySaverTimeout / 1000 > 600)
+            updateDisplaySaverTimeout = 600000;
         currentSpinnerUnit = 0;
     }
 }
