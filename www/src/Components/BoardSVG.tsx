@@ -456,6 +456,11 @@ export default function BoardSVG({
 				el.style.setProperty('stroke-width', '2', 'important');
 			});
 
+		const caseEl = svgContainer.querySelector('#case');
+		if (caseEl) {
+			(caseEl as HTMLElement).style.setProperty('stroke-width', '1', 'important');
+		}
+
 		const groups = svgContainer.querySelectorAll('[id^="pin"]');
 
 		const handlers: (() => void)[] = [];

@@ -53,5 +53,9 @@ if (!fs.existsSync(sourceFile)) {
 }
 
 fs.mkdirSync(path.dirname(targetFile), { recursive: true });
-fs.copyFileSync(sourceFile, targetFile);
-console.log(`Copied ${sourceFile} → ${targetFile}`);
+if (fs.existsSync(targetFile) && fs.realpathSync(sourceFile) === fs.realpathSync(targetFile)) {
+	console.log(`Skipping copy — target is already same file: ${targetFile}`);
+} else {
+	fs.copyFileSync(sourceFile, targetFile);
+	console.log(`Copied ${sourceFile} → ${targetFile}`);
+}
