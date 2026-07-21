@@ -82,6 +82,9 @@ class MainMenuScreen : public GPScreen {
         void selectDisplaySaverTimeout();
         int32_t currentDisplaySaverTimeout();
 
+        void selectDisplaySaverMode();
+        int32_t currentDisplaySaverMode();
+
         void selectAnimation();
         int32_t currentAnimation();
         void selectTheme();
@@ -195,6 +198,10 @@ class MainMenuScreen : public GPScreen {
         std::vector<MenuEntry> displayTimeoutMenu;
         uint32_t prevDisplaySaverTimeout;
         uint32_t updateDisplaySaverTimeout;
+
+        std::vector<MenuEntry> displaySaverModeMenu;
+        uint8_t prevDisplaySaverMode;
+        uint8_t updateDisplaySaverMode;
 
         std::vector<MenuEntry> mainMenu;
 

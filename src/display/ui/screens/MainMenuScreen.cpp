@@ -136,6 +136,9 @@ void MainMenuScreen::init() {
     prevDisplaySaverTimeout = Storage::getInstance().getDisplayOptions().displaySaverTimeout;
     updateDisplaySaverTimeout = prevDisplaySaverTimeout;
 
+    prevDisplaySaverMode = Storage::getInstance().getDisplayOptions().displaySaverMode;
+    updateDisplaySaverMode = prevDisplaySaverMode;
+
     themeMenu.clear();
     for (int i = 0; i < themeCount; i++) {
         std::string name = themeNames[i];
@@ -170,8 +173,28 @@ void MainMenuScreen::init() {
             std::bind(&MainMenuScreen::currentDisplaySaverTimeout, this),
             std::bind(&MainMenuScreen::selectDisplaySaverTimeout, this), displayTimeoutValues[i]});
     }
+    displaySaverModeMenu.clear();
+    displaySaverModeMenu.push_back({"Display Off", NULL, nullptr,
+        std::bind(&MainMenuScreen::currentDisplaySaverMode, this),
+        std::bind(&MainMenuScreen::selectDisplaySaverMode, this), 0});
+    displaySaverModeMenu.push_back({"Snow", NULL, nullptr,
+        std::bind(&MainMenuScreen::currentDisplaySaverMode, this),
+        std::bind(&MainMenuScreen::selectDisplaySaverMode, this), 1});
+    displaySaverModeMenu.push_back({"Bounce", NULL, nullptr,
+        std::bind(&MainMenuScreen::currentDisplaySaverMode, this),
+        std::bind(&MainMenuScreen::selectDisplaySaverMode, this), 2});
+    displaySaverModeMenu.push_back({"Pipes", NULL, nullptr,
+        std::bind(&MainMenuScreen::currentDisplaySaverMode, this),
+        std::bind(&MainMenuScreen::selectDisplaySaverMode, this), 3});
+    displaySaverModeMenu.push_back({"Toast", NULL, nullptr,
+        std::bind(&MainMenuScreen::currentDisplaySaverMode, this),
+        std::bind(&MainMenuScreen::selectDisplaySaverMode, this), 4});
+
     displayMenu.clear();
     displayMenu.push_back({"Idle Timeout", NULL, &displayTimeoutMenu,
+        std::bind(&MainMenuScreen::modeValue, this),
+        std::bind(&MainMenuScreen::testMenu, this)});
+    displayMenu.push_back({"Screen Saver", NULL, &displaySaverModeMenu,
         std::bind(&MainMenuScreen::modeValue, this),
         std::bind(&MainMenuScreen::testMenu, this)});
     displayMenu.push_back({"Hist Timeout", NULL, &histTimeoutMenu,
@@ -459,6 +482,7 @@ void MainMenuScreen::resetOptions() {
         if (prevBrightness != updateBrightness) updateBrightness = prevBrightness;
         if (prevInputHistoryTimeout != updateInputHistoryTimeout) updateInputHistoryTimeout = prevInputHistoryTimeout;
         if (prevDisplaySaverTimeout != updateDisplaySaverTimeout) updateDisplaySaverTimeout = prevDisplaySaverTimeout;
+        if (prevDisplaySaverMode != updateDisplaySaverMode) updateDisplaySaverMode = prevDisplaySaverMode;
     }
 
     changeRequiresSave = false;
@@ -502,6 +526,10 @@ void MainMenuScreen::saveOptions() {
         }
         if (prevDisplaySaverTimeout != updateDisplaySaverTimeout) {
             Storage::getInstance().getDisplayOptions().displaySaverTimeout = updateDisplaySaverTimeout;
+            saveHasChanged = true;
+        }
+        if (prevDisplaySaverMode != updateDisplaySaverMode) {
+            Storage::getInstance().getDisplayOptions().displaySaverMode = static_cast<DisplaySaverMode>(updateDisplaySaverMode);
             saveHasChanged = true;
         }
 
@@ -644,6 +672,20 @@ void MainMenuScreen::selectDisplaySaverTimeout() {
 
 int32_t MainMenuScreen::currentDisplaySaverTimeout() {
     return updateDisplaySaverTimeout;
+}
+
+void MainMenuScreen::selectDisplaySaverMode() {
+    if (currentMenu->at(menuIndex).optionValue != -1) {
+        uint8_t valueToSave = currentMenu->at(menuIndex).optionValue;
+        prevDisplaySaverMode = Storage::getInstance().getDisplayOptions().displaySaverMode;
+        updateDisplaySaverMode = valueToSave;
+
+        if (prevDisplaySaverMode != valueToSave) changeRequiresSave = true;
+    }
+}
+
+int32_t MainMenuScreen::currentDisplaySaverMode() {
+    return updateDisplaySaverMode;
 }
 
 void MainMenuScreen::selectRemap() {
