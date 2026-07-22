@@ -81,6 +81,7 @@ export default {
 	'xinput-mode-text':
 		'<span>补充信息：</span>Xinput 可以在没有认证的情况下在PC上运行。如果您想在 Xbox 360 上使用它，请选择USB验证并连接合适的加密狗。',
 	'hotkey-settings-label': '快捷键设置',
+	'hotkey-settings-description-text': '分配按钮组合以快速执行操作。启用引脚模式切换以直接映射到引脚，而不是按钮操作。',
 	'hotkey-actions': {
 		'no-action': '无',
 		'dpad-digital': '十字键模式',

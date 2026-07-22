@@ -81,6 +81,7 @@ export default {
 	'xinput-mode-text':
 		'<span>정보:</span> Xinput은 별동의 인증이 필요없는 PC에서 사용가능합니다. Xbox360에서 사용하려면 USB인증을 선택하고 적절한 동글을 연결해주세요.',
 	'hotkey-settings-label': '핫키 설정',
+	'hotkey-settings-description-text': '버튼 조합을 할당하여 작업을 빠르게 수행하세요. 핀 모드 토글을 활성화하여 버튼 작업 대신 핀에 직접 매핑하세요.',
 	'hotkey-actions': {
 		'no-action': '동작 없음',
 		'dpad-digital': 'D패드 디지털',
