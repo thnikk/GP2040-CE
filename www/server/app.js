@@ -147,12 +147,6 @@ app.get('/api/getGamepadOptions', (req, res) => {
 			fnButtonPin: -1,
 			profileNumber: 1,
 			debounceDelay: 5,
-			inputModeXinputPin: -1,
-			inputModeSwitchPin: -1,
-			inputModePs3Pin: -1,
-			inputModePs4Pin: -1,
-			inputModePs5Pin: -1,
-			inputModeKeyboardPin: -1,
 			ps4AuthType: 0,
 			ps5AuthType: 0,
 			xinputAuthType: 0,
@@ -164,23 +158,26 @@ app.get('/api/getGamepadOptions', (req, res) => {
 			usbOverrideID: 0,
 			usbVendorID: '10C4',
 			usbProductID: '82C0',
-			hotkey01: { auxMask: 32768, buttonsMask: 66304, action: 4, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey02: { auxMask: 0, buttonsMask: 131840, action: 1, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey03: { auxMask: 0, buttonsMask: 262912, action: 2, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey04: { auxMask: 0, buttonsMask: 525056, action: 3, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey05: { auxMask: 0, buttonsMask: 70144, action: 6, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey06: { auxMask: 0, buttonsMask: 135680, action: 7, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey07: { auxMask: 0, buttonsMask: 266752, action: 8, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey08: { auxMask: 0, buttonsMask: 528896, action: 10, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey09: { auxMask: 0, buttonsMask: 0, action: 0, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey10: { auxMask: 0, buttonsMask: 0, action: 0, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey11: { auxMask: 0, buttonsMask: 0, action: 0, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey12: { auxMask: 0, buttonsMask: 0, action: 0, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey13: { auxMask: 0, buttonsMask: 0, action: 0, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey14: { auxMask: 0, buttonsMask: 0, action: 0, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey15: { auxMask: 0, buttonsMask: 0, action: 0, usePinTrigger: 0, pinTriggerMask: 0 },
-			hotkey16: { auxMask: 0, buttonsMask: 0, action: 0, usePinTrigger: 0, pinTriggerMask: 0 },
 		};
+		const hk = boardConfig?.hotkeys || [];
+		for (let i = 0; i < 16; i++) {
+			const key = `hotkey${(i + 1).toString().padStart(2, '0')}`;
+			const def = hk[i] || {};
+			gamepadOptionsStore[key] = {
+				auxMask: def.auxMask ?? 0,
+				buttonsMask: def.buttonsMask ?? 0,
+				action: def.action ?? 0,
+				usePinTrigger: def.usePinTrigger ?? 0,
+				pinTriggerMask: def.pinTriggerMask ?? 0,
+			};
+		}
+		const imp = boardConfig?.inputModePins || {};
+		gamepadOptionsStore.inputModeXinputPin = imp.xinput ?? -1;
+		gamepadOptionsStore.inputModeSwitchPin = imp.switch ?? -1;
+		gamepadOptionsStore.inputModePs3Pin = imp.ps3 ?? -1;
+		gamepadOptionsStore.inputModePs4Pin = imp.ps4 ?? -1;
+		gamepadOptionsStore.inputModePs5Pin = imp.ps5 ?? -1;
+		gamepadOptionsStore.inputModeKeyboardPin = imp.keyboard ?? -1;
 	}
 	return res.send(gamepadOptionsStore);
 });

@@ -60,6 +60,23 @@ const LED_FORMAT_MAP = {
 	'LED_FORMAT_RGBW': 3,
 };
 
+const DPAD_TO_HIGH = { 1: 65536, 2: 131072, 4: 262144, 8: 524288 };
+
+function evalBitExpr(str) {
+	if (str === undefined || str === true) return 0;
+	const cleaned = String(str).replace(/\s+/g, '');
+	let result = 0;
+	const re = /1<<(\d+)/g;
+	let match;
+	while ((match = re.exec(cleaned)) !== null) {
+		result |= (1 << parseInt(match[1], 10));
+	}
+	if (result === 0 && /^\d+$/.test(cleaned)) {
+		result = parseInt(cleaned, 10);
+	}
+	return result;
+}
+
 export function findBoardConfigDir(boardId, rootDir) {
 	const boardIdLower = boardId.toLowerCase();
 
@@ -195,6 +212,61 @@ function buildBoardConfig(rawDefines, configDir, rootDir) {
 	const pinWebconfigAdvanced = rawDefines.PIN_WEBCONFIG_ADVANCED !== undefined
 		? parseInt(rawDefines.PIN_WEBCONFIG_ADVANCED, 10) : -1;
 
+	const inputModePins = {
+		xinput: rawDefines.DEFAULT_INPUT_MODE_XINPUT_PIN !== undefined
+			? parseInt(rawDefines.DEFAULT_INPUT_MODE_XINPUT_PIN, 10) : -1,
+		switch: rawDefines.DEFAULT_INPUT_MODE_SWITCH_PIN !== undefined
+			? parseInt(rawDefines.DEFAULT_INPUT_MODE_SWITCH_PIN, 10) : -1,
+		ps3: rawDefines.DEFAULT_INPUT_MODE_PS3_PIN !== undefined
+			? parseInt(rawDefines.DEFAULT_INPUT_MODE_PS3_PIN, 10) : -1,
+		ps4: rawDefines.DEFAULT_INPUT_MODE_PS4_PIN !== undefined
+			? parseInt(rawDefines.DEFAULT_INPUT_MODE_PS4_PIN, 10) : -1,
+		ps5: rawDefines.DEFAULT_INPUT_MODE_PS5_PIN !== undefined
+			? parseInt(rawDefines.DEFAULT_INPUT_MODE_PS5_PIN, 10) : -1,
+		keyboard: rawDefines.DEFAULT_INPUT_MODE_KEYBOARD_PIN !== undefined
+			? parseInt(rawDefines.DEFAULT_INPUT_MODE_KEYBOARD_PIN, 10) : -1,
+	};
+
+	const hotkeyDefaults = [
+		{ buttonsMask: 768, dpadMask: 1, auxMask: 32768, action: 4 },
+		{ buttonsMask: 768, dpadMask: 2, auxMask: 0, action: 1 },
+		{ buttonsMask: 768, dpadMask: 4, auxMask: 0, action: 2 },
+		{ buttonsMask: 768, dpadMask: 8, auxMask: 0, action: 3 },
+		{ buttonsMask: 4608, dpadMask: 1, auxMask: 0, action: 6 },
+		{ buttonsMask: 4608, dpadMask: 2, auxMask: 0, action: 7 },
+		{ buttonsMask: 4608, dpadMask: 4, auxMask: 0, action: 8 },
+	];
+
+	const hotkeys = [];
+	for (let i = 1; i <= 16; i++) {
+		const def = hotkeyDefaults[i - 1] || {};
+		const n = i.toString().padStart(2, '0');
+		let buttonsMask = def.buttonsMask ?? 0;
+		let dpadMask = def.dpadMask ?? 0;
+		let auxMask = def.auxMask ?? 0;
+		let action = def.action ?? 0;
+		let usePinTrigger = 0;
+		let pinTriggerMask = 0;
+
+		if (rawDefines[`HOTKEY_${n}_BUTTONS_MASK`] !== undefined)
+			buttonsMask = parseInt(rawDefines[`HOTKEY_${n}_BUTTONS_MASK`], 10) || 0;
+		if (rawDefines[`HOTKEY_${n}_DPAD_MASK`] !== undefined)
+			dpadMask = parseInt(rawDefines[`HOTKEY_${n}_DPAD_MASK`], 10) || 0;
+		if (rawDefines[`HOTKEY_${n}_AUX_MASK`] !== undefined)
+			auxMask = parseInt(rawDefines[`HOTKEY_${n}_AUX_MASK`], 10) || 0;
+		if (rawDefines[`HOTKEY_${n}_ACTION`] !== undefined)
+			action = parseInt(rawDefines[`HOTKEY_${n}_ACTION`], 10) || 0;
+		if (rawDefines[`HOTKEY_${n}_USE_PIN_TRIGGER`] !== undefined)
+			usePinTrigger = parseInt(rawDefines[`HOTKEY_${n}_USE_PIN_TRIGGER`], 10) || 0;
+		if (rawDefines[`HOTKEY_${n}_PIN_TRIGGER_MASK`] !== undefined)
+			pinTriggerMask = evalBitExpr(rawDefines[`HOTKEY_${n}_PIN_TRIGGER_MASK`]);
+
+		for (const [bit, high] of Object.entries(DPAD_TO_HIGH))
+			if (dpadMask & parseInt(bit)) buttonsMask |= high;
+
+		hotkeys.push({ auxMask, buttonsMask, action, usePinTrigger, pinTriggerMask });
+	}
+
 	return {
 		boardConfigLabel,
 		configDir,
@@ -220,6 +292,8 @@ function buildBoardConfig(rawDefines, configDir, rootDir) {
 			baseAnimationIndex: isNaN(baseAnimationIndex) ? 2 : baseAnimationIndex,
 			themeIndex: isNaN(themeIndex) ? 0 : themeIndex,
 		},
+		hotkeys,
+		inputModePins,
 		webconfig: {
 			pin: isNaN(pinWebconfig) ? -1 : pinWebconfig,
 			pinAdvanced: isNaN(pinWebconfigAdvanced) ? -1 : pinWebconfigAdvanced,
