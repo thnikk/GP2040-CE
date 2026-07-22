@@ -251,11 +251,11 @@ app.get('/api/getBoardLedOptions', (req, res) => {
 });
 
 app.get('/api/getCustomTheme', (req, res) => {
-	console.log('/api/getCustomTheme');
+	const ao = boardConfig?.animationOptions || {};
 	return res.send({
-		enabled: true,
-		animationMode: 4,
-		themeIndex: 0,
+		enabled: false,
+		animationMode: ao.baseAnimationIndex ?? 4,
+		themeIndex: ao.themeIndex ?? 0,
 		Up: { u: 16711680, d: 255 },
 		Down: { u: 16711680, d: 255 },
 		Left: { u: 16711680, d: 255 },

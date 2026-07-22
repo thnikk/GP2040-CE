@@ -183,6 +183,12 @@ function buildBoardConfig(rawDefines, configDir, rootDir) {
 	const boardLedsRgbBrightness = rawDefines.BOARD_LEDS_RGB_BRIGHTNESS !== undefined
 		? parseInt(rawDefines.BOARD_LEDS_RGB_BRIGHTNESS, 10) : 128;
 
+	const baseAnimationIndex = rawDefines.LEDS_BASE_ANIMATION_INDEX !== undefined
+		? parseInt(rawDefines.LEDS_BASE_ANIMATION_INDEX, 10) : undefined;
+
+	const themeIndex = rawDefines.LEDS_THEME_INDEX !== undefined
+		? parseInt(rawDefines.LEDS_THEME_INDEX, 10) : undefined;
+
 	const pinWebconfig = rawDefines.PIN_WEBCONFIG !== undefined
 		? parseInt(rawDefines.PIN_WEBCONFIG, 10) : -1;
 
@@ -209,6 +215,10 @@ function buildBoardConfig(rawDefines, configDir, rootDir) {
 			pin: isNaN(boardLedsRgbPin) ? -1 : boardLedsRgbPin,
 			format: isNaN(boardLedsRgbFormat) ? 0 : boardLedsRgbFormat,
 			brightness: isNaN(boardLedsRgbBrightness) ? 128 : boardLedsRgbBrightness,
+		},
+		animationOptions: {
+			baseAnimationIndex: isNaN(baseAnimationIndex) ? 2 : baseAnimationIndex,
+			themeIndex: isNaN(themeIndex) ? 0 : themeIndex,
 		},
 		webconfig: {
 			pin: isNaN(pinWebconfig) ? -1 : pinWebconfig,
