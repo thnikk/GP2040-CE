@@ -9,16 +9,21 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { DEFAULT_KEYBOARD_MAPPING } from '../src/Data/Keyboard.js';
+import { findBoardConfigDir, parseBoardConfig } from './parseBoardConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..', '..');
 
 const controllers = JSON.parse(
 	readFileSync(path.resolve(__dirname, '../src/Data/Controllers.json'), 'utf8'),
 );
 
 const boardId = (process.env.VITE_GP2040_BOARD || 'pico').toLowerCase();
-const controller = controllers[boardId] || controllers.pico;
+const controller = controllers[boardId] || {};
+
+const configDir = findBoardConfigDir(boardId, rootDir);
+const boardConfig = configDir ? parseBoardConfig(configDir, rootDir) : null;
 
 // Structure pin mappings to include masks and profile label
 const DEFAULT_KB = {
@@ -29,24 +34,29 @@ const createPinMappings = ({ profileLabel = 'Profile' }) => {
 	let pinMappings = { profileLabel, enabled: true };
 	const kcs = [];
 	const kms = [];
-	let idx = 0;
 
-	for (const [key, value] of Object.entries(controller)) {
-		const pinIdx = parseInt(key.replace('pin', ''), 10);
-		while (idx <= pinIdx) { kcs.push(DEFAULT_KB[idx] || 0); kms.push(0); idx++; }
+	for (let i = 0; i < 30; i++) {
+		const key = `pin${i.toString().padStart(2, '0')}`;
+		kcs.push(DEFAULT_KB[i] || 0);
+		kms.push(0);
 		pinMappings[key] = {
-			action: value,
+			action: controller[key] ?? boardConfig?.pinDefaults[i] ?? -10,
 			customButtonMask: 0,
 			customDpadMask: 0,
 		};
 	}
-	while (idx < 30) { kcs.push(0); kms.push(0); idx++; }
 	pinMappings.keyboardKeycodes = kcs;
 	pinMappings.keyboardModifierMasks = kms;
 	return pinMappings;
 };
 
-const boardLabel = boardId === 'pico' ? 'Pico' : controllers[boardId] ? boardId : 'Pico';
+const boardLabel = boardConfig?.boardConfigLabel
+	|| (controllers[boardId] ? boardId : 'Pico')
+	|| boardId;
+
+const hasBoardSvg = boardConfig?.hasSvg
+	|| process.env.VITE_GP2040_BOARD_HAS_SVG === 'true'
+	|| false;
 
 const port = process.env.PORT || 8080;
 
@@ -199,22 +209,15 @@ app.get('/api/getBoardLedModeColors', (req, res) => {
 });
 
 app.get('/api/getLedOptions', (req, res) => {
+	const lo = boardConfig?.ledOptions || {};
 	return res.send({
-		brightnessMaximum: 255,
-		brightnessSteps: 5,
-		dataPin: 22,
-		ledFormat: 0,
+		brightnessMaximum: lo.brightnessMaximum ?? 255,
+		brightnessSteps: lo.brightnessSteps ?? 5,
+		dataPin: lo.dataPin ?? -1,
+		ledFormat: lo.ledFormat ?? 0,
 		ledLayout: 1,
-		ledsPerButton: 2,
-		pinLedIndices: {
-			"0": -1, "1": 0, "2": 1, "3": 2, "4": 3,
-			"5": 7, "6": 6, "7": 5, "8": 4,
-			"9": -1, "10": -1, "11": -1, "12": -1, "13": -1,
-			"14": -1, "15": -1, "16": -1, "17": -1,
-			"18": -1, "19": -1, "20": -1, "21": -1,
-			"22": -1, "23": -1, "24": -1, "25": -1,
-			"26": 8, "27": 9, "28": 10, "29": 11
-		},
+		ledsPerButton: lo.ledsPerButton ?? 1,
+		pinLedIndices: boardConfig?.pinLedIndices || {},
 		usedPins: Object.values(controller),
 		pledType: 1,
 		pledPin1: 12,
@@ -231,6 +234,19 @@ app.get('/api/getLedOptions', (req, res) => {
 		caseRGBIndex: -1,
 		caseRGBCount: 0,
 		turnOffWhenSuspended: 0,
+	});
+});
+
+app.get('/api/getExtraPins', (req, res) => {
+	return res.send({ extraPins: boardConfig?.extraPins || [] });
+});
+
+app.get('/api/getBoardLedOptions', (req, res) => {
+	const bl = boardConfig?.boardLedOptions || {};
+	return res.send({
+		boardLedEnabled: bl.enabled ?? 0,
+		boardLedFormat: bl.format ?? 0,
+		boardLedBrightness: bl.brightness ?? 128,
 	});
 });
 
@@ -268,6 +284,9 @@ app.get('/api/getPinMappings', (req, res) => {
 });
 
 app.get('/api/getBoardPinDefaults', (req, res) => {
+	if (boardConfig?.pinDefaults) {
+		return res.send({ pins: boardConfig.pinDefaults });
+	}
 	const pins = [];
 	for (let i = 0; i < 30; i++) {
 		const key = `pin${i.toString().padStart(2, '0')}`;
@@ -645,9 +664,9 @@ app.get('/api/getMacroAddonOptions', (req, res) => {
 
 app.get('/api/getFirmwareVersion', (req, res) => {
 	return res.send({
-		boardConfigLabel: boardLabel,
-		boardConfigFileName: `GP2040_local-dev-server_${boardLabel}`,
-		boardConfig: boardLabel,
+		boardConfigLabel: boardConfig?.boardConfigLabel || boardLabel,
+		boardConfigFileName: `GP2040_local-dev-server_${boardConfig?.boardConfigLabel || boardLabel}`,
+		boardConfig: configDir || boardLabel,
 		version: 'local-dev-server',
 		showConfigButton: true,
 	});

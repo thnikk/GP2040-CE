@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 const BOARD_SVG_ENABLED = import.meta.env.VITE_GP2040_BOARD_HAS_SVG === 'true';
-const BOARD_ID = import.meta.env.VITE_GP2040_BOARD || 'pico';
 
 type PinElement = {
 	id: string;
@@ -72,7 +71,7 @@ export function useBoardSVG() {
 
 		async function load() {
 			try {
-				const resp = await fetch(`/boards/${BOARD_ID}.svg`);
+				const resp = await fetch('/boards/board.svg');
 				if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
 				const svgText = await resp.text();
