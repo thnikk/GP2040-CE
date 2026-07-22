@@ -267,6 +267,15 @@ app.get('/api/getPinMappings', (req, res) => {
 	return res.send(pinMappingsStore);
 });
 
+app.get('/api/getBoardPinDefaults', (req, res) => {
+	const pins = [];
+	for (let i = 0; i < 30; i++) {
+		const key = `pin${i.toString().padStart(2, '0')}`;
+		pins.push(controller[key] ?? -10);
+	}
+	return res.send({ pins });
+});
+
 app.get('/api/getPeripheralOptions', (req, res) => {
 	return res.send({
 		peripheral: {
