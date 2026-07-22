@@ -43,7 +43,8 @@ const Navigation = () => {
 
 	return (
 		<Navbar collapseOnSelect expand="md" fixed="top">
-			<Navbar.Brand title={`GP2040-CE ${t('Navigation:home-label')}`}>
+			<div className="container-lg">
+				<Navbar.Brand title={`GP2040-CE ${t('Navigation:home-label')}`}>
 				<Nav.Link as={NavLink} to="/" eventKey={eventKey++} className="logo-link">
 					<svg
 						viewBox="0 0 228.846 121.94489"
@@ -171,6 +172,7 @@ const Navigation = () => {
 					)}
 				</Nav>
 			</Navbar.Collapse>
+				</div>
 
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header closeButton>

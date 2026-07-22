@@ -9,16 +9,7 @@ nav.navbar {
 	background-color: white;
 	box-shadow: 0 1px 2px 0 #0000001a;
 
-	.navbar-brand {
-		margin-right: $nav-outer-margin;
-	}
-
-	.navbar-toggler {
-		margin-right: $nav-outer-margin;
-	}
-
 	.navbar-actions {
-		margin-right: $nav-outer-margin;
 		column-gap: 10px;
 		align-items: center;
 		flex-direction: row-reverse;
