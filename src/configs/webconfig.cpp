@@ -248,6 +248,16 @@ void WebConfig::setup() {
     // System Flash Size must be called once
     systemFlashSize = System::getPhysicalFlash();
     rndis_init();
+    // tusb_init() inside rndis_init() claims GPIO 0/1 for PIO USB host (CFG_TUH_ENABLED=1).
+    // Re-assert SIO for button pins so they work as inputs.
+    GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
+    for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+        if (pinMappings[pin].action > 0) {
+            gpio_set_function(pin, GPIO_FUNC_SIO);
+            gpio_set_dir(pin, GPIO_IN);
+            gpio_pull_up(pin);
+        }
+    }
 }
 
 void WebConfig::loop() {
@@ -348,6 +358,8 @@ void save_hotkey(HotkeyEntry* hotkey, const DynamicJsonDocument& doc, const stri
     hotkey->dpadMask = dpadMask;
     hotkey->buttonsMask = buttonsMask;
     readDoc(hotkey->action, doc, hotkey_key, "action");
+    readDoc(hotkey->usePinTrigger, doc, hotkey_key, "usePinTrigger");
+    readDoc(hotkey->pinTriggerMask, doc, hotkey_key, "pinTriggerMask");
 }
 
 void load_hotkey(const HotkeyEntry* hotkey, DynamicJsonDocument& doc, const string hotkey_key)
@@ -368,6 +380,8 @@ void load_hotkey(const HotkeyEntry* hotkey, DynamicJsonDocument& doc, const stri
     }
     writeDoc(doc, hotkey_key, "buttonsMask", buttonsMask);
     writeDoc(doc, hotkey_key, "action", hotkey->action);
+    writeDoc(doc, hotkey_key, "usePinTrigger", hotkey->usePinTrigger);
+    writeDoc(doc, hotkey_key, "pinTriggerMask", hotkey->pinTriggerMask);
 }
 
 // LWIP callback on HTTP POST to validate the URI

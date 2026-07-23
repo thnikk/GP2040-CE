@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
@@ -6,22 +6,25 @@ import path from "path";
 const host = process.env.VITE_DEV_HOST || 'localhost';
 
 // https://vitejs.dev/config/
-export default defineConfig({
-	build: {
-		outDir: path.join(__dirname, "build"),
-		sourcemap: false,
-	},
-	server: {
-		host: host,
-		open: true,
-		port: 3000,
-	},
-	plugins: [react()],
-	resolve: {
-		alias: {
-			"~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
-			lodash: 'lodash-es',
-			"@proto": path.resolve(__dirname, "src_gen"),
+export default defineConfig(({ mode }) => {
+	const env = loadEnv(mode, process.cwd(), '');
+	return {
+		build: {
+			outDir: path.join(__dirname, "build"),
+			sourcemap: false,
 		},
-	},
+		server: {
+			host: host,
+			open: env.VITE_DEV_OPEN !== 'false',
+			port: 3000,
+		},
+		plugins: [react()],
+		resolve: {
+			alias: {
+				"~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
+				lodash: 'lodash-es',
+				"@proto": path.resolve(__dirname, "src_gen"),
+			},
+		},
+	};
 });

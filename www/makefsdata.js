@@ -58,14 +58,19 @@ const serverHeader = 'GP2040-CE';
 const payloadAlignment = 4;
 const hexBytesPerLine = 16;
 
+function shouldSkip(name) {
+	return name.startsWith('.') || name === '__pycache__';
+}
+
 function getFiles(dir) {
 	let results = [];
 	const list = fs.readdirSync(dir, { withFileTypes: true });
 	for (const file of list) {
+		if (shouldSkip(file.name)) continue;
 		file.path = dir + '/' + file.name;
 		if (file.isDirectory()) {
 			results = results.concat(getFiles(file.path));
-		} else if (file.isFile()) {
+		} else if (file.isFile() || file.isSymbolicLink()) {
 			results.push(file.path);
 		}
 	}

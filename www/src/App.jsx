@@ -5,6 +5,7 @@ import { AppContextProvider } from './Contexts/AppContext';
 
 import useSystemStats from './Store/useSystemStats';
 import Navigation from './Components/Navigation';
+import Footer from './Components/Footer';
 
 import HomePage from './Pages/HomePage';
 import PinMappingPage from './Pages/PinMapping';
@@ -33,27 +34,30 @@ const App = () => {
 	return (
 		<AppContextProvider>
 			<Router>
-				<Navigation />
-				<div className="body-content container-lg">
-					<Routes>
-						<Route path="/" element={<HomePage />} />
-						<Route path="/settings" element={<SettingsPage />} />
-						<Route path="/layout" element={<PinMappingPage />} />
-						<Route path="/pin-mapping" element={<Navigate to="/layout" replace />} />
-						<Route path="/button-layout" element={<ButtonLayoutConfigPage />} />
-						<Route
-							path="/peripheral-mapping"
-							element={<PeripheralMappingPage />}
-						/>
-						<Route path="/reset-settings" element={<ResetSettingsPage />} />
-						<Route path="/led-config" element={<LEDConfigPage />} />
-						<Route path="/display-config" element={<DisplayConfigPage />} />
-						<Route path="/add-ons" element={<AddonsConfigPage />} />
-						<Route path="/backup" element={<BackupPage />} />
-						<Route path="/playground" element={<PlaygroundPage />} />
-						<Route path="/macro" element={<InputMacroAddonPage />} />
-						<Route path="/configuration" element={<ConfigurationPage />} />
-					</Routes>
+				<div className="app-layout">
+					<Navigation />
+					<div className="body-content container-lg">
+						<Routes>
+							<Route path="/" element={<HomePage />} />
+							<Route path="/settings" element={<SettingsPage />} />
+							<Route path="/layout" element={<PinMappingPage />} />
+							<Route path="/pin-mapping" element={<Navigate to="/layout" replace />} />
+							<Route path="/button-layout" element={<ButtonLayoutConfigPage />} />
+							<Route
+								path="/peripheral-mapping"
+								element={<PeripheralMappingPage />}
+							/>
+							<Route path="/reset-settings" element={<ResetSettingsPage />} />
+							<Route path="/led-config" element={<LEDConfigPage />} />
+							<Route path="/display-config" element={<DisplayConfigPage />} />
+							<Route path="/add-ons" element={<AddonsConfigPage />} />
+							<Route path="/backup" element={<BackupPage />} />
+							<Route path="/playground" element={<PlaygroundPage />} />
+							<Route path="/macro" element={<InputMacroAddonPage />} />
+							<Route path="/configuration" element={<ConfigurationPage />} />
+						</Routes>
+					</div>
+					<Footer />
 				</div>
 			</Router>
 		</AppContextProvider>

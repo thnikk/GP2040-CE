@@ -16,4 +16,8 @@ export default {
 	'keyboard-mapper': {
 		'key-header': '按键',
 	},
+	'footer': {
+		'copyright': 'GP2040-CE © {{year}}',
+		'github': 'GitHub',
+	},
 };

@@ -87,6 +87,8 @@ message HotkeyEntry
     optional GamepadHotkey action = 2;
     optional uint32 buttonsMask = 3;
     optional uint32 auxMask = 4;
+    optional bool usePinTrigger = 5;
+    optional uint32 pinTriggerMask = 6;
 }
 
 message HotkeyOptions

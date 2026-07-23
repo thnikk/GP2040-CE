@@ -9,16 +9,21 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { DEFAULT_KEYBOARD_MAPPING } from '../src/Data/Keyboard.js';
+import { findBoardConfigDir, parseBoardConfig } from './parseBoardConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..', '..');
 
 const controllers = JSON.parse(
 	readFileSync(path.resolve(__dirname, '../src/Data/Controllers.json'), 'utf8'),
 );
 
 const boardId = (process.env.VITE_GP2040_BOARD || 'pico').toLowerCase();
-const controller = controllers[boardId] || controllers.pico;
+const controller = controllers[boardId] || {};
+
+const configDir = findBoardConfigDir(boardId, rootDir);
+const boardConfig = configDir ? parseBoardConfig(configDir, rootDir) : null;
 
 // Structure pin mappings to include masks and profile label
 const DEFAULT_KB = {
@@ -29,24 +34,29 @@ const createPinMappings = ({ profileLabel = 'Profile' }) => {
 	let pinMappings = { profileLabel, enabled: true };
 	const kcs = [];
 	const kms = [];
-	let idx = 0;
 
-	for (const [key, value] of Object.entries(controller)) {
-		const pinIdx = parseInt(key.replace('pin', ''), 10);
-		while (idx <= pinIdx) { kcs.push(DEFAULT_KB[idx] || 0); kms.push(0); idx++; }
+	for (let i = 0; i < 30; i++) {
+		const key = `pin${i.toString().padStart(2, '0')}`;
+		kcs.push(DEFAULT_KB[i] || 0);
+		kms.push(0);
 		pinMappings[key] = {
-			action: value,
+			action: controller[key] ?? boardConfig?.pinDefaults[i] ?? -10,
 			customButtonMask: 0,
 			customDpadMask: 0,
 		};
 	}
-	while (idx < 30) { kcs.push(0); kms.push(0); idx++; }
 	pinMappings.keyboardKeycodes = kcs;
 	pinMappings.keyboardModifierMasks = kms;
 	return pinMappings;
 };
 
-const boardLabel = boardId === 'pico' ? 'Pico' : controllers[boardId] ? boardId : 'Pico';
+const boardLabel = boardConfig?.boardConfigLabel
+	|| (controllers[boardId] ? boardId : 'Pico')
+	|| boardId;
+
+const hasBoardSvg = boardConfig?.hasSvg
+	|| process.env.VITE_GP2040_BOARD_HAS_SVG === 'true'
+	|| false;
 
 const port = process.env.PORT || 8080;
 
@@ -137,12 +147,6 @@ app.get('/api/getGamepadOptions', (req, res) => {
 			fnButtonPin: -1,
 			profileNumber: 1,
 			debounceDelay: 5,
-			inputModeXinputPin: -1,
-			inputModeSwitchPin: -1,
-			inputModePs3Pin: -1,
-			inputModePs4Pin: -1,
-			inputModePs5Pin: -1,
-			inputModeKeyboardPin: -1,
 			ps4AuthType: 0,
 			ps5AuthType: 0,
 			xinputAuthType: 0,
@@ -154,23 +158,26 @@ app.get('/api/getGamepadOptions', (req, res) => {
 			usbOverrideID: 0,
 			usbVendorID: '10C4',
 			usbProductID: '82C0',
-			hotkey01: { auxMask: 32768, buttonsMask: 66304, action: 4 },
-			hotkey02: { auxMask: 0, buttonsMask: 131840, action: 1 },
-			hotkey03: { auxMask: 0, buttonsMask: 262912, action: 2 },
-			hotkey04: { auxMask: 0, buttonsMask: 525056, action: 3 },
-			hotkey05: { auxMask: 0, buttonsMask: 70144, action: 6 },
-			hotkey06: { auxMask: 0, buttonsMask: 135680, action: 7 },
-			hotkey07: { auxMask: 0, buttonsMask: 266752, action: 8 },
-			hotkey08: { auxMask: 0, buttonsMask: 528896, action: 10 },
-			hotkey09: { auxMask: 0, buttonsMask: 0, action: 0 },
-			hotkey10: { auxMask: 0, buttonsMask: 0, action: 0 },
-			hotkey11: { auxMask: 0, buttonsMask: 0, action: 0 },
-			hotkey12: { auxMask: 0, buttonsMask: 0, action: 0 },
-			hotkey13: { auxMask: 0, buttonsMask: 0, action: 0 },
-			hotkey14: { auxMask: 0, buttonsMask: 0, action: 0 },
-			hotkey15: { auxMask: 0, buttonsMask: 0, action: 0 },
-			hotkey16: { auxMask: 0, buttonsMask: 0, action: 0 },
 		};
+		const hk = boardConfig?.hotkeys || [];
+		for (let i = 0; i < 16; i++) {
+			const key = `hotkey${(i + 1).toString().padStart(2, '0')}`;
+			const def = hk[i] || {};
+			gamepadOptionsStore[key] = {
+				auxMask: def.auxMask ?? 0,
+				buttonsMask: def.buttonsMask ?? 0,
+				action: def.action ?? 0,
+				usePinTrigger: def.usePinTrigger ?? 0,
+				pinTriggerMask: def.pinTriggerMask ?? 0,
+			};
+		}
+		const imp = boardConfig?.inputModePins || {};
+		gamepadOptionsStore.inputModeXinputPin = imp.xinput ?? -1;
+		gamepadOptionsStore.inputModeSwitchPin = imp.switch ?? -1;
+		gamepadOptionsStore.inputModePs3Pin = imp.ps3 ?? -1;
+		gamepadOptionsStore.inputModePs4Pin = imp.ps4 ?? -1;
+		gamepadOptionsStore.inputModePs5Pin = imp.ps5 ?? -1;
+		gamepadOptionsStore.inputModeKeyboardPin = imp.keyboard ?? -1;
 	}
 	return res.send(gamepadOptionsStore);
 });
@@ -199,22 +206,15 @@ app.get('/api/getBoardLedModeColors', (req, res) => {
 });
 
 app.get('/api/getLedOptions', (req, res) => {
+	const lo = boardConfig?.ledOptions || {};
 	return res.send({
-		brightnessMaximum: 255,
-		brightnessSteps: 5,
-		dataPin: 22,
-		ledFormat: 0,
+		brightnessMaximum: lo.brightnessMaximum ?? 255,
+		brightnessSteps: lo.brightnessSteps ?? 5,
+		dataPin: lo.dataPin ?? -1,
+		ledFormat: lo.ledFormat ?? 0,
 		ledLayout: 1,
-		ledsPerButton: 2,
-		pinLedIndices: {
-			"0": -1, "1": 0, "2": 1, "3": 2, "4": 3,
-			"5": 7, "6": 6, "7": 5, "8": 4,
-			"9": -1, "10": -1, "11": -1, "12": -1, "13": -1,
-			"14": -1, "15": -1, "16": -1, "17": -1,
-			"18": -1, "19": -1, "20": -1, "21": -1,
-			"22": -1, "23": -1, "24": -1, "25": -1,
-			"26": 8, "27": 9, "28": 10, "29": 11
-		},
+		ledsPerButton: lo.ledsPerButton ?? 1,
+		pinLedIndices: boardConfig?.pinLedIndices || {},
 		usedPins: Object.values(controller),
 		pledType: 1,
 		pledPin1: 12,
@@ -234,12 +234,25 @@ app.get('/api/getLedOptions', (req, res) => {
 	});
 });
 
-app.get('/api/getCustomTheme', (req, res) => {
-	console.log('/api/getCustomTheme');
+app.get('/api/getExtraPins', (req, res) => {
+	return res.send({ extraPins: boardConfig?.extraPins || [] });
+});
+
+app.get('/api/getBoardLedOptions', (req, res) => {
+	const bl = boardConfig?.boardLedOptions || {};
 	return res.send({
-		enabled: true,
-		animationMode: 4,
-		themeIndex: 0,
+		boardLedEnabled: bl.enabled ?? 0,
+		boardLedFormat: bl.format ?? 0,
+		boardLedBrightness: bl.brightness ?? 128,
+	});
+});
+
+app.get('/api/getCustomTheme', (req, res) => {
+	const ao = boardConfig?.animationOptions || {};
+	return res.send({
+		enabled: false,
+		animationMode: ao.baseAnimationIndex ?? 4,
+		themeIndex: ao.themeIndex ?? 0,
 		Up: { u: 16711680, d: 255 },
 		Down: { u: 16711680, d: 255 },
 		Left: { u: 16711680, d: 255 },
@@ -265,6 +278,18 @@ app.get('/api/getPinMappings', (req, res) => {
 	if (!pinMappingsStore)
 		pinMappingsStore = createPinMappings({ profileLabel: 'Profile 1' });
 	return res.send(pinMappingsStore);
+});
+
+app.get('/api/getBoardPinDefaults', (req, res) => {
+	if (boardConfig?.pinDefaults) {
+		return res.send({ pins: boardConfig.pinDefaults });
+	}
+	const pins = [];
+	for (let i = 0; i < 30; i++) {
+		const key = `pin${i.toString().padStart(2, '0')}`;
+		pins.push(controller[key] ?? -10);
+	}
+	return res.send({ pins });
 });
 
 app.get('/api/getPeripheralOptions', (req, res) => {
@@ -636,9 +661,9 @@ app.get('/api/getMacroAddonOptions', (req, res) => {
 
 app.get('/api/getFirmwareVersion', (req, res) => {
 	return res.send({
-		boardConfigLabel: boardLabel,
-		boardConfigFileName: `GP2040_local-dev-server_${boardLabel}`,
-		boardConfig: boardLabel,
+		boardConfigLabel: boardConfig?.boardConfigLabel || boardLabel,
+		boardConfigFileName: `GP2040_local-dev-server_${boardConfig?.boardConfigLabel || boardLabel}`,
+		boardConfig: configDir || boardLabel,
 		version: 'local-dev-server',
 		showConfigButton: true,
 	});

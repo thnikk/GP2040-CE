@@ -212,7 +212,6 @@ private:
 	const DisplayOptions& getDisplayOptions();
 	bool isDisplayPowerOff();
 	void setDisplayPower(uint8_t status);
-	uint32_t displaySaverTimeout = 0;
 	uint8_t displayIsPowerOn = 1;
 	std::string statusBar;
 	Gamepad* gamepad;
@@ -223,8 +222,6 @@ private:
 	DisplayMode prevDisplayMode;
 	bool turnOffWhenSuspended;
 	uint32_t bootMode;
-
-	DisplaySaverMode displaySaverMode;
 
 	GPGFX_DisplayTypeOptions gpOptions;
 

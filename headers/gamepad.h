@@ -83,16 +83,38 @@ public:
 	 * @brief Check for a hotkey combination press. Checks aux, buttons, and dpad.
 	 */
 	inline bool __attribute__((always_inline)) pressedHotkey(const HotkeyEntry hotkey) {
-		return (hotkey.action != 0 && pressedButton(hotkey.buttonsMask) &&
-				pressedDpad(hotkey.dpadMask) && pressedAux(hotkey.auxMask));
+		if (hotkey.action == 0) return false;
+		if (hotkey.usePinTrigger) {
+			bool held = (debouncedGpio & hotkey.pinTriggerMask) == hotkey.pinTriggerMask;
+			bool wasHeld = (pinTriggerPrevHeld & hotkey.pinTriggerMask) == hotkey.pinTriggerMask;
+			if (held && !wasHeld) {
+				pinTriggerPrevHeld |= hotkey.pinTriggerMask;
+				return true;
+			}
+			if (!held && wasHeld) {
+				pinTriggerPrevHeld &= ~hotkey.pinTriggerMask;
+			}
+			return false;
+		}
+		return pressedButton(hotkey.buttonsMask) &&
+				pressedDpad(hotkey.dpadMask) && pressedAux(hotkey.auxMask);
 	}
 
 	/**
 	 * @brief Remove hotkey bits from the state bitmask and provide pressed action.
 	 */
 	inline GamepadHotkey __attribute__((always_inline)) selectHotkey(const HotkeyEntry hotkey) {
-		state.buttons &= ~(hotkey.buttonsMask);
-		state.dpad &= ~(hotkey.dpadMask);
+		if (hotkey.usePinTrigger) {
+			for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+				if (hotkey.pinTriggerMask & (1 << pin)) {
+					state.buttons &= ~pinToButtonMask[pin];
+					state.dpad    &= ~pinToDpadMask[pin];
+				}
+			}
+		} else {
+			state.buttons &= ~(hotkey.buttonsMask);
+			state.dpad &= ~(hotkey.dpadMask);
+		}
 		return static_cast<GamepadHotkey>(hotkey.action);
 	}
 
@@ -189,6 +211,14 @@ public:
 	GamepadButtonMapping *mapAnalogRSYNeg;
 	GamepadButtonMapping *mapAnalogRSYPos;
 	GamepadButtonMapping *map48WayMode;
+
+	// Reverse pin-to-action mapping, populated in setup()
+	// Used by selectHotkey() in pin trigger mode to clean derived state
+	uint32_t pinToButtonMask[30] = {0};
+	uint8_t  pinToDpadMask[30]   = {0};
+
+	// Rising-edge tracking for pin-trigger hotkeys
+	Mask_t pinTriggerPrevHeld = 0;
 
 	// gamepad specific proxy of debounced buttons --- 1 = active (inverse of the raw GPIO)
 	// see GP2040::debounceGpioGetAll for details

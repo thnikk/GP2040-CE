@@ -30,12 +30,17 @@ void GPMenu::draw() {
         if (this->menuEntryData->size() > 0) {
             for (uint8_t menuLine = 0; menuLine < currPageItems; menuLine++) {
                 uint8_t pageLine = (this->menuSizeY * itemPage) + menuLine;
-                int32_t lineValue = this->menuEntryData->at(pageLine).optionValue;
-                bool showCurrentOption = false;
-                if (lineValue != -1) {
-                    showCurrentOption = (this->menuEntryData->at(pageLine).currentValue() == this->menuEntryData->at(pageLine).optionValue);
+                MenuEntry& entry = this->menuEntryData->at(pageLine);
+                if (entry.isSpinner && entry.displayValue) {
+                    getRenderer()->drawText(2, 2+menuLine, entry.label + ": " + entry.displayValue());
+                } else {
+                    int32_t lineValue = entry.optionValue;
+                    bool showCurrentOption = false;
+                    if (lineValue != -1) {
+                        showCurrentOption = (entry.currentValue() == entry.optionValue);
+                    }
+                    getRenderer()->drawText(2, 2+menuLine, entry.label + (showCurrentOption ? " *" : ""));
                 }
-                getRenderer()->drawText(2, 2+menuLine, this->menuEntryData->at(pageLine).label + (showCurrentOption ? " *" : ""));
             }
         }
 

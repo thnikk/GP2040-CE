@@ -73,6 +73,7 @@ export default {
 	'xinput-mode-text':
 		'<span>補足:</span> Xinput モードはPCでは認証無しで利用可能です。Xbox 360本体で利用する場合は適切な認証用のUSBドングルを接続することで利用可能です。',
 	'hotkey-settings-label': 'ホットキー設定',
+	'hotkey-settings-description-text': 'ボタンの組み合わせを割り当てて、アクションを素早く実行します。ピンモードの切り替えを有効にすると、ボタンアクションの代わりにピンへ直接マッピングできます。',
 	'hotkey-actions': {
 		'no-action': '未設定',
 		'dpad-digital': '十字キー：デジタル',

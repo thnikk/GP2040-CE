@@ -32,6 +32,7 @@ export default {
 	},
 	'profile-label': 'Perfil',
 	'hotkey-settings-label': 'Configurações de Teclas de Atalho',
+	'hotkey-settings-description-text': 'Atribua combinações de botões para realizar ações rapidamente. Ative a alternância do modo de pinos para mapear diretamente para pinos em vez de ações de botões.',
 	'hotkey-actions': {
 		'no-action': 'Nenhuma Ação',
 		'dpad-digital': 'D-pad Digital',

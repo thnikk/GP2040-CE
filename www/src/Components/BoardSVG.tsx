@@ -297,7 +297,7 @@ export default function BoardSVG({
 				labelEl.setAttribute('font-weight', 'bold');
 				labelEl.setAttribute('fill', '#000000');
 				labelEl.setAttribute('stroke', '#ffffff');
-				labelEl.setAttribute('stroke-width', '3');
+				labelEl.setAttribute('stroke-width', '2');
 				labelEl.setAttribute('stroke-linejoin', 'round');
 				labelEl.setAttribute('paint-order', 'stroke fill');
 
@@ -408,23 +408,17 @@ export default function BoardSVG({
 
 	        shapes.forEach((shape, shapeIndex) => {
 	            const svgEl = shape as HTMLElement;
-	            const orig = originalFills.current.get(`${id}-${shapeIndex}`);
-	            const origFill = orig?.fill || '';
-	            const origStrokeWidth = orig?.strokeWidth || '';
+	            const origFill = originalFills.current.get(`${id}-${shapeIndex}`)?.fill || '';
 	            if (isHighlighted) {
 	                svgEl.style.setProperty('fill', '#3d3d00', 'important');
 	                svgEl.style.setProperty('stroke', '#ffff00', 'important');
-	                svgEl.style.setProperty('stroke-width', '4', 'important');
+	                svgEl.style.setProperty('stroke-width', '3', 'important');
 	                svgEl.style.removeProperty('fill-opacity');
 	            } else if (action === BUTTON_ACTIONS.NONE || action === undefined) {
 	                svgEl.style.setProperty('fill', origFill || '#16213e', 'important');
 	                svgEl.style.setProperty('fill-opacity', '0.2', 'important');
 	                svgEl.style.removeProperty('stroke');
-	                if (origStrokeWidth) {
-	                    svgEl.style.setProperty('stroke-width', origStrokeWidth, 'important');
-	                } else {
-	                    svgEl.style.removeProperty('stroke-width');
-	                }
+	                svgEl.style.setProperty('stroke-width', '2', 'important');
 	            } else if (action === BUTTON_ACTIONS.RESERVED) {
 	                svgEl.style.setProperty('fill', '#3d0000', 'important');
 	                svgEl.style.setProperty('stroke', '#ff0000', 'important');
@@ -437,20 +431,12 @@ export default function BoardSVG({
 	                svgEl.style.setProperty('fill', ledColor, 'important');
 	                svgEl.style.removeProperty('fill-opacity');
 	                svgEl.style.removeProperty('stroke');
-	                if (origStrokeWidth) {
-	                    svgEl.style.setProperty('stroke-width', origStrokeWidth, 'important');
-	                } else {
-	                    svgEl.style.removeProperty('stroke-width');
-	                }
+	                svgEl.style.setProperty('stroke-width', '2', 'important');
 	            } else {
 	                svgEl.style.setProperty('fill', origFill || '#0a3d0a', 'important');
 	                svgEl.style.removeProperty('fill-opacity');
 	                svgEl.style.removeProperty('stroke');
-	                if (origStrokeWidth) {
-	                    svgEl.style.setProperty('stroke-width', origStrokeWidth, 'important');
-	                } else {
-	                    svgEl.style.removeProperty('stroke-width');
-	                }
+	                svgEl.style.setProperty('stroke-width', '2', 'important');
 	            }
 
 	            if (dirtyPins?.has(pinNumber) && !isHighlighted) {
@@ -465,6 +451,18 @@ export default function BoardSVG({
 		if (!containerRef.current || !svgContent) return;
 
 		const svgContainer = containerRef.current;
+
+		svgContainer.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, line')
+			.forEach((el) => {
+				el.setAttribute('vector-effect', 'non-scaling-stroke');
+				el.style.setProperty('stroke-width', '2', 'important');
+			});
+
+		const caseEl = svgContainer.querySelector('#case');
+		if (caseEl) {
+			(caseEl as HTMLElement).style.setProperty('stroke-width', '1', 'important');
+		}
+
 		const groups = svgContainer.querySelectorAll('[id^="pin"]');
 
 		const handlers: (() => void)[] = [];

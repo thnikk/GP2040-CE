@@ -50,10 +50,8 @@ void DisplayAddon::setup() {
 
     gamepad = Storage::getInstance().GetGamepad();
 
-    displaySaverTimeout = options.displaySaverTimeout;
     configMode = Storage::getInstance().GetConfigMode();
     turnOffWhenSuspended = options.turnOffWhenSuspended;
-    displaySaverMode = options.displaySaverMode;
 
     mapMenuToggle = new GamepadButtonMapping(0);
     GpioMappingInfo* pinMappings = Storage::getInstance().getProfilePinMappings();
@@ -162,6 +160,8 @@ bool DisplayAddon::updateDisplayScreen() {
 
 bool DisplayAddon::isDisplayPowerOff()
 {
+    const DisplayOptions& options = getDisplayOptions();
+
     if (turnOffWhenSuspended && get_usb_suspended()) {
         if (displayIsPowerOn) setDisplayPower(0);
         return true;
@@ -169,25 +169,25 @@ bool DisplayAddon::isDisplayPowerOff()
         if (!displayIsPowerOn) setDisplayPower(1);
     }
 
-    if (!displaySaverTimeout) return false;
+    if (!options.displaySaverTimeout) return false;
 
     if (gamepad->menuActive) {
         if (!displayIsPowerOn) setDisplayPower(1);
         return false;
     }
 
-    bool timedOut = (getMillis() - getLastActivity()) > displaySaverTimeout;
+    bool timedOut = (getMillis() - getLastActivity()) > options.displaySaverTimeout;
 
     if (!timedOut) {
         setDisplayPower(1);
-    } else if (displaySaverMode == DisplaySaverMode::DISPLAY_SAVER_DISPLAY_OFF) {
+    } else if (options.displaySaverMode == DisplaySaverMode::DISPLAY_SAVER_DISPLAY_OFF) {
         setDisplayPower(0);
     } else if (currDisplayMode != DISPLAY_SAVER) {
         currDisplayMode = DISPLAY_SAVER;
         updateDisplayScreen();
     }
 
-    return (timedOut && displaySaverMode == DisplaySaverMode::DISPLAY_SAVER_DISPLAY_OFF);
+    return (timedOut && options.displaySaverMode == DisplaySaverMode::DISPLAY_SAVER_DISPLAY_OFF);
 }
 
 void DisplayAddon::setDisplayPower(uint8_t status)
@@ -209,10 +209,7 @@ void DisplayAddon::process() {
     if (pendingScreenReturn != -1) {
         currDisplayMode = (DisplayMode)pendingScreenReturn;
         pendingScreenReturn = -1;
-        if (currDisplayMode != DisplayMode::MAIN_MENU)
-            gamepad->menuActive = false;
-        else
-            gamepad->menuActive = true;
+        gamepad->menuActive = isMenuScreen(currDisplayMode);
         updateDisplayScreen();
     }
 
@@ -222,7 +219,7 @@ void DisplayAddon::process() {
     if (!configMode && screenReturn < 0) {
         Mask_t values = Storage::getInstance().GetGamepad()->debouncedGpio;
         if (values & mapMenuToggle->pinMask) {
-            if (currDisplayMode != DisplayMode::MAIN_MENU) {
+            if (!isMenuScreen(currDisplayMode)) {
                 screenReturn = DisplayMode::MAIN_MENU;
             }
         }
@@ -233,9 +230,7 @@ void DisplayAddon::process() {
         // Screen wants to change to something else
         if (screenReturn != currDisplayMode) {
             currDisplayMode = (DisplayMode)screenReturn;
-            if (currDisplayMode != DisplayMode::MAIN_MENU) {
-                gamepad->menuActive = false;
-            }
+            gamepad->menuActive = isMenuScreen(currDisplayMode);
             updateDisplayScreen();
         }
     }
@@ -255,11 +250,11 @@ void DisplayAddon::handleSystemRestart(GPEvent* e) {
 void DisplayAddon::handleMenuNavigation(GPEvent* e) {
     GpioAction action = ((GPMenuNavigateEvent*)e)->menuAction;
     if (action == GpioAction::MENU_NAVIGATION_TOGGLE) {
-        if (currDisplayMode != MAIN_MENU)
+        if (!isMenuScreen(currDisplayMode))
             pendingScreenReturn = MAIN_MENU;
         else
             pendingScreenReturn = BUTTONS;
-    } else if (gamepad->menuActive) {
+    } else if (gamepad->menuActive && currDisplayMode == MAIN_MENU) {
         ((MainMenuScreen*)gpScreen)->queueAction(action);
     }
 }

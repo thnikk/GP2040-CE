@@ -34,6 +34,7 @@ export default {
 	'profile-label': 'Profil',
 	'debounce-delay-label': 'Entprellverzögerung in Millisekunden',
 	'hotkey-settings-label': 'Hotkey Einstellungen',
+	'hotkey-settings-description-text': 'Tastenkombinationen zuweisen, um Aktionen schnell auszuführen. Aktiviere den Pin-Modus, um direkt auf Pins anstatt auf Tastenaktionen zu mappen.',
 	'hotkey-actions': {
 		'no-action': 'Keine Aktion',
 		'dpad-digital': 'Dpad Digital',

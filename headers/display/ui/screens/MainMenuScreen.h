@@ -79,6 +79,12 @@ class MainMenuScreen : public GPScreen {
         void selectInputHistoryTimeout();
         int32_t currentInputHistoryTimeout();
 
+        void selectDisplaySaverTimeout();
+        int32_t currentDisplaySaverTimeout();
+
+        void selectDisplaySaverMode();
+        int32_t currentDisplaySaverMode();
+
         void selectAnimation();
         int32_t currentAnimation();
         void selectTheme();
@@ -92,11 +98,15 @@ class MainMenuScreen : public GPScreen {
         virtual void drawScreen();
     private:
         uint8_t menuIndex = 0;
-        uint8_t prevMenuIndex = 0;
         bool isPressed = false;
         uint32_t checkDebounce;
         std::vector<MenuEntry>* currentMenu;
-        std::vector<MenuEntry>* previousMenu;
+        struct MenuBackEntry {
+            std::vector<MenuEntry>* menu;
+            uint8_t index;
+            std::string title;
+        };
+        std::vector<MenuBackEntry> menuBackStack;
 		uint16_t prevButtonState = 0;
 		Mask_t prevValues;
         GPMenu* gpMenu;
@@ -120,6 +130,23 @@ class MainMenuScreen : public GPScreen {
         void resetOptions();
         bool changeRequiresReboot = false;
         bool changeRequiresSave = false;
+
+        struct SpinnerUnit {
+            const char* label;
+            int32_t minDisplay;
+            int32_t maxDisplay;
+            int32_t step;
+        };
+        void adjustSpinnerValue(int8_t direction);
+        void switchSpinnerUnit(int8_t direction);
+        void saveSpinnerValue();
+        void revertSpinnerValue();
+        uint8_t currentSpinnerUnit = 0;
+
+        uint32_t repeatTimer = 0;
+        int8_t repeatDirection = 0;
+        bool isRepeating = false;
+        uint32_t repeatInterval = 0;
 
         #define INPUT_MODE_ENTRIES(name, value) {name##_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentInputMode, this), std::bind(&MainMenuScreen::selectInputMode, this), value},
         #define DPAD_MODE_ENTRIES(name, value)  {name##_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentDpadMode,  this), std::bind(&MainMenuScreen::selectDPadMode,  this), value},
@@ -188,6 +215,16 @@ class MainMenuScreen : public GPScreen {
         std::vector<MenuEntry> histTimeoutMenu;
         uint16_t prevInputHistoryTimeout;
         uint16_t updateInputHistoryTimeout;
+
+        std::vector<MenuEntry> displayTimeoutMenu;
+        uint32_t prevDisplaySaverTimeout;
+        uint32_t updateDisplaySaverTimeout;
+        uint32_t spinnerValueSnapshot;
+        uint16_t histSpinnerValueSnapshot;
+
+        std::vector<MenuEntry> displaySaverModeMenu;
+        uint8_t prevDisplaySaverMode;
+        uint8_t updateDisplaySaverMode;
 
         std::vector<MenuEntry> mainMenu;
 
