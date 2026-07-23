@@ -51,10 +51,6 @@ $form-switch-width: 3.5em;
 	.btn-secondary {
 		--bs-btn-bg: #{$nord1};
 	}
-	.btn-success {
-		--bs-btn-bg: #{$nord14};
-		--bs-btn-color: #{$nord0};
-	}
 	nav.navbar {
 		background-color: #{$body-bg-dark};
 	}
@@ -63,6 +59,28 @@ $form-switch-width: 3.5em;
 		border: 1px solid #{$nord3};
 		color: white; // needed for readability on dark bg
 	}
+}
+
+.btn-success {
+	--bs-btn-bg: #{$nord14};
+	--bs-btn-color: #{$nord0};
+	--bs-btn-border-color: #{lighten($nord14, 10%)};
+	--bs-btn-hover-bg: #{lighten($nord14, 5%)};
+	--bs-btn-hover-color: #{$nord0};
+	--bs-btn-hover-border-color: #{lighten($nord14, 15%)};
+	--bs-btn-active-bg: #{lighten($nord14, 8%)};
+	--bs-btn-active-border-color: #{lighten($nord14, 18%)};
+}
+
+.btn-danger {
+	--bs-btn-bg: #{$nord11};
+	--bs-btn-color: #{$nord0};
+	--bs-btn-border-color: #{lighten($nord11, 10%)};
+	--bs-btn-hover-bg: #{lighten($nord11, 5%)};
+	--bs-btn-hover-color: #{$nord0};
+	--bs-btn-hover-border-color: #{lighten($nord11, 15%)};
+	--bs-btn-active-bg: #{lighten($nord11, 8%)};
+	--bs-btn-active-border-color: #{lighten($nord11, 18%)};
 }
 
 * {
