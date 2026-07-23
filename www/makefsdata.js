@@ -65,7 +65,7 @@ function getFiles(dir) {
 		file.path = dir + '/' + file.name;
 		if (file.isDirectory()) {
 			results = results.concat(getFiles(file.path));
-		} else if (file.isFile()) {
+		} else if (file.isFile() || file.isSymbolicLink()) {
 			results.push(file.path);
 		}
 	}
