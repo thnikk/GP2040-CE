@@ -209,6 +209,16 @@ const PinSection = memo(function PinSection({
 		};
 	}, [listening, pollPins]);
 
+	useEffect(() => {
+		const handleBeforeUnload = () => {
+			stopRef.current = true;
+		};
+		window.addEventListener('beforeunload', handleBeforeUnload);
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
+	}, []);
+
 	const profilePins = useProfilesStore(
 		useShallow((state) => {
 			const p = state.profiles[profileIndex];
@@ -278,8 +288,7 @@ const PinSection = memo(function PinSection({
 				<ProfileLabel profileIndex={profileIndex} />
 				<div className="d-flex gap-3 align-items-center">
 					<Button
-						variant={listening ? 'danger' : 'outline-success'}
-						size="sm"
+						variant={listening ? 'danger' : 'success'}
 						onClick={() => setListening(!listening)}
 					>
 						{listening
