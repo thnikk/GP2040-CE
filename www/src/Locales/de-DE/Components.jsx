@@ -16,4 +16,8 @@ export default {
 	'keyboard-mapper': {
 		'key-header': 'Taste',
 	},
+	'footer': {
+		'copyright': 'GP2040-CE © {{year}}',
+		'github': 'GitHub',
+	},
 };

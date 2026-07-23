@@ -17,4 +17,8 @@ export default {
 	'keyboard-mapper': {
 		'key-header': 'Tecla',
 	},
+	'footer': {
+		'copyright': 'GP2040-CE © {{year}}',
+		'github': 'GitHub',
+	},
 };
