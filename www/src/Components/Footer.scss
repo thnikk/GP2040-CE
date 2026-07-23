@@ -58,18 +58,23 @@
   transition: background 0.15s;
   display: flex;
   align-items: center;
+	border-radius: 0px;
 }
 
-.theme-btn:first-child {
-  border-radius: 999px 0 0 999px;
+[data-bs-theme="dark"] .theme-btn.active {
+  background: #4c566a;
 }
 
-.theme-btn:last-child {
-  border-radius: 0 999px 999px 0;
+[data-bs-theme="dark"] .theme-toggle {
+  border-color: #4c566a;
 }
 
-.theme-btn.active {
-  background: var(--bs-tertiary-bg);
+[data-bs-theme="light"] .theme-btn.active {
+  background: #e5e9f0;
+}
+
+[data-bs-theme="light"] .theme-toggle {
+  border-color: #d8dee9;
 }
 
 @media (max-width: 768px) {
