@@ -1,6 +1,6 @@
 .hotkey-grid {
 	display: grid;
-	grid-template-columns: auto 1fr auto auto auto;
+	grid-template-columns: auto 2fr auto minmax(120px, 1fr) auto;
 	gap: 6px 8px;
 	align-items: center;
 }
@@ -15,10 +15,6 @@
 
 .hotkey-header:first-child {
 	text-align: left;
-}
-
-.hotkey-action-select {
-	min-width: 180px;
 }
 
 [data-theme="dark"] optgroup {

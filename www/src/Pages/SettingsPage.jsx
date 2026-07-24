@@ -1809,25 +1809,16 @@ export default function SettingsPage() {
 																)}
 																<span>=</span>
 																<span className="d-flex align-items-center gap-1">
-																	<Form.Select
-																		name={`${o}.action`}
-																		className="form-select-sm hotkey-action-select"
-																		value={values[o] && values[o]?.action}
-																		onChange={handleChange}
-																		isInvalid={errors[o] && errors[o]?.action}
-																	>
-																		{translatedHotkeyActions.map((a, j) => (
-																			<option
-																				key={`hotkey-action-${j}`}
-																				value={a.value}
-																			>
-																				{a.label}
-																			</option>
-																		))}
-																	</Form.Select>
-																	<Form.Control.Feedback type="invalid">
-																		{errors[o] && errors[o]?.action}
-																	</Form.Control.Feedback>
+																	<CustomSelect
+																		options={translatedHotkeyActions}
+																		value={translatedHotkeyActions.filter(
+																			(a) => a.value === (values[o] && values[o]?.action),
+																		)}
+																		onChange={(selected) => {
+																			setFieldValue(`${o}.action`, selected ? selected.value : 0);
+																		}}
+																		className="hotkey-action-select"
+																	/>
 																	{Boolean(
 																		values[o]?.usePinTrigger
 																			? values[o]?.pinTriggerMask || values[o]?.action
