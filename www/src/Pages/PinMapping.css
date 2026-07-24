@@ -125,6 +125,11 @@
 	pointer-events: none;
 }
 
+.pin-action-modal .modal-dialog {
+	max-width: 800px;
+	width: 100%;
+}
+
 .pin-action-modal .modal-content {
 	border-radius: 25px;
 }
