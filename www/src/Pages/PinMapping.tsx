@@ -571,14 +571,13 @@ const submitTheme = useCallback(async () => {
 						{animationMode === 0 && (
 							<div className="d-flex align-items-center gap-3">
 								<div style={{ position: 'relative' }}>
-									<div
-										className="led-color-swatch"
-										style={{ backgroundColor: staticColorNormal }}
-										role="button"
-										tabIndex={0}
-									>
-										<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
-									</div>
+									<button type="button" className="led-color-btn" tabIndex={-1}>
+										<span
+											className="led-color-circle"
+											style={{ backgroundColor: staticColorNormal }}
+										/>
+										<span>{t('CustomTheme:normal-label')}</span>
+									</button>
 									<input
 										type="color"
 										value={staticColorNormal}
@@ -589,14 +588,13 @@ const submitTheme = useCallback(async () => {
 									/>
 								</div>
 								<div style={{ position: 'relative' }}>
-									<div
-										className="led-color-swatch"
-										style={{ backgroundColor: staticColorPressed }}
-										role="button"
-										tabIndex={0}
-									>
-										<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
-									</div>
+									<button type="button" className="led-color-btn" tabIndex={-1}>
+										<span
+											className="led-color-circle"
+											style={{ backgroundColor: staticColorPressed }}
+										/>
+										<span>{t('CustomTheme:pressed-label')}</span>
+									</button>
 									<input
 										type="color"
 										value={staticColorPressed}

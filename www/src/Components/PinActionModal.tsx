@@ -446,14 +446,13 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 						</Form.Label>
 						<div className="d-flex gap-3">
 							<div style={{ position: 'relative' }}>
-								<div
-									className="led-color-swatch"
-									style={{ backgroundColor: currentLedColors?.normal || '#000000' }}
-									role="button"
-									tabIndex={0}
-								>
-									<small className="swatch-label">{t('CustomTheme:normal-label')}</small>
-								</div>
+								<button type="button" className="led-color-btn" tabIndex={-1}>
+									<span
+										className="led-color-circle"
+										style={{ backgroundColor: currentLedColors?.normal || '#000000' }}
+									/>
+									<span>{t('CustomTheme:normal-label')}</span>
+								</button>
 								<input
 									type="color"
 									value={currentLedColors?.normal || '#000000'}
@@ -468,14 +467,13 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 								/>
 							</div>
 							<div style={{ position: 'relative' }}>
-								<div
-									className="led-color-swatch"
-									style={{ backgroundColor: currentLedColors?.pressed || '#000000' }}
-									role="button"
-									tabIndex={0}
-								>
-									<small className="swatch-label">{t('CustomTheme:pressed-label')}</small>
-								</div>
+								<button type="button" className="led-color-btn" tabIndex={-1}>
+									<span
+										className="led-color-circle"
+										style={{ backgroundColor: currentLedColors?.pressed || '#000000' }}
+									/>
+									<span>{t('CustomTheme:pressed-label')}</span>
+								</button>
 								<input
 									type="color"
 									value={currentLedColors?.pressed || '#000000'}

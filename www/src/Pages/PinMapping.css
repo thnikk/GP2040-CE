@@ -100,29 +100,31 @@
 	color: rgba(255, 255, 255, 0.3);
 }
 
-.led-color-swatch {
-	border-radius: 999px;
-	border: 1px solid var(--gp-nord-3);
-	padding: 10px 20px;
-	cursor: pointer;
-	display: flex;
+.led-color-btn {
+	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	transition: transform 0.1s ease;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, 0.05);
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	color: inherit;
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.led-color-swatch:hover {
-	transform: scale(1.1);
+.led-color-btn:hover {
 	border-color: #0d6efd;
+	background: rgba(0, 0, 0, 0.1);
 }
 
-.led-color-swatch .swatch-label {
-	color: #000;
-	-webkit-text-stroke: 4px white;
-	paint-order: stroke fill;
-	font-weight: 600;
-	text-align: center;
-	pointer-events: none;
+.led-color-circle {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	flex-shrink: 0;
+	display: inline-block;
 }
 
 .pin-action-modal .modal-dialog {
@@ -201,6 +203,15 @@
 [data-theme="dark"] .pin-action-modal .modal-header {
 	background: var(--gp-nord-2);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .led-color-btn {
+	background: var(--gp-nord-1);
+	border-color: var(--gp-nord-2);
+}
+
+[data-theme="dark"] .led-color-btn:hover {
+	background: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="dark"] .pin-action-tab:hover {
