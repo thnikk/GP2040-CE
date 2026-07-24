@@ -449,9 +449,9 @@ export default function DisplayConfigPage() {
 												</Row>
 												{isButtonLayoutCustom(values) && (
 													<Row>
-														<FormLabel>
+														<Form.Label>
 															{t('DisplayConfig:form.button-layout-custom-header')}
-														</FormLabel>
+														</Form.Label>
 														<Col sm="6">
 															<Form.Group as={Row} name="buttonLayoutCustomOptions">
 																<Form.Label column>
@@ -935,7 +935,7 @@ export default function DisplayConfigPage() {
 									</Form>
 								</div>
 							) : (
-								<FormLabel>
+								<Form.Label>
 									<Trans
 										ns="PeripheralMapping"
 										i18nKey="peripheral-toggle-unavailable"
@@ -945,7 +945,7 @@ export default function DisplayConfigPage() {
 											{t('PeripheralMapping:header-text')}
 										</NavLink>
 									</Trans>
-								</FormLabel>
+								</Form.Label>
 							)}
 						</Section>
 					)

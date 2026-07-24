@@ -35,36 +35,40 @@ type FormLabelProps = {
 	className?: string;
 	children?: React.ReactNode;
 	htmlFor?: string;
+	column?: boolean;
 	[key: string]: unknown;
 };
 
-const FormLabel = ({ className = '', children, ...props }: FormLabelProps) => (
-	<label className={`form-label ${className}`} {...props}>
-		{children}
-	</label>
-);
+const FormLabel = ({ className = '', column, children, ...props }: FormLabelProps) => {
+	void column;
+	return (
+		<label className={`form-label ${className}`} {...props}>
+			{children}
+		</label>
+	);
+};
 
 type FormControlProps = {
 	className?: string;
 	type?: string;
 	placeholder?: string;
-	value?: string;
+	value?: string | number;
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	children?: React.ReactNode;
 	[key: string]: unknown;
 };
 
-const FormControl = ({ className = '', isInvalid, error, children, ...props }: FormControlProps) => {
+const FormControl = ({ className = '', isInvalid, error, value, children, ...props }: FormControlProps) => {
 	void isInvalid;
 	void error;
 	if (props.type === 'textarea') {
 		return (
-			<textarea className={`form-control ${className}`} {...props}>
+			<textarea className={`form-control ${className}`} value={value ?? ''} {...props}>
 				{children}
 			</textarea>
 		);
 	}
-	return <input className={`form-control ${className}`} {...props} />;
+	return <input className={`form-control ${className}`} value={value ?? ''} {...props} />;
 };
 
 type FormControlFeedbackProps = {

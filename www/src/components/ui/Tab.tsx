@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type TabContextType = {
 	activeKey?: string;
@@ -24,6 +24,7 @@ type TabProps = {
 
 type TabContainerProps = {
 	activeKey?: string;
+	defaultActiveKey?: string;
 	onSelect?: (key: string) => void;
 	children?: React.ReactNode;
 	[key: string]: unknown;
@@ -40,9 +41,33 @@ type TabPaneProps = {
 	[key: string]: unknown;
 };
 
-const TabContainer = ({ activeKey, onSelect, children }: TabContainerProps) => (
-	<TabContext.Provider value={{ activeKey, onSelect }}>{children}</TabContext.Provider>
-);
+const TabContainer = ({ activeKey: controlledKey, defaultActiveKey, onSelect, children }: TabContainerProps) => {
+	const hashKey = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
+	const [internalKey, setInternalKey] = useState(hashKey || defaultActiveKey);
+
+	useEffect(() => {
+		const onHashChange = () => {
+			const newHash = window.location.hash.replace('#', '');
+			if (newHash && !controlledKey) setInternalKey(newHash);
+		};
+		window.addEventListener('hashchange', onHashChange);
+		return () => window.removeEventListener('hashchange', onHashChange);
+	}, [controlledKey]);
+
+	const activeKey = controlledKey ?? internalKey;
+	const handleSelect = (key: string) => {
+		if (!controlledKey) {
+			setInternalKey(key);
+			window.location.hash = key;
+		}
+		onSelect?.(key);
+	};
+	return (
+		<TabContext.Provider value={{ activeKey, onSelect: handleSelect }}>
+			{children}
+		</TabContext.Provider>
+	);
+};
 
 const TabContent = ({ children, ...props }: TabContentProps) => (
 	<div className="tab-content" {...props}>
@@ -60,9 +85,28 @@ const TabPane = ({ eventKey, children, ...props }: TabPaneProps) => {
 	);
 };
 
-const Tabs = ({ className = '', children, activeKey, onSelect, defaultActiveKey, fill, ...props }: TabsProps) => {
-	void defaultActiveKey;
+const Tabs = ({ className = '', children, activeKey: controlledKey, onSelect, defaultActiveKey, fill, ...props }: TabsProps) => {
 	void fill;
+	const hashKey = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
+	const [internalKey, setInternalKey] = useState(hashKey || defaultActiveKey);
+
+	useEffect(() => {
+		const onHashChange = () => {
+			const newHash = window.location.hash.replace('#', '');
+			if (newHash && !controlledKey) setInternalKey(newHash);
+		};
+		window.addEventListener('hashchange', onHashChange);
+		return () => window.removeEventListener('hashchange', onHashChange);
+	}, [controlledKey]);
+
+	const activeKey = controlledKey ?? internalKey;
+	const handleSelect = (key: string) => {
+		if (!controlledKey) {
+			setInternalKey(key);
+			window.location.hash = key;
+		}
+		onSelect?.(key);
+	};
 	const tabs: React.ReactNode[] = [];
 	const panes: React.ReactNode[] = [];
 
@@ -75,7 +119,7 @@ const Tabs = ({ className = '', children, activeKey, onSelect, defaultActiveKey,
 					key={`tab-${key}`}
 					type="button"
 					className={`nav-link${isActive ? ' active' : ''}`}
-					onClick={() => onSelect?.(key)}
+					onClick={() => handleSelect(key)}
 				>
 					{title}
 				</button>,
