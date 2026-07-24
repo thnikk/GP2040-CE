@@ -7,7 +7,7 @@ type RowProps = {
 };
 
 const Row = ({ className = '', children, ...props }: RowProps) => (
-	<div className={`row ${className}`} {...props}>
+	<div className={`d-flex flex-wrap ${className}`} {...props}>
 		{children}
 	</div>
 );
