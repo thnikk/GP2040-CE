@@ -72,11 +72,14 @@ type FormControlFeedbackProps = {
 	[key: string]: unknown;
 };
 
-const FormControlFeedback = ({ type, className = '', children, ...props }: FormControlFeedbackProps) => (
-	<div className={`form-control-feedback${type === 'invalid' ? ' is-invalid' : ''} ${className}`} {...props}>
-		{children}
-	</div>
-);
+const FormControlFeedback = ({ type, className = '', children, ...props }: FormControlFeedbackProps) => {
+	if (!children) return null;
+	return (
+		<div className={`form-control-feedback${type === 'invalid' ? ' is-invalid' : ''} ${className}`} {...props}>
+			{children}
+		</div>
+	);
+};
 
 FormControl.Feedback = FormControlFeedback;
 
@@ -118,8 +121,8 @@ type FormCheckProps = {
 	[key: string]: unknown;
 };
 
-const FormCheckInput = ({ id, className = '', ...props }: FormCheckProps) => (
-	<input type="checkbox" className={`form-check-input ${className}`} id={id} {...props} />
+const FormCheckInput = ({ className = '', ...props }: FormCheckProps) => (
+	<input type="checkbox" className={`form-check-input ${className}`} {...props} />
 );
 
 const FormCheckLabel = ({
@@ -136,12 +139,39 @@ const FormCheckLabel = ({
 	</label>
 );
 
+const FormCheck = ({ type, id, label, className = '', reverse, children, ...props }: FormCheckProps) => {
+	const containerClass = [
+		'form-check',
+		type === 'switch' ? 'form-switch' : '',
+		className,
+	]
+		.filter(Boolean)
+		.join(' ');
+
+	const input = <input type="checkbox" className="form-check-input" id={id} {...props} />;
+	const labelEl = label ? (
+		<label className="form-check-label" htmlFor={id}>
+			{label}
+		</label>
+	) : null;
+
+	return (
+		<div className={containerClass}>
+			{reverse ? labelEl : input}
+			{reverse ? input : labelEl}
+			{children}
+		</div>
+	);
+};
+
 Form.Group = FormGroup;
 Form.Label = FormLabel;
 Form.Control = FormControl;
+Form.Control.Feedback = FormControlFeedback;
 Form.Text = FormText;
 Form.Select = FormSelect;
-Form.Check = FormCheckInput;
+Form.Check = FormCheck;
+Form.Check.Input = FormCheckInput;
 Form.Check.Label = FormCheckLabel;
 
 export default Form;
