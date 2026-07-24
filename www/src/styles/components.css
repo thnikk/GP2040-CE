@@ -274,22 +274,19 @@
 }
 
 .form-switch {
-	position: relative;
-	padding-left: 3.5em;
 	min-height: 1.5em;
 }
 
 .form-switch .form-check-input {
-	position: absolute;
-	left: 0;
 	width: 3.5em;
 	height: calc(3.5em * 0.5);
-	margin-top: 0;
+	flex-shrink: 0;
 	border-radius: 2em;
 	appearance: none;
 	background-color: var(--gp-nord-3);
 	border: 1px solid var(--gp-border-color);
 	cursor: pointer;
+	position: relative;
 	transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
@@ -312,6 +309,10 @@
 
 .form-switch .form-check-input:checked::before {
 	transform: translateX(calc(3.5em * 0.5));
+}
+
+.form-check-reverse {
+	flex-direction: row-reverse;
 }
 
 .form-text {

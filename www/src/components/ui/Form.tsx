@@ -143,6 +143,7 @@ const FormCheck = ({ type, id, label, className = '', reverse, children, ...prop
 	const containerClass = [
 		'form-check',
 		type === 'switch' ? 'form-switch' : '',
+		reverse ? 'form-check-reverse' : '',
 		className,
 	]
 		.filter(Boolean)
