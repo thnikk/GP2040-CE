@@ -10,13 +10,13 @@ const jaJP = () => (
 	>
 		<defs>
 			<clipPath id="jp-a">
-				<path fill-opacity=".7" d="M-88 32h640v480H-88z" />
-			</clipPath>
-		</defs>
-		<g
-			fill-rule="evenodd"
-			stroke-width="1pt"
-			clip-path="url(#jp-a)"
+			<path fillOpacity=".7" d="M-88 32h640v480H-88z" />
+		</clipPath>
+	</defs>
+	<g
+		fillRule="evenodd"
+		strokeWidth="1pt"
+		clipPath="url(#jp-a)"
 			transform="translate(88 -32)"
 		>
 			<path fill="#fff" d="M-128 32h720v480h-720z" />
