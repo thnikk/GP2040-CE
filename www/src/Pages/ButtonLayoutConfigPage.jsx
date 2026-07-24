@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Form from 'react-bootstrap/Form';
+import Button from '../components/ui/Button';
+import Row from '../components/ui/Row';
+import Form from '../components/ui/Form';
 
 import { Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';

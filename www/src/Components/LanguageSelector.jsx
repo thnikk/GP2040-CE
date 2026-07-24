@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from '../components/ui/Dropdown';
 import { AppContext } from '../Contexts/AppContext';
 import { useTranslation } from 'react-i18next';
 import GlobeIcon from '../Icons/Globe';

@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FormCheck, Row } from 'react-bootstrap';
+import Alert from '../components/ui/Alert';
+import FormCheck from '../components/ui/FormCheck';
+import Row from '../components/ui/Row';
 import * as yup from 'yup';
 
 import Section from '../Components/Section';

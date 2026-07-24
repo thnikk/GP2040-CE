@@ -21,7 +21,6 @@ export default defineConfig(({ mode }) => {
 		plugins: [react()],
 		resolve: {
 			alias: {
-				"~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
 				lodash: 'lodash-es',
 				"@proto": path.resolve(__dirname, "src_gen"),
 			},

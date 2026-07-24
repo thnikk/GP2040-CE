@@ -8,14 +8,11 @@ import React, {
 	useState,
 } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import {
-	Alert,
-	Button,
-	Form,
-	FormCheck,
-	OverlayTrigger,
-	Tooltip,
-} from 'react-bootstrap';
+import Alert from '../components/ui/Alert';
+import Button from '../components/ui/Button';
+import Form from '../components/ui/Form';
+import FormCheck from '../components/ui/FormCheck';
+import { OverlayTrigger, Tooltip } from '../components/ui/OverlayTrigger';
 import { useTranslation } from 'react-i18next';
 import omit from 'lodash/omit';
 import invert from 'lodash/invert';
@@ -32,7 +29,7 @@ import { BUTTONS, getButtonLabels } from '../Data/Buttons';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { useBoardSVG } from '../hooks/useBoardSVG';
 import WebApi from '../Services/WebApi';
-import './PinMapping.scss';
+import './PinMapping.css';
 import InfoCircle from '../Icons/InfoCircle';
 
 const ProfileLabel = memo(function ProfileLabel({

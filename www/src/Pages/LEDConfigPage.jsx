@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Table from 'react-bootstrap/Table';
+import Button from '../components/ui/Button';
+import Col from '../components/ui/Col';
+import Form from '../components/ui/Form';
+import Row from '../components/ui/Row';
+import Table from '../components/ui/Table';
 import { useShallow } from 'zustand/react/shallow';
 import omit from 'lodash/omit';
 

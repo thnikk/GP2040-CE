@@ -10,7 +10,11 @@ import { AppContext } from '../Contexts/AppContext';
 import useExpansionPinStore from '../Store/useExpansionPinStore';
 
 import { useTranslation } from 'react-i18next';
-import { Alert, Button, FormCheck, Form, Row } from 'react-bootstrap';
+import Alert from '../components/ui/Alert';
+import Button from '../components/ui/Button';
+import FormCheck from '../components/ui/FormCheck';
+import Form from '../components/ui/Form';
+import Row from '../components/ui/Row';
 import * as yup from 'yup';
 import invert from 'lodash/invert';
 import omit from 'lodash/omit';

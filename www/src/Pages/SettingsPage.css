@@ -1,0 +1,38 @@
+.hotkey-grid {
+	display: grid;
+	grid-template-columns: auto 1fr auto auto auto;
+	gap: 6px 8px;
+	align-items: center;
+}
+
+.hotkey-row {
+	display: contents;
+}
+
+.hotkey-header {
+	text-align: center;
+}
+
+.hotkey-header:first-child {
+	text-align: left;
+}
+
+.hotkey-action-select {
+	min-width: 180px;
+}
+
+[data-theme="dark"] optgroup {
+	background-color: var(--gp-nord-2);
+	color: var(--gp-nord-5);
+}
+
+[data-theme="dark"] option {
+	background-color: var(--gp-body-bg);
+	color: var(--gp-body-color);
+}
+
+[data-theme="dark"] option:disabled {
+	font-style: italic;
+	background-color: var(--gp-nord-1);
+	color: var(--gp-nord-3);
+}

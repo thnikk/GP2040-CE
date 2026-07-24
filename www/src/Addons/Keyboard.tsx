@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { FormCheck, Row, FormLabel } from 'react-bootstrap';
+import FormCheck from '../components/ui/FormCheck';
+import Row from '../components/ui/Row';
+import FormLabel from '../components/ui/FormLabel';
 import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 

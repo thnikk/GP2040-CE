@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import Button from '../components/ui/Button';
+import Modal from '../components/ui/Modal';
 import { useTranslation } from 'react-i18next';
 import WebApi from '../Services/WebApi';
 

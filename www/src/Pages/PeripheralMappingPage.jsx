@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../Contexts/AppContext';
-import { Button, Form, FormCheck, FormSelect, Table } from 'react-bootstrap';
+import Button from '../components/ui/Button';
+import Form from '../components/ui/Form';
+import FormCheck from '../components/ui/FormCheck';
+import Table from '../components/ui/Table';
 import { Formik, useFormikContext, getIn } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';

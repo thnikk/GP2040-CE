@@ -1,7 +1,11 @@
 import { AppContext } from '../Contexts/AppContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button, Row, FormCheck, Tab, Tabs, FormLabel } from 'react-bootstrap';
+import Button from '../components/ui/Button';
+import Row from '../components/ui/Row';
+import FormCheck from '../components/ui/FormCheck';
+import { Tabs, Tab } from '../components/ui/Tab';
+import FormLabel from '../components/ui/FormLabel';
 import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 

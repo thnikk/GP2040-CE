@@ -1,15 +1,17 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
 
-import './FormCheck.scss';
+import './FormCheck.css';
 
-const FormCheck = ({ label, error, groupClassName, ...props }) => {
+const FormCheck = ({ label, error, groupClassName, className, children, ...props }) => {
 	return (
-		<Form.Group className={groupClassName}>
-			<Form.Label>{label}</Form.Label>
-			<Form.Check {...props} />
-			<Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
-		</Form.Group>
+		<div className={groupClassName}>
+			{label && <label className="form-label">{label}</label>}
+			<div className="form-check">
+				<input type="checkbox" className={`form-check-input ${className || ''}`} {...props} />
+				{children}
+			</div>
+			{error && <div className="form-control-feedback is-invalid">{error}</div>}
+		</div>
 	);
 };
 

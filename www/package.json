@@ -4,7 +4,6 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"bootstrap": "^5.3.0-alpha3",
 		"formik": "^2.2.9",
 		"i18next": "^23.1.0",
 		"i18next-browser-languagedetector": "^7.0.2",
@@ -13,7 +12,6 @@
 		"lodash-es": "^4.17.21",
 		"react": "^18.2.0",
 		"react-beautiful-dnd": "^13.1.1",
-		"react-bootstrap": "^2.7.4",
 		"react-dom": "^18.2.0",
 		"react-i18next": "^12.3.1",
 		"react-router-dom": "^6.10.0",
@@ -27,7 +25,7 @@
 		"dev-server": "nodemon -r dotenv/config ./server/app.js",
 		"dev": "concurrently --kill-others \"npm run dev-server\" \"npm start\"",
 		"dev-board": "cross-env VITE_DEV_BASE_URL=http://192.168.7.1 npm start ",
-		"format": "prettier --write \"{src,server}/**/*.{tsx,ts,jsx,js,json,scss}\"",
+		"format": "prettier --write \"{src,server}/**/*.{tsx,ts,jsx,js,json,css}\"",
 		"lint": "eslint src --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"makefsdata": "node makefsdata.js",
 		"copy-board-svg": "node -r dotenv/config copy-board-svg.js",
@@ -54,7 +52,6 @@
 		"pako": "^2.1.0",
 		"prettier": "^3.3.3",
 		"protobufjs-cli": "^1.1.3",
-		"sass": "^1.62.1",
 		"typescript": "^5.3.3",
 		"vite": "^4.3.9"
 	}

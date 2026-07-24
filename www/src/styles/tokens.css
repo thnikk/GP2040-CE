@@ -1,0 +1,52 @@
+:root {
+	--gp-nord-0: #2e3440;
+	--gp-nord-1: #3b4252;
+	--gp-nord-2: #434c5e;
+	--gp-nord-3: #4c566a;
+	--gp-nord-4: #d8dee9;
+	--gp-nord-5: #e5e9f0;
+	--gp-nord-6: #eceff4;
+	--gp-nord-7: #8fbcbb;
+	--gp-nord-8: #88c0d0;
+	--gp-nord-9: #81a1c1;
+	--gp-nord-10: #5e81ac;
+	--gp-nord-11: #bf616a;
+	--gp-nord-12: #d08770;
+	--gp-nord-13: #ebcb8b;
+	--gp-nord-14: #a3be8c;
+	--gp-nord-15: #b48ead;
+
+	--gp-primary: #495057;
+	--gp-danger: #7b2d26;
+	--gp-success: var(--gp-nord-14);
+
+	--gp-body-bg: #1c1f26;
+	--gp-body-color: #d8dee9;
+	--gp-card-bg: var(--gp-nord-2);
+	--gp-card-cap-bg: var(--gp-nord-3);
+	--gp-navbar-bg: #1c1f26;
+	--gp-border-color: var(--gp-nord-3);
+	--gp-border-color-translucent: rgba(255, 255, 255, 0.1);
+	--gp-alert-bg: transparent;
+	--gp-alert-color: inherit;
+	--gp-btn-border-radius: 999px;
+}
+
+[data-theme="dark"] {
+	--gp-card-bg: var(--gp-nord-0);
+	--gp-card-cap-bg: var(--gp-nord-1);
+	--gp-nav-pills-link-active-bg: var(--gp-nord-1);
+	--gp-table-bg: transparent;
+	--gp-nav-link-color: var(--gp-body-color);
+}
+
+[data-theme="light"] {
+	--gp-body-bg: #ffffff;
+	--gp-body-color: #212529;
+	--gp-card-bg: #ffffff;
+	--gp-card-cap-bg: #f8f9fa;
+	--gp-navbar-bg: #ffffff;
+	--gp-border-color: #dee2e6;
+	--gp-border-color-translucent: rgba(0, 0, 0, 0.175);
+	--gp-nav-link-color: #212529;
+}

@@ -10,7 +10,10 @@ import zip from 'lodash/zip';
 import Section from '../Components/Section';
 import FormSelect from '../Components/FormSelect';
 import FormControl from '../Components/FormControl';
-import { Button, FormCheck, Row, Col } from 'react-bootstrap';
+import Button from '../components/ui/Button';
+import FormCheck from '../components/ui/FormCheck';
+import Row from '../components/ui/Row';
+import Col from '../components/ui/Col';
 
 import WebApi from '../Services/WebApi';
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import './DraggableListGroup.scss';
+import './DraggableListGroup.css';
 
 const reorder = (list, startIndex, endIndex) => {
 	const result = Array.from(list);

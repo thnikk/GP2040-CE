@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-	Badge,
-	Button,
-	Col,
-	Form,
-	InputGroup,
-	Nav,
-	Row,
-	Tab,
-	Table,
-} from 'react-bootstrap';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import Col from '../components/ui/Col';
+import Form from '../components/ui/Form';
+import InputGroup from '../components/ui/InputGroup';
+import Nav from '../components/ui/Nav';
+import Row from '../components/ui/Row';
+import { Tabs, Tab } from '../components/ui/Tab';
+import Table from '../components/ui/Table';
 import { Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';

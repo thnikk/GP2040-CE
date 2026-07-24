@@ -1,5 +1,12 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Alert, Button, Form, Modal, Nav, Row, Col, Tab } from 'react-bootstrap';
+import Alert from '../components/ui/Alert';
+import Button from '../components/ui/Button';
+import Form from '../components/ui/Form';
+import Modal from '../components/ui/Modal';
+import Nav from '../components/ui/Nav';
+import Row from '../components/ui/Row';
+import Col from '../components/ui/Col';
+import { Tabs, Tab } from '../components/ui/Tab';
 import { Formik, useFormikContext } from 'formik';
 
 import * as yup from 'yup';
@@ -20,7 +27,7 @@ import { BUTTON_MASKS_OPTIONS, getButtonLabels } from '../Data/Buttons';
 import { hexToInt } from '../Services/Utilities';
 import { useBoardSVG } from '../hooks/useBoardSVG';
 
-import './SettingsPage.scss';
+import './SettingsPage.css';
 
 const SHA256 = (ascii) => {
 	function rightRotate(value, amount) {

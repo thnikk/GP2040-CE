@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { AppContext } from '../Contexts/AppContext';
-import { Button, Form, Col } from 'react-bootstrap';
+import Button from '../components/ui/Button';
+import Form from '../components/ui/Form';
+import Col from '../components/ui/Col';
 import { useTranslation } from 'react-i18next';
 
 import Section from '../Components/Section';

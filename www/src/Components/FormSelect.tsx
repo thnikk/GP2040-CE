@@ -1,26 +1,36 @@
 import React from 'react';
-import { Form, FormSelectProps } from 'react-bootstrap';
 
 type FormSelectTypes = {
 	label?: string;
 	error?: string;
 	groupClassName?: string;
 	hidden?: boolean;
-} & FormSelectProps;
+	className?: string;
+	isInvalid?: boolean;
+	children?: React.ReactNode;
+	value?: string | number;
+	onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+	[key: string]: unknown;
+};
 
 const FormSelect = ({
 	label,
 	error,
 	groupClassName = '',
 	hidden = false,
+	className = '',
+	isInvalid,
+	children,
 	...props
 }: FormSelectTypes) => {
 	return (
-		<Form.Group className={groupClassName} hidden={hidden}>
-			{label && <Form.Label>{label}</Form.Label>}
-			<Form.Select {...props} />
-			<Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
-		</Form.Group>
+		<div className={groupClassName} hidden={hidden}>
+			{label && <label className="form-label">{label}</label>}
+			<select className={`form-select ${className}`} {...props}>
+				{children}
+			</select>
+			{error && <div className="form-control-feedback is-invalid">{error}</div>}
+		</div>
 	);
 };
 

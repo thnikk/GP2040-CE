@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../Contexts/AppContext';
-import './Section.scss';
+import './Section.css';
 
 const Section = ({ children, title, description }) => {
 	const { loading } = useContext(AppContext);

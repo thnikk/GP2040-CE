@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import Button from '../components/ui/Button';
+import Form from '../components/ui/Form';
+import Modal from '../components/ui/Modal';
 import { useTranslation } from 'react-i18next';
 import invert from 'lodash/invert';
 import omit from 'lodash/omit';

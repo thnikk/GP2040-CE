@@ -1,10 +1,10 @@
 .draggable-list-group {
 	display: flex;
 	justify-content: space-between;
+}
 
-	.list-group {
-		flex: 1 1 auto;
-	}
+.draggable-list-group .list-group {
+	flex: 1 1 auto;
 }
 
 .draggable-list-container {

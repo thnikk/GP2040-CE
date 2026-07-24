@@ -4,7 +4,7 @@ import * as yup from 'yup';
 
 import Section from '../Components/Section';
 import FormSelect from '../Components/FormSelect';
-import { FormCheck } from 'react-bootstrap';
+import FormCheck from '../components/ui/FormCheck';
 
 const ON_BOARD_LED_MODES = [
 	{ label: 'Off', value: 0 },

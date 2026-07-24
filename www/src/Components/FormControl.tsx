@@ -1,29 +1,33 @@
 import React, { HTMLProps } from 'react';
-import { Form, FormControlProps } from 'react-bootstrap';
 
 type formTypes = {
 	onClick?: () => void;
-	label: string;
+	label?: string;
 	error?: string;
 	groupClassName?: string;
 	hidden?: boolean;
-} & FormControlProps &
-	HTMLProps<HTMLInputElement>;
+	className?: string;
+	isInvalid?: boolean;
+	value?: string | number;
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+} & HTMLProps<HTMLInputElement>;
 
 const FormControl = ({
 	onClick,
 	label,
 	error,
 	groupClassName,
+	className = '',
 	hidden = false,
+	isInvalid,
 	...props
 }: formTypes) => {
 	return (
-		<Form.Group className={groupClassName} onClick={onClick} hidden={hidden}>
-			<Form.Label>{label}</Form.Label>
-			<Form.Control {...props} />
-			<Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
-		</Form.Group>
+		<div className={groupClassName} onClick={onClick} hidden={hidden}>
+			{label && <label className="form-label">{label}</label>}
+			<input className={`form-control ${className}`} {...props} />
+			{error && <div className="form-control-feedback is-invalid">{error}</div>}
+		</div>
 	);
 };
 

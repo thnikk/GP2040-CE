@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Offcanvas from 'react-bootstrap/Offcanvas';
+import Button from '../components/ui/Button';
+import Offcanvas from '../components/ui/Offcanvas';
 
 import InfoCircle from '../Icons/InfoCircle';
 

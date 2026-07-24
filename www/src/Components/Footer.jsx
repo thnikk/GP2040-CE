@@ -4,7 +4,7 @@ import { AppContext } from '../Contexts/AppContext';
 import SunIcon from '../Icons/Sun';
 import MoonStarsIcon from '../Icons/MoonStars';
 import CircleHalfIcon from '../Icons/CircleHalf';
-import './Footer.scss';
+import './Footer.css';
 
 const setTheme = (theme) => {
   const rootElement = document.documentElement;
@@ -14,11 +14,11 @@ const setTheme = (theme) => {
 
   if (theme === 'auto') {
     rootElement.setAttribute(
-      'data-bs-theme',
+      'data-theme',
       prefersDarkMode ? 'dark' : 'light',
     );
   } else {
-    rootElement.setAttribute('data-bs-theme', theme);
+    rootElement.setAttribute('data-theme', theme);
   }
 };
 

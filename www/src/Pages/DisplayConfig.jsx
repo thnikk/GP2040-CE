@@ -1,5 +1,9 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { Button, Form, Row, Col, FormLabel, Tab, Tabs } from 'react-bootstrap';
+import Button from '../components/ui/Button';
+import Form from '../components/ui/Form';
+import Row from '../components/ui/Row';
+import Col from '../components/ui/Col';
+import { Tabs, Tab } from '../components/ui/Tab';
 import { Formik, useFormikContext, Field } from 'formik';
 import chunk from 'lodash/chunk';
 import * as yup from 'yup';

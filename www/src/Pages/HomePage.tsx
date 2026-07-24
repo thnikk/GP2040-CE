@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNewerVersion } from '../Services/Utilities';
-import { Alert, ProgressBar } from 'react-bootstrap';
+import Alert from '../components/ui/Alert';
+import ProgressBar from '../components/ui/ProgressBar';
 
 import useSystemStats from '../Store/useSystemStats';
 import Section from '../Components/Section';

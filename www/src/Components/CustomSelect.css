@@ -1,0 +1,71 @@
+.react-select__container {
+	flex-grow: 1;
+}
+
+.react-select__container .react-select__menu {
+	background-color: var(--gp-body-bg);
+	border: 1px solid var(--gp-border-color-translucent);
+}
+
+.react-select__control.react-select__control {
+	background-color: transparent;
+	line-height: 1.5;
+	border: 1px solid var(--gp-border-color);
+	border-radius: 999px;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.react-select__control.react-select__control--is-disabled {
+	background-color: var(--gp-nord-2);
+}
+
+.react-select__control.react-select__control--is-focused {
+	box-shadow: none;
+}
+
+.react-select__control.react-select__control:hover {
+	border: 1px solid var(--gp-border-color);
+}
+
+.react-select__value-container .react-select__single-value,
+.react-select__value-container .react-select__input-container {
+	color: inherit;
+}
+
+.react-select__value-container .react-select__multi-value {
+	background-color: var(--gp-nord-2);
+	border-radius: 999px;
+}
+
+.react-select__value-container .react-select__multi-value .react-select__multi-value__label {
+	color: inherit;
+	padding: 0rem 0.5rem;
+}
+
+.react-select__value-container .react-select__multi-value .react-select__multi-value__remove:hover {
+	background-color: var(--gp-danger);
+	color: white;
+	border-radius: 999px;
+}
+
+.react-select__option.react-select__option--is-focused {
+	background-color: var(--gp-nord-1);
+}
+
+.react-select__option.react-select__option--is-selected,
+.react-select__option.react-select__option:active {
+	background-color: var(--gp-primary);
+	color: white;
+}
+
+[data-theme="dark"] .react-select__control.react-select__control {
+	background-color: #1c1f26;
+}
+
+[data-theme="dark"] .react-select__indicators .react-select__indicator {
+	color: inherit;
+}
+
+[data-theme="dark"] .react-select__indicators .react-select__indicator:hover {
+	color: rgba(255, 255, 255, 0.75);
+}

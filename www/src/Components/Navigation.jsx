@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Nav, Navbar, Button, Modal } from 'react-bootstrap';
+import Nav from '../components/ui/Nav';
+import Navbar from '../components/ui/Navbar';
+import Button from '../components/ui/Button';
+import Modal from '../components/ui/Modal';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import './Navigation.scss';
+import './Navigation.css';
 import WebApi from '../Services/WebApi';
 import LanguageSelector from './LanguageSelector';
 import useSystemStats from '../Store/useSystemStats';

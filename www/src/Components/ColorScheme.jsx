@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from '../components/ui/Dropdown';
 import { useTranslation } from 'react-i18next';
 
 import { AppContext } from '../Contexts/AppContext';
@@ -19,13 +19,13 @@ const setTheme = function (theme) {
 		'(prefers-color-scheme: dark)',
 	).matches;
 
-	if (theme === 'auto') {
+		if (theme === 'auto') {
 		rootElement.setAttribute(
-			'data-bs-theme',
+			'data-theme',
 			prefersDarkMode ? 'dark' : 'light',
 		);
 	} else {
-		rootElement.setAttribute('data-bs-theme', theme);
+		rootElement.setAttribute('data-theme', theme);
 	}
 };
 
