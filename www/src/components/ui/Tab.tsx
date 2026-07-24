@@ -60,7 +60,9 @@ const TabPane = ({ eventKey, children, ...props }: TabPaneProps) => {
 	);
 };
 
-const Tabs = ({ className = '', children, activeKey, onSelect, ...props }: TabsProps) => {
+const Tabs = ({ className = '', children, activeKey, onSelect, defaultActiveKey, fill, ...props }: TabsProps) => {
+	void defaultActiveKey;
+	void fill;
 	const tabs: React.ReactNode[] = [];
 	const panes: React.ReactNode[] = [];
 

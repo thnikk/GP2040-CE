@@ -54,7 +54,9 @@ type FormControlProps = {
 	[key: string]: unknown;
 };
 
-const FormControl = ({ className = '', children, ...props }: FormControlProps) => {
+const FormControl = ({ className = '', isInvalid, error, children, ...props }: FormControlProps) => {
+	void isInvalid;
+	void error;
 	if (props.type === 'textarea') {
 		return (
 			<textarea className={`form-control ${className}`} {...props}>
@@ -102,11 +104,14 @@ type FormSelectProps = {
 	[key: string]: unknown;
 };
 
-const FormSelect = ({ className = '', children, ...props }: FormSelectProps) => (
-	<select className={`form-select ${className}`} {...props}>
-		{children}
-	</select>
-);
+const FormSelect = ({ className = '', isInvalid, children, ...props }: FormSelectProps) => {
+	void isInvalid;
+	return (
+		<select className={`form-select ${className}`} {...props}>
+			{children}
+		</select>
+	);
+};
 
 type FormCheckProps = {
 	type?: 'checkbox' | 'switch';
@@ -121,9 +126,10 @@ type FormCheckProps = {
 	[key: string]: unknown;
 };
 
-const FormCheckInput = ({ className = '', ...props }: FormCheckProps) => (
-	<input type="checkbox" className={`form-check-input ${className}`} {...props} />
-);
+const FormCheckInput = ({ className = '', isInvalid, ...props }: FormCheckProps) => {
+	void isInvalid;
+	return <input type="checkbox" className={`form-check-input ${className}`} {...props} />;
+};
 
 const FormCheckLabel = ({
 	htmlFor,
@@ -139,7 +145,8 @@ const FormCheckLabel = ({
 	</label>
 );
 
-const FormCheck = ({ type, id, label, className = '', reverse, children, ...props }: FormCheckProps) => {
+const FormCheck = ({ type, id, label, className = '', reverse, isInvalid, children, ...props }: FormCheckProps) => {
+	void isInvalid;
 	const containerClass = [
 		'form-check',
 		type === 'switch' ? 'form-switch' : '',

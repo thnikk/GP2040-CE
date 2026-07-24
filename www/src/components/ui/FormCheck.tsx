@@ -19,9 +19,11 @@ const FormCheck = ({
 	label,
 	className = '',
 	reverse,
+	isInvalid,
 	children,
 	...props
 }: FormCheckProps) => {
+	void isInvalid;
 	const containerClass = [
 		'form-check',
 		type === 'switch' ? 'form-switch' : '',

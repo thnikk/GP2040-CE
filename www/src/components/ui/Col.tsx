@@ -11,6 +11,7 @@ const FRACTIONS: Record<number, number> = {
 };
 
 type ColProps = {
+	xs?: number | 'auto';
 	sm?: number;
 	md?: number;
 	lg?: number;
@@ -20,8 +21,15 @@ type ColProps = {
 	[key: string]: unknown;
 };
 
-const Col = ({ sm, md, lg, className = '', style, children, ...props }: ColProps) => {
-	const bp = lg ?? md ?? sm ?? 12;
+const Col = ({ xs, sm, md, lg, className = '', style, children, ...props }: ColProps) => {
+	if (xs === 'auto') {
+		return (
+			<div className={className} style={{ flex: '0 0 auto', width: 'auto', maxWidth: '100%', ...style }} {...props}>
+				{children}
+			</div>
+		);
+	}
+	const bp = lg ?? md ?? sm ?? xs ?? 12;
 	const pct = FRACTIONS[bp] ?? (bp / 12) * 100;
 	return (
 		<div

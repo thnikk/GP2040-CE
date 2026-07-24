@@ -7,10 +7,15 @@ type TableProps = {
 	[key: string]: unknown;
 };
 
-const Table = ({ sm, className = '', children, ...props }: TableProps) => (
-	<table className={`table${sm ? ' table-sm' : ''} ${className}`} {...props}>
-		{children}
-	</table>
-);
+const Table = ({ sm, bordered, hover, striped, className = '', children, ...props }: TableProps) => {
+	void bordered;
+	void hover;
+	void striped;
+	return (
+		<table className={`table${sm ? ' table-sm' : ''} ${className}`} {...props}>
+			{children}
+		</table>
+	);
+};
 
 export default Table;

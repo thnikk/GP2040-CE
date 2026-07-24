@@ -212,7 +212,7 @@ export default function PeripheralMappingPage() {
 																`PeripheralMapping:pin-${pin.toLowerCase()}-label`,
 															)}
 														</Form.Label>
-														<FormSelect
+														<Form.Select
 															key={`peripheral.${block.label}.${pin}`}
 															id={`peripheral.${block.label}.${pin}`}
 															name={`peripheral.${block.label}.${pin}`}
@@ -254,7 +254,7 @@ export default function PeripheralMappingPage() {
 																		  )}`}
 																</option>
 															))}
-														</FormSelect>
+														</Form.Select>
 													</div>
 												))}
 												{Object.keys(peripheral.options).map((option, i) => (
@@ -267,7 +267,7 @@ export default function PeripheralMappingPage() {
 																`PeripheralMapping:option-${option.toLowerCase()}-label`,
 															)}
 														</Form.Label>
-														<FormSelect
+														<Form.Select
 															key={`peripheral.${block.label}.${option}`}
 															id={`peripheral.${block.label}.${option}`}
 															name={`peripheral.${block.label}.${option}`}
@@ -301,7 +301,7 @@ export default function PeripheralMappingPage() {
 																	)} - ${o.value}`}
 																</option>
 															))}
-														</FormSelect>
+														</Form.Select>
 													</div>
 												))}
 											</div>
