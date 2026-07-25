@@ -84,7 +84,7 @@ nav.navbar .navbar-actions .dropdown-toggle.active {
 	align-items: center;
 	padding: 0;
 	border: none;
-	margin-right: auto;
+	margin: 0px 16px;
 }
 
 .logo-link .title-logo {
@@ -125,7 +125,6 @@ nav.navbar .navbar-actions .dropdown-toggle.active {
 		width: 100%;
 		justify-content: flex-start;
 		padding: 12px 20px;
-		font-size: 18px;
 	}
 
 	nav.navbar .navbar-actions .btn {

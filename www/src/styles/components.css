@@ -441,7 +441,6 @@
 
 .nav-link {
 	display: block;
-	padding: 0.5rem 1rem;
 	color: var(--gp-nav-link-color, var(--gp-body-color));
 	text-decoration: none;
 	transition: color 0.15s, background-color 0.15s, border-color 0.15s;
