@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { BUTTON_MASKS, DPAD_MASKS } from '../Data/Buttons';
+import { BUTTON_MASKS, DPAD_MASKS } from '../../Data/Buttons';
 
 type ControllerWidgetProps = {
 	buttonMask: number;

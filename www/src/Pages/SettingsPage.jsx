@@ -17,10 +17,10 @@ import isNil from 'lodash/isNil';
 import useProfilesStore from '../Store/useProfilesStore';
 import { AppContext } from '../Contexts/AppContext';
 
-import ContextualHelpOverlay from '../Components/ContextualHelpOverlay';
-import CustomSelect from '../Components/CustomSelect';
-import PinSelectList from '../Components/PinSelectList';
-import Section from '../Components/Section';
+import ContextualHelpOverlay from '../components/shared/ContextualHelpOverlay';
+import CustomSelect from '../components/form/CustomSelect';
+import PinSelectList from '../components/pins/PinSelectList';
+import Section from '../components/shared/Section';
 import WebApi from '../Services/WebApi';
 import { BUTTON_MASKS_OPTIONS, getButtonLabels } from '../Data/Buttons';
 

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import FormCheck from '../components/ui/FormCheck';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
-import FormSelect from '../Components/FormSelect';
+import Section from '../components/shared/Section';
+import FormSelect from '../components/form/FormSelect';
 import { BUTTON_MASKS_OPTIONS } from '../Data/Buttons';
 
 export const bootselScheme = {

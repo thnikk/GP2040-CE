@@ -4,10 +4,10 @@ import FormCheck from '../components/ui/FormCheck';
 import Row from '../components/ui/Row';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
-import FormSelect from '../Components/FormSelect';
+import Section from '../components/shared/Section';
+import FormSelect from '../components/form/FormSelect';
 
-import FormControl from '../Components/FormControl';
+import FormControl from '../components/form/FormControl';
 import { DUAL_COMBINE_MODES, DUAL_STICK_MODES } from '../Data/Addons';
 
 export const dualDirectionScheme = {

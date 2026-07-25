@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { AppContextProvider } from './Contexts/AppContext';
 
 import useSystemStats from './Store/useSystemStats';
-import Navigation from './Components/Navigation';
-import Footer from './Components/Footer';
+import Navigation from './components/layout/Navigation';
+import Footer from './components/layout/Footer';
 
 import HomePage from './Pages/HomePage';
 import PinMappingPage from './Pages/PinMapping';

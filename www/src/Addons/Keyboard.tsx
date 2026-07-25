@@ -6,10 +6,10 @@ import FormLabel from '../components/ui/FormLabel';
 import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 
-import FormSelect from '../Components/FormSelect';
-import KeyboardMapper from '../Components/KeyboardMapper';
+import FormSelect from '../components/form/FormSelect';
+import KeyboardMapper from '../components/widgets/KeyboardMapper';
 import { baseButtonMappings } from '../Services/WebApi';
 import { AppContext } from '../Contexts/AppContext';
 

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppContext } from '../Contexts/AppContext';
-import SunIcon from '../Icons/Sun';
-import MoonStarsIcon from '../Icons/MoonStars';
-import CircleHalfIcon from '../Icons/CircleHalf';
-import LanguageSelector from './LanguageSelector';
+import { AppContext } from '../../Contexts/AppContext';
+import SunIcon from '../../Icons/Sun';
+import MoonStarsIcon from '../../Icons/MoonStars';
+import CircleHalfIcon from '../../Icons/CircleHalf';
+import LanguageSelector from '../shared/LanguageSelector';
 import './Footer.css';
 
 const setTheme = (theme) => {

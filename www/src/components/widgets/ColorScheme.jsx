@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import { Dropdown, DropdownButton } from '../components/ui/Dropdown';
+import { Dropdown, DropdownButton } from '../ui/Dropdown';
 import { useTranslation } from 'react-i18next';
 
-import { AppContext } from '../Contexts/AppContext';
-import SunIcon from '../Icons/Sun';
-import MoonStarsIcon from '../Icons/MoonStars';
-import CircleHalfIcon from '../Icons/CircleHalf';
+import { AppContext } from '../../Contexts/AppContext';
+import SunIcon from '../../Icons/Sun';
+import MoonStarsIcon from '../../Icons/MoonStars';
+import CircleHalfIcon from '../../Icons/CircleHalf';
 
 const dropdownOptions = [
 	{ scheme: 'light', icon: SunIcon },

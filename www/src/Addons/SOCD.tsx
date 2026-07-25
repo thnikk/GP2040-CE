@@ -4,9 +4,9 @@ import FormCheck from '../components/ui/FormCheck';
 import Row from '../components/ui/Row';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
-import FormSelect from '../Components/FormSelect';
-import FormControl from '../Components/FormControl';
+import Section from '../components/shared/Section';
+import FormSelect from '../components/form/FormSelect';
+import FormControl from '../components/form/FormControl';
 import { SOCD_MODES } from '../Data/Addons';
 
 export const socdScheme = {

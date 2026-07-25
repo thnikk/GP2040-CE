@@ -5,7 +5,7 @@ import Alert from '../components/ui/Alert';
 import ProgressBar from '../components/ui/ProgressBar';
 
 import useSystemStats from '../Store/useSystemStats';
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 
 export default function HomePage() {
 	const { t } = useTranslation('');

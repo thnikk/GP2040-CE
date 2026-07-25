@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Button from '../components/ui/Button';
-import Modal from '../components/ui/Modal';
+import Button from '../ui/Button';
+import Modal from '../ui/Modal';
 import { useTranslation } from 'react-i18next';
-import WebApi from '../Services/WebApi';
+import WebApi from '../../Services/WebApi';
 
 type CaptureButtonTypes = {
 	labels: string[];

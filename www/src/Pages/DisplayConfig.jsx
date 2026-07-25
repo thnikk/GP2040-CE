@@ -11,9 +11,9 @@ import { Trans, useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
 import { AppContext } from '../Contexts/AppContext';
-import FormControl from '../Components/FormControl';
-import FormSelect from '../Components/FormSelect';
-import Section from '../Components/Section';
+import FormControl from '../components/form/FormControl';
+import FormSelect from '../components/form/FormSelect';
+import Section from '../components/shared/Section';
 import WebApi from '../Services/WebApi';
 
 const ON_OFF_OPTIONS = [

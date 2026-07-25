@@ -7,9 +7,9 @@ import Table from '../components/ui/Table';
 import { Formik, useFormikContext, getIn } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import ContextualHelpOverlay from '../Components/ContextualHelpOverlay';
+import ContextualHelpOverlay from '../components/shared/ContextualHelpOverlay';
 
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 import WebApi, { basePeripheralMapping } from '../Services/WebApi';
 import { PERIPHERAL_DEVICES } from '../Data/Peripherals';
 import boards from '../Data/Boards.json';

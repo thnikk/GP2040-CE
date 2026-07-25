@@ -5,11 +5,11 @@ import Row from '../components/ui/Row';
 import * as yup from 'yup';
 
 import { AppContext } from '../Contexts/AppContext';
-import ColorPicker from '../Components/ColorPicker';
-import Section from '../Components/Section';
-import FormSelect from '../Components/FormSelect';
-import FormControl from '../Components/FormControl';
-import AnalogPinOptions from '../Components/AnalogPinOptions';
+import ColorPicker from '../components/widgets/ColorPicker';
+import Section from '../components/shared/Section';
+import FormSelect from '../components/form/FormSelect';
+import FormControl from '../components/form/FormControl';
+import AnalogPinOptions from '../components/pins/AnalogPinOptions';
 import { BUTTON_MASKS_OPTIONS } from '../Data/Buttons';
 import { DUAL_STICK_MODES } from '../Data/Addons';
 

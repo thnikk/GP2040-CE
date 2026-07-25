@@ -4,10 +4,10 @@ import FormCheck from '../components/ui/FormCheck';
 import Row from '../components/ui/Row';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 
-import FormControl from '../Components/FormControl';
-import FormSelect from '../Components/FormSelect';
+import FormControl from '../components/form/FormControl';
+import FormSelect from '../components/form/FormSelect';
 import { BUTTON_MASKS_OPTIONS } from '../Data/Buttons';
 
 export const focusModeScheme = {

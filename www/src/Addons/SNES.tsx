@@ -3,9 +3,9 @@ import { Trans, useTranslation } from 'react-i18next';
 import FormCheck from '../components/ui/FormCheck';
 import Row from '../components/ui/Row';
 
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 
-import FormControl from '../Components/FormControl';
+import FormControl from '../components/form/FormControl';
 
 // TODO: add scheme for validation
 export const snesScheme = {};

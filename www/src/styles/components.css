@@ -5,9 +5,12 @@
 .card {
 	border: 1px solid var(--gp-border-color);
 	border-radius: 1.25rem;
-	margin-bottom: 20px;
 	background-color: var(--gp-card-bg);
 	color: var(--gp-body-color);
+}
+
+.card + .card {
+	margin-top: 20px;
 }
 
 .card-header {

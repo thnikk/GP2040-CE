@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 
 const configLinks = [
 	{ to: '/peripheral-mapping', labelKey: 'Navigation:peripheral-mapping-label' },

@@ -5,9 +5,9 @@ import FormLabel from '../components/ui/FormLabel';
 import Row from '../components/ui/Row';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 
-import FormControl from '../Components/FormControl';
+import FormControl from '../components/form/FormControl';
 import { AppContext } from '../Contexts/AppContext';
 
 export const gamepadUSBHostScheme = {

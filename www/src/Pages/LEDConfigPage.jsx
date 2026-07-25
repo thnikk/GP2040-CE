@@ -12,10 +12,10 @@ import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AppContext } from '../Contexts/AppContext';
-import ColorPicker from '../Components/ColorPicker';
-import Section from '../Components/Section';
-import FormControl from '../Components/FormControl';
-import FormSelect from '../Components/FormSelect';
+import ColorPicker from '../components/widgets/ColorPicker';
+import Section from '../components/shared/Section';
+import FormControl from '../components/form/FormControl';
+import FormSelect from '../components/form/FormSelect';
 import { BUTTON_ACTIONS } from '../Data/Pins';
 import { hexToInt } from '../Services/Utilities';
 import WebApi from '../Services/WebApi';

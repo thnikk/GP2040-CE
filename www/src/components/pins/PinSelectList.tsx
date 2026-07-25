@@ -5,13 +5,13 @@ import invert from 'lodash/invert';
 import omit from 'lodash/omit';
 import { MultiValue, SingleValue } from 'react-select';
 
-import { AppContext } from '../Contexts/AppContext';
-import useProfilesStore from '../Store/useProfilesStore';
+import { AppContext } from '../../Contexts/AppContext';
+import useProfilesStore from '../../Store/useProfilesStore';
 
-import CustomSelect from '../Components/CustomSelect';
+import CustomSelect from '../form/CustomSelect';
 
-import { BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../Data/Buttons';
-import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
+import { BUTTON_MASKS, DPAD_MASKS, getButtonLabels } from '../../Data/Buttons';
+import { BUTTON_ACTIONS, PinActionValues } from '../../Data/Pins';
 
 type OptionType = {
 	label: string;

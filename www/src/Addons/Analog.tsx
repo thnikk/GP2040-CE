@@ -4,12 +4,12 @@ import FormCheck from '../components/ui/FormCheck';
 import Row from '../components/ui/Row';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
-import FormSelect from '../Components/FormSelect';
+import Section from '../components/shared/Section';
+import FormSelect from '../components/form/FormSelect';
 import { ANALOG_PINS } from '../Data/Buttons';
-import AnalogPinOptions from '../Components/AnalogPinOptions';
+import AnalogPinOptions from '../components/pins/AnalogPinOptions';
 import { AppContext } from '../Contexts/AppContext';
-import FormControl from '../Components/FormControl';
+import FormControl from '../components/form/FormControl';
 
 const ANALOG_STICK_MODES = [
 	{ label: 'Left Analog', value: 1 },

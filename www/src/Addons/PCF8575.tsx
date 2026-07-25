@@ -20,11 +20,11 @@ import invert from 'lodash/invert';
 import omit from 'lodash/omit';
 import zip from 'lodash/zip';
 
-import Section from '../Components/Section';
-import CustomSelect from '../Components/CustomSelect';
-import FormSelect from '../Components/FormSelect';
+import Section from '../components/shared/Section';
+import CustomSelect from '../components/form/CustomSelect';
+import FormSelect from '../components/form/FormSelect';
 
-import FormControl from '../Components/FormControl';
+import FormControl from '../components/form/FormControl';
 
 import { I2C_BLOCKS, PERIPHERAL_DEVICES } from '../Data/Peripherals';
 

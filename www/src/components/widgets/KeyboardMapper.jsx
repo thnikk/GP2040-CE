@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import FormSelect from './FormSelect';
-import { KEY_CODES } from '../Data/Keyboard';
-import { BUTTONS } from '../Data/Buttons';
+import FormSelect from '../form/FormSelect';
+import { KEY_CODES } from '../../Data/Keyboard';
+import { BUTTONS } from '../../Data/Buttons';
 
 const KeyboardMapper = ({
 	buttonLabels,

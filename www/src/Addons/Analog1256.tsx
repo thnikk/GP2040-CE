@@ -7,9 +7,9 @@ import FormLabel from '../components/ui/FormLabel';
 import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
-import FormControl from '../Components/FormControl';
-import FormSelect from '../Components/FormSelect';
+import Section from '../components/shared/Section';
+import FormControl from '../components/form/FormControl';
+import FormSelect from '../components/form/FormSelect';
 import boards from '../Data/Boards.json';
 import { SPI_BLOCKS } from '../Data/Peripherals';
 import WebApi from '../Services/WebApi';

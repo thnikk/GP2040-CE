@@ -5,7 +5,7 @@ import Form from '../components/ui/Form';
 import Col from '../components/ui/Col';
 import { useTranslation } from 'react-i18next';
 
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 import WebApi from '../Services/WebApi';
 
 const FILE_EXTENSION = '.gp2040';

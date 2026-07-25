@@ -9,9 +9,9 @@ import FormLabel from '../components/ui/FormLabel';
 import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 
-import FormSelect from '../Components/FormSelect';
+import FormSelect from '../components/form/FormSelect';
 import { I2C_BLOCKS } from '../Data/Peripherals';
 import { BUTTON_MASKS_OPTIONS } from '../Data/Buttons';
 

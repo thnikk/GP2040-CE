@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import Nav from '../components/ui/Nav';
-import Navbar from '../components/ui/Navbar';
-import Button from '../components/ui/Button';
-import Modal from '../components/ui/Modal';
+import Nav from '../ui/Nav';
+import Navbar from '../ui/Navbar';
+import Button from '../ui/Button';
+import Modal from '../ui/Modal';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './Navigation.css';
-import WebApi from '../Services/WebApi';
-import useSystemStats from '../Store/useSystemStats';
+import WebApi from '../../Services/WebApi';
+import useSystemStats from '../../Store/useSystemStats';
 
 const BOOT_MODES = {
 	GAMEPAD: 0,

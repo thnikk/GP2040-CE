@@ -8,8 +8,8 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
 import { AppContext } from '../Contexts/AppContext';
-import FormSelect from '../Components/FormSelect';
-import Section from '../Components/Section';
+import FormSelect from '../components/form/FormSelect';
+import Section from '../components/shared/Section';
 import WebApi from '../Services/WebApi';
 
 const LAYOUT_ORIENTATION = [

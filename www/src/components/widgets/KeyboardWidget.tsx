@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { KEY_CODES } from '../Data/Keyboard';
+import { KEY_CODES } from '../../Data/Keyboard';
 
 const MODIFIER_MIN = 0xe0;
 const MODIFIER_MAX = 0xe7;

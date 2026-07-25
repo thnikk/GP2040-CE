@@ -3,11 +3,11 @@ import { useShallow } from 'zustand/react/shallow';
 import invert from 'lodash/invert';
 import omit from 'lodash/omit';
 import { useContext } from 'react';
-import { AppContext } from '../Contexts/AppContext';
-import useProfilesStore from '../Store/useProfilesStore';
-import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
-import { getButtonLabels } from '../Data/Buttons';
-import { KEY_CODES } from '../Data/Keyboard';
+import { AppContext } from '../../Contexts/AppContext';
+import useProfilesStore from '../../Store/useProfilesStore';
+import { BUTTON_ACTIONS, PinActionValues } from '../../Data/Pins';
+import { getButtonLabels } from '../../Data/Buttons';
+import { KEY_CODES } from '../../Data/Keyboard';
 
 const STATIC_THEME_COLORS: Record<string, string>[] = [
 	{}, // Static Rainbow — computed per-button

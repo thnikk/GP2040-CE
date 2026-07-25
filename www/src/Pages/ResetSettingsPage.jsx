@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import DangerSection from '../Components/DangerSection';
+import DangerSection from '../components/shared/DangerSection';
 import WebApi from '../Services/WebApi';
 
 export default function ResetSettingsPage() {

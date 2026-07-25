@@ -14,7 +14,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import omit from 'lodash/omit';
 
 import { AppContext } from '../Contexts/AppContext';
-import Section from '../Components/Section';
+import Section from '../components/shared/Section';
 import WebApi from '../Services/WebApi';
 import {
 	getButtonLabels,

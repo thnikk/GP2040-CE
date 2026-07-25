@@ -20,10 +20,10 @@ import invert from 'lodash/invert';
 import { AppContext } from '../Contexts/AppContext';
 import useProfilesStore from '../Store/useProfilesStore';
 
-import Section from '../Components/Section';
-import PinSelectList from '../Components/PinSelectList';
-import BoardSVG from '../Components/BoardSVG';
-import PinActionModal from '../Components/PinActionModal';
+import Section from '../components/shared/Section';
+import PinSelectList from '../components/pins/PinSelectList';
+import BoardSVG from '../components/widgets/BoardSVG';
+import PinActionModal from '../components/pins/PinActionModal';
 
 import { BUTTONS, getButtonLabels } from '../Data/Buttons';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';

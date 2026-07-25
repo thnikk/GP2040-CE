@@ -7,9 +7,9 @@ import invert from 'lodash/invert';
 import omit from 'lodash/omit';
 import zip from 'lodash/zip';
 
-import Section from '../Components/Section';
-import FormSelect from '../Components/FormSelect';
-import FormControl from '../Components/FormControl';
+import Section from '../components/shared/Section';
+import FormSelect from '../components/form/FormSelect';
+import FormControl from '../components/form/FormControl';
 import Button from '../components/ui/Button';
 import FormCheck from '../components/ui/FormCheck';
 import Row from '../components/ui/Row';

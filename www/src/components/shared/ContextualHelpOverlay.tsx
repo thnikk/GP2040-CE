@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Button from '../components/ui/Button';
-import Offcanvas from '../components/ui/Offcanvas';
+import Button from '../ui/Button';
+import Offcanvas from '../ui/Offcanvas';
 
-import InfoCircle from '../Icons/InfoCircle';
+import InfoCircle from '../../Icons/InfoCircle';
 
 const ContextualHelpOverlay = ({ ...props }) => {
 	const [show, setShow] = useState(false);
