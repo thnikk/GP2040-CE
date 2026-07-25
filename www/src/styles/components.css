@@ -643,6 +643,20 @@
 	.navbar-collapse.show .btn-text {
 		display: inline;
 	}
+
+	.card {
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+	}
+
+	.card-header {
+		border-radius: 0;
+	}
+
+	.card-header:first-child {
+		border-radius: 0;
+	}
 }
 
 /* ==============================
