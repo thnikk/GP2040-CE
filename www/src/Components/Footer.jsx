@@ -4,6 +4,7 @@ import { AppContext } from '../Contexts/AppContext';
 import SunIcon from '../Icons/Sun';
 import MoonStarsIcon from '../Icons/MoonStars';
 import CircleHalfIcon from '../Icons/CircleHalf';
+import LanguageSelector from './LanguageSelector';
 import './Footer.css';
 
 const setTheme = (theme) => {
@@ -70,6 +71,7 @@ const Footer = () => {
           ))}
         </div>
         <div>
+          <LanguageSelector />
           <a
             href="https://github.com/thnikk/GP2040-CE"
             target="_blank"

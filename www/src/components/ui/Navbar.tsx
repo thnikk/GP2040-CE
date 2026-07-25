@@ -24,13 +24,19 @@ const NavbarBrand = ({
 
 const NavbarToggle = ({
 	onClick,
+	isOpen,
 }: {
 	onClick?: () => void;
+	isOpen?: boolean;
 }) => (
-	<button type="button" className="navbar-toggler" onClick={onClick}>
-		<svg viewBox="0 0 30 30" width="22" height="22" fill="currentColor">
-			<path d="M4 7h22M4 15h22M4 23h22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-		</svg>
+	<button
+		type="button"
+		className={`navbar-toggler${isOpen ? ' open' : ''}`}
+		onClick={onClick}
+	>
+		<span></span>
+		<span></span>
+		<span></span>
 	</button>
 );
 
@@ -60,8 +66,9 @@ const Navbar = ({ fixed, className = '', children, ...props }: NavbarProps) => {
 			<div className="container-lg">
 				{React.Children.map(enhancedChildren, (child) => {
 					if (React.isValidElement(child) && child.type === NavbarToggle) {
-						return React.cloneElement(child as React.ReactElement<{ onClick?: () => void }>, {
+						return React.cloneElement(child as React.ReactElement<{ onClick?: () => void; isOpen?: boolean }>, {
 							onClick: () => setExpanded(!expanded),
+							isOpen: expanded,
 						});
 					}
 					return child;

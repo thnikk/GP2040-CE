@@ -41,7 +41,7 @@ const LanguageSelector = () => {
 	};
 
 	return (
-		<DropdownButton variant="secondary" align="end" title={<GlobeIcon />}>
+		<DropdownButton variant="secondary" align="end" title={<GlobeIcon />} className="dropup">
 			{dropdownOptions.map((option) => (
 				<Dropdown.Item
 					key={option.code}
