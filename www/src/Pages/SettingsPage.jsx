@@ -1427,37 +1427,37 @@ export default function SettingsPage() {
 										window.location.hash = k;
 									}}
 								>
-								<Row>
-									<Col md={3}>
+								<Row style={{ gap: '10px' }}>
+									<Col xs="auto">
 										<Nav variant="pills" className="flex-column">
 											<Nav.Item>
-												<Nav.Link eventKey="inputmode">
+												<Nav.Link eventKey="inputmode" className="nav-btn">
 													{t('SettingsPage:settings-header-text')}
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
-												<Nav.Link eventKey="gamepad">
+												<Nav.Link eventKey="gamepad" className="nav-btn">
 													{t('SettingsPage:gamepad-settings-header-text')}
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
-												<Nav.Link eventKey="bootmode">
+												<Nav.Link eventKey="bootmode" className="nav-btn">
 													{t('SettingsPage:boot-input-mode-label')}
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
-												<Nav.Link eventKey="hotkey">
+												<Nav.Link eventKey="hotkey" className="nav-btn">
 													{t('SettingsPage:hotkey-settings-label')}
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
-												<Nav.Link eventKey="extrapins">
+												<Nav.Link eventKey="extrapins" className="nav-btn">
 													{t('SettingsPage:extra-pins-label')}
 												</Nav.Link>
 											</Nav.Item>
 										</Nav>
 									</Col>
-									<Col md={9}>
+									<div style={{ flex: 1, minWidth: 0 }}>
 										<Tab.Content>
 											<Tab.Pane eventKey="inputmode">
 												<Section
@@ -1895,7 +1895,7 @@ export default function SettingsPage() {
 												</Section>
 											</Tab.Pane>
 										</Tab.Content>
-									</Col>
+									</div>
 								</Row>
 							</Tab.Container>
 							<FormContext

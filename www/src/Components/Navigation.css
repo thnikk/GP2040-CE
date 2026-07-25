@@ -51,32 +51,14 @@ nav.navbar .navbar-label-select .form-select {
 	border: 1px solid transparent;
 }
 
-nav.navbar .navbar-actions .nav-link:hover,
-nav.navbar .navbar-actions .nav-link:active,
 nav.navbar .navbar-actions .btn:hover,
 nav.navbar .navbar-actions .btn:active,
-nav.navbar .navbar-actions .dropdown-toggle:hover,
-nav.navbar .navbar-actions .dropdown-toggle:active {
-	background-color: var(--gp-nord-0);
-	border-color: var(--gp-nord-1);
-}
-
-nav.navbar .navbar-actions .nav-link.active,
 nav.navbar .navbar-actions .btn.active,
+nav.navbar .navbar-actions .dropdown-toggle:hover,
+nav.navbar .navbar-actions .dropdown-toggle:active,
 nav.navbar .navbar-actions .dropdown-toggle.active {
 	background-color: var(--gp-nord-0);
 	border-color: var(--gp-nord-1);
-}
-
-[data-theme="light"] nav.navbar .navbar-actions .nav-link:hover,
-[data-theme="light"] nav.navbar .navbar-actions .nav-link:active {
-	background-color: #c8d0dc;
-	border-color: #c8d0dc;
-}
-
-[data-theme="light"] nav.navbar .navbar-actions .nav-link.active {
-	background-color: #c8d0dc;
-	border-color: #c8d0dc;
 }
 
 .logo-link {

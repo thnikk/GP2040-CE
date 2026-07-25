@@ -41,6 +41,7 @@ type NavLinkProps = {
 
 const NavLink = ({ as: Component = 'a', to, eventKey, className = '', children, ...props }: NavLinkProps) => {
 	const tab = useContext(TabContext);
+	const isActive = tab.activeKey && eventKey && tab.activeKey === eventKey;
 	const handleClick = (e: React.MouseEvent) => {
 		if (eventKey && tab.onSelect) {
 			e.preventDefault();
@@ -48,7 +49,7 @@ const NavLink = ({ as: Component = 'a', to, eventKey, className = '', children, 
 		}
 	};
 	return (
-		<Component className={`nav-link ${className}`} {...(to ? { to } : {})} onClick={handleClick} {...props}>
+		<Component className={`nav-link${isActive ? ' active' : ''} ${className}`} {...(to ? { to } : {})} onClick={handleClick} {...props}>
 			{children}
 		</Component>
 	);

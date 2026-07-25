@@ -84,7 +84,7 @@ const Navigation = () => {
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav className="navbar-actions" activeKey={location.pathname}>
-					<Nav.Link as={NavLink} to="/layout" eventKey="/layout">
+					<Nav.Link as={NavLink} to="/layout" eventKey="/layout" className="nav-btn">
 						<span style={{ display: 'inline-flex', alignItems: 'center' }}>
 							<svg
 								viewBox="0 0 640 384"
@@ -96,7 +96,7 @@ const Navigation = () => {
 							{t('Navigation:layout-label')}
 						</span>
 					</Nav.Link>
-					<Nav.Link as={NavLink} to="/settings" eventKey="/settings">
+					<Nav.Link as={NavLink} to="/settings" eventKey="/settings" className="nav-btn">
 						<span style={{ display: 'inline-flex', alignItems: 'center' }}>
 							<svg
 								viewBox="0 0 512 512"
@@ -113,6 +113,7 @@ const Navigation = () => {
 							as={NavLink}
 							to="/configuration"
 							eventKey="/configuration"
+							className="nav-btn"
 							aria-label={t('Navigation:config-label')}
 						>
 							<svg viewBox="0 0 448 512" fill="currentColor">
