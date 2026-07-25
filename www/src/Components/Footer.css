@@ -14,7 +14,7 @@
 .footer-inner {
 	display: flex;
 	align-items: center;
-	padding: 20px;
+	padding: 20px 30px;
 	font-size: 15px;
 }
 
@@ -68,7 +68,7 @@
 	color: inherit;
 	padding: 6px 10px;
 	cursor: pointer;
-	font-size: 15px;
+	font-size: 16px;
 	transition: background 0.15s;
 	display: flex;
 	align-items: center;
