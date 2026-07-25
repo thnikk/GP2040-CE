@@ -197,17 +197,17 @@
 }
 
 [data-theme="dark"] .pin-action-modal .modal-content {
-	background: var(--gp-nord-0);
+	background: var(--bg-2);
 }
 
 [data-theme="dark"] .pin-action-modal .modal-header {
-	background: var(--gp-nord-2);
+	background: var(--bg-4);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] .led-color-btn {
-	background: var(--gp-nord-1);
-	border-color: var(--gp-nord-2);
+	background: var(--bg-3);
+	border-color: var(--bg-4);
 }
 
 [data-theme="dark"] .led-color-btn:hover {
@@ -215,11 +215,11 @@
 }
 
 [data-theme="dark"] .pin-action-tab:hover {
-	background: var(--gp-nord-1);
+	background: var(--bg-3);
 }
 
 [data-theme="dark"] .pin-action-tab.active {
-	background: var(--gp-nord-2);
+	background: var(--bg-4);
 }
 
 .keyboard-widget {
@@ -296,7 +296,7 @@
 	padding: 0 4px;
 	border: 1px solid rgba(255, 255, 255, 0.2);
 	border-radius: 4px;
-	background: var(--gp-nord-1);
+	background: var(--bg-3);
 	color: inherit;
 	font-size: 1rem;
 	font-family: 'Nunito', monospace;

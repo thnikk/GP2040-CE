@@ -57,8 +57,8 @@
 .navbar-actions .dropdown-toggle:hover,
 .navbar-actions .dropdown-toggle:active,
 .navbar-actions .dropdown-toggle.active {
-	background-color: var(--gp-nord-0);
-	border-color: var(--gp-nord-1);
+	background-color: var(--bg-2);
+	border-color: var(--bg-3);
 }
 
 .logo-link {

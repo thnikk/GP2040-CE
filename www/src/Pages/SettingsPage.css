@@ -17,18 +17,4 @@
 	text-align: left;
 }
 
-[data-theme="dark"] optgroup {
-	background-color: var(--gp-nord-2);
-	color: var(--gp-nord-5);
-}
 
-[data-theme="dark"] option {
-	background-color: var(--gp-body-bg);
-	color: var(--gp-body-color);
-}
-
-[data-theme="dark"] option:disabled {
-	font-style: italic;
-	background-color: var(--gp-nord-1);
-	color: var(--gp-nord-3);
-}
