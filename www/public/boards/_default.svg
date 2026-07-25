@@ -1,99 +1,99 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
   <rect x="10" y="10" width="880" height="500" rx="25" fill="#1a1a2e" stroke="#0f3460" stroke-width="3"/>
-  <text x="450" y="45" text-anchor="middle" fill="#e94560" font-family="monospace" font-size="16" font-weight="bold">GP2040-CE Pin Mapping</text>
-  <text x="450" y="65" text-anchor="middle" fill="#555" font-family="monospace" font-size="11">Click a pin to assign a function</text>
+  <text x="450" y="45" text-anchor="middle" fill="#e94560" font-size="16" font-weight="bold">GP2040-CE Pin Mapping</text>
+  <text x="450" y="65" text-anchor="middle" fill="#555" font-size="11">Click a pin to assign a function</text>
 
   <rect id="pin26" x="630" y="90" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="656" y="113" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP26</text>
-  <text x="656" y="128" text-anchor="middle" fill="#555" font-family="monospace" font-size="8">A0</text>
+  <text x="656" y="113" text-anchor="middle" fill="#aaa" font-size="10">GP26</text>
+  <text x="656" y="128" text-anchor="middle" fill="#555" font-size="8">A0</text>
 
   <rect id="pin27" x="700" y="90" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="726" y="113" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP27</text>
-  <text x="726" y="128" text-anchor="middle" fill="#555" font-family="monospace" font-size="8">A1</text>
+  <text x="726" y="113" text-anchor="middle" fill="#aaa" font-size="10">GP27</text>
+  <text x="726" y="128" text-anchor="middle" fill="#555" font-size="8">A1</text>
 
   <rect id="pin28" x="770" y="90" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="796" y="113" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP28</text>
-  <text x="796" y="128" text-anchor="middle" fill="#555" font-family="monospace" font-size="8">A2</text>
+  <text x="796" y="113" text-anchor="middle" fill="#aaa" font-size="10">GP28</text>
+  <text x="796" y="128" text-anchor="middle" fill="#555" font-size="8">A2</text>
 
   <rect id="pin29" x="770" y="155" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="796" y="178" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP29</text>
-  <text x="796" y="193" text-anchor="middle" fill="#555" font-family="monospace" font-size="8">A3</text>
+  <text x="796" y="178" text-anchor="middle" fill="#aaa" font-size="10">GP29</text>
+  <text x="796" y="193" text-anchor="middle" fill="#555" font-size="8">A3</text>
 
   <rect id="pin22" x="770" y="220" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="796" y="248" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP22</text>
+  <text x="796" y="248" text-anchor="middle" fill="#aaa" font-size="10">GP22</text>
 
   <rect id="pin23" x="770" y="285" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="796" y="313" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP23</text>
+  <text x="796" y="313" text-anchor="middle" fill="#aaa" font-size="10">GP23</text>
 
   <rect id="pin24" x="770" y="350" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="796" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP24</text>
+  <text x="796" y="378" text-anchor="middle" fill="#aaa" font-size="10">GP24</text>
 
   <rect id="pin25" x="700" y="350" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="726" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP25</text>
+  <text x="726" y="378" text-anchor="middle" fill="#aaa" font-size="10">GP25</text>
 
   <rect id="pin00" x="630" y="350" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="656" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP0</text>
+  <text x="656" y="378" text-anchor="middle" fill="#aaa" font-size="10">GP0</text>
 
   <rect id="pin01" x="630" y="285" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="656" y="313" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP1</text>
+  <text x="656" y="313" text-anchor="middle" fill="#aaa" font-size="10">GP1</text>
 
   <rect id="pin15" x="700" y="220" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="726" y="248" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP15</text>
+  <text x="726" y="248" text-anchor="middle" fill="#aaa" font-size="10">GP15</text>
 
   <rect id="pin14" x="630" y="220" width="52" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="656" y="248" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP14</text>
+  <text x="656" y="248" text-anchor="middle" fill="#aaa" font-size="10">GP14</text>
 
   <rect id="pin02" x="100" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="127" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP2</text>
+  <text x="127" y="183" text-anchor="middle" fill="#aaa" font-size="10">GP2</text>
 
   <rect id="pin03" x="100" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="127" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP3</text>
+  <text x="127" y="258" text-anchor="middle" fill="#aaa" font-size="10">GP3</text>
 
   <rect id="pin04" x="170" y="192" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="197" y="220" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP4</text>
+  <text x="197" y="220" text-anchor="middle" fill="#aaa" font-size="10">GP4</text>
 
   <rect id="pin05" x="30" y="192" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="57" y="220" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP5</text>
+  <text x="57" y="220" text-anchor="middle" fill="#aaa" font-size="10">GP5</text>
 
   <rect id="pin06" x="320" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="347" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP6</text>
+  <text x="347" y="183" text-anchor="middle" fill="#aaa" font-size="10">GP6</text>
 
   <rect id="pin07" x="390" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="417" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP7</text>
+  <text x="417" y="183" text-anchor="middle" fill="#aaa" font-size="10">GP7</text>
 
   <rect id="pin08" x="460" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="487" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP8</text>
+  <text x="487" y="183" text-anchor="middle" fill="#aaa" font-size="10">GP8</text>
 
   <rect id="pin09" x="320" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="347" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP9</text>
+  <text x="347" y="258" text-anchor="middle" fill="#aaa" font-size="10">GP9</text>
 
   <rect id="pin10" x="390" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="417" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP10</text>
+  <text x="417" y="258" text-anchor="middle" fill="#aaa" font-size="10">GP10</text>
 
   <rect id="pin11" x="460" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="487" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP11</text>
+  <text x="487" y="258" text-anchor="middle" fill="#aaa" font-size="10">GP11</text>
 
   <rect id="pin12" x="320" y="305" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="347" y="333" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP12</text>
+  <text x="347" y="333" text-anchor="middle" fill="#aaa" font-size="10">GP12</text>
 
   <rect id="pin13" x="390" y="305" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="417" y="333" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP13</text>
+  <text x="417" y="333" text-anchor="middle" fill="#aaa" font-size="10">GP13</text>
 
   <rect id="pin16" x="460" y="305" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="487" y="333" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP16</text>
+  <text x="487" y="333" text-anchor="middle" fill="#aaa" font-size="10">GP16</text>
 
   <rect id="pin17" x="530" y="155" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="557" y="183" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP17</text>
+  <text x="557" y="183" text-anchor="middle" fill="#aaa" font-size="10">GP17</text>
 
   <rect id="pin18" x="530" y="230" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="557" y="258" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP18</text>
+  <text x="557" y="258" text-anchor="middle" fill="#aaa" font-size="10">GP18</text>
 
   <rect id="pin19" x="530" y="305" width="55" height="55" rx="12" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="557" y="333" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP19</text>
+  <text x="557" y="333" text-anchor="middle" fill="#aaa" font-size="10">GP19</text>
 
   <rect id="pin20" x="100" y="350" width="55" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="127" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP20</text>
+  <text x="127" y="378" text-anchor="middle" fill="#aaa" font-size="10">GP20</text>
 
   <rect id="pin21" x="170" y="350" width="55" height="48" rx="8" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
-  <text x="197" y="378" text-anchor="middle" fill="#aaa" font-family="monospace" font-size="10">GP21</text>
+  <text x="197" y="378" text-anchor="middle" fill="#aaa" font-size="10">GP21</text>
 </svg>
