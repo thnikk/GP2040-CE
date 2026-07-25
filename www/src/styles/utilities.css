@@ -146,6 +146,10 @@
 }
 
 .text-muted {
+	color: rgba(216, 222, 233, 0.65);
+}
+
+[data-theme="light"] .text-muted {
 	color: var(--gp-nord-3);
 }
 

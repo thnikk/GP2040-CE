@@ -5,7 +5,7 @@
    height="186.31024"
    version="1.1"
    id="svg169"
-   sodipodi:docname="fightboard-v3.svg"
+   sodipodi:docname="board.svg"
    inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
    xml:space="preserve"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -21,7 +21,7 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.3382935"
-     inkscape:cx="308.55836"
+     inkscape:cx="308.77219"
      inkscape:cy="124.66356"
      inkscape:window-width="2560"
      inkscape:window-height="1440"
@@ -68,7 +68,7 @@
      stroke-dasharray="none"
      d="M 599.05395,17.036294 V 169.27395 A 16.090249,16.090249 0 0 1 582.96371,185.3642 H 17.036294 A 16.090249,16.090249 0 0 1 0.94604498,169.27395 V 17.036294 A 16.090249,16.090249 0 0 1 17.036294,0.94604498 H 582.96361 A 16.090249,16.090249 0 0 1 599.05386,17.036294 Z"
      id="case"
-     style="display:inline;fill:#2b303b;fill-opacity:1;stroke-width:2;stroke-dasharray:none" /><path
+     style="display:inline;fill:none;fill-opacity:1;stroke-width:2;stroke-dasharray:none" /><path
      fill="none"
      stroke="#000000"
      stroke-width="1.89209"

@@ -295,8 +295,8 @@
 	position: absolute;
 	top: 2px;
 	left: 2px;
-	width: calc(3.5em * 0.5 - 4px);
-	height: calc(3.5em * 0.5 - 4px);
+	width: calc(3.5em * 0.5 - 6px);
+	height: calc(3.5em * 0.5 - 6px);
 	border-radius: 50%;
 	background-color: #fff;
 	transition: transform 0.15s ease-in-out;
@@ -319,6 +319,10 @@
 	display: block;
 	margin-top: 0.25rem;
 	font-size: 0.875em;
+	color: rgba(216, 222, 233, 0.65);
+}
+
+[data-theme="light"] .form-text {
 	color: var(--gp-nord-3);
 }
 
@@ -506,7 +510,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0 20px;
+	/* padding: 0 20px; */
 }
 
 .navbar-brand {
@@ -907,8 +911,8 @@
 	max-width: 1000px;
 	margin-left: auto;
 	margin-right: auto;
-	padding-left: 20px;
-	padding-right: 20px;
+	/* padding-left: 20px; */
+	/* padding-right: 20px; */
 	width: 100%;
 }
 
