@@ -7,5 +7,7 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/utilities.css';
 import './styles/components.css';
+import './styles/pages.css';
+import './styles/overrides.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);

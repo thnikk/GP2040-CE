@@ -1,3 +1,7 @@
+/* ==============================
+   react-select overrides (CustomSelect)
+   ============================== */
+
 .react-select__container {
 	flex-grow: 1;
 }
@@ -68,4 +72,34 @@
 
 [data-theme="dark"] .react-select__indicators .react-select__indicator:hover {
 	color: rgba(255, 255, 255, 0.75);
+}
+
+/* ==============================
+   DraggableListGroup
+   ============================== */
+
+.draggable-list-group {
+	display: flex;
+	justify-content: space-between;
+}
+
+.draggable-list-group .list-group {
+	flex: 1 1 auto;
+}
+
+.draggable-list-container {
+	display: flex;
+	flex-direction: column;
+	flex: 1 0 auto;
+	margin: 10px;
+	width: 0;
+}
+
+.draggable-list-title {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.draggable-list {
+	flex-direction: row;
 }

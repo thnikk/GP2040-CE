@@ -22,8 +22,6 @@ import PlaygroundPage from './Pages/PlaygroundPage';
 import InputMacroAddonPage from './Pages/InputMacroAddonPage';
 import ButtonLayoutConfigPage from './Pages/ButtonLayoutConfigPage';
 
-import './App.css';
-
 const App = () => {
 	const { getSystemStats } = useSystemStats();
 

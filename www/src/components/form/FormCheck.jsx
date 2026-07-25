@@ -1,6 +1,5 @@
 import React from 'react';
 
-import './FormCheck.css';
 
 const FormCheck = ({ label, error, groupClassName, className, children, ...props }) => {
 	return (

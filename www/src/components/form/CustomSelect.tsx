@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactSelect, { GroupBase, Props } from 'react-select';
 
-import './CustomSelect.css';
 
 function CustomSelect<
 	Option,

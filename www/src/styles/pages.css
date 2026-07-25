@@ -1,3 +1,7 @@
+/* ==============================
+   Pin Mapping
+   ============================== */
+
 .pin-grid {
 	display: grid;
 	grid-auto-flow: column;
@@ -377,4 +381,27 @@
 	paint-order: stroke fill;
 	pointer-events: none;
 	user-select: none;
+}
+
+/* ==============================
+   Settings Page
+   ============================== */
+
+.hotkey-grid {
+	display: grid;
+	grid-template-columns: auto 2fr auto minmax(120px, 1fr) auto;
+	gap: 6px 8px;
+	align-items: center;
+}
+
+.hotkey-row {
+	display: contents;
+}
+
+.hotkey-header {
+	text-align: center;
+}
+
+.hotkey-header:first-child {
+	text-align: left;
 }

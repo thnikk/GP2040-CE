@@ -27,8 +27,6 @@ import { BUTTON_MASKS_OPTIONS, getButtonLabels } from '../Data/Buttons';
 import { hexToInt } from '../Services/Utilities';
 import { useBoardSVG } from '../hooks/useBoardSVG';
 
-import './SettingsPage.css';
-
 const SHA256 = (ascii) => {
 	function rightRotate(value, amount) {
 		return (value >>> amount) | (value << (32 - amount));

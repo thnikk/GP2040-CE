@@ -3,9 +3,8 @@ import Nav from '../ui/Nav';
 import Navbar from '../ui/Navbar';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
-import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import './Navigation.css';
+import { NavLink, useLocation } from 'react-router-dom';
 import WebApi from '../../Services/WebApi';
 import useSystemStats from '../../Store/useSystemStats';
 

@@ -29,7 +29,6 @@ import { BUTTONS, getButtonLabels } from '../Data/Buttons';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { useBoardSVG } from '../hooks/useBoardSVG';
 import WebApi from '../Services/WebApi';
-import './PinMapping.css';
 import InfoCircle from '../Icons/InfoCircle';
 
 const ProfileLabel = memo(function ProfileLabel({
