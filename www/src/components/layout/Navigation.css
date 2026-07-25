@@ -1,62 +1,62 @@
-nav.navbar .navbar-actions {
+.navbar-actions {
 	gap: 10px;
 	align-items: center;
 	flex-direction: row;
 	margin-left: auto;
 }
 
-nav.navbar .navbar-actions .dropdown-menu {
+.navbar-actions .dropdown-menu {
 	position: absolute;
 }
 
-nav.navbar .navbar-actions .btn:hover,
-nav.navbar .navbar-actions .btn:active,
-nav.navbar .navbar-actions .btn.active,
-nav.navbar .navbar-actions .dropdown-toggle:hover,
-nav.navbar .navbar-actions .dropdown-toggle:active,
-nav.navbar .navbar-actions .dropdown-toggle.active {
+.navbar-actions .btn:hover,
+.navbar-actions .btn:active,
+.navbar-actions .btn.active,
+.navbar-actions .dropdown-toggle:hover,
+.navbar-actions .dropdown-toggle:active,
+.navbar-actions .dropdown-toggle.active {
 	background-color: var(--gp-btn-bg, inherit);
 	color: var(--gp-btn-color, inherit);
 }
 
-nav.navbar .navbar-actions .dropdown-toggle::after {
+.navbar-actions .dropdown-toggle::after {
 	display: none;
 }
 
-nav.navbar .reset-settings-link {
+.navbar .reset-settings-link {
 	color: #ff0000;
 }
 
-nav.navbar .icon-btn {
+.navbar .icon-btn {
 	width: 40px;
 	padding: 0;
 	justify-content: center;
 	border-radius: 50%;
 }
 
-nav.navbar .navbar-actions .nav-link,
-nav.navbar .navbar-actions .btn,
-nav.navbar .navbar-actions .dropdown-toggle,
-nav.navbar .navbar-actions .form-select {
+.navbar-actions .nav-link,
+.navbar-actions .btn,
+.navbar-actions .dropdown-toggle,
+.navbar-actions .form-select {
 	height: 40px;
 	display: inline-flex;
 	align-items: center;
 	gap: 0.5rem;
 }
 
-nav.navbar .navbar-actions .nav-link,
-nav.navbar .navbar-actions .btn,
-nav.navbar .navbar-actions .dropdown-toggle,
-nav.navbar .navbar-label-select .form-select {
+.navbar-actions .nav-link,
+.navbar-actions .btn,
+.navbar-actions .dropdown-toggle,
+.navbar .navbar-label-select .form-select {
 	border: 1px solid transparent;
 }
 
-nav.navbar .navbar-actions .btn:hover,
-nav.navbar .navbar-actions .btn:active,
-nav.navbar .navbar-actions .btn.active,
-nav.navbar .navbar-actions .dropdown-toggle:hover,
-nav.navbar .navbar-actions .dropdown-toggle:active,
-nav.navbar .navbar-actions .dropdown-toggle.active {
+.navbar-actions .btn:hover,
+.navbar-actions .btn:active,
+.navbar-actions .btn.active,
+.navbar-actions .dropdown-toggle:hover,
+.navbar-actions .dropdown-toggle:active,
+.navbar-actions .dropdown-toggle.active {
 	background-color: var(--gp-nord-0);
 	border-color: var(--gp-nord-1);
 }
@@ -94,7 +94,7 @@ nav.navbar .navbar-actions .dropdown-toggle.active {
 }
 
 @media (max-width: 999px) {
-	nav.navbar .navbar-actions {
+.navbar-actions {
 		margin-top: 1rem;
 		margin-bottom: 1rem;
 		margin-left: 0;
@@ -102,31 +102,31 @@ nav.navbar .navbar-actions .dropdown-toggle.active {
 		width: 100%;
 	}
 
-	nav.navbar .navbar-actions .nav-link {
+	.navbar-actions .nav-link {
 		margin-left: 0;
 		width: 100%;
 		justify-content: flex-start;
 		padding: 12px 20px;
 	}
 
-	nav.navbar .navbar-actions .btn {
+	.navbar-actions .btn {
 		width: 100%;
 		justify-content: flex-start;
 		gap: 0.5rem;
 	}
 
-	nav.navbar .navbar-actions .btn.icon-btn {
+	.navbar-actions .btn.icon-btn {
 		width: 100%;
 		border-radius: 999px;
 		padding: 12px 20px;
 	}
 
-	nav.navbar .navbar-actions .dropdown-menu {
+	.navbar-actions .dropdown-menu {
 		background-color: transparent;
 		border: none;
 	}
 
-	nav.navbar .navbar-actions .dropdown-menu .dropdown-item {
+	.navbar-actions .dropdown-menu .dropdown-item {
 		padding-left: 1.5rem;
 	}
 }
