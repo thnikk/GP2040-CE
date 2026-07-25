@@ -278,7 +278,7 @@
 	flex-shrink: 0;
 	border-radius: 2em;
 	appearance: none;
-	background-color: var(--gp-nord-3);
+	background-color: var(--bg-4);
 	border: 1px solid var(--gp-border-color);
 	cursor: pointer;
 	position: relative;
