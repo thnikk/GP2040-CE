@@ -250,6 +250,8 @@ export default function BoardSVG({
     const updateLabels = useCallback(() => {
 	        if (!containerRef.current) return;
 
+	        const hasLedElements = containerRef.current.querySelector('[id^="led-"]') !== null;
+
 	        if (originalFills.current.size === 0) {
 	            pinElements.forEach(({ id }) => {
 	                const el = containerRef.current?.querySelector(`#${CSS.escape(id)}`);
@@ -410,6 +412,22 @@ export default function BoardSVG({
 			const ledIndex = hasLed ? pinLedIndices[pinStr] : -1;
 			const ledColor = hasLed ? getLedColor(ledIndex, totalLeds, animationMode, themeIndex, customTheme, staticColorNormal, ledButtonOrder) : '';
 
+			const ledElId = ledIndex >= 0 ? `led-${ledIndex}` : null;
+			const ledEl = ledElId ? containerRef.current?.querySelector(`#${CSS.escape(ledElId)}`) : null;
+			if (ledEl && ledColor) {
+				const ledShapes = (ledEl as Element).matches('path,rect,circle,ellipse,polygon,polyline,line')
+					? [ledEl]
+					: (ledEl as Element).querySelectorAll('path, rect, circle, ellipse, polygon, polyline, line');
+				ledShapes.forEach((s) => {
+					(s as HTMLElement).style.setProperty('fill', ledColor, 'important');
+					(s as HTMLElement).style.removeProperty('fill-opacity');
+					(s as HTMLElement).style.setProperty('stroke', 'var(--bg-4)', 'important');
+					(s as HTMLElement).style.setProperty('stroke-width', '2', 'important');
+				});
+			}
+
+			const applyLedToButton = ledColor && !hasLedElements;
+
 	        shapes.forEach((shape, shapeIndex) => {
 	            const svgEl = shape as HTMLElement;
 	            const origFill = originalFills.current.get(`${id}-${shapeIndex}`)?.fill || '';
@@ -419,9 +437,9 @@ export default function BoardSVG({
 	                svgEl.style.setProperty('stroke-width', '3', 'important');
 	                svgEl.style.removeProperty('fill-opacity');
 	            } else if (action === BUTTON_ACTIONS.NONE || action === undefined) {
-	                svgEl.style.setProperty('fill', origFill || '#16213e', 'important');
-	                svgEl.style.setProperty('fill-opacity', '0.2', 'important');
-	                svgEl.style.removeProperty('stroke');
+	                svgEl.style.setProperty('fill', hasLedElements ? 'var(--bg-2)' : (origFill || '#16213e'), 'important');
+	                svgEl.style.setProperty('fill-opacity', hasLedElements ? '1' : '0.2', 'important');
+	                svgEl.style.setProperty('stroke', 'var(--bg-4)', 'important');
 	                svgEl.style.setProperty('stroke-width', '2', 'important');
 	            } else if (action === BUTTON_ACTIONS.RESERVED) {
 	                svgEl.style.setProperty('fill', '#3d0000', 'important');
@@ -431,15 +449,15 @@ export default function BoardSVG({
 	                svgEl.style.setProperty('fill', '#1a1a3e', 'important');
 	                svgEl.style.setProperty('stroke', '#6666ff', 'important');
 	                svgEl.style.removeProperty('fill-opacity');
-	            } else if (ledColor) {
+	            } else if (applyLedToButton) {
 	                svgEl.style.setProperty('fill', ledColor, 'important');
 	                svgEl.style.removeProperty('fill-opacity');
-	                svgEl.style.removeProperty('stroke');
+	                svgEl.style.setProperty('stroke', 'var(--bg-4)', 'important');
 	                svgEl.style.setProperty('stroke-width', '2', 'important');
 	            } else {
-	                svgEl.style.setProperty('fill', origFill || '#0a3d0a', 'important');
+	                svgEl.style.setProperty('fill', hasLedElements ? 'var(--bg-2)' : (origFill || '#0a3d0a'), 'important');
 	                svgEl.style.removeProperty('fill-opacity');
-	                svgEl.style.removeProperty('stroke');
+	                svgEl.style.setProperty('stroke', 'var(--bg-4)', 'important');
 	                svgEl.style.setProperty('stroke-width', '2', 'important');
 	            }
 
@@ -480,11 +498,13 @@ export default function BoardSVG({
 		svgContainer.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, line')
 			.forEach((el) => {
 				el.setAttribute('vector-effect', 'non-scaling-stroke');
-				el.style.setProperty('stroke-width', '2', 'important');
+				el.style.stroke = 'var(--bg-4)';
+			el.style.setProperty('stroke-width', '2', 'important');
 			});
 
 		const caseEl = svgContainer.querySelector('#case');
 		if (caseEl) {
+			(caseEl as HTMLElement).style.setProperty('fill', 'var(--bg-1)', 'important');
 			(caseEl as HTMLElement).style.setProperty('stroke-width', '1', 'important');
 		}
 
@@ -496,10 +516,26 @@ export default function BoardSVG({
 			if (!match) return;
 			const pinNum = parseInt(match[1], 10);
 
-			const handler = () => onPinClick(pinNum);
-			group.addEventListener('click', handler);
+			const clickHandler = () => onPinClick(pinNum);
+			group.addEventListener('click', clickHandler);
 			group.style.setProperty('cursor', 'pointer');
-			handlers.push(() => group.removeEventListener('click', handler));
+
+			const mouseEnterHandler = () => {
+				group.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, line').forEach((shape) => {
+					(shape as HTMLElement).style.setProperty('fill-opacity', '0.6', 'important');
+				});
+			};
+			const mouseLeaveHandler = () => {
+				updateLabelsRef.current();
+			};
+			group.addEventListener('mouseenter', mouseEnterHandler);
+			group.addEventListener('mouseleave', mouseLeaveHandler);
+
+			handlers.push(() => {
+				group.removeEventListener('click', clickHandler);
+				group.removeEventListener('mouseenter', mouseEnterHandler);
+				group.removeEventListener('mouseleave', mouseLeaveHandler);
+			});
 		});
 
 		const testBtn = svgContainer.querySelector('#test-btn');
