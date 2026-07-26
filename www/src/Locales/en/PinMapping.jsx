@@ -21,6 +21,7 @@ export default {
 	'profile-pins-warning':
 		'Try to avoid changing the buttons and/or directions used for the switch profile hotkeys. Otherwise, it will be difficult to understand what profile is being selected!',
 	'profile-copy-base': 'Copy base profile',
+	'button-config-header': 'Button Configuration',
 	'assign-action-title': 'Assign function to GP{{pin}}',
 	'controller-tab': 'Controller',
 	'keyboard-tab': 'Keyboard',

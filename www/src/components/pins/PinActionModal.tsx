@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import Button from '../ui/Button';
-import Form from '../ui/Form';
 import Modal from '../ui/Modal';
 import { useTranslation } from 'react-i18next';
 import invert from 'lodash/invert';
@@ -14,6 +13,8 @@ import { MultiValue, SingleValue } from 'react-select';
 import { KEY_CODES } from '../../Data/Keyboard';
 import KeyboardWidget from '../widgets/KeyboardWidget';
 import ControllerWidget from '../widgets/ControllerWidget';
+import PlusCircle from '../../Icons/PlusCircle';
+import Palette from '../../Icons/Palette';
 
 const MODIFIER_MIN = 0xe0;
 const isModifierKey = (value: number) => value >= MODIFIER_MIN && value <= 0xe7;
@@ -366,12 +367,11 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 
 	return (
 		<Modal show={show} onHide={onClose} centered size="lg" className="pin-action-modal">
-			<Modal.Header closeButton>
-				<Modal.Title>
-					{t('PinMapping:pin-header-label')} {pinNumber}
-				</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
+			<div className="d-flex flex-column" style={{ padding: 20, gap: 20 }}>
+				<div className="d-flex align-items-center gap-2 card-heading">
+					<PlusCircle />
+					{t('PinMapping:button-config-header')}
+				</div>
 				<div className="pin-action-tabs">
 					<button
 						type="button"
@@ -441,9 +441,10 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 				)}
 				{showLedSection && (
 					<div className="pin-action-section">
-						<Form.Label className="fw-bold">
+						<div className="card-heading d-flex align-items-center gap-2">
+							<Palette />
 							{t('CustomTheme:custom-theme-colors')}
-						</Form.Label>
+						</div>
 						<div className="d-flex gap-3">
 							<div style={{ position: 'relative' }}>
 								<button type="button" className="led-color-btn" tabIndex={-1}>
@@ -490,17 +491,17 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 						</div>
 					</div>
 				)}
-			</Modal.Body>
-			<Modal.Footer>
-				<Button variant="secondary" onClick={onClose}>
-					{t('Common:button-dismiss-label')}
-				</Button>
-				{isAssignable && (
-					<Button variant="primary" onClick={handleSave}>
-						{t('Common:button-save-label')}
+				<div className="d-flex align-items-center justify-content-end gap-2">
+					<Button variant="secondary" onClick={onClose}>
+						{t('Common:button-dismiss-label')}
 					</Button>
-				)}
-			</Modal.Footer>
+					{isAssignable && (
+						<Button variant="primary" onClick={handleSave}>
+							{t('Common:button-save-label')}
+						</Button>
+					)}
+				</div>
+			</div>
 		</Modal>
 	);
 } 

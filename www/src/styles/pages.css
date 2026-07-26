@@ -151,6 +151,7 @@
 
 .pin-action-modal .modal-content {
 	border-radius: 25px;
+	gap: 20px;
 }
 
 .pin-action-modal .modal-header {
@@ -170,7 +171,7 @@
 }
 
 .pin-action-modal .modal-body {
-	padding: 0;
+	padding: 20px;
 }
 
 .pin-action-tabs {
@@ -187,7 +188,7 @@
 	padding: 0.4rem 0.75rem;
 	cursor: pointer;
 	font-weight: 500;
-	font-size: 0.85rem;
+	font-size: 1rem;
 	text-align: center;
 	display: flex;
 	align-items: center;
@@ -196,6 +197,11 @@
 	transition: background 0.15s, color 0.15s;
 	border-radius: 999px;
 	color: var(--gp-body-color);
+}
+
+.pin-action-tab svg {
+	width: 1em;
+	height: 1em;
 }
 
 .pin-action-tab:hover {
@@ -207,11 +213,16 @@
 }
 
 .pin-action-section {
-	padding: 0.75rem;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 0;
 }
 
-.pin-action-section + .pin-action-section {
-	border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+
+.pin-action-modal .modal-footer {
+	border-top: none;
 }
 
 [data-theme="dark"] .pin-action-modal .modal-content {
@@ -388,11 +399,7 @@
 
 .controller-widget .cgp-label {
 	font-size: 12px;
-	fill: #ffffff;
-	stroke: #1c1f26;
-	stroke-width: 3;
-	stroke-linejoin: round;
-	paint-order: stroke fill;
+	fill: currentColor;
 	pointer-events: none;
 	user-select: none;
 }
