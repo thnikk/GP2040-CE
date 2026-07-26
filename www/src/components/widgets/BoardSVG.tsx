@@ -67,6 +67,8 @@ type BoardSVGProps = {
 	inputMode?: number;
 	pinLedIndices?: Record<string, number>;
 	ledButtonOrder?: (string | undefined)[];
+	listening?: boolean;
+	onTestToggle?: () => void;
 };
 
 const ACTION_LABELS: Record<PinActionValues, string> = {
@@ -227,6 +229,8 @@ export default function BoardSVG({
 	pinLedIndices,
 	ledButtonOrder,
 	modeColors,
+	listening,
+	onTestToggle,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels } = useContext(AppContext);
@@ -445,7 +449,28 @@ export default function BoardSVG({
 	            }
 	        });
 		});
-	}, [pinElements, pins, buttonNames, highlightedPin, highlightedPins, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices, ledButtonOrder]);
+
+		const testBtn = containerRef.current.querySelector('#test-btn');
+		if (testBtn) {
+			const tagName = testBtn.tagName.toLowerCase();
+			const isShape = SHAPE_TAGS.has(tagName);
+			const shapeEl = isShape ? testBtn : testBtn.querySelector('rect, circle, path, ellipse, polygon, polyline, line');
+			let label = testBtn.querySelector('text');
+			if (label) {
+				label.textContent = listening ? 'Stop' : 'Test';
+			}
+			if (shapeEl) {
+				const el = shapeEl as HTMLElement;
+				if (listening) {
+					el.style.setProperty('fill', '#bf616a', 'important');
+					el.style.setProperty('stroke', '#d89fa4', 'important');
+				} else {
+					el.style.setProperty('fill', '#a3be8c', 'important');
+					el.style.setProperty('stroke', '#b5d9a5', 'important');
+				}
+			}
+		}
+	}, [pinElements, pins, buttonNames, highlightedPin, highlightedPins, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices, ledButtonOrder, listening]);
 
 	useEffect(() => {
 		if (!containerRef.current || !svgContent) return;
@@ -477,8 +502,50 @@ export default function BoardSVG({
 			handlers.push(() => group.removeEventListener('click', handler));
 		});
 
+		const testBtn = svgContainer.querySelector('#test-btn');
+		if (testBtn && onTestToggle) {
+			const tagName = testBtn.tagName.toLowerCase();
+			const isShape = SHAPE_TAGS.has(tagName);
+
+			let targetEl = testBtn;
+			if (isShape) {
+				const svgNs = 'http://www.w3.org/2000/svg';
+				const g = document.createElementNS(svgNs, 'g');
+				g.setAttribute('id', 'test-btn');
+				const parent = testBtn.parentNode;
+				if (parent) {
+					const x = parseFloat(testBtn.getAttribute('x') || '0');
+					const y = parseFloat(testBtn.getAttribute('y') || '0');
+					const w = parseFloat(testBtn.getAttribute('width') || '60');
+					const h = parseFloat(testBtn.getAttribute('height') || '30');
+					const label = document.createElementNS(svgNs, 'text');
+					label.setAttribute('text-anchor', 'middle');
+					label.setAttribute('dominant-baseline', 'central');
+					label.setAttribute('font-family', '"Nunito", monospace');
+					label.setAttribute('font-size', '12');
+					label.setAttribute('font-weight', 'bold');
+					label.setAttribute('fill', '#ffffff');
+					label.setAttribute('stroke', '#000000');
+					label.setAttribute('stroke-width', '2');
+					label.setAttribute('stroke-linejoin', 'round');
+					label.setAttribute('paint-order', 'stroke fill');
+					label.setAttribute('x', String(x + w / 2));
+					label.setAttribute('y', String(y + h / 2));
+					parent.insertBefore(g, testBtn);
+					g.appendChild(testBtn);
+					g.appendChild(label);
+					targetEl = g;
+				}
+			}
+
+			const handler = () => onTestToggle();
+			targetEl.addEventListener('click', handler);
+			targetEl.style.setProperty('cursor', 'pointer');
+			handlers.push(() => targetEl.removeEventListener('click', handler));
+		}
+
 		return () => handlers.forEach((remove) => remove());
-	}, [svgContent, pinElements, onPinClick]);
+	}, [svgContent, pinElements, onPinClick, onTestToggle]);
 
 	const updateLabelsRef = useRef(updateLabels);
 	updateLabelsRef.current = updateLabels;

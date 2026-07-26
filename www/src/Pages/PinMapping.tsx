@@ -278,14 +278,6 @@ const PinSection = memo(function PinSection({
 			<div className="d-flex justify-content-between align-items-center">
 				<ProfileLabel profileIndex={profileIndex} />
 				<div className="d-flex gap-3 align-items-center">
-					<Button
-						variant={listening ? 'danger' : 'success'}
-						onClick={() => setListening(!listening)}
-					>
-						{listening
-							? t('PinMapping:stop-listening')
-							: t('PinMapping:start-listening')}
-					</Button>
 					{profileIndex > 0 && (
 						<FormCheck
 							size={3}
@@ -337,6 +329,8 @@ const PinSection = memo(function PinSection({
 						pinLedIndices={pinLedIndices}
 						ledButtonOrder={ledButtonOrder}
 						modeColors={modeColors}
+						listening={listening}
+						onTestToggle={() => setListening(l => !l)}
 					/>
 					) : (
 						<div className="alert alert-info">
