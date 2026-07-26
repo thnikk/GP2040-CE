@@ -1513,32 +1513,32 @@ export default function SettingsPage() {
 													title={t('SettingsPage:gamepad-settings-header-text')}
 													description={t('SettingsPage:gamepad-settings-description-text')}
 												>
-													<Form.Group className="row">
-														<Form.Label>
+													<div className="d-flex flex-column gap-1">
+														<Form.Label className="label-regular">
 															{t('SettingsPage:d-pad-mode-label')}
 														</Form.Label>
-														<Col sm={3}>
-															<Form.Select
-																name="dpadMode"
-																className="form-select-sm"
-																value={values.dpadMode}
-																onChange={handleChange}
-																isInvalid={errors.dpadMode}
-															>
-																{translatedDpadModes.map((o, i) => (
-																	<option
-																		key={`button-dpadMode-option-${i}`}
-																		value={o.value}
-																	>
-																		{o.label}
-																	</option>
-																))}
-															</Form.Select>
-															<Form.Control.Feedback type="invalid">
-																{errors.dpadMode}
-															</Form.Control.Feedback>
-														</Col>
-														<Col sm={6}>
+														<div className="d-flex align-items-center gap-3">
+															<div style={{ flex: 1 }}>
+																<Form.Select
+																	name="dpadMode"
+																	className="form-select-sm"
+																	value={values.dpadMode}
+																	onChange={handleChange}
+																	isInvalid={errors.dpadMode}
+																>
+																	{translatedDpadModes.map((o, i) => (
+																		<option
+																			key={`button-dpadMode-option-${i}`}
+																			value={o.value}
+																		>
+																			{o.label}
+																		</option>
+																	))}
+																</Form.Select>
+																<Form.Control.Feedback type="invalid">
+																	{errors.dpadMode}
+																</Form.Control.Feedback>
+															</div>
 															<Form.Check
 																label={t(
 																	'SettingsPage:4-way-joystick-mode-label',
@@ -1554,8 +1554,8 @@ export default function SettingsPage() {
 																	);
 																}}
 															/>
-														</Col>
-													</Form.Group>
+														</div>
+													</div>
 													<div className="d-flex flex-column gap-1">
 														<Form.Label>
 															{t('SettingsPage:socd-cleaning-mode-label')}
