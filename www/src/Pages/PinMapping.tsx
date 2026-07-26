@@ -20,7 +20,6 @@ import invert from 'lodash/invert';
 import { AppContext } from '../Contexts/AppContext';
 import useProfilesStore from '../Store/useProfilesStore';
 
-import Section from '../components/shared/Section';
 import PinSelectList from '../components/pins/PinSelectList';
 import BoardSVG from '../components/widgets/BoardSVG';
 import PinActionModal from '../components/pins/PinActionModal';
@@ -30,6 +29,8 @@ import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
 import { useBoardSVG } from '../hooks/useBoardSVG';
 import WebApi from '../Services/WebApi';
 import InfoCircle from '../Icons/InfoCircle';
+import Lightbulb from '../Icons/Lightbulb';
+import UserProfile from '../Icons/UserProfile';
 
 const ProfileLabel = memo(function ProfileLabel({
 	profileIndex,
@@ -41,29 +42,50 @@ const ProfileLabel = memo(function ProfileLabel({
 	const profileLabel = useProfilesStore(
 		(state) => state.profiles[profileIndex].profileLabel,
 	);
+	const [validationMessage, setValidationMessage] = useState('');
+	const validationTimeout = useRef<ReturnType<typeof setTimeout>>();
+
 	const onLabelChange = useCallback(
-		(event) =>
-			setProfileLabel(
-				profileIndex,
-				event.target.value.replace(/[^a-zA-Z0-9\s]/g, ''),
-			),
+		(event) => {
+			const raw = event.target.value;
+			const cleaned = raw.replace(/[^a-zA-Z0-9\s]/g, '');
+			if (raw.length > 16) {
+				setValidationMessage(t('PinMapping:profile-label-max-length'));
+			} else if (raw !== cleaned) {
+				setValidationMessage(t('PinMapping:profile-label-invalid-char'));
+			} else {
+				setValidationMessage('');
+			}
+			setProfileLabel(profileIndex, cleaned.slice(0, 16));
+
+			if (validationTimeout.current) clearTimeout(validationTimeout.current);
+			validationTimeout.current = setTimeout(
+				() => setValidationMessage(''),
+				2500,
+			);
+		},
 		[],
 	);
 
 	return (
 		<div className="pin-grid profile-label-grid">
-			<Form.Label>{t('PinMapping:profile-label-title')}</Form.Label>
-			<Form.Control
-				type="text"
-				value={profileLabel}
-				placeholder={t('PinMapping:profile-label-default', {
-					profileNumber: profileIndex + 1,
-				})}
-				onChange={onLabelChange}
-				maxLength={16}
-				pattern="[a-zA-Z0-9\s]+"
-			/>
-			<Form.Text muted>{t('PinMapping:profile-label-description')}</Form.Text>
+			<OverlayTrigger
+				show={!!validationMessage}
+				placement="bottom"
+				overlay={<Tooltip className="tooltip-validation">{validationMessage}</Tooltip>}
+			>
+				<div className="d-flex align-items-center gap-2">
+					<label style={{ fontWeight: 400, fontSize: '1rem', whiteSpace: 'nowrap', margin: 0 }}>{t('PinMapping:profile-label-title')}</label>
+					<Form.Control
+						type="text"
+						value={profileLabel}
+						placeholder={t('PinMapping:profile-label-default', {
+							profileNumber: profileIndex + 1,
+						})}
+					onChange={onLabelChange}
+					/>
+				</div>
+			</OverlayTrigger>
 		</div>
 	);
 });
@@ -518,91 +540,94 @@ const submitTheme = useCallback(async () => {
 
 	return (
 		<>
-			{ledsEnabled && (
-				<Section title={t('CustomTheme:header-text')}>
-					<div className="d-flex align-items-center gap-3 flex-wrap">
-						<div className="d-flex align-items-center gap-2">
-							<Form.Label className="mb-0">{t('CustomTheme:animation-label')}</Form.Label>
-							<Form.Select
-								value={animationMode}
-								onChange={handleAnimationModeChange}
-								style={{ width: 'auto' }}
-							>
-								{ANIMATION_MODES.map(({ value, labelKey }) => (
-									<option key={value} value={value}>
-										{t(`CustomTheme:${labelKey}`)}
-									</option>
-								))}
-							</Form.Select>
-						</div>
-						{animationMode === 3 && (
-							<div className="d-flex align-items-center gap-2">
-								<Form.Label className="mb-0">{t('CustomTheme:preset-label')}</Form.Label>
-								<Form.Select
-									value={themeIndex}
-									onChange={handleThemeIndexChange}
-									style={{ width: 'auto' }}
-								>
-									{STATIC_THEMES.map((_, index) => (
-										<option key={index} value={index}>
-											{t(themeLabelKey(index))}
-										</option>
-									))}
-								</Form.Select>
-							</div>
-						)}
-						{animationMode === 0 && (
-							<div className="d-flex align-items-center gap-3">
-								<div style={{ position: 'relative' }}>
-									<button type="button" className="led-color-btn" tabIndex={-1}>
-										<span
-											className="led-color-circle"
-											style={{ backgroundColor: staticColorNormal }}
-										/>
-										<span>{t('CustomTheme:normal-label')}</span>
-									</button>
-									<input
-										type="color"
-										value={staticColorNormal}
-										onChange={(e) => setStaticColorNormal(e.target.value)}
-										style={{
-											position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
-										}}
-									/>
-								</div>
-								<div style={{ position: 'relative' }}>
-									<button type="button" className="led-color-btn" tabIndex={-1}>
-										<span
-											className="led-color-circle"
-											style={{ backgroundColor: staticColorPressed }}
-										/>
-										<span>{t('CustomTheme:pressed-label')}</span>
-									</button>
-									<input
-										type="color"
-										value={staticColorPressed}
-										onChange={(e) => setStaticColorPressed(e.target.value)}
-										style={{
-											position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
-										}}
-									/>
-								</div>
-							</div>
-						)}
-						<div className="d-flex align-items-stretch gap-3 ms-auto">
-							<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
-						</div>
-					</div>
-				</Section>
-			)}
 			{loadingProfiles && (
 				<div className="d-flex justify-content-center">
 					<span className="spinner-border" />
 				</div>
 			)}
 			<div className="card">
-				<div className="card-header p-0">
-					<div className="profile-tabs">
+				<div className="card-body">
+					{ledsEnabled && (
+						<div className="card-section">
+							<div className="card-heading d-flex align-items-center gap-2"><Lightbulb />{t('CustomTheme:header-text')}</div>
+							<div className="d-flex align-items-center gap-3 flex-wrap">
+								<div className="d-flex align-items-center gap-2">
+									<Form.Label className="mb-0 label-regular">{t('CustomTheme:animation-label')}</Form.Label>
+									<Form.Select
+										value={animationMode}
+										onChange={handleAnimationModeChange}
+										style={{ width: 'auto' }}
+									>
+										{ANIMATION_MODES.map(({ value, labelKey }) => (
+											<option key={value} value={value}>
+												{t(`CustomTheme:${labelKey}`)}
+											</option>
+										))}
+									</Form.Select>
+								</div>
+								{animationMode === 3 && (
+									<div className="d-flex align-items-center gap-2">
+										<Form.Label className="mb-0 label-regular">{t('CustomTheme:preset-label')}</Form.Label>
+										<Form.Select
+											value={themeIndex}
+											onChange={handleThemeIndexChange}
+											style={{ width: 'auto' }}
+										>
+											{STATIC_THEMES.map((_, index) => (
+												<option key={index} value={index}>
+													{t(themeLabelKey(index))}
+												</option>
+											))}
+										</Form.Select>
+									</div>
+								)}
+								{animationMode === 0 && (
+									<div className="d-flex align-items-center gap-3">
+										<div style={{ position: 'relative' }}>
+											<button type="button" className="led-color-btn" tabIndex={-1}>
+												<span
+													className="led-color-circle"
+													style={{ backgroundColor: staticColorNormal }}
+												/>
+												<span>{t('CustomTheme:normal-label')}</span>
+											</button>
+											<input
+												type="color"
+												value={staticColorNormal}
+												onChange={(e) => setStaticColorNormal(e.target.value)}
+												style={{
+													position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+												}}
+											/>
+										</div>
+										<div style={{ position: 'relative' }}>
+											<button type="button" className="led-color-btn" tabIndex={-1}>
+												<span
+													className="led-color-circle"
+													style={{ backgroundColor: staticColorPressed }}
+												/>
+												<span>{t('CustomTheme:pressed-label')}</span>
+											</button>
+											<input
+												type="color"
+												value={staticColorPressed}
+												onChange={(e) => setStaticColorPressed(e.target.value)}
+												style={{
+													position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+												}}
+											/>
+										</div>
+									</div>
+								)}
+								<div className="d-flex align-items-stretch gap-3 ms-auto">
+									<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
+								</div>
+							</div>
+						</div>
+					)}
+					<div className="card-section">
+						<div className="card-heading d-flex align-items-center gap-2"><UserProfile />{t('PinMapping:profile-tab-heading')}</div>
+						<div className="profile-tabs">
 						{profiles.map(({ profileLabel, enabled }, index) => (
 							<button
 								key={`profile-${index}`}
@@ -616,9 +641,7 @@ const submitTheme = useCallback(async () => {
 									})}
 							</button>
 						))}
-					</div>
-				</div>
-				<div className="card-body">
+						</div>
 					{profiles.map((_, index) => (
 						activeProfile === `profile-${index}` && (
 						<PinSection
@@ -639,6 +662,7 @@ const submitTheme = useCallback(async () => {
 						/>
 						)
 					))}
+					</div>
 				</div>
 			</div>
 			{pressedPin !== null && (

@@ -73,13 +73,16 @@
 	display: flex;
 	width: 100%;
 	gap: 0.25rem;
+	padding: 0.25rem;
+	background: var(--gp-card-cap-bg);
+	border-radius: 999px;
 }
 
 .profile-tab {
 	flex: 1;
 	border: none;
 	background: none;
-	padding: 0.5rem;
+	padding: 5px 10px;
 	border-radius: 999px;
 	cursor: pointer;
 	font-size: 16px;

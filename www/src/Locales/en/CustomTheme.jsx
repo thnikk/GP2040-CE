@@ -28,7 +28,7 @@ export default {
 	'static-theme-guilty-gear-type-e': 'Guilty Gear Type-E',
 	'static-theme-fightboard': 'Fightboard',
 	'static-theme-springboard': 'Springboard',
-	'header-text': 'Custom LED Theme',
+	'header-text': 'LED Theme',
 	'sub-header-text':
 		'Here you can enable and configure a custom LED theme.<br />The custom theme will be selectable using the Next and Previous Animation shortcuts on your controller.',
 	'list-text':

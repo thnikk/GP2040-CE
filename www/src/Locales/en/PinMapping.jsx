@@ -7,9 +7,11 @@ export default {
 	'stop-listening': 'Stop Listening',
 	'pin-pressed': 'Pressed pin: {{pressedPin}}',
 	'pin-header-label': 'Pin',
-	'profile-label-title': 'Profile name',
-	'profile-label-description':
-		'Max 16 characters. Letters, numbers, and spaces allowed.',
+	'profile-tab-heading': 'Profiles',
+	'profile-label-title': 'Name',
+	'profile-label-invalid-char':
+		'Only letters, numbers, and spaces allowed.',
+	'profile-label-max-length': 'Maximum 16 characters.',
 	'profile-pin-mapping-title': '{{profileLabel}}',
 	'profile-label-default': 'Profile {{profileNumber}}',
 	'profile-add-button': '+ Add Profile',
