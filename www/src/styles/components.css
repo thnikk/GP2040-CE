@@ -4,7 +4,7 @@
 
 .card {
 	border: 1px solid var(--gp-border-color);
-	border-radius: 1.25rem;
+	border-radius: 20px;
 	background-color: var(--gp-card-bg);
 	color: var(--gp-body-color);
 }
@@ -16,7 +16,7 @@
 .card-header {
 	padding: 0.75rem 1.25rem;
 	border-bottom: 1px solid var(--gp-border-color);
-	border-radius: 1.25rem 1.25rem 0 0;
+	border-radius: 20px 20px 0 0;
 	background-color: var(--gp-card-cap-bg);
 }
 
@@ -1114,7 +1114,7 @@
 	background: var(--gp-card-bg);
 	border: 1px solid var(--gp-border-color);
 	border-bottom: none;
-	border-radius: 1.25rem 1.25rem 0 0;
+	border-radius: 20px 20px 0 0;
 }
 
 .footer.container-lg {
@@ -1143,7 +1143,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	gap: 0.5rem;
+	gap: 20px;
 }
 
 .footer-inner a,
@@ -1287,6 +1287,12 @@
 
 .footer-info-trigger .update-available {
 	color: var(--gp-nord-14, #a3be8c);
+}
+
+.footer-inner .icon-btn svg,
+.footer-inner .btn svg {
+	height: 1.35em;
+	width: auto;
 }
 
 /* ==============================
