@@ -41,10 +41,10 @@
 }
 
 [data-theme="light"] {
-	--bg-1: #ffffff;
-	--bg-2: var(--gp-nord-6);
-	--bg-3: var(--gp-nord-5);
-	--bg-4: var(--gp-nord-4);
+	--bg-1: #eceff4;
+	--bg-2: #e5e9f0;
+	--bg-3: #c8d0dc;
+	--bg-4: #c8d0dc;
 
 	--gp-body-color: #212529;
 	--gp-border-color-translucent: rgba(0, 0, 0, 0.175);

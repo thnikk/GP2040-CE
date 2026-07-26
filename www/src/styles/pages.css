@@ -106,8 +106,8 @@
 }
 
 [data-theme="light"] .profile-tab.active {
-	background: var(--bg-4);
-	border-color: var(--bg-3);
+	background: color-mix(in srgb, var(--bg-3), var(--gp-nord-0) 15%);
+	border-color: transparent;
 }
 
 [data-theme="light"] .profile-tab.disabled {

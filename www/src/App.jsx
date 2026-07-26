@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import { AppContextProvider } from './Contexts/AppContext';
+import { ToastProvider } from './Contexts/ToastContext';
 
 import useSystemStats from './Store/useSystemStats';
 import Navigation from './components/layout/Navigation';
@@ -31,6 +32,7 @@ const App = () => {
 
 	return (
 		<AppContextProvider>
+			<ToastProvider>
 			<Router>
 				<div className="app-layout">
 					<Navigation />
@@ -58,6 +60,7 @@ const App = () => {
 					<Footer />
 				</div>
 			</Router>
+			</ToastProvider>
 		</AppContextProvider>
 	);
 };

@@ -8,8 +8,8 @@ import React, {
 	useState,
 } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import Alert from '../components/ui/Alert';
 import Button from '../components/ui/Button';
+import { useToast } from '../Contexts/ToastContext';
 import Form from '../components/ui/Form';
 import FormCheck from '../components/ui/FormCheck';
 import { OverlayTrigger, Tooltip } from '../components/ui/OverlayTrigger';
@@ -144,12 +144,7 @@ const PinSection = memo(function PinSection({
 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
 	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
 
-	const [saveMessage, setSaveMessage] = useState('');
-	useEffect(() => {
-		if (!saveMessage) return;
-		const t = setTimeout(() => setSaveMessage(''), 3000);
-		return () => clearTimeout(t);
-	}, [saveMessage, setSaveMessage]);
+	const { showToast } = useToast();
 
 	const handleSubmit = useCallback(async (e) => {
 		e.preventDefault();
@@ -158,11 +153,11 @@ const PinSection = memo(function PinSection({
 			await saveProfiles();
 			if (onSavePinColors) await onSavePinColors();
 			updateUsedPins();
-			setSaveMessage(t('Common:saved-success-message'));
+			showToast(t('Common:saved-success-message'));
 		} catch (error) {
-			setSaveMessage(t('Common:saved-error-message'));
+			showToast(t('Common:saved-error-message'), 'error');
 		}
-	}, [saveProfiles, onSavePinColors, updateUsedPins, t]);
+	}, [saveProfiles, onSavePinColors, updateUsedPins, t, showToast]);
 
 	const { svgContent, pinElements, loading, svgMode } = useBoardSVG();
 	const svgPinSet = useMemo(
@@ -382,7 +377,6 @@ const PinSection = memo(function PinSection({
 					</Button>
 				)}
 				<div className="d-flex gap-3 align-items-stretch ms-auto">
-					{saveMessage && <Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>}
 					<Button type="submit">{t('Common:button-save-label')}</Button>
 				</div>
 			</div>
@@ -421,12 +415,7 @@ export default function PinMapping() {
 	const [themeIndex, setThemeIndex] = useState(0);
 	const [staticColorNormal, setStaticColorNormal] = useState('#ff0000');
 	const [staticColorPressed, setStaticColorPressed] = useState('#ffffff');
-	const [themeSaveMessage, setThemeSaveMessage] = useState('');
-	useEffect(() => {
-		if (!themeSaveMessage) return;
-		const t = setTimeout(() => setThemeSaveMessage(''), 3000);
-		return () => clearTimeout(t);
-	}, [themeSaveMessage, setThemeSaveMessage]);
+	const { showToast } = useToast();
 	const [ledsEnabled, setLedsEnabled] = useState(false);
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
 	const [pinLedIndices, setPinLedIndices] = useState<Record<string, number> | undefined>(undefined);
@@ -515,12 +504,13 @@ const submitTheme = useCallback(async () => {
 
 	const handleThemeSave = useCallback(async () => {
 		const success = await submitTheme();
-		if (success) {
-			setThemeSaveMessage(t('Common:saved-success-message'));
-		} else {
-			setThemeSaveMessage(t('Common:saved-error-message'));
-		}
-	}, [submitTheme, t]);
+		showToast(
+			success
+				? t('Common:saved-success-message')
+				: t('Common:saved-error-message'),
+			success ? 'success' : 'error',
+		);
+	}, [submitTheme, t, showToast]);
 
 	const savePinColors = useCallback(async () => {
 		const leds = { ...customTheme };
@@ -606,7 +596,6 @@ const submitTheme = useCallback(async () => {
 							</div>
 						)}
 						<div className="d-flex align-items-stretch gap-3 ms-auto">
-							{themeSaveMessage && <Alert variant="success" className="mb-0 d-flex align-items-center py-0">{themeSaveMessage}</Alert>}
 							<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
 						</div>
 					</div>

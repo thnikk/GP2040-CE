@@ -16,6 +16,7 @@ import isNil from 'lodash/isNil';
 
 import useProfilesStore from '../Store/useProfilesStore';
 import { AppContext } from '../Contexts/AppContext';
+import { useToast } from '../Contexts/ToastContext';
 
 import ContextualHelpOverlay from '../components/shared/ContextualHelpOverlay';
 import CustomSelect from '../components/form/CustomSelect';
@@ -607,29 +608,18 @@ export default function SettingsPage() {
 		[filteredButtonOptions],
 	);
 
-	const [saveMessage, setSaveMessage] = useState('');
-	useEffect(() => {
-		if (!saveMessage) return;
-		const t = setTimeout(() => setSaveMessage(''), 3000);
-		return () => clearTimeout(t);
-	}, [saveMessage, setSaveMessage]);
-
-	const [extraPinsSaveMessage, setExtraPinsSaveMessage] = useState('');
-	useEffect(() => {
-		if (!extraPinsSaveMessage) return;
-		const t = setTimeout(() => setExtraPinsSaveMessage(''), 3000);
-		return () => clearTimeout(t);
-	}, [extraPinsSaveMessage, setExtraPinsSaveMessage]);
+	const { showToast } = useToast();
 	const [warning, setWarning] = useState({ show: false, acceptText: '' });
 	const [validated, setValidated] = useState(false);
 	const [message, setMessage] = useState(null);
 
 	const handleExtraPinsSave = async () => {
 		const success = await saveProfiles();
-		setExtraPinsSaveMessage(
+		showToast(
 			success
 				? t('Common:saved-success-message')
 				: t('Common:saved-error-message'),
+			success ? 'success' : 'error',
 		);
 	};
 
@@ -1309,10 +1299,11 @@ export default function SettingsPage() {
 
 	const saveSettings = async (values) => {
 		const success = await WebApi.setGamepadOptions(values);
-		setSaveMessage(
+		showToast(
 			success
 				? t('Common:saved-success-message')
 				: t('Common:saved-error-message'),
+			success ? 'success' : 'error',
 		);
 	};
 
@@ -1506,9 +1497,6 @@ export default function SettingsPage() {
 														translatedInputModeAuthentications,
 													)}
 													<div className="d-flex gap-2 align-self-end">
-														{saveMessage ? (
-															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>
-														) : null}
 														<Button type="submit">
 															{t('Common:button-save-label')}
 														</Button>
@@ -1655,9 +1643,6 @@ export default function SettingsPage() {
 														/>
 													</div>
 													<div className="d-flex gap-2 align-self-end">
-														{saveMessage ? (
-															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>
-														) : null}
 														<Button type="submit">
 															{t('Common:button-save-label')}
 														</Button>
@@ -1703,9 +1688,6 @@ export default function SettingsPage() {
 														</div>
 													))}
 													<div className="d-flex gap-2 align-self-end">
-														{saveMessage ? (
-															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>
-														) : null}
 														<Button type="submit">
 															{t('Common:button-save-label')}
 														</Button>
@@ -1863,9 +1845,6 @@ export default function SettingsPage() {
 															}}
 														/>
 														<div className="d-flex align-items-stretch gap-1">
-															{saveMessage ? (
-																<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{saveMessage}</Alert>
-															) : null}
 															<Button type="submit">
 																{t('Common:button-save-label')}
 															</Button>
@@ -1883,10 +1862,7 @@ export default function SettingsPage() {
 													</Alert>
 													<PinSelectList profileIndex={0} includePins={extraPins} />
 													<div className="d-flex gap-2 align-self-end">
-														{extraPinsSaveMessage ? (
-															<Alert variant="success" className="mb-0 d-flex align-items-center py-0">{extraPinsSaveMessage}</Alert>
-														) : null}
-														<Button onClick={handleExtraPinsSave}>
+														<Button type="button" onClick={handleExtraPinsSave}>
 															{t('Common:button-save-label')}
 														</Button>
 													</div>
