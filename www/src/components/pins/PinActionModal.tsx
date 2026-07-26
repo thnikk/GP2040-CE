@@ -15,6 +15,7 @@ import KeyboardWidget from '../widgets/KeyboardWidget';
 import ControllerWidget from '../widgets/ControllerWidget';
 import PlusCircle from '../../Icons/PlusCircle';
 import Palette from '../../Icons/Palette';
+import CloseCircle from '../../Icons/CloseCircle';
 
 const MODIFIER_MIN = 0xe0;
 const isModifierKey = (value: number) => value >= MODIFIER_MIN && value <= 0xe7;
@@ -371,6 +372,9 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 				<div className="d-flex align-items-center gap-2 card-heading">
 					<PlusCircle />
 					{t('PinMapping:button-config-header')}
+					<button type="button" className="btn-close d-flex align-items-center" onClick={onClose}>
+						<CloseCircle />
+					</button>
 				</div>
 				<div className="pin-action-tabs">
 					<button
@@ -491,16 +495,13 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 						</div>
 					</div>
 				)}
-				<div className="d-flex align-items-center justify-content-end gap-2">
-					<Button variant="secondary" onClick={onClose}>
-						{t('Common:button-dismiss-label')}
-					</Button>
-					{isAssignable && (
+				{isAssignable && (
+					<div className="d-flex justify-content-end">
 						<Button variant="primary" onClick={handleSave}>
 							{t('Common:button-save-label')}
 						</Button>
-					)}
-				</div>
+					</div>
+				)}
 			</div>
 		</Modal>
 	);
