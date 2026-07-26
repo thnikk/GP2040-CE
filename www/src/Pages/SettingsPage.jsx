@@ -22,6 +22,11 @@ import ContextualHelpOverlay from '../components/shared/ContextualHelpOverlay';
 import CustomSelect from '../components/form/CustomSelect';
 import PinSelectList from '../components/pins/PinSelectList';
 import Section from '../components/shared/Section';
+import CodeBranch from '../Icons/CodeBranch';
+import Gamepad from '../Icons/Gamepad';
+import LayerGroup from '../Icons/LayerGroup';
+import Microchip from '../Icons/Microchip';
+import PowerOff from '../Icons/PowerOff';
 import WebApi from '../Services/WebApi';
 import { BUTTON_MASKS_OPTIONS, getButtonLabels } from '../Data/Buttons';
 
@@ -1449,7 +1454,7 @@ export default function SettingsPage() {
 									<div style={{ flex: 1, minWidth: 0 }}>
 										<Tab.Content>
 											<Tab.Pane eventKey="inputmode">
-												<Section
+												<Section heading icon={<CodeBranch />}
 													title={t('SettingsPage:settings-header-text')}
 													description={t('SettingsPage:settings-description-text')}>
 													<div className="d-flex flex-column gap-1">
@@ -1504,7 +1509,7 @@ export default function SettingsPage() {
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="gamepad">
-												<Section
+												<Section heading icon={<Gamepad />}
 													title={t('SettingsPage:gamepad-settings-header-text')}
 													description={t('SettingsPage:gamepad-settings-description-text')}
 												>
@@ -1650,7 +1655,7 @@ export default function SettingsPage() {
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="bootmode">
-												<Section
+												<Section heading icon={<PowerOff />}
 													title={t('SettingsPage:boot-input-mode-label')}
 													description={t('SettingsPage:boot-input-mode-description-text')}
 												>
@@ -1695,7 +1700,7 @@ export default function SettingsPage() {
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="hotkey">
-												<Section
+												<Section heading icon={<LayerGroup />}
 													title={t('SettingsPage:hotkey-settings-label')}
 													description={t('SettingsPage:hotkey-settings-description-text')}
 												>
@@ -1853,7 +1858,7 @@ export default function SettingsPage() {
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="extrapins">
-												<Section
+												<Section heading icon={<Microchip />}
 													title={t('SettingsPage:extra-pins-label')}
 													description={t('SettingsPage:extra-pins-description-text')}
 												>

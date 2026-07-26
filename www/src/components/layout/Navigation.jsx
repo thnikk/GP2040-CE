@@ -5,6 +5,7 @@ import Button from '../ui/Button';
 import Modal from '../ui/Modal';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
+import Gamepad from '../../Icons/Gamepad';
 import WebApi from '../../Services/WebApi';
 import useSystemStats from '../../Store/useSystemStats';
 
@@ -85,13 +86,7 @@ const Navigation = () => {
 				<Nav className="navbar-actions" activeKey={location.pathname}>
 					<Nav.Link as={NavLink} to="/layout" eventKey="/layout" className="nav-btn">
 						<span style={{ display: 'inline-flex', alignItems: 'center' }}>
-							<svg
-								viewBox="0 0 640 384"
-								fill="currentColor"
-								style={{ marginRight: '0.5rem' }}
-							>
-								<path d="M 192,0 C 86,0 0,86 0,192 0,298 86,384 192,384 H 448 C 554,384 640,298 640,192 640,86 554,0 448,0 Z m 304,104 a 40,40 0 1 1 0,80 40,40 0 1 1 0,-80 z M 392,240 a 40,40 0 1 1 80,0 40,40 0 1 1 -80,0 z M 168,136 c 0,-13.3 10.7,-24 24,-24 13.3,0 24,10.7 24,24 v 32 h 32 c 13.3,0 24,10.7 24,24 0,13.3 -10.7,24 -24,24 h -32 v 32 c 0,13.3 -10.7,24 -24,24 -13.3,0 -24,-10.7 -24,-24 v -32 h -32 c -13.3,0 -24,-10.7 -24,-24 0,-13.3 10.7,-24 24,-24 h 32 z"/>
-							</svg>
+							<Gamepad style={{ marginRight: '0.5rem' }} />
 							{t('Navigation:layout-label')}
 						</span>
 					</Nav.Link>

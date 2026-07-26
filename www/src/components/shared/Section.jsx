@@ -2,17 +2,26 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../../Contexts/AppContext';
 
-const Section = ({ children, title, description }) => {
+const Section = ({ children, title, description, heading: useHeading, icon }) => {
 	const { loading } = useContext(AppContext);
 	const { t } = useTranslation('');
 
 	return (
 		<div className={`card`}>
-			<div className={`card-header`}>
-				<strong>{title}</strong>
-			</div>
+			{!useHeading && (
+				<div className={`card-header`}>
+					<strong>{title}</strong>
+				</div>
+			)}
 			<div className="card-body">
-				{description && <div className="card-text text-muted">{description}</div>}
+				{useHeading ? (
+					<div className="card-section">
+						<div className="card-heading d-flex align-items-center gap-2">{icon}{title}</div>
+						{description && <div className="card-text text-muted">{description}</div>}
+					</div>
+				) : (
+					description && <div className="card-text text-muted">{description}</div>
+				)}
 				{loading ? (
 					<div className="d-flex justify-content-center align-items-center loading">
 						<div className="spinner-border" role="status">
