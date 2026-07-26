@@ -121,7 +121,7 @@
 .btn-primary {
 	background-color: var(--bg-3);
 	color: var(--gp-body-color);
-	border-color: transparent;
+	border-color: var(--bg-4);
 }
 
 .btn-primary:hover {
@@ -217,7 +217,7 @@
 	font-weight: 400;
 	line-height: 1.5;
 	color: var(--gp-body-color);
-	background-color: transparent;
+	background-color: var(--bg-1);
 	border: 1px solid var(--gp-border-color);
 	border-radius: 999px;
 	transition: border-color 0.15s ease-in-out;
@@ -253,7 +253,7 @@
 	font-weight: 400;
 	line-height: 1.5;
 	color: var(--gp-body-color);
-	background-color: transparent;
+	background-color: var(--bg-1);
 	border: 1px solid var(--gp-border-color);
 	border-radius: 999px;
 	appearance: none;
@@ -1197,13 +1197,13 @@
 
 .theme-toggle {
 	display: flex;
-	border: 1px solid var(--gp-border-color);
+	border: 1px solid var(--bg-4);
 	border-radius: 999px;
 	overflow: hidden;
 }
 
 .theme-btn {
-	background: transparent;
+	background: var(--bg-3);
 	border: none;
 	color: inherit;
 	padding: 6px 10px;
@@ -1215,20 +1215,8 @@
 	border-radius: 0px;
 }
 
-[data-theme="dark"] .theme-btn.active {
-	background: #4c566a;
-}
-
-[data-theme="dark"] .theme-toggle {
-	border-color: #4c566a;
-}
-
-[data-theme="light"] .theme-btn.active {
-	background: #e5e9f0;
-}
-
-[data-theme="light"] .theme-toggle {
-	border-color: #d8dee9;
+.theme-btn.active {
+	background: var(--bg-2);
 }
 
 @media (max-width: 999px) {

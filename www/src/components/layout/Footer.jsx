@@ -101,7 +101,6 @@ const Footer = () => {
             <button
               key={scheme}
               className={`theme-btn${savedColorScheme === scheme ? ' active' : ''}`}
-              data-theme={scheme}
               title={scheme}
               onClick={() => setThemeAndState(scheme)}
             >
