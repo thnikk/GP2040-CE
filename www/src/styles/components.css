@@ -454,6 +454,7 @@
 	border-radius: 999px;
 	border: 1px solid transparent;
 	color: inherit;
+	cursor: pointer;
 	transition: background 0.15s, border-color 0.15s;
 }
 
@@ -484,6 +485,7 @@
 	border: 1px solid transparent;
 	border-radius: 0.375rem 0.375rem 0 0;
 	margin-bottom: -1px;
+	cursor: pointer;
 }
 
 .nav-tabs .nav-link.active {
