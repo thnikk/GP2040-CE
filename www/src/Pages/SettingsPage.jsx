@@ -1516,9 +1516,9 @@ export default function SettingsPage() {
 													description={t('SettingsPage:gamepad-settings-description-text')}
 												>
 													<div className="d-flex flex-column gap-1">
-														<Form.Label className="label-regular">
-															{t('SettingsPage:d-pad-mode-label')}
-														</Form.Label>
+<Form.Label>
+	{t('SettingsPage:d-pad-mode-label')}
+</Form.Label>
 														<div className="d-flex align-items-center gap-3">
 															<div style={{ flex: 1 }}>
 																<Form.Select

@@ -204,11 +204,6 @@
 .form-label {
 	display: block;
 	margin-bottom: 0.5rem;
-	font-weight: 600;
-	font-size: 0.9rem;
-}
-
-.label-regular {
 	font-weight: 400;
 	font-size: 1rem;
 }

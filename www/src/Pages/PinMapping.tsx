@@ -552,7 +552,7 @@ const submitTheme = useCallback(async () => {
 							<div className="card-heading d-flex align-items-center gap-2"><Lightbulb />{t('CustomTheme:header-text')}</div>
 							<div className="d-flex align-items-center gap-3 flex-wrap">
 								<div className="d-flex align-items-center gap-2">
-									<Form.Label className="mb-0 label-regular">{t('CustomTheme:animation-label')}</Form.Label>
+									<Form.Label className="mb-0">{t('CustomTheme:animation-label')}</Form.Label>
 									<Form.Select
 										value={animationMode}
 										onChange={handleAnimationModeChange}
@@ -567,7 +567,7 @@ const submitTheme = useCallback(async () => {
 								</div>
 								{animationMode === 3 && (
 									<div className="d-flex align-items-center gap-2">
-										<Form.Label className="mb-0 label-regular">{t('CustomTheme:preset-label')}</Form.Label>
+										<Form.Label className="mb-0">{t('CustomTheme:preset-label')}</Form.Label>
 										<Form.Select
 											value={themeIndex}
 											onChange={handleThemeIndexChange}
