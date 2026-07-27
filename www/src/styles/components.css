@@ -144,7 +144,7 @@
 
 .btn-success {
 	background-color: var(--gp-success);
-	color: var(--gp-body-bg);
+	color: var(--gp-nord-0);
 	border-color: #b5d9a5;
 }
 
