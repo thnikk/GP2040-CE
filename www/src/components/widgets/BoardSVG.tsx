@@ -517,7 +517,7 @@ export default function BoardSVG({
 	                svgEl.style.setProperty('stroke-width', '3', 'important');
 	                svgEl.style.removeProperty('fill-opacity');
 	            } else if (action === BUTTON_ACTIONS.NONE || action === undefined) {
-	                svgEl.style.setProperty('fill', hasLedElements ? 'var(--bg-2)' : (origFill || '#16213e'), 'important');
+	                svgEl.style.setProperty('fill', hasLedElements ? 'var(--bg-2)' : 'var(--bg-1)', 'important');
 	                svgEl.style.setProperty('fill-opacity', hasLedElements ? '1' : '0.2', 'important');
 	                svgEl.style.setProperty('stroke', 'var(--bg-4)', 'important');
 	                svgEl.style.setProperty('stroke-width', '2', 'important');
@@ -535,7 +535,7 @@ export default function BoardSVG({
 	                svgEl.style.setProperty('stroke', 'var(--bg-4)', 'important');
 	                svgEl.style.setProperty('stroke-width', '2', 'important');
 	            } else {
-	                svgEl.style.setProperty('fill', hasLedElements ? 'var(--bg-2)' : (origFill || '#0a3d0a'), 'important');
+	                svgEl.style.setProperty('fill', hasLedElements ? 'var(--bg-2)' : 'var(--bg-1)', 'important');
 	                svgEl.style.removeProperty('fill-opacity');
 	                svgEl.style.setProperty('stroke', 'var(--bg-4)', 'important');
 	                svgEl.style.setProperty('stroke-width', '2', 'important');
@@ -578,14 +578,26 @@ export default function BoardSVG({
 		svgContainer.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, line')
 			.forEach((el) => {
 				el.setAttribute('vector-effect', 'non-scaling-stroke');
-				el.style.stroke = 'var(--bg-4)';
-			el.style.setProperty('stroke-width', '2', 'important');
+				if (el.closest('#logo') || el.id === 'logo') return;
+				if (el.closest('#board-led') || el.id === 'board-led') return;
+				el.style.fill = 'var(--bg-1)';
+				if (el.closest('#oled') || el.id === 'oled') {
+					el.style.stroke = 'none';
+				} else {
+					el.style.stroke = 'var(--bg-4)';
+					el.style.setProperty('stroke-width', '2', 'important');
+				}
 			});
 
 		const caseEl = svgContainer.querySelector('#case');
 		if (caseEl) {
 			(caseEl as HTMLElement).style.setProperty('fill', 'var(--bg-1)', 'important');
 			(caseEl as HTMLElement).style.setProperty('stroke-width', '1', 'important');
+		}
+
+		const oledEl = svgContainer.querySelector('#oled');
+		if (oledEl) {
+			(oledEl as HTMLElement).style.setProperty('fill', '#000000', 'important');
 		}
 
 		const groups = svgContainer.querySelectorAll('[id^="pin"]');
@@ -640,8 +652,8 @@ export default function BoardSVG({
 					label.setAttribute('font-family', '"Nunito", monospace');
 					label.setAttribute('font-size', '12');
 					label.setAttribute('font-weight', 'bold');
-					label.setAttribute('fill', '#ffffff');
-					label.setAttribute('stroke', '#000000');
+					label.setAttribute('fill', 'currentColor');
+					label.setAttribute('stroke', 'var(--bg-1)');
 					label.setAttribute('stroke-width', '2');
 					label.setAttribute('stroke-linejoin', 'round');
 					label.setAttribute('paint-order', 'stroke fill');
