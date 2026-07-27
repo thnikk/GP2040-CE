@@ -343,6 +343,10 @@ export default function BoardSVG({
 				? [el]
 				: Array.from(el.querySelectorAll('rect, circle, path, ellipse, polygon, polyline, line'));
 
+			const svgRoot = el.ownerSVGElement as SVGSVGElement;
+			const guidePath = svgRoot.querySelector(`#${CSS.escape(`${id}-label`)}`);
+			const guideEndpoints = guidePath ? parsePathEndpoints(guidePath.getAttribute('d') || '') : null;
+
 			const pinData = pins[`pin${pinNumber.toString().padStart(2, '0')}`];
 			const action = pinData?.action ?? BUTTON_ACTIONS.NONE;
 			let labelEl = el.querySelector<SVGTextElement>('.pin-action-label');
@@ -355,11 +359,15 @@ export default function BoardSVG({
 				labelEl.setAttribute('font-family', '"Nunito", monospace');
 				labelEl.setAttribute('font-size', '11');
 				labelEl.setAttribute('font-weight', 'bold');
-				labelEl.setAttribute('fill', '#000000');
-				labelEl.setAttribute('stroke', '#ffffff');
-				labelEl.setAttribute('stroke-width', '2');
-				labelEl.setAttribute('stroke-linejoin', 'round');
-				labelEl.setAttribute('paint-order', 'stroke fill');
+				if (guideEndpoints) {
+					labelEl.setAttribute('fill', 'currentColor');
+				} else {
+					labelEl.setAttribute('fill', '#000000');
+					labelEl.setAttribute('stroke', '#ffffff');
+					labelEl.setAttribute('stroke-width', '2');
+					labelEl.setAttribute('stroke-linejoin', 'round');
+					labelEl.setAttribute('paint-order', 'stroke fill');
+				}
 
 				if (isShape) {
 					const g = document.createElementNS(svgNs, 'g');
@@ -411,10 +419,7 @@ export default function BoardSVG({
 				labelEl.style.setProperty('font-size', '11px', 'important');
 			}
 
-			const svgRoot = el.ownerSVGElement as SVGSVGElement;
 			const screenCTM = svgRoot.getScreenCTM();
-			const guidePath = svgRoot.querySelector(`#${CSS.escape(`${id}-label`)}`);
-			const guideEndpoints = guidePath ? parsePathEndpoints(guidePath.getAttribute('d') || '') : null;
 			let labelRotation: number | null = null;
 			let cx: number, cy: number;
 			let buttonRect: DOMRect | undefined;
