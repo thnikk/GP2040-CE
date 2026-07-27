@@ -25,7 +25,7 @@ import Section from '../components/shared/Section';
 import AlertIcon from '../Icons/Alert';
 import CodeBranch from '../Icons/CodeBranch';
 import Gamepad from '../Icons/Gamepad';
-import LayerGroup from '../Icons/LayerGroup';
+import LayerStack from '../Icons/LayerStack';
 import LightningIcon from '../Icons/Lightning';
 import Microchip from '../Icons/Microchip';
 import PowerOff from '../Icons/PowerOff';
@@ -1443,7 +1443,7 @@ export default function SettingsPage() {
 											</Nav.Item>
 											<Nav.Item>
 												<Nav.Link eventKey="hotkey" className="nav-btn">
-													<span className="d-flex align-items-center gap-2"><LayerGroup />{t('SettingsPage:hotkey-settings-label')}</span>
+													<span className="d-flex align-items-center gap-2"><LayerStack />{t('SettingsPage:hotkey-settings-label')}</span>
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
@@ -1702,7 +1702,7 @@ export default function SettingsPage() {
 												</Section>
 											</Tab.Pane>
 											<Tab.Pane eventKey="hotkey">
-												<Section heading icon={<LayerGroup />}
+												<Section heading icon={<LayerStack />}
 													title={t('SettingsPage:hotkey-settings-label')}
 													description={t('SettingsPage:hotkey-settings-description-text')}
 												>
