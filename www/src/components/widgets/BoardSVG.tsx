@@ -431,6 +431,9 @@ export default function BoardSVG({
 				const dy = guideEndpoints.y2 - guideEndpoints.y1;
 				if (dx !== 0 || dy !== 0) {
 					labelRotation = Math.atan2(dy, dx) * (180 / Math.PI);
+					if (labelRotation > 90 || labelRotation < -90) {
+						labelRotation += 180;
+					}
 				}
 			} else {
 				const buttonEl = isShape ? (el as Element) : shapes[0];
@@ -657,8 +660,9 @@ export default function BoardSVG({
 					label.setAttribute('stroke-width', '2');
 					label.setAttribute('stroke-linejoin', 'round');
 					label.setAttribute('paint-order', 'stroke fill');
-					label.setAttribute('x', String(x + w / 2));
+					label.setAttribute('x', String(-(x + w / 2)));
 					label.setAttribute('y', String(y + h / 2));
+					label.textContent = 'Test';
 					parent.insertBefore(g, testBtn);
 					g.appendChild(testBtn);
 					g.appendChild(label);
