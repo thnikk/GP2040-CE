@@ -27,7 +27,7 @@ export default function HomePage() {
 		latestDownloadUrl,
 		currentVersion,
 		showConfigButton,
-		boardConfigProperties,
+		boardName,
 	} = useSystemStats();
 
 	const updateAvailable =
@@ -40,7 +40,7 @@ export default function HomePage() {
 			heading
 			title={t('HomePage:welcome-heading-text')}
 			description={t('HomePage:welcome-description-text', {
-				boardName: boardConfigProperties.label,
+				boardName,
 			})}
 		>
 			<div className="d-flex flex-column gap-2">

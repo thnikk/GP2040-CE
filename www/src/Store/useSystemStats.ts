@@ -8,6 +8,7 @@ type State = {
 	latestVersion: string;
 	latestDownloadUrl: string;
 	currentVersion: string;
+	boardName: string;
 	boardConfigProperties: {
 		label: string;
 		fileName: string;
@@ -35,6 +36,7 @@ const INITIAL_STATE: State = {
 	latestVersion: '',
 	latestDownloadUrl: '',
 	currentVersion: '',
+	boardName: '',
 	boardConfigProperties: {
 		label: '',
 		fileName: '',
@@ -64,7 +66,7 @@ const useSystemStats = create<State & Actions>()((set) => ({
 				`${baseUrl}/api/getFirmwareVersion`,
 			).then((res) => res.json());
 
-			const boardName = firmwareVersion.boardConfig?.split('-')[0];
+			const boardName = firmwareVersion.boardConfig?.split('-')[0] || '';
 			if (boardName) document.title = `${boardName} Config`;
 
 			const [memoryReport, latestRelease] = await Promise.all([
@@ -74,8 +76,6 @@ const useSystemStats = create<State & Actions>()((set) => ({
 				).then((res) => res.json()),
 			]);
 
-			console.log('getFirmwareVersion response:', firmwareVersion);
-			console.log('getMemoryReport response:', memoryReport);
 			const latestDownloadUrl =
 				latestRelease.assets?.find(
 					({ name }) =>
@@ -87,6 +87,7 @@ const useSystemStats = create<State & Actions>()((set) => ({
 				`https://github.com/thnikk/GP2040-CE/releases/tag/${latestRelease.tag_name}`;
 
 			set({
+				boardName,
 				currentVersion: firmwareVersion.version,
 				latestVersion: latestRelease.tag_name,
 				latestDownloadUrl,
