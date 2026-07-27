@@ -10,4 +10,11 @@ export default {
 	'sub-header-text': 'Bitte wählen Sie eine Menüoption, um fortzufahren.',
 	'system-stats-header-text': 'Systemstatistiken',
 	'version-text': 'Version',
+	'welcome-heading-text': 'Willkommen',
+	'welcome-description-text': 'Konfigurieren Sie Ihren {{boardName}} mit den folgenden Optionen.',
+	'layout-card-text': 'Tastenbelegungen, Pin-Zuordnungen und LED-Designs konfigurieren',
+	'settings-card-text': 'Eingabemodi, Hotkeys, USB-Deskriptoren und mehr konfigurieren',
+	'config-card-text': 'Erweiterte Konfigurationsoptionen aufrufen',
+	'update-available-text': 'Update Verfügbar',
+	'update-available-description-text': 'Version {{version}} ist zum Download verfügbar',
 };

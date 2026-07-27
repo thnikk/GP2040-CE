@@ -11,4 +11,11 @@ export default {
 	'sub-header-text': '메뉴에서 사용할 옵션을 선택하세요.',
 	'system-stats-header-text': '시스템 정보',
 	'version-text': '버전',
+	'welcome-heading-text': '환영합니다',
+	'welcome-description-text': '아래 옵션을 사용하여 {{boardName}}을(를) 구성하세요.',
+	'layout-card-text': '버튼 매핑, 핀 할당 및 LED 테마 구성',
+	'settings-card-text': '입력 모드, 핫키, USB 디스크립터 등 구성',
+	'config-card-text': '고급 구성 옵션에 액세스',
+	'update-available-text': '업데이트 가능',
+	'update-available-description-text': '버전 {{version}}을(를) 다운로드할 수 있습니다',
 };

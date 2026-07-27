@@ -11,4 +11,11 @@ export default {
 	'sub-header-text': 'メニューから利用するオプションを選択してください。',
 	'system-stats-header-text': 'システム情報',
 	'version-text': 'バージョン',
+	'welcome-heading-text': 'ようこそ',
+	'welcome-description-text': '以下のオプションを使用して {{boardName}} を設定します。',
+	'layout-card-text': 'ボタン割り当て、ピン設定、LEDテーマを構成',
+	'settings-card-text': '入力モード、ホットキー、USBディスクリプタなどを構成',
+	'config-card-text': '高度な設定オプションにアクセス',
+	'update-available-text': 'アップデートがあります',
+	'update-available-description-text': 'バージョン {{version}} がダウンロード可能です',
 };

@@ -122,6 +122,10 @@
 	flex-shrink: 0;
 }
 
+.btn.justify-content-start {
+	justify-content: flex-start;
+}
+
 .btn-primary {
 	background-color: var(--bg-3);
 	color: var(--gp-body-color);

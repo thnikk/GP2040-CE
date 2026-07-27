@@ -10,4 +10,11 @@ export default {
 	'sub-header-text': 'Por favor, selecione uma opção de menu para continuar.',
 	'system-stats-header-text': 'Estatísticas do Sistema',
 	'version-text': 'Versão',
+	'welcome-heading-text': 'Bem-vindo',
+	'welcome-description-text': 'Configure seu {{boardName}} usando as opções abaixo.',
+	'layout-card-text': 'Configure mapeamentos de botões, atribuições de pinos e temas LED',
+	'settings-card-text': 'Configure modos de entrada, teclas de atalho, descritores USB e mais',
+	'config-card-text': 'Acesse opções avançadas de configuração',
+	'update-available-text': 'Atualização Disponível',
+	'update-available-description-text': 'Versão {{version}} está disponível para download',
 };
