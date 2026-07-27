@@ -471,16 +471,12 @@ export default function BoardSVG({
 				labelEl.setAttribute('y', String(cy));
 			}
 
-			if (!keyboardLines) {
-				if (labelRotation !== null) {
-					labelEl.setAttribute('transform', `rotate(${labelRotation}, ${cx}, ${cy})`);
-				} else if (buttonRect) {
-					const labelRect = labelEl.getBoundingClientRect();
-					if (labelRect.width > buttonRect.width * 0.85) {
-						labelEl.setAttribute('transform', `rotate(-25, ${cx}, ${cy})`);
-					} else if (labelEl.hasAttribute('transform')) {
-						labelEl.removeAttribute('transform');
-					}
+			if (labelRotation !== null) {
+				labelEl.setAttribute('transform', `rotate(${labelRotation}, ${cx}, ${cy})`);
+			} else if (!keyboardLines && buttonRect) {
+				const labelRect = labelEl.getBoundingClientRect();
+				if (labelRect.width > buttonRect.width * 0.85) {
+					labelEl.setAttribute('transform', `rotate(-25, ${cx}, ${cy})`);
 				} else if (labelEl.hasAttribute('transform')) {
 					labelEl.removeAttribute('transform');
 				}
