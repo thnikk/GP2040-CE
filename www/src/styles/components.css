@@ -1344,6 +1344,10 @@
 	padding: 0 10px;
 }
 
+.reboot-modal-heading {
+	font-size: 20px;
+}
+
 .footer-info-trigger .update-available {
 	color: var(--gp-nord-14, #a3be8c);
 }

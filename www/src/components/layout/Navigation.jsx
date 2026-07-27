@@ -141,7 +141,7 @@ const Navigation = () => {
 			<Modal show={show} onHide={handleClose}>
 				<div className="reboot-modal-body">
 					<div className="d-flex align-items-center justify-content-between">
-						<div className="d-flex align-items-center gap-2 fw-semibold">
+						<div className="d-flex align-items-center gap-2 fw-semibold reboot-modal-heading">
 							<svg
 								width="20"
 								height="20"
