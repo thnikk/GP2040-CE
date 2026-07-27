@@ -44,7 +44,7 @@ const Footer = () => {
   const { t } = useTranslation('');
   const [popoverOpen, setPopoverOpen] = useState(false);
   const triggerRef = useRef(null);
-  const { currentVersion, latestVersion } = useSystemStats();
+  const { currentVersion, latestVersion, loaded } = useSystemStats();
 
   useEffect(() => {
     setTheme(savedColorScheme);
@@ -73,6 +73,7 @@ const Footer = () => {
   ];
 
   const updateAvailable =
+    loaded &&
     latestVersion &&
     currentVersion?.split('-').length === 1 &&
     isNewerVersion(latestVersion, currentVersion);
@@ -81,6 +82,8 @@ const Footer = () => {
     <footer className="footer container-lg">
       <div className="footer-inner">
         <div className="footer-info-trigger">
+          {loaded && (
+            <>
             <button
               type="button"
               ref={triggerRef}
@@ -91,6 +94,8 @@ const Footer = () => {
               {updateAvailable ? <ArrowUpCircle /> : <InfoCircle />}
             </button>
           <span className="footer-version">{currentVersion}</span>
+          </>
+          )}
           <SystemStatsPopover
             show={popoverOpen}
             onHide={() => setPopoverOpen(false)}

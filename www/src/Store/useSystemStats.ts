@@ -26,6 +26,7 @@ type State = {
 	};
 	loading: boolean;
 	error: boolean;
+	loaded: boolean;
 };
 
 type Actions = {
@@ -54,11 +55,14 @@ const INITIAL_STATE: State = {
 	},
 	loading: false,
 	error: false,
+	loaded: false,
 };
 
-const useSystemStats = create<State & Actions>()((set) => ({
+const MAX_RETRIES = 10;
+
+const useSystemStats = create<State & Actions>()((set, get) => ({
 	...INITIAL_STATE,
-	getSystemStats: async () => {
+	getSystemStats: async (retries = MAX_RETRIES) => {
 		set({ loading: true });
 
 		try {
@@ -113,10 +117,14 @@ const useSystemStats = create<State & Actions>()((set) => ({
 					),
 				},
 				loading: false,
+				loaded: true,
 			});
 		} catch (error) {
 			console.error('getSystemStats error:', error);
 			set({ error: true, loading: false });
+			if (retries > 0) {
+				setTimeout(() => get().getSystemStats(retries - 1), 2000);
+			}
 		}
 	},
 }));
