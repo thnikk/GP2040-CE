@@ -1426,27 +1426,27 @@ export default function SettingsPage() {
 										<Nav variant="pills" className="flex-column">
 											<Nav.Item>
 												<Nav.Link eventKey="inputmode" className="nav-btn">
-													{t('SettingsPage:settings-header-text')}
+													<span className="d-flex align-items-center gap-2"><CodeBranch />{t('SettingsPage:settings-header-text')}</span>
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
 												<Nav.Link eventKey="gamepad" className="nav-btn">
-													{t('SettingsPage:gamepad-settings-header-text')}
+													<span className="d-flex align-items-center gap-2"><Gamepad style={{ width: 16 }} />{t('SettingsPage:gamepad-settings-header-text')}</span>
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
 												<Nav.Link eventKey="bootmode" className="nav-btn">
-													{t('SettingsPage:boot-input-mode-label')}
+													<span className="d-flex align-items-center gap-2"><PowerOff />{t('SettingsPage:boot-input-mode-label')}</span>
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
 												<Nav.Link eventKey="hotkey" className="nav-btn">
-													{t('SettingsPage:hotkey-settings-label')}
+													<span className="d-flex align-items-center gap-2"><LayerGroup />{t('SettingsPage:hotkey-settings-label')}</span>
 												</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
 												<Nav.Link eventKey="extrapins" className="nav-btn">
-													{t('SettingsPage:extra-pins-label')}
+													<span className="d-flex align-items-center gap-2"><Microchip />{t('SettingsPage:extra-pins-label')}</span>
 												</Nav.Link>
 											</Nav.Item>
 										</Nav>
