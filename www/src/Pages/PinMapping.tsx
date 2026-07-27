@@ -12,7 +12,7 @@ import Button from '../components/ui/Button';
 import { useToast } from '../Contexts/ToastContext';
 import Form from '../components/ui/Form';
 import FormCheck from '../components/ui/FormCheck';
-import { OverlayTrigger, Tooltip } from '../components/ui/OverlayTrigger';
+import { Tooltip, TooltipTrigger } from '../components/ui/Tooltip';
 import { useTranslation } from 'react-i18next';
 import omit from 'lodash/omit';
 import invert from 'lodash/invert';
@@ -69,10 +69,10 @@ const ProfileLabel = memo(function ProfileLabel({
 
 	return (
 		<div className="pin-grid profile-label-grid">
-			<OverlayTrigger
+			<TooltipTrigger
 				show={!!validationMessage}
 				placement="bottom"
-				overlay={<Tooltip className="tooltip-validation">{validationMessage}</Tooltip>}
+				content={<Tooltip className="tooltip-validation">{validationMessage}</Tooltip>}
 			>
 				<div className="d-flex align-items-center gap-2">
 					<label style={{ fontWeight: 400, fontSize: '1rem', whiteSpace: 'nowrap', margin: 0 }}>{t('PinMapping:profile-label-title')}</label>
@@ -85,7 +85,7 @@ const ProfileLabel = memo(function ProfileLabel({
 					onChange={onLabelChange}
 					/>
 				</div>
-			</OverlayTrigger>
+			</TooltipTrigger>
 		</div>
 	);
 });
@@ -304,19 +304,15 @@ const PinSection = memo(function PinSection({
 						<FormCheck
 							size={3}
 							label={
-								<OverlayTrigger
-									overlay={
-										<Tooltip>
-											{t('PinMapping:profile-enabled-tooltip')}
-										</Tooltip>
-									}
-								>
-									<div className="d-flex gap-1">
-										<label>{t('Common:switch-enabled')} </label>
-										<InfoCircle />
+									<div className="d-flex gap-1 align-items-center">
+										<span>{t('Common:switch-enabled')}</span>
+										<TooltipTrigger
+											content={<Tooltip>{t('PinMapping:profile-enabled-tooltip')}</Tooltip>}
+										>
+											<InfoCircle />
+										</TooltipTrigger>
 									</div>
-								</OverlayTrigger>
-							}
+								}
 							type="switch"
 							reverse
 							checked={enabled}
