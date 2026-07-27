@@ -22,9 +22,11 @@ import ContextualHelpOverlay from '../components/shared/ContextualHelpOverlay';
 import CustomSelect from '../components/form/CustomSelect';
 import PinSelectList from '../components/pins/PinSelectList';
 import Section from '../components/shared/Section';
+import AlertIcon from '../Icons/Alert';
 import CodeBranch from '../Icons/CodeBranch';
 import Gamepad from '../Icons/Gamepad';
 import LayerGroup from '../Icons/LayerGroup';
+import LightningIcon from '../Icons/Lightning';
 import Microchip from '../Icons/Microchip';
 import PowerOff from '../Icons/PowerOff';
 import WebApi from '../Services/WebApi';
@@ -1055,7 +1057,7 @@ export default function SettingsPage() {
 		return (
 			<>
 				<Form.Check
-					label={t('SettingsPage:usb-override.advanced-override')}
+					label={<><span className="icon-alert"><AlertIcon /></span> {t('SettingsPage:usb-override.advanced-override')}</>}
 					type="switch"
 					id="usbDescOverride"
 					isInvalid={false}
@@ -1118,7 +1120,7 @@ export default function SettingsPage() {
 							</Col>
 						</Row>
 						<Form.Check
-							label={t('SettingsPage:usb-override.physical-warning-danger')}
+							label={<><span className="icon-alert"><LightningIcon /></span> {t('SettingsPage:usb-override.physical-warning-danger')}</>}
 							type="switch"
 							id="usbOverrideID"
 							isInvalid={false}

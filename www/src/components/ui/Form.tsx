@@ -120,7 +120,7 @@ const FormSelect = ({ className = '', isInvalid, children, ...props }: FormSelec
 type FormCheckProps = {
 	type?: 'checkbox' | 'switch';
 	id?: string;
-	label?: string;
+	label?: React.ReactNode;
 	className?: string;
 	reverse?: boolean;
 	isInvalid?: boolean;

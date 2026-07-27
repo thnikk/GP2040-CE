@@ -92,6 +92,10 @@
 	border-color: var(--gp-nord-11);
 }
 
+.icon-alert {
+	color: var(--gp-nord-13);
+}
+
 /* ==============================
    Button
    ============================== */

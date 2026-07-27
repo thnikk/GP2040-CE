@@ -158,13 +158,13 @@ export default {
 	'extra-pins-label': 'Extra Pins',
 	'extra-pins-description-text': 'Make additional pins available for connecting custom buttons or controls.',
     'usb-override': {
-        'advanced-override': '⚠️ Advanced USB Override',
+        'advanced-override': 'Advanced USB Override',
         'invalid-warning-danger':
         	'DANGER: Invalid USB parameters will cause your input modes to not function!',
         'product-name':'Product Name',
         'manufacturer':'Manufacturer',
         'version':'Version',
-        'physical-warning-danger':'⚡ Override Physical IDs ⚡ ',
+        'physical-warning-danger':'Override Physical IDs',
         'product-id':'Product ID',
         'vendor-id':'Vendor ID',
     },
