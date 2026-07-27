@@ -20,6 +20,7 @@ import Palette from '../../Icons/Palette';
 const MODIFIER_MIN = 0xe0;
 const isModifierKey = (value: number) => value >= MODIFIER_MIN && value <= 0xe7;
 const WIDGET_BREAKPOINT = 992;
+const WIDGET_HEIGHT_BREAKPOINT = 700;
 const bitCount = (n: number) => {
 	let c = 0;
 	while (n) { c += n & 1; n >>>= 1; }
@@ -234,10 +235,15 @@ export default function PinActionModal({
 		[],
 	);
 
-	const [useWidget, setUseWidget] = useState(window.innerWidth >= WIDGET_BREAKPOINT);
+	const [useWidget, setUseWidget] = useState(
+		window.innerWidth >= WIDGET_BREAKPOINT && window.innerHeight >= WIDGET_HEIGHT_BREAKPOINT,
+	);
 
 	useEffect(() => {
-		const onResize = () => setUseWidget(window.innerWidth >= WIDGET_BREAKPOINT);
+		const onResize = () =>
+			setUseWidget(
+				window.innerWidth >= WIDGET_BREAKPOINT && window.innerHeight >= WIDGET_HEIGHT_BREAKPOINT,
+			);
 		window.addEventListener('resize', onResize);
 		return () => window.removeEventListener('resize', onResize);
 	}, []);

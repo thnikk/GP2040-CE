@@ -369,7 +369,7 @@
 	bottom: 0;
 	z-index: 1050;
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
 	background-color: rgba(0, 0, 0, 0.5);
 	overflow-y: auto;
