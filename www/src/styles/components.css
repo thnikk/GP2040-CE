@@ -696,7 +696,7 @@
 
 .table {
 	width: 100%;
-	margin-bottom: 1rem;
+	margin-bottom: 0;
 	border-collapse: collapse;
 	background-color: var(--gp-table-bg, transparent);
 }
