@@ -2,6 +2,13 @@ import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNewerVersion } from '../../Services/Utilities';
 import useSystemStats from '../../Store/useSystemStats';
+import InfoCircle from '../../Icons/InfoCircle';
+import Microchip from '../../Icons/Microchip';
+import CodeBranch from '../../Icons/CodeBranch';
+import Download from '../../Icons/Download';
+import Database from '../../Icons/Database';
+import LayerStack from '../../Icons/LayerStack';
+import LayerGroup from '../../Icons/LayerGroup';
 
 type SystemStatsPopoverProps = {
 	show: boolean;
@@ -87,18 +94,20 @@ const SystemStatsPopover = ({ show, onHide, triggerRef }: SystemStatsPopoverProp
 			<div className="footer-popover-body">
 				{loaded ? (
 					<>
-						<div className="card-heading">{t('HomePage:system-stats-header-text')}</div>
-						<div className="system-text">
-							<strong>{t('HomePage:board-text')}:</strong> {boardConfigProperties.label}
+						<div className="card-heading d-flex align-items-center gap-2">
+							<InfoCircle /> {t('HomePage:system-stats-header-text')}
 						</div>
-						<div className="system-text d-flex align-items-center">
-							<strong>{t('HomePage:version-text')}:</strong> {currentVersion}
+						<div className="system-text d-flex align-items-center gap-2">
+							<Microchip /> <strong>{t('HomePage:board-text')}:</strong> {boardConfigProperties.label}
+						</div>
+						<div className="system-text d-flex align-items-center gap-2">
+							<CodeBranch /> <strong>{t('HomePage:version-text')}:</strong> {currentVersion}
 							{latestVersion && isNewerVersion(currentVersion, latestVersion) && (
-								<span className="badge bg-info ms-2">{t('HomePage:pre-release-badge-text')}</span>
+								<span className="badge bg-info">{t('HomePage:pre-release-badge-text')}</span>
 							)}
 						</div>
-						<div className="system-text">
-							{t('HomePage:latest-text', { version: latestVersion })}
+						<div className="system-text d-flex align-items-center gap-2">
+							<Download /> {t('HomePage:latest-text', { version: latestVersion })}
 						</div>
 						{latestVersion &&
 							currentVersion?.split('-').length == 1 &&
@@ -115,22 +124,18 @@ const SystemStatsPopover = ({ show, onHide, triggerRef }: SystemStatsPopoverProp
 								</div>
 							)}
 
-						<div className="system-text">
-							{t('HomePage:memory-flash-text')}: {memoryReport.usedFlash} /{' '}
+						<div className="system-text d-flex align-items-center gap-2">
+							<Database /> {t('HomePage:memory-flash-text')}: {memoryReport.usedFlash} /{' '}
 							{memoryReport.totalFlash} ({memoryReport.percentageFlash}%)
 						</div>
-						<div className="system-text">
-							{t('HomePage:memory-heap-text')}: {memoryReport.usedHeap} /{' '}
+						<div className="system-text d-flex align-items-center gap-2">
+							<LayerStack /> {t('HomePage:memory-heap-text')}: {memoryReport.usedHeap} /{' '}
 							{memoryReport.totalHeap} ({memoryReport.percentageHeap}%)
 						</div>
-						<div className="system-text">
-							{t('HomePage:memory-static-allocations-text')}:{' '}
+						<div className="system-text d-flex align-items-center gap-2">
+							<LayerGroup /> {t('HomePage:memory-static-allocations-text')}:{' '}
 							{memoryReport.staticAllocs}
 						</div>
-						<div>
-							{t('HomePage:memory-board-text')}: {memoryReport.physicalFlash}
-						</div>
-
 					</>
 				) : (
 					<span className="text-muted">{t('Common:loading-text')}</span>
