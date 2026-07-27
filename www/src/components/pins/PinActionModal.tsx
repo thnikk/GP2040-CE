@@ -394,8 +394,8 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 						{t('PinMapping:keyboard-tab')}
 					</button>
 				</div>
-				{activeTab === 'controller' && (
-					<div className="pin-action-section">
+				<div className="pin-action-sections">
+					<div className={`pin-action-section${activeTab === 'controller' ? '' : ' inactive'}`}>
 						{!disabled && (
 							<CustomSelect
 								isClearable
@@ -421,9 +421,7 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 							</div>
 						)}
 					</div>
-				)}
-				{activeTab === 'keyboard' && (
-					<div className="pin-action-section">
+					<div className={`pin-action-section${activeTab === 'keyboard' ? '' : ' inactive'}`}>
 						{!disabled && (
 							<CustomSelect
 								isMulti
@@ -442,7 +440,7 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 							/>
 						)}
 					</div>
-				)}
+				</div>
 				{showLedSection && (
 					<div className="pin-action-section">
 						<div className="card-heading d-flex align-items-center gap-2">

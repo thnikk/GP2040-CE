@@ -208,6 +208,20 @@
 	background: rgba(0, 0, 0, 0.25);
 }
 
+.pin-action-sections {
+	display: grid;
+}
+
+.pin-action-sections > .pin-action-section {
+	grid-area: 1 / 1;
+	align-self: start;
+}
+
+.pin-action-sections > .pin-action-section.inactive {
+	visibility: hidden;
+	pointer-events: none;
+}
+
 .pin-action-section {
 	display: flex;
 	flex-direction: column;
@@ -389,8 +403,7 @@
 }
 
 .controller-widget .cgp-svg {
-	width: 100%;
-	height: auto;
+	height:500px;
 }
 
 .controller-widget .cgp-label {
