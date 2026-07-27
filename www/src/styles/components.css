@@ -535,6 +535,7 @@
 	padding: 10px;
 	background: color-mix(in srgb, var(--gp-body-bg) 85%, transparent);
 	backdrop-filter: blur(8px);
+	min-height: 70px;
 }
 
 .navbar .container-lg {
