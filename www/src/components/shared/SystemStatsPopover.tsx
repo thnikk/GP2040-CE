@@ -1,14 +1,15 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNewerVersion } from '../../Services/Utilities';
 import useSystemStats from '../../Store/useSystemStats';
-import ProgressBar from '../ui/ProgressBar';
 
 type SystemStatsPopoverProps = {
 	show: boolean;
 	onHide: () => void;
 	triggerRef?: React.RefObject<HTMLElement>;
 };
+
+const POPOVER_GAP = 10;
 
 const SystemStatsPopover = ({ show, onHide, triggerRef }: SystemStatsPopoverProps) => {
 	const { t } = useTranslation('');
@@ -21,6 +22,7 @@ const SystemStatsPopover = ({ show, onHide, triggerRef }: SystemStatsPopoverProp
 		loaded,
 	} = useSystemStats();
 	const ref = useRef<HTMLDivElement>(null);
+	const [pos, setPos] = useState({ top: -9999, left: -9999 });
 
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
@@ -39,17 +41,58 @@ const SystemStatsPopover = ({ show, onHide, triggerRef }: SystemStatsPopoverProp
 		};
 	}, [show, onHide, triggerRef]);
 
+	useLayoutEffect(() => {
+		if (!show || !triggerRef?.current || !ref.current) return;
+
+		const updatePosition = () => {
+			const trigger = triggerRef?.current;
+			const popover = ref.current;
+			if (!trigger || !popover) return;
+
+			const tr = trigger.getBoundingClientRect();
+			const pw = popover.offsetWidth;
+			const ph = popover.offsetHeight;
+			const vw = window.innerWidth;
+
+			let left = tr.left + tr.width / 2 - pw / 2;
+			let top = tr.top - ph - POPOVER_GAP;
+
+			left = Math.max(POPOVER_GAP, Math.min(left, vw - pw - POPOVER_GAP));
+
+			if (top < POPOVER_GAP) {
+				top = tr.bottom + POPOVER_GAP;
+			}
+
+			const arrowOffset = tr.left + tr.width / 2 - left;
+
+			setPos({ top, left });
+			popover.style.setProperty('--arrow-left', `${arrowOffset}px`);
+		};
+
+		updatePosition();
+
+		window.addEventListener('scroll', updatePosition, true);
+		window.addEventListener('resize', updatePosition);
+
+		return () => {
+			window.removeEventListener('scroll', updatePosition, true);
+			window.removeEventListener('resize', updatePosition);
+		};
+	}, [show, triggerRef]);
+
 	if (!show) return null;
 
 	return (
-		<div className="footer-popover" ref={ref}>
+		<div className="footer-popover" ref={ref} style={{ top: pos.top, left: pos.left }}>
 			<div className="footer-popover-body">
 				{loaded ? (
 					<>
-						<strong className="system-text">{t('HomePage:version-text')}</strong>
-						<div className="system-text">{`${boardConfigProperties.label} (${boardConfigProperties.fileName}.uf2)`}</div>
+						<div className="card-heading">{t('HomePage:system-stats-header-text')}</div>
+						<div className="system-text">
+							<strong>{t('HomePage:board-text')}:</strong> {boardConfigProperties.label}
+						</div>
 						<div className="system-text d-flex align-items-center">
-							<span>{t('HomePage:current-text', { version: currentVersion })}</span>
+							<strong>{t('HomePage:version-text')}:</strong> {currentVersion}
 							{latestVersion && isNewerVersion(currentVersion, latestVersion) && (
 								<span className="badge bg-info ms-2">{t('HomePage:pre-release-badge-text')}</span>
 							)}
@@ -72,9 +115,6 @@ const SystemStatsPopover = ({ show, onHide, triggerRef }: SystemStatsPopoverProp
 								</div>
 							)}
 
-						<strong className="system-text">
-							{t('HomePage:memory-header-text')}
-						</strong>
 						<div className="system-text">
 							{t('HomePage:memory-flash-text')}: {memoryReport.usedFlash} /{' '}
 							{memoryReport.totalFlash} ({memoryReport.percentageFlash}%)
@@ -91,20 +131,6 @@ const SystemStatsPopover = ({ show, onHide, triggerRef }: SystemStatsPopoverProp
 							{t('HomePage:memory-board-text')}: {memoryReport.physicalFlash}
 						</div>
 
-						<ProgressBar
-							className="system-text"
-							now={memoryReport.percentageFlash}
-							label={`${t('HomePage:memory-flash-text')} ${
-								memoryReport.percentageFlash
-							}%`}
-						/>
-						<ProgressBar
-							className="system-text"
-							now={memoryReport.percentageHeap}
-							label={`${t('HomePage:memory-heap-text')} ${
-								memoryReport.percentageHeap
-							}%`}
-						/>
 					</>
 				) : (
 					<span className="text-muted">{t('Common:loading-text')}</span>

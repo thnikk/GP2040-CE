@@ -10,6 +10,7 @@ export default {
 	'sub-header-text': 'Bitte wählen Sie eine Menüoption, um fortzufahren.',
 	'system-stats-header-text': 'Systemstatistiken',
 	'version-text': 'Version',
+	'board-text': 'Platine',
 	'welcome-heading-text': 'Willkommen',
 	'welcome-description-text': 'Konfigurieren Sie Ihren {{boardName}} mit den folgenden Optionen.',
 	'layout-card-text': 'Tastenbelegungen, Pin-Zuordnungen und LED-Designs konfigurieren',

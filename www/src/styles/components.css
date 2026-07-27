@@ -1252,10 +1252,7 @@
 }
 
 .footer-popover {
-	position: absolute;
-	bottom: calc(100% + 10px);
-	left: -12px;
-	width: 320px;
+	position: fixed;
 	z-index: 1050;
 	border: 1px solid var(--gp-border-color);
 	border-radius: 0.75rem;
@@ -1269,7 +1266,8 @@
 	content: '';
 	position: absolute;
 	top: 100%;
-	left: 11px;
+	left: var(--arrow-left, 11px);
+	transform: translateX(-50%);
 	width: 0;
 	height: 0;
 	border-left: 9px solid transparent;
@@ -1281,7 +1279,8 @@
 	content: '';
 	position: absolute;
 	top: 100%;
-	left: 12px;
+	left: var(--arrow-left, 12px);
+	transform: translateX(-50%);
 	width: 0;
 	height: 0;
 	border-left: 8px solid transparent;

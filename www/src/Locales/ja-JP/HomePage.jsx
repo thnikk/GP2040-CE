@@ -11,6 +11,7 @@ export default {
 	'sub-header-text': 'メニューから利用するオプションを選択してください。',
 	'system-stats-header-text': 'システム情報',
 	'version-text': 'バージョン',
+	'board-text': 'ボード',
 	'welcome-heading-text': 'ようこそ',
 	'welcome-description-text': '以下のオプションを使用して {{boardName}} を設定します。',
 	'layout-card-text': 'ボタン割り当て、ピン設定、LEDテーマを構成',

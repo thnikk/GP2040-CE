@@ -11,6 +11,7 @@ export default {
 	'sub-header-text': '请选择菜单选项以开始',
 	'system-stats-header-text': '系统状态',
 	'version-text': '版本',
+	'board-text': '主板',
 	'welcome-heading-text': '欢迎',
 	'welcome-description-text': '使用以下选项配置您的 {{boardName}}。',
 	'layout-card-text': '配置按钮映射、引脚分配和 LED 主题',

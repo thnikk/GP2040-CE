@@ -10,6 +10,7 @@ export default {
 	'sub-header-text': 'Por favor, selecione uma opção de menu para continuar.',
 	'system-stats-header-text': 'Estatísticas do Sistema',
 	'version-text': 'Versão',
+	'board-text': 'Placa',
 	'welcome-heading-text': 'Bem-vindo',
 	'welcome-description-text': 'Configure seu {{boardName}} usando as opções abaixo.',
 	'layout-card-text': 'Configure mapeamentos de botões, atribuições de pinos e temas LED',

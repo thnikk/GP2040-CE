@@ -11,6 +11,7 @@ export default {
 	'sub-header-text': 'Please select a menu option to proceed.',
 	'system-stats-header-text': 'System Stats',
 	'version-text': 'Version',
+	'board-text': 'Board',
 	'pre-release-badge-text': 'Pre-release',
 	'welcome-heading-text': 'Welcome',
 	'welcome-description-text': 'Configure your {{boardName}} using the options below.',
