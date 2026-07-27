@@ -19,7 +19,7 @@ export default {
 	'reboot-modal-button-web-config-label': 'Web-config',
 	'reboot-modal-button-progress-label': 'Reiniciando',
 	'reboot-modal-button-success-label': 'Concluído!',
-	'reboot-modal-label': 'Reiniciar?',
+	'reboot-modal-label': 'Reiniciar',
 	'reboot-modal-success':
 		'Reinicialização concluída, esta aba do navegador pode agora ser fechada.',
 	'resetSettings-label': 'Redefinir Configurações',

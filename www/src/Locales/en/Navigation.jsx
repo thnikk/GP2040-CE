@@ -22,7 +22,7 @@ export default {
 	'reboot-modal-button-web-config-label': 'Web-config',
 	'reboot-modal-button-progress-label': 'Rebooting',
 	'reboot-modal-button-success-label': 'Done!',
-	'reboot-modal-label': 'Reboot?',
+	'reboot-modal-label': 'Reboot',
 	'reboot-modal-success': 'Done rebooting, this browser tab can now be closed.',
 	'resetSettings-label': 'Reset Settings',
 	'settings-label': 'Settings',

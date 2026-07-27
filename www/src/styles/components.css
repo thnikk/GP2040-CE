@@ -1039,15 +1039,27 @@
    ============================== */
 
 .btn-close {
-	background: none;
+	background: var(--bg-3);
 	border: none;
 	font-size: 1.5rem;
+	font-weight: 800;
 	cursor: pointer;
 	color: var(--gp-body-color);
-	opacity: 0.5;
+	opacity: 1;
 	line-height: 1;
 	padding: 0.5rem;
-	margin: -0.5rem -0.5rem -0.5rem auto;
+	margin: 0 0 0 auto;
+	border-radius: 50%;
+	width: 2rem;
+	height: 2rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.btn-close:hover {
+	background: var(--gp-body-color);
+	color: var(--gp-card-bg);
 }
 
 .btn-close:hover {

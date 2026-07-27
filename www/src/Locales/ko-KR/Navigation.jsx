@@ -21,7 +21,7 @@ export default {
 	'reboot-modal-button-web-config-label': '웹-설정',
 	'reboot-modal-button-progress-label': '재시작 중',
 	'reboot-modal-button-success-label': '완료!',
-	'reboot-modal-label': '재시작 하시겠습니까?',
+	'reboot-modal-label': '재시작',
 	'reboot-modal-success': '재시작 완료되었습니다, 브라우저 탭을 닫으셔도 됩니다.',
 	'resetSettings-label': '설정 초기화',
 	'settings-label': '설정',

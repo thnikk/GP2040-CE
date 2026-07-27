@@ -21,7 +21,7 @@ export default {
 	'reboot-modal-button-web-config-label': 'Web-Konfigurator',
 	'reboot-modal-button-progress-label': 'Starte neu',
 	'reboot-modal-button-success-label': 'Fertig!',
-	'reboot-modal-label': 'Neustart?',
+	'reboot-modal-label': 'Neustart',
 	'reboot-modal-success':
 		'Neustart ausgeführt, dieser Browser-Tab kann nun geschlossen werden.',
 	'resetSettings-label': 'Neustart Einstellungen',
