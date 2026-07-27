@@ -118,14 +118,11 @@ const Navigation = () => {
 					)}
 					<Button variant="success" onClick={handleShow} aria-label={t('Navigation:reboot-label')} className="icon-btn">
 						<svg
-							width="20"
-							height="20"
 							viewBox="-2 -2 22.625 22.625"
 							fill="none"
 							stroke="currentColor"
 							strokeLinecap="round"
 							strokeLinejoin="round"
-							style={{ height: '1.35em', width: 'auto' }}
 						>
 							<path
 								d="m 4.5,1.5 c -2.4138473,1.3772943 -4,4.0219409 -4,7 0,4.418278 3.581722,8 8,8 4.418278,0 8,-3.581722 8,-8 0,-4.418278 -3.581722,-8 -8,-8"
