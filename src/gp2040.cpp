@@ -71,6 +71,11 @@ void GP2040::setup() {
 	// Set pin mappings for all GPIO functions
 	Storage::getInstance().setFunctionalPinMappings();
 
+	// power up...
+	gamepad->auxState.power.pluggedIn = true;
+	gamepad->auxState.power.charging = false;
+	gamepad->auxState.power.level = GAMEPAD_AUX_MAX_POWER;
+
 	// Setup Gamepad
 	gamepad->setup();
 	
@@ -161,6 +166,9 @@ void GP2040::setup() {
 			break;
 		case BootAction::SET_INPUT_MODE_XBOXORIGINAL: // Xbox OG Driver
 			inputMode = INPUT_MODE_XBOXORIGINAL;
+			break;
+		case BootAction::SET_INPUT_MODE_SWITCH_PRO:
+			inputMode = INPUT_MODE_SWITCH_PRO;
 			break;
 		case BootAction::NONE:
 		default:
