@@ -165,6 +165,60 @@ const MODIFIER_SHORT: Record<number, string> = {
 const keyCodeLabel = (code: number): string =>
 	KEY_CODES.find((k) => k.value === code)?.label || '';
 
+function parsePathEndpoints(d: string): { x1: number; y1: number; x2: number; y2: number } | null {
+	const numRe = /-?\d+(?:\.\d*)?(?:e[+-]?\d+)?/gi;
+	const nums = [...d.matchAll(numRe)].map((m) => parseFloat(m[0]));
+	const cmds = d.match(/[mMlLhHvV]/g) || [];
+	if (nums.length < 2 || cmds.length < 1) return null;
+
+	let x = 0, y = 0;
+	const points: { x: number; y: number }[] = [];
+	let ni = 0;
+
+	const takePair = (rel: boolean) => {
+		if (ni + 1 >= nums.length) return;
+		x = rel ? x + nums[ni] : nums[ni]; ni++;
+		y = rel ? y + nums[ni] : nums[ni]; ni++;
+	};
+
+	const takeSingle = (rel: boolean, axis: 'x' | 'y') => {
+		if (ni >= nums.length) return;
+		if (axis === 'x') x = rel ? x + nums[ni] : nums[ni];
+		else y = rel ? y + nums[ni] : nums[ni];
+		ni++;
+	};
+
+	for (let ci = 0; ci < cmds.length && ni < nums.length; ci++) {
+		const cmd = cmds[ci];
+		const rel = cmd === cmd.toLowerCase();
+		switch (cmd.toLowerCase()) {
+			case 'm':
+				takePair(rel);
+				points.push({ x, y });
+				while (ni + 1 < nums.length) {
+					takePair(rel);
+					points.push({ x, y });
+				}
+				break;
+			case 'l':
+				takePair(rel);
+				points.push({ x, y });
+				break;
+			case 'h':
+				takeSingle(rel, 'x');
+				points.push({ x, y });
+				break;
+			case 'v':
+				takeSingle(rel, 'y');
+				points.push({ x, y });
+				break;
+		}
+	}
+
+	if (points.length < 2) return null;
+	return { x1: points[0].x, y1: points[0].y, x2: points[points.length - 1].x, y2: points[points.length - 1].y };
+}
+
 function prepareSvg(svg: string): string {
 	return svg.replace(
 		/<svg([^>]*)>/,
@@ -357,19 +411,34 @@ export default function BoardSVG({
 				labelEl.style.setProperty('font-size', '11px', 'important');
 			}
 
-			const buttonEl = isShape ? (el as Element) : shapes[0];
-			const buttonRect = (buttonEl as Element).getBoundingClientRect();
 			const svgRoot = el.ownerSVGElement as SVGSVGElement;
 			const screenCTM = svgRoot.getScreenCTM();
+			const guidePath = svgRoot.querySelector(`#${CSS.escape(`${id}-label`)}`);
+			const guideEndpoints = guidePath ? parsePathEndpoints(guidePath.getAttribute('d') || '') : null;
+			let labelRotation: number | null = null;
+			let cx: number, cy: number;
+			let buttonRect: DOMRect | undefined;
 
-			let cx = buttonRect.left + buttonRect.width / 2;
-			let cy = buttonRect.top + buttonRect.height / 2;
+			if (guideEndpoints) {
+				cx = (guideEndpoints.x1 + guideEndpoints.x2) / 2;
+				cy = (guideEndpoints.y1 + guideEndpoints.y2) / 2;
+				const dx = guideEndpoints.x2 - guideEndpoints.x1;
+				const dy = guideEndpoints.y2 - guideEndpoints.y1;
+				if (dx !== 0 || dy !== 0) {
+					labelRotation = Math.atan2(dy, dx) * (180 / Math.PI);
+				}
+			} else {
+				const buttonEl = isShape ? (el as Element) : shapes[0];
+				buttonRect = (buttonEl as Element).getBoundingClientRect();
+				cx = buttonRect.left + buttonRect.width / 2;
+				cy = buttonRect.top + buttonRect.height / 2;
 
-			if (screenCTM) {
-				const inverse = screenCTM.inverse();
-				const pt = new DOMPoint(cx, cy).matrixTransform(inverse);
-				cx = pt.x;
-				cy = pt.y;
+				if (screenCTM) {
+					const inverse = screenCTM.inverse();
+					const pt = new DOMPoint(cx, cy).matrixTransform(inverse);
+					cx = pt.x;
+					cy = pt.y;
+				}
 			}
 
 			if (keyboardLines) {
@@ -395,9 +464,15 @@ export default function BoardSVG({
 			}
 
 			if (!keyboardLines) {
-				const labelRect = labelEl.getBoundingClientRect();
-				if (labelRect.width > buttonRect.width * 0.85) {
-					labelEl.setAttribute('transform', `rotate(-25, ${cx}, ${cy})`);
+				if (labelRotation !== null) {
+					labelEl.setAttribute('transform', `rotate(${labelRotation}, ${cx}, ${cy})`);
+				} else if (buttonRect) {
+					const labelRect = labelEl.getBoundingClientRect();
+					if (labelRect.width > buttonRect.width * 0.85) {
+						labelEl.setAttribute('transform', `rotate(-25, ${cx}, ${cy})`);
+					} else if (labelEl.hasAttribute('transform')) {
+						labelEl.removeAttribute('transform');
+					}
 				} else if (labelEl.hasAttribute('transform')) {
 					labelEl.removeAttribute('transform');
 				}
