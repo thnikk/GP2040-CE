@@ -197,3 +197,23 @@
 .row-gap-2 {
 	row-gap: 0.5rem;
 }
+
+.position-relative {
+	position: relative;
+}
+
+.position-absolute {
+	position: absolute;
+}
+
+.start-0 {
+	left: 0;
+}
+
+.end-0 {
+	right: 0;
+}
+
+.text-center {
+	text-align: center;
+}
