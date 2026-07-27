@@ -660,7 +660,7 @@ export default function BoardSVG({
 					label.setAttribute('stroke-width', '2');
 					label.setAttribute('stroke-linejoin', 'round');
 					label.setAttribute('paint-order', 'stroke fill');
-					label.setAttribute('x', String(-(x + w / 2)));
+					label.setAttribute('x', String(testBtn.hasAttribute('transform') ? -(x + w / 2) : x + w / 2));
 					label.setAttribute('y', String(y + h / 2));
 					label.textContent = 'Test';
 					parent.insertBefore(g, testBtn);
