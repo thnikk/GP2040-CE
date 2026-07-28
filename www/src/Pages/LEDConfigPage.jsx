@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react';
 import Button from '../components/ui/Button';
-import Col from '../components/ui/Col';
 import Form from '../components/ui/Form';
-import Row from '../components/ui/Row';
 import Table from '../components/ui/Table';
 import { useShallow } from 'zustand/react/shallow';
 import omit from 'lodash/omit';
@@ -10,16 +8,20 @@ import omit from 'lodash/omit';
 import { Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
+import { useToast } from '../Contexts/ToastContext';
 
 import { AppContext } from '../Contexts/AppContext';
 import ColorPicker from '../components/widgets/ColorPicker';
 import Section from '../components/shared/Section';
-import FormControl from '../components/form/FormControl';
-import FormSelect from '../components/form/FormSelect';
 import { BUTTON_ACTIONS } from '../Data/Pins';
 import { hexToInt } from '../Services/Utilities';
 import WebApi from '../Services/WebApi';
 import useProfilesStore from '../Store/useProfilesStore';
+import LayerGroup from '../Icons/LayerGroup';
+import Lightbulb from '../Icons/Lightbulb';
+import Lightning from '../Icons/Lightning';
+import Palette from '../Icons/Palette';
+import UserProfile from '../Icons/UserProfile';
 
 const LED_FORMATS = [
 	{ label: 'GRB', value: 0 },
@@ -226,11 +228,10 @@ const FormContext = () => {
 
 export default function LEDConfigPage() {
 	const { buttonLabels, updateUsedPins } = useContext(AppContext);
-	const [saveMessage, setSaveMessage] = useState('');
+	const { showToast } = useToast();
 	const [boardLedFormat, setBoardLedFormat] = useState(0);
 	const [boardLedBrightness, setBoardLedBrightness] = useState(128);
 	const [boardLedEnabled, setBoardLedEnabled] = useState(false);
-	const [boardLedSaveMessage, setBoardLedSaveMessage] = useState('');
 	const [boardLedLoaded, setBoardLedLoaded] = useState(false);
 
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
@@ -282,14 +283,12 @@ export default function LEDConfigPage() {
 			boardLedFormat,
 			boardLedBrightness,
 		});
-		setBoardLedSaveMessage(
+		showToast(
 			success
 				? t('Common:saved-success-message')
 				: t('Common:saved-error-message'),
+			success ? 'success' : 'error',
 		);
-		if (success) {
-			setTimeout(() => setBoardLedSaveMessage(''), 3000);
-		}
 	};
 
 	const onSuccess = async (values) => {
@@ -302,17 +301,12 @@ export default function LEDConfigPage() {
 		const success = await WebApi.setLedOptions(data);
 		if (success) updateUsedPins();
 
-		setSaveMessage(
+		showToast(
 			success
 				? t('Common:saved-success-message')
 				: t('Common:saved-error-message'),
+			success ? 'success' : 'error',
 		);
-	};
-
-	const onSubmit = (e, handleSubmit) => {
-		e.preventDefault();
-		setSaveMessage('');
-		handleSubmit();
 	};
 
 	return (
@@ -329,86 +323,105 @@ export default function LEDConfigPage() {
 				errors,
 				setFieldValue,
 			}) => (
-				<Form noValidate onSubmit={(e) => onSubmit(e, handleSubmit)}>
-					<Section title={t('LedConfig:rgb.header-text')}>
-						<Row>
-							<FormControl
-								type="number"
-								label={t('LedConfig:rgb.data-pin-label')}
-								name="dataPin"
-								className="form-control-sm"
-								groupClassName="col-sm-4"
-								value={values.dataPin}
-								error={errors.dataPin}
-								isInvalid={errors.dataPin}
-								onChange={handleChange}
-								min={-1}
-								max={29}
-							/>
-							<FormSelect
-								label={t('LedConfig:rgb.led-format-label')}
-								name="ledFormat"
-								className="form-select-sm"
-								groupClassName="col-sm-4"
-								value={values.ledFormat}
-								error={errors.ledFormat}
-								isInvalid={errors.ledFormat}
-								onChange={(e) =>
-									setFieldValue('ledFormat', parseInt(e.target.value))
-								}
-							>
-								{LED_FORMATS.map((o, i) => (
-									<option key={`ledFormat-option-${i}`} value={o.value}>
-										{o.label}
-									</option>
-								))}
-							</FormSelect>
+				<Form noValidate onSubmit={handleSubmit}>
+					<Section
+						heading
+						icon={<Lightbulb />}
+						title={t('LedConfig:rgb.header-text')}
+					>
+						<div className="d-flex flex-wrap gap-3">
+							<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+								<Form.Label>
+									{t('LedConfig:rgb.data-pin-label')}
+								</Form.Label>
+								<Form.Control
+									type="number"
+									name="dataPin"
+									className="form-control-sm"
+									value={values.dataPin}
+									error={errors.dataPin}
+									isInvalid={errors.dataPin}
+									onChange={handleChange}
+									min={-1}
+									max={29}
+								/>
+							</div>
+							<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+								<Form.Label>
+									{t('LedConfig:rgb.led-format-label')}
+								</Form.Label>
+								<Form.Select
+									name="ledFormat"
+									className="form-select-sm"
+									value={values.ledFormat}
+									error={errors.ledFormat}
+									isInvalid={errors.ledFormat}
+									onChange={(e) =>
+										setFieldValue('ledFormat', parseInt(e.target.value))
+									}
+								>
+									{LED_FORMATS.map((o, i) => (
+										<option key={`ledFormat-option-${i}`} value={o.value}>
+											{o.label}
+										</option>
+									))}
+								</Form.Select>
+							</div>
 							<input
 								type="hidden"
 								name="ledLayout"
 								value={values.ledLayout}
 							/>
-						</Row>
-						<Row>
-							<FormControl
-								type="number"
-								label={t('LedConfig:rgb.leds-per-button-label')}
-								name="ledsPerButton"
-								className="form-control-sm"
-								groupClassName="col-sm-4"
-								value={values.ledsPerButton}
-								error={errors.ledsPerButton}
-								isInvalid={errors.ledsPerButton}
-								onChange={handleChange}
-								min={1}
-							/>
-							<FormControl
-								type="number"
-								label={t('LedConfig:rgb.led-brightness-maximum-label')}
-								name="brightnessMaximum"
-								className="form-control-sm"
-								groupClassName="col-sm-4"
-								value={values.brightnessMaximum}
-								error={errors.brightnessMaximum}
-								isInvalid={errors.brightnessMaximum}
-								onChange={handleChange}
-								min={0}
-								max={255}
-							/>
-							<FormControl
-								type="number"
-								label={t('LedConfig:rgb.led-brightness-steps-label')}
-								name="brightnessSteps"
-								className="form-control-sm"
-								groupClassName="col-sm-4"
-								value={values.brightnessSteps}
-								error={errors.brightnessSteps}
-								isInvalid={errors.brightnessSteps}
-								onChange={handleChange}
-								min={1}
-								max={10}
-							/>
-							<div className="col-sm-3">
+						</div>
+						<div className="d-flex flex-wrap gap-3">
+							<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+								<Form.Label>
+									{t('LedConfig:rgb.leds-per-button-label')}
+								</Form.Label>
+								<Form.Control
+									type="number"
+									name="ledsPerButton"
+									className="form-control-sm"
+									value={values.ledsPerButton}
+									error={errors.ledsPerButton}
+									isInvalid={errors.ledsPerButton}
+									onChange={handleChange}
+									min={1}
+								/>
+							</div>
+							<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+								<Form.Label>
+									{t('LedConfig:rgb.led-brightness-maximum-label')}
+								</Form.Label>
+								<Form.Control
+									type="number"
+									name="brightnessMaximum"
+									className="form-control-sm"
+									value={values.brightnessMaximum}
+									error={errors.brightnessMaximum}
+									isInvalid={errors.brightnessMaximum}
+									onChange={handleChange}
+									min={0}
+									max={255}
+								/>
+							</div>
+							<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+								<Form.Label>
+									{t('LedConfig:rgb.led-brightness-steps-label')}
+								</Form.Label>
+								<Form.Control
+									type="number"
+									name="brightnessSteps"
+									className="form-control-sm"
+									value={values.brightnessSteps}
+									error={errors.brightnessSteps}
+									isInvalid={errors.brightnessSteps}
+									onChange={handleChange}
+									min={1}
+									max={10}
+								/>
+							</div>
+							<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
 								<Form.Check
 									label={t('LedConfig:turn-off-when-suspended')}
 									type="switch"
@@ -423,53 +436,67 @@ export default function LEDConfigPage() {
 									}}
 								/>
 							</div>
-						</Row>
+						</div>
+						<div className="d-flex gap-2 align-self-end">
+							<Button type="submit">
+								{t('Common:button-save-label')}
+							</Button>
+						</div>
 					</Section>
 					{boardLedLoaded && boardLedEnabled ? (
-						<Section title={t('LedConfig:board-led.header-text')}>
-							<Row>
-								<FormSelect
-									label={t('LedConfig:board-led.format-label')}
-									className="form-select-sm"
-									groupClassName="col-sm-4"
-									value={boardLedFormat}
-									onChange={(e) =>
-										setBoardLedFormat(parseInt(e.target.value))
-									}
-								>
-									{LED_FORMATS.map((o, i) => (
-										<option key={`boardLedFormat-option-${i}`} value={o.value}>
-											{o.label}
-										</option>
-									))}
-								</FormSelect>
-								<FormControl
-									type="number"
-									label={t('LedConfig:board-led.brightness-label')}
-									className="form-control-sm"
-									groupClassName="col-sm-4"
-									value={boardLedBrightness}
-									onChange={(e) =>
-										setBoardLedBrightness(parseInt(e.target.value))
-									}
-									min={0}
-									max={255}
-								/>
-							</Row>
-							<Row>
-								<Col>
-									<Button onClick={onBoardLedSave} type="button" size="sm" variant="secondary">
-										{t('Common:button-save-label')}
-									</Button>
-									{boardLedSaveMessage ? <span className="alert alert-info ms-2">{boardLedSaveMessage}</span> : null}
-								</Col>
-							</Row>
+						<Section
+							heading
+							icon={<Lightning />}
+							title={t('LedConfig:board-led.header-text')}
+						>
+							<div className="d-flex flex-wrap gap-3">
+								<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+									<Form.Label>
+										{t('LedConfig:board-led.format-label')}
+									</Form.Label>
+									<Form.Select
+										className="form-select-sm"
+										value={boardLedFormat}
+										onChange={(e) =>
+											setBoardLedFormat(parseInt(e.target.value))
+										}
+									>
+										{LED_FORMATS.map((o, i) => (
+											<option key={`boardLedFormat-option-${i}`} value={o.value}>
+												{o.label}
+											</option>
+										))}
+									</Form.Select>
+								</div>
+								<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+									<Form.Label>
+										{t('LedConfig:board-led.brightness-label')}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										className="form-control-sm"
+										value={boardLedBrightness}
+										onChange={(e) =>
+											setBoardLedBrightness(parseInt(e.target.value))
+										}
+										min={0}
+										max={255}
+									/>
+								</div>
+							</div>
+							<div className="d-flex gap-2 align-self-end">
+								<Button onClick={onBoardLedSave} type="button">
+									{t('Common:button-save-label')}
+								</Button>
+							</div>
 						</Section>
 					) : null}
-					<Section title={t('LedConfig:pin-led.header-text')}>
-						<p className="card-text">
-							{t('LedConfig:pin-led.sub-header-text')}
-						</p>
+					<Section
+						heading
+						icon={<LayerGroup />}
+						title={t('LedConfig:pin-led.header-text')}
+						description={t('LedConfig:pin-led.sub-header-text')}
+					>
 						<Table striped bordered hover size="sm">
 							<thead>
 								<tr>
@@ -514,188 +541,234 @@ export default function LEDConfigPage() {
 								})}
 							</tbody>
 						</Table>
+						<div className="d-flex gap-2 align-self-end">
+							<Button type="submit">
+								{t('Common:button-save-label')}
+							</Button>
+						</div>
 					</Section>
-					<Section title={t('LedConfig:player.header-text')}>
-						<Form.Group as={Col}>
-							<Row>
-								<FormSelect
-									label={t('LedConfig:player.pled-type-label')}
-									name="pledType"
-									className="form-select-sm"
-									groupClassName="col-sm-2"
-									value={values.pledType}
-									error={errors.pledType}
-									isInvalid={errors.pledType}
-									onChange={(e) =>
-										setFieldValue('pledType', parseInt(e.target.value))
-									}
+					<Section
+						heading
+						icon={<UserProfile />}
+						title={t('LedConfig:player.header-text')}
+					>
+						<div className="d-flex flex-column gap-1">
+							<div className="d-flex flex-wrap gap-3">
+								<div className="d-flex flex-column gap-1" style={{ flex: '1 0 150px' }}>
+									<Form.Label>
+										{t('LedConfig:player.pled-type-label')}
+									</Form.Label>
+									<Form.Select
+										name="pledType"
+										className="form-select-sm"
+										value={values.pledType}
+										error={errors.pledType}
+										isInvalid={errors.pledType}
+										onChange={(e) =>
+											setFieldValue('pledType', parseInt(e.target.value))
+										}
+									>
+										<option value="-1" defaultValue={true}>
+											{t('LedConfig:player.pled-type-off')}
+										</option>
+										<option value="0">
+											{t('LedConfig:player.pled-type-pwm')}
+										</option>
+										<option value="1">
+											{t('LedConfig:player.pled-type-rgb')}
+										</option>
+									</Form.Select>
+								</div>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 0 ? 'none' : undefined }}
 								>
-									<option value="-1" defaultValue={true}>
-										{t('LedConfig:player.pled-type-off')}
-									</option>
-									<option value="0">
-										{t('LedConfig:player.pled-type-pwm')}
-									</option>
-									<option value="1">
-										{t('LedConfig:player.pled-type-rgb')}
-									</option>
-								</FormSelect>
-								<FormControl
-									type="number"
-									name="pledPin1"
-									hidden={parseInt(values.pledType) !== 0}
-									label={PLED_LABELS[0][values.pledType]}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledPin1}
-									error={errors.pledPin1}
-									isInvalid={errors.pledPin1}
-									onChange={(e) =>
-										setFieldValue('pledPin1', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-								<FormControl
-									type="number"
-									name="pledPin2"
-									hidden={parseInt(values.pledType) !== 0}
-									label={PLED_LABELS[1][values.pledType]}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledPin2}
-									error={errors.pledPin2}
-									isInvalid={errors.pledPin2}
-									onChange={(e) =>
-										setFieldValue('pledPin2', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-								<FormControl
-									type="number"
-									name="pledPin3"
-									hidden={parseInt(values.pledType) !== 0}
-									label={PLED_LABELS[2][values.pledType]}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledPin3}
-									error={errors.pledPin3}
-									isInvalid={errors.pledPin3}
-									onChange={(e) =>
-										setFieldValue('pledPin3', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-								<FormControl
-									type="number"
-									name="pledPin4"
-									hidden={parseInt(values.pledType) !== 0}
-									label={PLED_LABELS[3][values.pledType]}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledPin4}
-									error={errors.pledPin4}
-									isInvalid={errors.pledPin4}
-									onChange={(e) =>
-										setFieldValue('pledPin4', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-								<FormControl
-									type="number"
-									name="pledIndex1"
-									hidden={parseInt(values.pledType) !== 1}
-									label={PLED_LABELS[0][values.pledType]}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledIndex1}
-									error={errors.pledIndex1}
-									isInvalid={errors.pledIndex1}
-									onChange={(e) =>
-										setFieldValue('pledIndex1', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-								<FormControl
-									type="number"
-									name="pledIndex2"
-									hidden={parseInt(values.pledType) !== 1}
-									label={PLED_LABELS[1][values.pledType]}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledIndex2}
-									error={errors.pledIndex2}
-									isInvalid={errors.pledIndex2}
-									onChange={(e) =>
-										setFieldValue('pledIndex2', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-								<FormControl
-									type="number"
-									name="pledIndex3"
-									hidden={parseInt(values.pledType) !== 1}
-									label={PLED_LABELS[2][values.pledType]}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledIndex3}
-									error={errors.pledIndex3}
-									isInvalid={errors.pledIndex3}
-									onChange={(e) =>
-										setFieldValue('pledIndex3', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-								<FormControl
-									type="number"
-									name="pledIndex4"
-									hidden={parseInt(values.pledType) !== 1}
-									label={PLED_LABELS[3][values.pledType]}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledIndex4}
-									error={errors.pledIndex4}
-									isInvalid={errors.pledIndex4}
-									onChange={(e) =>
-										setFieldValue('pledIndex4', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-								<FormControl
-									label={t('LedConfig:player.pled-color-label')}
-									hidden={parseInt(values.pledType) !== 1}
-									name="pledColor"
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.pledColor}
-									error={errors.pledColor}
-									isInvalid={errors.pledColor}
-									onBlur={handleBlur}
-									onChange={handleChange}
-								/>
-								<ColorPicker
-									value={values.pledColor}
-									onChange={(c) => setFieldValue('pledColor', c)}
-								/>
-								<div className="col-sm-3">
-									<Form.Check
-										label={t('LedConfig:turn-off-when-suspended')}
-										type="switch"
-										name="turnOffWhenSuspended"
-										isInvalid={false}
-										checked={Boolean(values.turnOffWhenSuspended)}
-										onChange={(e) => {
-											setFieldValue(
-												'turnOffWhenSuspended',
-												e.target.checked ? 1 : 0,
-											);
-										}}
+									<Form.Label>
+										{PLED_LABELS[0][values.pledType]}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="pledPin1"
+										className="form-control-sm"
+										value={values.pledPin1}
+										error={errors.pledPin1}
+										isInvalid={errors.pledPin1}
+										onChange={(e) =>
+											setFieldValue('pledPin1', parseInt(e.target.value))
+										}
+										min={0}
 									/>
 								</div>
-							</Row>
-							<p hidden={parseInt(values.pledType) !== 0}>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 0 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{PLED_LABELS[1][values.pledType]}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="pledPin2"
+										className="form-control-sm"
+										value={values.pledPin2}
+										error={errors.pledPin2}
+										isInvalid={errors.pledPin2}
+										onChange={(e) =>
+											setFieldValue('pledPin2', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 0 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{PLED_LABELS[2][values.pledType]}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="pledPin3"
+										className="form-control-sm"
+										value={values.pledPin3}
+										error={errors.pledPin3}
+										isInvalid={errors.pledPin3}
+										onChange={(e) =>
+											setFieldValue('pledPin3', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 0 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{PLED_LABELS[3][values.pledType]}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="pledPin4"
+										className="form-control-sm"
+										value={values.pledPin4}
+										error={errors.pledPin4}
+										isInvalid={errors.pledPin4}
+										onChange={(e) =>
+											setFieldValue('pledPin4', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 1 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{PLED_LABELS[0][values.pledType]}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="pledIndex1"
+										className="form-control-sm"
+										value={values.pledIndex1}
+										error={errors.pledIndex1}
+										isInvalid={errors.pledIndex1}
+										onChange={(e) =>
+											setFieldValue('pledIndex1', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 1 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{PLED_LABELS[1][values.pledType]}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="pledIndex2"
+										className="form-control-sm"
+										value={values.pledIndex2}
+										error={errors.pledIndex2}
+										isInvalid={errors.pledIndex2}
+										onChange={(e) =>
+											setFieldValue('pledIndex2', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 1 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{PLED_LABELS[2][values.pledType]}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="pledIndex3"
+										className="form-control-sm"
+										value={values.pledIndex3}
+										error={errors.pledIndex3}
+										isInvalid={errors.pledIndex3}
+										onChange={(e) =>
+											setFieldValue('pledIndex3', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 1 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{PLED_LABELS[3][values.pledType]}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="pledIndex4"
+										className="form-control-sm"
+										value={values.pledIndex4}
+										error={errors.pledIndex4}
+										isInvalid={errors.pledIndex4}
+										onChange={(e) =>
+											setFieldValue('pledIndex4', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+								<div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.pledType) !== 1 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{t('LedConfig:player.pled-color-label')}
+									</Form.Label>
+									<Form.Control
+										name="pledColor"
+										className="form-control-sm"
+										value={values.pledColor}
+										error={errors.pledColor}
+										isInvalid={errors.pledColor}
+										onBlur={handleBlur}
+										onChange={handleChange}
+									/>
+								</div>
+								<div
+									style={{ display: parseInt(values.pledType) !== 1 ? 'none' : undefined }}
+								>
+									<ColorPicker
+										value={values.pledColor}
+										onChange={(c) => setFieldValue('pledColor', c)}
+									/>
+								</div>
+							</div>
+							<p style={{ display: parseInt(values.pledType) !== 0 ? 'none' : undefined }}>
 								{t('LedConfig:player.pwm-sub-header-text')}
 							</p>
-							<p hidden={parseInt(values.pledType) !== 1}>
+							<p style={{ display: parseInt(values.pledType) !== 1 ? 'none' : undefined }}>
 								<Trans
 									ns="LedConfig"
 									i18nKey="player.rgb-sub-header-text"
@@ -703,84 +776,118 @@ export default function LEDConfigPage() {
 									Set the NeoPixel LED index for each player LED.
 								</Trans>
 							</p>
-						</Form.Group>
+						</div>
+						<div className="d-flex gap-2 align-self-end">
+							<Button type="submit">
+								{t('Common:button-save-label')}
+							</Button>
+						</div>
 					</Section>
-                    <Section title={t('LedConfig:case.header-text')}>
-						<Form.Group as={Col}>
-							<Row>
-								<FormSelect
-									label={t('LedConfig:case.case-type-label')}
-									name="caseRGBType"
-									className="form-select-sm"
-									groupClassName="col-sm-2"
-									value={values.caseRGBType}
-									error={errors.caseRGBType}
-									isInvalid={errors.caseRGBType}
-									onChange={(e) =>
-										setFieldValue('caseRGBType', parseInt(e.target.value))
-									}
+                    <Section
+						heading
+						icon={<Palette />}
+						title={t('LedConfig:case.header-text')}
+					>
+						<div className="d-flex flex-column gap-1">
+							<div className="d-flex flex-wrap gap-3">
+								<div className="d-flex flex-column gap-1" style={{ flex: '1 0 150px' }}>
+									<Form.Label>
+										{t('LedConfig:case.case-type-label')}
+									</Form.Label>
+									<Form.Select
+										name="caseRGBType"
+										className="form-select-sm"
+										value={values.caseRGBType}
+										error={errors.caseRGBType}
+										isInvalid={errors.caseRGBType}
+										onChange={(e) =>
+											setFieldValue('caseRGBType', parseInt(e.target.value))
+										}
+									>
+										<option value="-1" defaultValue={true}>
+											{t('LedConfig:case.case-type-off')}
+										</option>
+										<option value="0">
+											{t('LedConfig:case.case-type-static')}
+										</option>
+									</Form.Select>
+								</div>
+                                <div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.caseRGBType) === -1 ? 'none' : undefined }}
 								>
-									<option value="-1" defaultValue={true}>
-										{t('LedConfig:case.case-type-off')}
-									</option>
-									<option value="0">
-										{t('LedConfig:case.case-type-static')}
-									</option>
-								</FormSelect>
-                                <FormControl
-									type="number"
-									name="caseRGBIndex"
-                                    hidden={parseInt(values.caseRGBType) === -1}
-									label={t('LedConfig:case.case-index-label')}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.caseRGBIndex}
-									error={errors.caseRGBIndex}
-									isInvalid={errors.caseRGBIndex}
-									onChange={(e) =>
-										setFieldValue('caseRGBIndex', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-                                <FormControl
-									type="number"
-									name="caseRGBCount"
-                                    hidden={parseInt(values.caseRGBType) === -1}
-									label={t('LedConfig:case.case-count-label')}
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.caseRGBCount}
-									error={errors.caseRGBCount}
-									isInvalid={errors.caseRGBCount}
-									onChange={(e) =>
-										setFieldValue('caseRGBCount', parseInt(e.target.value))
-									}
-									min={0}
-								/>
-                                <FormControl
-									label={t('LedConfig:case.case-color-label')}
-									hidden={parseInt(values.caseRGBType) !== 0}
-									name="caseRGBColor"
-									className="form-control-sm"
-									groupClassName="col-sm-2"
-									value={values.caseRGBColor}
-									error={errors.caseRGBColor}
-									isInvalid={errors.caseRGBColor}
-									onBlur={handleBlur}
-									onChange={handleChange}
-								/>
-								<ColorPicker
-									value={values.caseRGBColor}
-									onChange={(c) => setFieldValue('caseRGBColor', c)}
-								/>
-							</Row>
-							<p >
+									<Form.Label>
+										{t('LedConfig:case.case-index-label')}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="caseRGBIndex"
+										className="form-control-sm"
+										value={values.caseRGBIndex}
+										error={errors.caseRGBIndex}
+										isInvalid={errors.caseRGBIndex}
+										onChange={(e) =>
+											setFieldValue('caseRGBIndex', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+                                <div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.caseRGBType) === -1 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{t('LedConfig:case.case-count-label')}
+									</Form.Label>
+									<Form.Control
+										type="number"
+										name="caseRGBCount"
+										className="form-control-sm"
+										value={values.caseRGBCount}
+										error={errors.caseRGBCount}
+										isInvalid={errors.caseRGBCount}
+										onChange={(e) =>
+											setFieldValue('caseRGBCount', parseInt(e.target.value))
+										}
+										min={0}
+									/>
+								</div>
+                                <div
+									className="d-flex flex-column gap-1"
+									style={{ flex: '1 0 150px', display: parseInt(values.caseRGBType) !== 0 ? 'none' : undefined }}
+								>
+									<Form.Label>
+										{t('LedConfig:case.case-color-label')}
+									</Form.Label>
+									<Form.Control
+										name="caseRGBColor"
+										className="form-control-sm"
+										value={values.caseRGBColor}
+										error={errors.caseRGBColor}
+										isInvalid={errors.caseRGBColor}
+										onBlur={handleBlur}
+										onChange={handleChange}
+									/>
+								</div>
+								<div
+									style={{ display: parseInt(values.caseRGBType) !== 0 ? 'none' : undefined }}
+								>
+									<ColorPicker
+										value={values.caseRGBColor}
+										onChange={(c) => setFieldValue('caseRGBColor', c)}
+									/>
+								</div>
+							</div>
+							<p>
 								{t('LedConfig:case.sub-header-text')}
 							</p>
-						</Form.Group>
-					</Section>
-					<Button type="submit">{t('Common:button-save-label')}</Button>
-					{saveMessage ? <span className="alert">{saveMessage}</span> : null}
+						</div>
+						<div className="d-flex gap-2 align-self-end">
+							<Button type="submit">
+								{t('Common:button-save-label')}
+							</Button>
+						</div>
+                    </Section>
 					<FormContext />
 				</Form>
 			)}
