@@ -27,6 +27,20 @@ const bitCount = (n: number) => {
 	return c;
 };
 
+const swapFaceButtonBits = (mask: number, swap: boolean) => {
+	if (!swap) return mask;
+	let result = mask;
+	const b1 = (mask & 1) !== 0;
+	const b2 = (mask & 2) !== 0;
+	const b3 = (mask & 4) !== 0;
+	const b4 = (mask & 8) !== 0;
+	if (b1) result |= 2; else result &= ~2;
+	if (b2) result |= 1; else result &= ~1;
+	if (b3) result |= 8; else result &= ~8;
+	if (b4) result |= 4; else result &= ~4;
+	return result;
+};
+
 type OptionType = {
 	label: string;
 	value: PinActionValues;
@@ -114,10 +128,14 @@ export default function PinActionModal({
 	inputMode,
 }: PinActionModalProps) {
 	const { t } = useTranslation('');
-	const { buttonLabels } = useContext(AppContext);
+	const { buttonLabels, useNintendoLayout } = useContext(AppContext);
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
 	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
+	const effectiveButtonNames = (buttonLabelType === 'switch' && !useNintendoLayout)
+		? { ...buttonNames, B1: buttonNames.B2, B2: buttonNames.B1, B3: buttonNames.B4, B4: buttonNames.B3 }
+		: buttonNames;
+	const shouldSwap = buttonLabelType === 'switch' && !useNintendoLayout;
 	const options = useMemo(buildOptions, []);
 	const groupedOptions = useMemo(
 		() => [
@@ -170,11 +188,11 @@ export default function PinActionModal({
 		(option: OptionType) => {
 			const labelKey = option.label?.split('BUTTON_PRESS_')?.pop();
 			return (
-				(labelKey && buttonNames[labelKey]) ||
+				(labelKey && effectiveButtonNames[labelKey]) ||
 				t(`PinMapping:actions.${option.label}`)
 			);
 		},
-		[buttonNames],
+		[effectiveButtonNames],
 	);
 
 	const getMultiValue = useCallback((): MultiValue<OptionType> | SingleValue<OptionType> => {
@@ -415,9 +433,9 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 						)}
 						{useWidget && !disabled && (
 							<ControllerWidget
-								buttonMask={currentBtnMask}
+								buttonMask={swapFaceButtonBits(currentBtnMask, shouldSwap)}
 								dpadMask={currentDpadMask}
-								onMaskChange={handleControllerMaskChange}
+								onMaskChange={(btnMask, dpMask) => handleControllerMaskChange(swapFaceButtonBits(btnMask, shouldSwap), dpMask)}
 								buttonNames={buttonNames}
 							/>
 						)}

@@ -105,10 +105,13 @@ const PinSelectList = memo(function PinSelectList({
 		),
 	);
 	const { t } = useTranslation('');
-	const { buttonLabels } = useContext(AppContext);
+	const { buttonLabels, useNintendoLayout } = useContext(AppContext);
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
 	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
+	const effectiveButtonNames = (buttonLabelType === 'switch' && !useNintendoLayout)
+		? { ...buttonNames, B1: buttonNames.B2, B2: buttonNames.B1, B3: buttonNames.B4, B4: buttonNames.B3 }
+		: buttonNames;
 
 	const onChange = useCallback(
 		(pin: string) =>
@@ -166,11 +169,11 @@ const PinSelectList = memo(function PinSelectList({
 		(option: OptionType) => {
 			const labelKey = option.label?.split('BUTTON_PRESS_')?.pop();
 			return (
-				(labelKey && buttonNames[labelKey]) ||
+				(labelKey && effectiveButtonNames[labelKey]) ||
 				t(`PinMapping:actions.${option.label}`)
 			);
 		},
-		[buttonNames],
+		[effectiveButtonNames],
 	);
 	const pinEntries = Object.entries(pins).filter(([pin]) => {
 		if (!pin.startsWith('pin')) return false;
