@@ -159,8 +159,9 @@
 
 .btn-danger {
 	background-color: var(--gp-nord-11);
-	color: var(--gp-body-bg);
+	color: var(--gp-nord-6);
 	border-color: #d89fa4;
+	font-weight: 800;
 }
 
 .btn-danger:hover {

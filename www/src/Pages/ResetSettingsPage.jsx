@@ -2,6 +2,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import DangerSection from '../components/shared/DangerSection';
+import Reboot from '../Icons/Reboot';
 import WebApi from '../Services/WebApi';
 
 export default function ResetSettingsPage() {
@@ -21,7 +22,7 @@ export default function ResetSettingsPage() {
 	};
 
 	return (
-		<DangerSection title={t('ResetSettings:header-text')}>
+		<DangerSection heading icon={<Reboot />} title={t('ResetSettings:header-text')}>
 			<Trans ns="ResetSettings" i18nKey="sub-header-text">
 				<p className="card-text">
 					This option resets all saved configurations on your controller. Use

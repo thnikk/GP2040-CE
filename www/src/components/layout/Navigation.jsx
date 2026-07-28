@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 import Flask from '../../Icons/Flask';
 import Gamepad from '../../Icons/Gamepad';
+import Reboot from '../../Icons/Reboot';
 import WebApi from '../../Services/WebApi';
 import useSystemStats from '../../Store/useSystemStats';
 
@@ -116,22 +117,7 @@ const Navigation = () => {
 						</Nav.Link>
 					)}
 					<Button variant="success" onClick={handleShow} aria-label={t('Navigation:reboot-label')} className="icon-btn">
-						<svg
-							viewBox="-2 -2 22.625 22.625"
-							fill="none"
-							stroke="currentColor"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						>
-							<path
-								d="m 4.5,1.5 c -2.4138473,1.3772943 -4,4.0219409 -4,7 0,4.418278 3.581722,8 8,8 4.418278,0 8,-3.581722 8,-8 0,-4.418278 -3.581722,-8 -8,-8"
-								strokeWidth="2.625"
-							/>
-							<path
-								d="m 4.5,5.5 v -4 h -4"
-								strokeWidth="2.625"
-							/>
-						</svg>
+						<Reboot />
 						<span className="btn-text"> {t('Navigation:reboot-label')}</span>
 					</Button>
 				</Nav>
@@ -141,18 +127,7 @@ const Navigation = () => {
 				<div className="reboot-modal-body">
 					<div className="d-flex align-items-center justify-content-between">
 						<div className="d-flex align-items-center gap-2 fw-semibold reboot-modal-heading">
-							<svg
-								width="20"
-								height="20"
-								viewBox="-2 -2 22.625 22.625"
-								fill="none"
-								stroke="currentColor"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<path d="m 4.5,1.5 c -2.4138473,1.3772943 -4,4.0219409 -4,7 0,4.418278 3.581722,8 8,8 4.418278,0 8,-3.581722 8,-8 0,-4.418278 -3.581722,-8 -8,-8" strokeWidth="2.625" />
-								<path d="m 4.5,5.5 v -4 h -4" strokeWidth="2.625" />
-							</svg>
+							<Reboot />
 							{t('Navigation:reboot-modal-label')}
 						</div>
 						<button type="button" className="btn-close" onClick={handleClose}>&times;</button>
