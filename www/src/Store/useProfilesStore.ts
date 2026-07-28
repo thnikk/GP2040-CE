@@ -98,7 +98,7 @@ const normalizePinData = (profile: Record<string, unknown>): PinsType => {
 const useProfilesStore = create<State & Actions>()((set, get) => ({
 	...INITIAL_STATE,
 	fetchProfiles: async () => {
-		set({ loadingProfiles: true });
+		set({ loadingProfiles: true, profiles: [] });
 
 		const baseProfile = normalizePinData(await WebApi.getPinMappings());
 		const profiles = (await WebApi.getProfileOptions()).map((p: Record<string, unknown>) => normalizePinData(p));
