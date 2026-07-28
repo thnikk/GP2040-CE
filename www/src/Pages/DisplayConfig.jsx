@@ -1,19 +1,17 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import Button from '../components/ui/Button';
 import Form from '../components/ui/Form';
-import Row from '../components/ui/Row';
-import Col from '../components/ui/Col';
-import { Tabs, Tab } from '../components/ui/Tab';
+import DisplayMonitor from '../Icons/DisplayMonitor';
 import { Formik, useFormikContext, Field } from 'formik';
 import chunk from 'lodash/chunk';
 import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
+import { useToast } from '../Contexts/ToastContext';
 
 import { AppContext } from '../Contexts/AppContext';
-import FormControl from '../components/form/FormControl';
-import FormSelect from '../components/form/FormSelect';
 import Section from '../components/shared/Section';
+
 import WebApi from '../Services/WebApi';
 
 const ON_OFF_OPTIONS = [
@@ -267,7 +265,8 @@ export default function DisplayConfigPage() {
 		getSelectedPeripheral,
 		updatePeripherals,
 	} = useContext(AppContext);
-	const [saveMessage, setSaveMessage] = useState('');
+	const { showToast } = useToast();
+	const [activeTab, setActiveTab] = useState('defaultHardwareOptions');
 
 	const { t } = useTranslation('');
 
@@ -282,10 +281,11 @@ export default function DisplayConfigPage() {
 
 		if (success) await updateUsedPins();
 
-		setSaveMessage(
+		showToast(
 			success
 				? t('Common:saved-success-message')
 				: t('Common:saved-error-message'),
+			success ? 'success' : 'error',
 		);
 	};
 
@@ -300,15 +300,14 @@ export default function DisplayConfigPage() {
 			initialValues={defaultValues}
 		>
 			{({ handleSubmit, handleChange, values, errors, setFieldValue }) => {
-				const handlePeripheralChange = (e) => {
-					let device = getSelectedPeripheral('i2c', e.target.value);
-					handleChange(e);
-				};
-
-				return (
+		return (
 					console.log('errors', errors) ||
 					console.log('values', values) || (
-						<Section title={t('DisplayConfig:header-text')}>
+						<Section
+							heading
+							icon={<DisplayMonitor />}
+							title={t('DisplayConfig:header-text')}
+						>
 							{getAvailablePeripherals('i2c') ? (
 								<div>
 									<p>{t('DisplayConfig:sub-header-text')}</p>
@@ -323,91 +322,115 @@ export default function DisplayConfigPage() {
 										</Trans>
 									</ul>
 									<Form noValidate onSubmit={handleSubmit}>
-										<Tabs
-											defaultActiveKey="defaultHardwareOptions"
-											id="displayConfigTabs"
-											className="pb-0"
-											fill
-										>
-											<Tab
-												key="defaultHardwareOptions"
-												eventKey="defaultHardwareOptions"
-												title={t('DisplayConfig:section.hardware-header')}
+										<div className="profile-tabs mb-3">
+											<button
+												type="button"
+												className={`profile-tab${activeTab === 'defaultHardwareOptions' ? ' active' : ''}`}
+												onClick={() => setActiveTab('defaultHardwareOptions')}
 											>
-												<Row className="mb-4">
-													<FormSelect
-														label={t('Common:switch-enabled')}
-														name="enabled"
-														className="form-select-sm"
-														groupClassName="col-sm-3"
-														value={values.enabled}
-														error={errors.enabled}
-														isInvalid={errors.enabled}
-														onChange={handleChange}
-													>
-														{ON_OFF_OPTIONS.map((o, i) => (
-															<option key={`enabled-option-${i}`} value={o.value}>
-																{t(`DisplayConfig:${o.label}`)}
-															</option>
-														))}
-													</FormSelect>
-												</Row>
-											</Tab>
-											<Tab
-												key="displayScreenOptions"
-												eventKey="displayScreenOptions"
-												title={t('DisplayConfig:section.screen-header')}
+												{t('DisplayConfig:section.hardware-header')}
+											</button>
+											<button
+												type="button"
+												className={`profile-tab${activeTab === 'displayScreenOptions' ? ' active' : ''}`}
+												onClick={() => setActiveTab('displayScreenOptions')}
 											>
-												<Row className="mb-4">
-													<FormSelect
-														label={t('DisplayConfig:form.flip-display-label')}
-														name="flipDisplay"
-														className="form-select-sm"
-														groupClassName="col-sm-3"
-														value={values.flipDisplay}
-														error={errors.flipDisplay}
-														isInvalid={errors.flipDisplay}
-														onChange={handleChange}
-													>
-														{DISPLAY_FLIP_MODES.map((o, i) => (
-															<option
-																key={`flipDisplay-option-${i}`}
-																value={o.value}
-															>
-																{t(`DisplayConfig:${o.label}`)}
-															</option>
-														))}
-													</FormSelect>
-													<FormSelect
-														label={t('DisplayConfig:form.invert-display-label')}
-														name="invertDisplay"
-														className="form-select-sm"
-														groupClassName="col-sm-3"
-														value={values.invertDisplay}
-														error={errors.invertDisplay}
-														isInvalid={errors.invertDisplay}
-														onChange={handleChange}
-													>
-														{ON_OFF_OPTIONS.map((o, i) => (
-															<option
-																key={`invertDisplay-option-${i}`}
-																value={o.value}
-															>
-																{t(`DisplayConfig:${o.label}`)}
-															</option>
-														))}
-													</FormSelect>
-													<div className="col-sm-3">
-														<label className="form-label">
+												{t('DisplayConfig:section.screen-header')}
+											</button>
+											<button
+												type="button"
+												className={`profile-tab${activeTab === 'displayLayoutOptions' ? ' active' : ''}`}
+												onClick={() => setActiveTab('displayLayoutOptions')}
+											>
+												{t('DisplayConfig:section.layout-header')}
+											</button>
+											<button
+												type="button"
+												className={`profile-tab${activeTab === 'displayModeOptions' ? ' active' : ''}`}
+												onClick={() => setActiveTab('displayModeOptions')}
+											>
+												{t('DisplayConfig:section.mode-header')}
+											</button>
+										</div>
+										<div style={{ display: activeTab === 'defaultHardwareOptions' ? undefined : 'none' }}>
+												<div className="d-flex flex-wrap gap-3">
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+														<Form.Label>
+															{t('Common:switch-enabled')}
+														</Form.Label>
+														<Form.Select
+															name="enabled"
+															className="form-select-sm"
+															value={values.enabled}
+															error={errors.enabled}
+															isInvalid={errors.enabled}
+															onChange={handleChange}
+														>
+															{ON_OFF_OPTIONS.map((o, i) => (
+																<option key={`enabled-option-${i}`} value={o.value}>
+																	{t(`DisplayConfig:${o.label}`)}
+																</option>
+															))}
+														</Form.Select>
+													</div>
+												</div>
+										</div>
+										<div style={{ display: activeTab === 'displayScreenOptions' ? undefined : 'none' }}>
+											<div className="d-flex flex-wrap gap-3">
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+														<Form.Label>
+															{t('DisplayConfig:form.flip-display-label')}
+														</Form.Label>
+														<Form.Select
+															name="flipDisplay"
+															className="form-select-sm"
+															value={values.flipDisplay}
+															error={errors.flipDisplay}
+															isInvalid={errors.flipDisplay}
+															onChange={handleChange}
+														>
+															{DISPLAY_FLIP_MODES.map((o, i) => (
+																<option
+																	key={`flipDisplay-option-${i}`}
+																	value={o.value}
+																>
+																	{t(`DisplayConfig:${o.label}`)}
+																</option>
+															))}
+														</Form.Select>
+													</div>
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+														<Form.Label>
+															{t('DisplayConfig:form.invert-display-label')}
+														</Form.Label>
+														<Form.Select
+															name="invertDisplay"
+															className="form-select-sm"
+															value={values.invertDisplay}
+															error={errors.invertDisplay}
+															isInvalid={errors.invertDisplay}
+															onChange={handleChange}
+														>
+															{ON_OFF_OPTIONS.map((o, i) => (
+																<option
+																	key={`invertDisplay-option-${i}`}
+																	value={o.value}
+																>
+																	{t(`DisplayConfig:${o.label}`)}
+																</option>
+															))}
+														</Form.Select>
+													</div>
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+														<Form.Label>
 															{t('DisplayConfig:form.power-management-header')}
-														</label>
+														</Form.Label>
 														<Form.Check
 															label={t(
 																'DisplayConfig:form.turn-off-when-suspended',
 															)}
 															type="switch"
 															name="turnOffWhenSuspended"
-															className="align-middle"
 															isInvalid={false}
 															checked={Boolean(values.turnOffWhenSuspended)}
 															onChange={(e) => {
@@ -418,51 +441,49 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-												</Row>
-											</Tab>
-											<Tab
-												key="displayLayoutOptions"
-												eventKey="displayLayoutOptions"
-												title={t('DisplayConfig:section.layout-header')}
-											>
-												<h1>{t('DisplayConfig:section.button-layout-header')}</h1>
-												<Row className="mb-4">
-													<FormSelect
-														label={t('DisplayConfig:form.button-layout-orientation')}
-														name="buttonLayoutOrientation"
-														className="form-select-sm"
-														groupClassName="col-sm-3"
-														value={values.buttonLayoutOrientation}
-														error={errors.buttonLayoutOrientation}
-														isInvalid={errors.buttonLayoutOrientation}
-														onChange={handleChange}
-													>
-														{LAYOUT_ORIENTATION.map((o, i) => (
-															<option
-																key={`buttonLayoutOrientation-option-${i}`}
-																value={o.value}
-															>
-																{t(`DisplayConfig:${o.label}`)}
-															</option>
-														))}
-													</FormSelect>
-												</Row>
-												{isButtonLayoutCustom(values) && (
-													<Row>
+												</div>
+										</div>
+										<div style={{ display: activeTab === 'displayLayoutOptions' ? undefined : 'none' }}>
+											<h1>{t('DisplayConfig:section.button-layout-header')}</h1>
+												<div className="d-flex flex-wrap gap-3">
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
 														<Form.Label>
-															{t('DisplayConfig:form.button-layout-custom-header')}
+															{t('DisplayConfig:form.button-layout-orientation')}
 														</Form.Label>
-														<Col sm="6">
-															<Form.Group as={Row} name="buttonLayoutCustomOptions">
-																<Form.Label column>
+														<Form.Select
+															name="buttonLayoutOrientation"
+															className="form-select-sm"
+															value={values.buttonLayoutOrientation}
+															error={errors.buttonLayoutOrientation}
+															isInvalid={errors.buttonLayoutOrientation}
+															onChange={handleChange}
+														>
+															{LAYOUT_ORIENTATION.map((o, i) => (
+																<option
+																	key={`buttonLayoutOrientation-option-${i}`}
+																	value={o.value}
+																>
+																	{t(`DisplayConfig:${o.label}`)}
+																</option>
+															))}
+														</Form.Select>
+													</div>
+												</div>
+												{isButtonLayoutCustom(values) && (
+													<div className="d-flex flex-wrap gap-3">
+														<div style={{ flex: '1 0 300px' }}>
+															<Form.Label>
+																{t('DisplayConfig:form.button-layout-custom-header')}
+															</Form.Label>
+															<div className="d-flex flex-column gap-1">
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-left-label',
 																	)}
 																</Form.Label>
-																<FormSelect
+																<Form.Select
 																	name="buttonLayoutCustomOptions.params.layout"
 																	className="form-select-sm"
-																	groupClassName="col-sm-10 mb-1"
 																	value={
 																		values.buttonLayoutCustomOptions.params.layout
 																	}
@@ -480,84 +501,63 @@ export default function DisplayConfigPage() {
 																			{t(`LayoutConfig:layouts.left.${o}`)}
 																		</option>
 																	))}
-																</FormSelect>
-															</Form.Group>
-															<Form.Group as={Row}>
-																<Form.Label column>
+																</Form.Select>
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-start-x-label',
 																	)}
 																</Form.Label>
-																<Col sm="10">
-																	<Field
-																		column
-																		className="mb-1"
-																		name="buttonLayoutCustomOptions.params.startX"
-																		type="number"
-																		as={Form.Control}
-																	/>
-																</Col>
-															</Form.Group>
-															<Form.Group as={Row}>
-																<Form.Label column>
+																<Field
+																	className="form-control"
+																	name="buttonLayoutCustomOptions.params.startX"
+																	type="number"
+																	as={Form.Control}
+																/>
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-start-y-label',
 																	)}
 																</Form.Label>
-																<Col sm="10">
-																	<Field
-																		column
-																		className="mb-1"
-																		name="buttonLayoutCustomOptions.params.startY"
-																		type="number"
-																		as={Form.Control}
-																	/>
-																</Col>
-															</Form.Group>
-															<Form.Group as={Row}>
-																<Form.Label column>
+																<Field
+																	className="form-control"
+																	name="buttonLayoutCustomOptions.params.startY"
+																	type="number"
+																	as={Form.Control}
+																/>
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-button-radius-label',
 																	)}
 																</Form.Label>
-																<Col sm="10">
-																	<Field
-																		column
-																		className="mb-1"
-																		name="buttonLayoutCustomOptions.params.buttonRadius"
-																		type="number"
-																		as={Form.Control}
-																	/>
-																</Col>
-															</Form.Group>
-															<Form.Group as={Row}>
-																<Form.Label column>
+																<Field
+																	className="form-control"
+																	name="buttonLayoutCustomOptions.params.buttonRadius"
+																	type="number"
+																	as={Form.Control}
+																/>
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-button-padding-label',
 																	)}
 																</Form.Label>
-																<Col sm="10">
-																	<Field
-																		column
-																		className="mb-1"
-																		name="buttonLayoutCustomOptions.params.buttonPadding"
-																		type="number"
-																		as={Form.Control}
-																	/>
-																</Col>
-															</Form.Group>
-														</Col>
-														<Col sm="6">
-															<Form.Group as={Row}>
-																<Form.Label column>
-																	{t(
-																		'DisplayConfig:form.button-layout-custom-right-label',
-																	)}
-																</Form.Label>
-																<FormSelect
+																<Field
+																	className="form-control"
+																	name="buttonLayoutCustomOptions.params.buttonPadding"
+																	type="number"
+																	as={Form.Control}
+																/>
+															</div>
+														</div>
+														<div style={{ flex: '1 0 300px' }}>
+															<Form.Label>
+																{t(
+																	'DisplayConfig:form.button-layout-custom-right-label',
+																)}
+															</Form.Label>
+															<div className="d-flex flex-column gap-1">
+																<Form.Select
 																	name="buttonLayoutCustomOptions.paramsRight.layout"
 																	className="form-select-sm"
-																	groupClassName="col-sm-10 mb-1"
 																	value={
 																		values.buttonLayoutCustomOptions.paramsRight
 																			.layout
@@ -576,85 +576,64 @@ export default function DisplayConfigPage() {
 																			{t(`LayoutConfig:layouts.right.${o}`)}
 																		</option>
 																	))}
-																</FormSelect>
-															</Form.Group>
-															<Form.Group as={Row}>
-																<Form.Label column>
+																</Form.Select>
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-start-x-label',
 																	)}
 																</Form.Label>
-																<Col sm="10">
-																	<Field
-																		column
-																		className="mb-1"
-																		name="buttonLayoutCustomOptions.paramsRight.startX"
-																		type="number"
-																		as={Form.Control}
-																	/>
-																</Col>
-															</Form.Group>
-															<Form.Group as={Row}>
-																<Form.Label column>
+																<Field
+																	className="form-control"
+																	name="buttonLayoutCustomOptions.paramsRight.startX"
+																	type="number"
+																	as={Form.Control}
+																/>
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-start-y-label',
 																	)}
 																</Form.Label>
-																<Col sm="10">
-																	<Field
-																		column
-																		className="mb-1"
-																		name="buttonLayoutCustomOptions.paramsRight.startY"
-																		type="number"
-																		as={Form.Control}
-																	/>
-																</Col>
-															</Form.Group>
-															<Form.Group as={Row}>
-																<Form.Label column>
+																<Field
+																	className="form-control"
+																	name="buttonLayoutCustomOptions.paramsRight.startY"
+																	type="number"
+																	as={Form.Control}
+																/>
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-button-radius-label',
 																	)}
 																</Form.Label>
-																<Col sm="10">
-																	<Field
-																		column
-																		className="mb-1"
-																		name="buttonLayoutCustomOptions.paramsRight.buttonRadius"
-																		type="number"
-																		as={Form.Control}
-																	/>
-																</Col>
-															</Form.Group>
-															<Form.Group as={Row}>
-																<Form.Label column>
+																<Field
+																	className="form-control"
+																	name="buttonLayoutCustomOptions.paramsRight.buttonRadius"
+																	type="number"
+																	as={Form.Control}
+																/>
+																<Form.Label>
 																	{t(
 																		'DisplayConfig:form.button-layout-custom-button-padding-label',
 																	)}
 																</Form.Label>
-																<Col sm="10">
-																	<Field
-																		column
-																		className="mb-1"
-																		name="buttonLayoutCustomOptions.paramsRight.buttonPadding"
-																		type="number"
-																		as={Form.Control}
-																	/>
-																</Col>
-															</Form.Group>
-														</Col>
-													</Row>
+																<Field
+																	className="form-control"
+																	name="buttonLayoutCustomOptions.paramsRight.buttonPadding"
+																	type="number"
+																	as={Form.Control}
+																/>
+															</div>
+														</div>
+													</div>
 												)}
 												<h1>{t('DisplayConfig:section.status-layout-header')}</h1>
-												<Row className="mb-4">
-													<div className="col-sm-2">
-														<Form.Check
+												<div className="d-flex flex-wrap gap-3 justify-content-center">
+													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
+														<Form.Check className="d-inline-flex"
 															label={t(
 																'DisplayConfig:form.status-header.input-mode',
 															)}
 															type="switch"
 															name="inputMode"
-															className="align-middle"
 															isInvalid={false}
 															checked={Boolean(values.inputMode)}
 															onChange={(e) => {
@@ -665,14 +644,13 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2">
-														<Form.Check
+													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
+														<Form.Check className="d-inline-flex"
 															label={t(
 																'DisplayConfig:form.status-header.turbo-mode',
 															)}
 															type="switch"
 															name="turboMode"
-															className="align-middle"
 															isInvalid={false}
 															checked={Boolean(values.turboMode)}
 															onChange={(e) => {
@@ -683,14 +661,13 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2">
-														<Form.Check
+													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
+														<Form.Check className="d-inline-flex"
 															label={t(
 																'DisplayConfig:form.status-header.dpad-mode',
 															)}
 															type="switch"
 															name="dpadMode"
-															className="align-middle"
 															isInvalid={false}
 															checked={Boolean(values.dpadMode)}
 															onChange={(e) => {
@@ -701,14 +678,13 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2">
-														<Form.Check
+													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
+														<Form.Check className="d-inline-flex"
 															label={t(
 																'DisplayConfig:form.status-header.socd-mode',
 															)}
 															type="switch"
 															name="displaySocdMode"
-															className="align-middle"
 															isInvalid={false}
 															checked={Boolean(values.socdMode)}
 															onChange={(e) => {
@@ -719,14 +695,13 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2">
-														<Form.Check
+													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
+														<Form.Check className="d-inline-flex"
 															label={t(
 																'DisplayConfig:form.status-header.macro-mode',
 															)}
 															type="switch"
 															name="macroMode"
-															className="align-middle"
 															isInvalid={false}
 															checked={Boolean(values.macroMode)}
 															onChange={(e) => {
@@ -737,14 +712,13 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<div className="col-sm-2">
-														<Form.Check
+													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
+														<Form.Check className="d-inline-flex"
 															label={t(
 																'DisplayConfig:form.status-header.profile-mode',
 															)}
 															type="switch"
 															name="profileMode"
-															className="align-middle"
 															isInvalid={false}
 															checked={Boolean(values.profileMode)}
 															onChange={(e) => {
@@ -755,18 +729,17 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-												</Row>
+												</div>
 												<h1>{t('DisplayConfig:section.history-layout-header')}</h1>
-												<Row className="mb-4">
-													<div className="col-sm-2">
-														<label></label>
+												<div className="d-flex flex-wrap gap-3">
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 130px' }}>
 														<Form.Check
 															label={t(
 																'DisplayConfig:form.input-history-label',
 															)}
 															type="switch"
 															name="inputHistoryEnabled"
-															className="align-middle mt-1"
+															className="mt-auto"
 															isInvalid={false}
 															checked={Boolean(values.inputHistoryEnabled)}
 															onChange={(e) => {
@@ -777,138 +750,162 @@ export default function DisplayConfigPage() {
 															}}
 														/>
 													</div>
-													<FormControl
-														type="number"
-														label={t('AddonsConfig:input-history-length-label')}
-														name="inputHistoryLength"
-														className="form-control-sm"
-														groupClassName="col-sm-3"
-														value={values.inputHistoryLength}
-														error={errors.inputHistoryLength}
-														isInvalid={errors.inputHistoryLength}
-														onChange={handleChange}
-														min={1}
-														max={21}
-													/>
-													<FormControl
-														type="number"
-														label={t('AddonsConfig:input-history-col-label')}
-														name="inputHistoryCol"
-														className="form-control-sm"
-														groupClassName="col-sm-3"
-														value={values.inputHistoryCol}
-														error={errors.inputHistoryCol}
-														isInvalid={errors.inputHistoryCol}
-														onChange={handleChange}
-														min={0}
-														max={20}
-													/>
-													<FormControl
-														type="number"
-														label={t('AddonsConfig:input-history-row-label')}
-														name="inputHistoryRow"
-														className="form-control-sm"
-														groupClassName="col-sm-3"
-														value={values.inputHistoryRow}
-														error={errors.inputHistoryRow}
-														isInvalid={errors.inputHistoryRow}
-														onChange={handleChange}
-														min={0}
-														max={7}
-													/>
-													<FormControl
-														type="number"
-														label={t('AddonsConfig:input-history-timeout-label')}
-														name="inputHistoryTimeout"
-														className="form-control-sm"
-														groupClassName="col-sm-3"
-														value={values.inputHistoryTimeout}
-														error={errors.inputHistoryTimeout}
-														isInvalid={errors.inputHistoryTimeout}
-														onChange={handleChange}
-														min={0}
-														max={300}
-													/>
-												</Row>
-											</Tab>
-											<Tab
-												key="displayModeOptions"
-												eventKey="displayModeOptions"
-												title={t('DisplayConfig:section.mode-header')}
-											>
-												<Row className="mb-4">
-													<FormSelect
-														label={t('DisplayConfig:form.splash-mode-label')}
-														name="splashMode"
-														className="form-select-sm"
-														groupClassName="col-sm-3"
-														value={values.splashMode}
-														error={errors.splashMode}
-														isInvalid={errors.splashMode}
-														onChange={handleChange}
-													>
-														{SPLASH_MODES.map((o, i) => (
-															<option
-																key={`splashMode-option-${i}`}
-																value={o.value}
-															>
-																{t(`DisplayConfig:${o.label}`)}
-															</option>
-														))}
-													</FormSelect>
-													<FormControl
-														type="number"
-														label={t('DisplayConfig:form.splash-duration-label')}
-														name="splashDuration"
-														className="form-select-sm"
-														groupClassName="col-sm-3"
-														value={values.splashDuration}
-														error={errors.splashDuration}
-														isInvalid={errors.splashDuration}
-														onChange={handleChange}
-														min={0}
-													/>
-												</Row>
-												<Row>
-													<FormSelect
-														label={t('DisplayConfig:form.screen-saver-mode-label')}
-														name="displaySaverMode"
-														className="form-select-sm"
-														groupClassName="col-sm-3"
-														value={values.displaySaverMode}
-														error={errors.displaySaverMode}
-														isInvalid={errors.displaySaverMode}
-														onChange={handleChange}
-													>
-														{DISPLAY_SAVER_MODES.map((o, i) => (
-															<option
-																key={`displaySaverMode-option-${i}`}
-																value={o.value}
-															>
-																{t(`DisplayConfig:${o.label}`)}
-															</option>
-														))}
-													</FormSelect>
-													<FormControl
-														type="number"
-														label={t(
-															'DisplayConfig:form.display-saver-timeout-label',
-														)}
-														name="displaySaverTimeout"
-														className="form-select-sm"
-														groupClassName="col-sm-3"
-														value={values.displaySaverTimeout}
-														error={errors.displaySaverTimeout}
-														isInvalid={errors.displaySaverTimeout}
-														onChange={handleChange}
-														min={0}
-													/>
-												</Row>
-												<Row>
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 130px' }}>
+														<Form.Label>
+															{t('AddonsConfig:input-history-length-label')}
+														</Form.Label>
+														<Form.Control
+															type="number"
+															name="inputHistoryLength"
+															className="form-control-sm"
+															className="mt-auto"
+															value={values.inputHistoryLength}
+															error={errors.inputHistoryLength}
+															isInvalid={errors.inputHistoryLength}
+															onChange={handleChange}
+															min={1}
+															max={21}
+														/>
+													</div>
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 130px' }}>
+														<Form.Label>
+															{t('AddonsConfig:input-history-col-label')}
+														</Form.Label>
+														<Form.Control
+															type="number"
+															name="inputHistoryCol"
+															className="form-control-sm"
+															className="mt-auto"
+															value={values.inputHistoryCol}
+															error={errors.inputHistoryCol}
+															isInvalid={errors.inputHistoryCol}
+															onChange={handleChange}
+															min={0}
+															max={20}
+														/>
+													</div>
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 130px' }}>
+														<Form.Label>
+															{t('AddonsConfig:input-history-row-label')}
+														</Form.Label>
+														<Form.Control
+															type="number"
+															name="inputHistoryRow"
+															className="form-control-sm"
+															className="mt-auto"
+															value={values.inputHistoryRow}
+															error={errors.inputHistoryRow}
+															isInvalid={errors.inputHistoryRow}
+															onChange={handleChange}
+															min={0}
+															max={7}
+														/>
+													</div>
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 130px' }}>
+														<Form.Label>
+															{t('AddonsConfig:input-history-timeout-label')}
+														</Form.Label>
+														<Form.Control
+															type="number"
+															name="inputHistoryTimeout"
+															className="form-control-sm"
+															className="mt-auto"
+															value={values.inputHistoryTimeout}
+															error={errors.inputHistoryTimeout}
+															isInvalid={errors.inputHistoryTimeout}
+															onChange={handleChange}
+															min={0}
+															max={300}
+														/>
+													</div>
+												</div>
+										</div>
+										<div style={{ display: activeTab === 'displayModeOptions' ? undefined : 'none' }}>
+											<div className="d-flex flex-wrap gap-3">
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+														<Form.Label>
+															{t('DisplayConfig:form.splash-mode-label')}
+														</Form.Label>
+														<Form.Select
+															name="splashMode"
+															className="form-select-sm"
+															value={values.splashMode}
+															error={errors.splashMode}
+															isInvalid={errors.splashMode}
+															onChange={handleChange}
+														>
+															{SPLASH_MODES.map((o, i) => (
+																<option
+																	key={`splashMode-option-${i}`}
+																	value={o.value}
+																>
+																	{t(`DisplayConfig:${o.label}`)}
+																</option>
+															))}
+														</Form.Select>
+													</div>
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+														<Form.Label>
+															{t('DisplayConfig:form.splash-duration-label')}
+														</Form.Label>
+														<Form.Control
+															type="number"
+															name="splashDuration"
+															className="form-control-sm"
+															value={values.splashDuration}
+															error={errors.splashDuration}
+															isInvalid={errors.splashDuration}
+															onChange={handleChange}
+															min={0}
+														/>
+													</div>
+												</div>
+												<div className="d-flex flex-wrap gap-3">
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+														<Form.Label>
+															{t('DisplayConfig:form.screen-saver-mode-label')}
+														</Form.Label>
+														<Form.Select
+															name="displaySaverMode"
+															className="form-select-sm"
+															value={values.displaySaverMode}
+															error={errors.displaySaverMode}
+															isInvalid={errors.displaySaverMode}
+															onChange={handleChange}
+														>
+															{DISPLAY_SAVER_MODES.map((o, i) => (
+																<option
+																	key={`displaySaverMode-option-${i}`}
+																	value={o.value}
+																>
+																	{t(`DisplayConfig:${o.label}`)}
+																</option>
+															))}
+														</Form.Select>
+													</div>
+													<div className="d-flex flex-column gap-1" style={{ flex: '1 0 200px' }}>
+														<Form.Label>
+															{t(
+																'DisplayConfig:form.display-saver-timeout-label',
+															)}
+														</Form.Label>
+														<Form.Control
+															type="number"
+															name="displaySaverTimeout"
+															className="form-control-sm"
+															value={values.displaySaverTimeout}
+															error={errors.displaySaverTimeout}
+															isInvalid={errors.displaySaverTimeout}
+															onChange={handleChange}
+															min={0}
+														/>
+													</div>
+												</div>
+												<div className="d-flex flex-wrap gap-3">
 													<Field name="splashImage">
 														{({
-															field, // { name, value, onChange, onBlur }
-															form, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
+															field,
+															form,
 														}) => (
 															<div className="mt-3">
 																<Canvas
@@ -920,16 +917,13 @@ export default function DisplayConfigPage() {
 															</div>
 														)}
 													</Field>
-												</Row>
-											</Tab>
-										</Tabs>
-										<div className="mt-3">
+												</div>
+										</div>
+
+										<div className="d-flex justify-content-end gap-2 mt-3">
 											<Button type="submit">
 												{t('Common:button-save-label')}
 											</Button>
-											{saveMessage ? (
-												<span className="alert">{saveMessage}</span>
-											) : null}
 										</div>
 										<FormContext />
 									</Form>
@@ -1069,14 +1063,14 @@ const Canvas = ({ value: bitsArray, onChange }) => {
 	};
 
 	return (
-		<div style={{ display: 'flex', alignItems: 'center' }}>
+		<div className="d-flex align-items-center gap-3">
 			<canvas
 				ref={canvasRef}
 				width="128"
 				height="64"
 				style={{ background: 'black' }}
 			/>
-			<div style={{ marginLeft: '11px' }}>
+			<div>
 				<input
 					type="file"
 					id="image-input"
@@ -1090,7 +1084,6 @@ const Canvas = ({ value: bitsArray, onChange }) => {
 					onChange={toggleInverted}
 				/>{' '}
 				{t('DisplayConfig:form.inverted-label')}
-				{/* <ErrorMessage name="splashImage" /> */}
 			</div>
 		</div>
 	);

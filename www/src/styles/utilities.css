@@ -2,6 +2,10 @@
 	display: flex;
 }
 
+.d-inline-flex {
+	display: inline-flex;
+}
+
 .d-block {
 	display: block;
 }
@@ -81,6 +85,10 @@
 
 .mt-3 {
 	margin-top: 1rem;
+}
+
+.mt-auto {
+	margin-top: auto;
 }
 
 .mb-0 {
