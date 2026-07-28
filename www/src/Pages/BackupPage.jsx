@@ -2,10 +2,12 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import { AppContext } from '../Contexts/AppContext';
 import Button from '../components/ui/Button';
 import Form from '../components/ui/Form';
-import Col from '../components/ui/Col';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '../Contexts/ToastContext';
 
 import Section from '../components/shared/Section';
+import Upload from '../Icons/Upload';
+import Download from '../Icons/Download';
 import WebApi from '../Services/WebApi';
 
 const FILE_EXTENSION = '.gp2040';
@@ -53,20 +55,15 @@ const API_BINDING = {
 		get: WebApi.getAddonsOptions,
 		set: WebApi.setAddonsOptions,
 	},
-	// new api, add it here
-	// "example":	{label: "Example",		get: WebApi.getNewAPI,			set: WebApi.setNewAPI},
 };
 
 export default function BackupPage() {
 	const inputFileSelect = useRef();
 
 	const [optionState, setOptionStateData] = useState({});
-	const [checkValues, setCheckValues] = useState({}); // lazy approach
-
-	const [noticeMessage, setNoticeMessage] = useState('');
-	const [saveMessage, setSaveMessage] = useState('');
-	const [loadMessage, setLoadMessage] = useState('');
+	const [checkValues, setCheckValues] = useState({});
 	const { setLoading } = useContext(AppContext);
+	const { showToast } = useToast();
 
 	const { t } = useTranslation('');
 
@@ -80,7 +77,6 @@ export default function BackupPage() {
 		}
 		fetchData();
 
-		// setup defaults
 		function getDefaultValues() {
 			let defaults = {};
 			for (const [key] of Object.entries(API_BINDING)) {
@@ -94,7 +90,6 @@ export default function BackupPage() {
 
 	const validateValues = (data, nextData) => {
 		if (typeof data != 'object' || typeof nextData != 'object') {
-			// invalid data types
 			return {};
 		}
 
@@ -166,21 +161,17 @@ export default function BackupPage() {
 		a.click();
 		a.remove();
 
-		setSaveMessage(t('BackupPage:saved-success-message', { name }));
-
-		setTimeout(() => {
-			setSaveMessage('');
-		}, 5000);
+		showToast(t('BackupPage:saved-success-message', { name }), 'success');
 	};
 
 	const handleFileSelect = (ev) => {
 		const input = ev.target;
 		if (!input) {
-			setNoticeMessage(`Unknown browser error, missing event data!`);
+			showToast('Unknown browser error, missing event data!', 'error');
 			return;
 		}
 		if (input.files.length === 0) {
-			setNoticeMessage(`No files are loaded.`);
+			showToast('No files are loaded.', 'error');
 			return;
 		}
 
@@ -192,15 +183,13 @@ export default function BackupPage() {
 			try {
 				fileData = JSON.parse(reader.result);
 			} catch (e) {
-				// error dialog
-				setNoticeMessage(`Failed to parse data for ${fileName}!`);
+				showToast(`Failed to parse data for ${fileName}!`, 'error');
 				return;
 			}
 			if (!fileData) {
-				setNoticeMessage(`No file data found for ${fileName}`);
+				showToast(`No file data found for ${fileName}`, 'error');
 				return;
 			}
-			// validate parsed data
 			let newData = {};
 			for (const [key, value] of Object.entries(fileData)) {
 				if (optionState[key]) {
@@ -210,7 +199,6 @@ export default function BackupPage() {
 			}
 
 			if (Object.entries(newData).length > 0) {
-				// filter by known values
 				let filteredData = {};
 				for (const [key, value] of Object.entries(checkValues)) {
 					if (key.match('import_') && (value != null || value !== undefined)) {
@@ -223,100 +211,77 @@ export default function BackupPage() {
 				const nextOptions = { ...optionState, ...filteredData };
 				setOptionStateData(nextOptions);
 
-				// write to internal storage
 				setOptionsToAPIStorage(nextOptions);
 
-				setLoadMessage(`Loaded ${fileName}`);
-				setNoticeMessage('');
-
-				setTimeout(() => {
-					setLoadMessage('');
-				}, 5000);
+				showToast(`Loaded ${fileName}`, 'success');
 			}
 		};
 		reader.onerror = () => {
-			setNoticeMessage(`Error occured while reading ${fileName}.`);
+			showToast(`Error occured while reading ${fileName}.`, 'error');
 		};
 		reader.readAsText(input.files[0]);
 	};
 
 	return (
 		<>
-			<Section title={t('BackupPage:save-header-text')}>
-				<Col>
-					<Form.Group className="row">
-						<div className={'col-sm-4'}>
-							{Object.entries(API_BINDING).map((api) => (
-								<Form.Check
-									id={`export_${api[0]}`}
-									key={`export_${api[0]}`}
-									label={t('BackupPage:save-export-option-label', {
-										api: t(`BackupPage:api-${api[0]}-text`),
-									})}
-									type={'checkbox'}
-									checked={checkValues[`export_${api[0]}`] ?? false}
-									onChange={handleChange}
-								/>
-							))}
-						</div>
-					</Form.Group>
-					<div
-						style={{
-							display: 'flex',
-							flexDirection: 'row',
-						}}
-					>
+			<Section
+				heading
+				icon={<Download />}
+				title={t('BackupPage:save-header-text')}
+			>
+				<div className="d-flex flex-column gap-1">
+					<div className="d-flex flex-column gap-1">
+						{Object.entries(API_BINDING).map((api) => (
+							<Form.Check
+								id={`export_${api[0]}`}
+								key={`export_${api[0]}`}
+								label={t('BackupPage:save-export-option-label', {
+									api: t(`BackupPage:api-${api[0]}-text`),
+								})}
+								type={'checkbox'}
+								checked={checkValues[`export_${api[0]}`] ?? false}
+								onChange={handleChange}
+							/>
+						))}
+					</div>
+					<div className="d-flex gap-2 align-self-end">
 						<Button type="submit" onClick={handleSave}>
 							{t('Common:button-save-label')}
 						</Button>
-						<div
-							style={{
-								height: '100%',
-								paddingLeft: 24,
-								fontWeight: 600,
-								color: 'darkcyan',
-								alignSelf: 'center',
-							}}
-						>
-							{saveMessage ? saveMessage : null}
-						</div>
 					</div>
-				</Col>
-			</Section>
-			<Section title={t('BackupPage:load-header-text')}>
-				<div className="alert alert-warning">
-					{t(`BackupPage:pin-version-warning-text`)}
 				</div>
-				<Col>
-					<Form.Group className="row">
-						<div className={'col-sm-4'}>
-							{Object.entries(API_BINDING).map((api) => (
-								<Form.Check
-									id={`import_${api[0]}`}
-									key={`import_${api[0]}`}
-									label={t('BackupPage:load-export-option-label', {
-										api: t(`BackupPage:api-${api[0]}-text`),
-									})}
-									type={'checkbox'}
-									checked={checkValues[`import_${api[0]}`] ?? false}
-									onChange={handleChange}
-								/>
-							))}
-						</div>
-					</Form.Group>
+			</Section>
+			<Section
+				heading
+				icon={<Upload />}
+				title={t('BackupPage:load-header-text')}
+			>
+				<div className="alert alert-warning">
+					{t('BackupPage:pin-version-warning-text')}
+				</div>
+				<div className="d-flex flex-column gap-1">
+					<div className="d-flex flex-column gap-1">
+						{Object.entries(API_BINDING).map((api) => (
+							<Form.Check
+								id={`import_${api[0]}`}
+								key={`import_${api[0]}`}
+								label={t('BackupPage:load-export-option-label', {
+									api: t(`BackupPage:api-${api[0]}-text`),
+								})}
+								type={'checkbox'}
+								checked={checkValues[`import_${api[0]}`] ?? false}
+								onChange={handleChange}
+							/>
+						))}
+					</div>
 					<input
 						ref={inputFileSelect}
 						type={'file'}
 						accept={FILE_EXTENSION}
-						style={{ display: 'none' }}
+						className="d-none"
 						onChange={handleFileSelect.bind(this)}
 					/>
-					<div
-						style={{
-							display: 'flex',
-							flexDirection: 'row',
-						}}
-					>
+					<div className="d-flex gap-2 align-self-end">
 						<Button
 							onClick={() => {
 								inputFileSelect.current.click();
@@ -324,22 +289,8 @@ export default function BackupPage() {
 						>
 							{t('Common:button-load-label')}
 						</Button>
-						<div
-							style={{
-								height: '100%',
-								paddingLeft: 24,
-								fontWeight: 600,
-								color: 'darkcyan',
-								alignSelf: 'center',
-							}}
-						>
-							<span>{loadMessage ? loadMessage : null}</span>
-							<span style={{ color: 'red', fontWeight: 'bold' }}>
-								{noticeMessage ? noticeMessage : null}
-							</span>
-						</div>
 					</div>
-				</Col>
+				</div>
 			</Section>
 		</>
 	);
