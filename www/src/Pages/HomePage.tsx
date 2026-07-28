@@ -5,6 +5,7 @@ import { isNewerVersion } from '../Services/Utilities';
 import useSystemStats from '../Store/useSystemStats';
 import Section from '../components/shared/Section';
 import Gamepad from '../Icons/Gamepad';
+import Hand from '../Icons/Hand';
 import Etsy from '../Icons/Etsy';
 import GitHub from '../Icons/GitHub';
 
@@ -38,6 +39,7 @@ export default function HomePage() {
 	return (
 		<Section
 			heading
+			icon={<Hand />}
 			title={t('HomePage:welcome-heading-text')}
 			description={t('HomePage:welcome-description-text', {
 				boardName,

@@ -112,8 +112,10 @@ const Navigation = () => {
 							className="nav-btn"
 							aria-label={t('Navigation:config-label')}
 						>
-							<Flask />
-							<span className="btn-text"> {t('Navigation:config-label')}</span>
+							<span style={{ display: 'inline-flex', alignItems: 'center' }}>
+								<Flask style={{ marginRight: '0.5rem' }} />
+								{t('Navigation:config-label')}
+							</span>
 						</Nav.Link>
 					)}
 					<Button variant="success" onClick={handleShow} aria-label={t('Navigation:reboot-label')} className="icon-btn">
