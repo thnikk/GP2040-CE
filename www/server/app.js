@@ -178,6 +178,7 @@ app.get('/api/getGamepadOptions', (req, res) => {
 		gamepadOptionsStore.inputModePs4Pin = imp.ps4 ?? -1;
 		gamepadOptionsStore.inputModePs5Pin = imp.ps5 ?? -1;
 		gamepadOptionsStore.inputModeKeyboardPin = imp.keyboard ?? -1;
+		gamepadOptionsStore.inputModeSwitchProPin = imp.switchPro ?? -1;
 	}
 	return res.send(gamepadOptionsStore);
 });

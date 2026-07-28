@@ -462,6 +462,7 @@ GP2040::BootAction GP2040::getBootAction() {
                             {opts.inputModePs4Pin,     BootAction::SET_INPUT_MODE_PS4},
                             {opts.inputModePs5Pin,     BootAction::SET_INPUT_MODE_PS5},
                             {opts.inputModeKeyboardPin,BootAction::SET_INPUT_MODE_KEYBOARD},
+                            {opts.inputModeSwitchProPin,BootAction::SET_INPUT_MODE_SWITCH_PRO},
                         };
                         for (auto& pa : pinActions) {
                             if (pa.pin >= 0) {

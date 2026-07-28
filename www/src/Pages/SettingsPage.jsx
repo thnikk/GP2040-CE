@@ -331,6 +331,7 @@ const INPUT_MODE_PINS = [
 	{ value: 'Ps4Pin', labelKey: 'input-mode-options.ps4' },
 	{ value: 'Ps5Pin', labelKey: 'input-mode-options.ps5' },
 	{ value: 'KeyboardPin', labelKey: 'input-mode-options.keyboard' },
+	{ value: 'SwitchProPin', labelKey: 'input-mode-options.nintendo-switch-pro' },
 ];
 
 const INPUT_MODE_PIN_OPTIONS = [
@@ -480,6 +481,11 @@ const schema = yup.object().shape({
 		.required()
 		.oneOf(INPUT_MODE_PIN_OPTIONS.map((o) => o.value))
 		.label('Keyboard Pin'),
+	inputModeSwitchProPin: yup
+		.number()
+		.required()
+		.oneOf(INPUT_MODE_PIN_OPTIONS.map((o) => o.value))
+		.label('Switch Pro Pin'),
 	usbDescProduct: yup.string().label('USB Description: Product Name'),
 	usbDescManufacturer: yup.string().label('USB Description: Manufacturer'),
 	usbDescVersion: yup.string().label('USB Description: Version'),

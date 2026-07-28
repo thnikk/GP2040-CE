@@ -100,6 +100,9 @@
 #ifndef DEFAULT_INPUT_MODE_KEYBOARD_PIN
     #define DEFAULT_INPUT_MODE_KEYBOARD_PIN -1
 #endif
+#ifndef DEFAULT_INPUT_MODE_SWITCH_PRO_PIN
+    #define DEFAULT_INPUT_MODE_SWITCH_PRO_PIN -1
+#endif
 #ifndef DEFAULT_DPAD_MODE
     #define DEFAULT_DPAD_MODE DPAD_MODE_DIGITAL
 #endif
@@ -295,6 +298,7 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.gamepadOptions, inputModePs4Pin, DEFAULT_INPUT_MODE_PS4_PIN);
     INIT_UNSET_PROPERTY(config.gamepadOptions, inputModePs5Pin, DEFAULT_INPUT_MODE_PS5_PIN);
     INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeKeyboardPin, DEFAULT_INPUT_MODE_KEYBOARD_PIN);
+    INIT_UNSET_PROPERTY(config.gamepadOptions, inputModeSwitchProPin, DEFAULT_INPUT_MODE_SWITCH_PRO_PIN);
     INIT_UNSET_PROPERTY(config.gamepadOptions, ps4AuthType, DEFAULT_PS4AUTHENTICATION_TYPE);
     INIT_UNSET_PROPERTY(config.gamepadOptions, ps5AuthType, DEFAULT_PS5AUTHENTICATION_TYPE);
     INIT_UNSET_PROPERTY(config.gamepadOptions, xinputAuthType, DEFAULT_XINPUTAUTHENTICATION_TYPE);
