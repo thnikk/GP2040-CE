@@ -1,12 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Col from '../components/ui/Col';
 import Form from '../components/ui/Form';
 import InputGroup from '../components/ui/InputGroup';
-import Nav from '../components/ui/Nav';
 import Row from '../components/ui/Row';
-import { Tabs, Tab } from '../components/ui/Tab';
 import Table from '../components/ui/Table';
 import { Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';
@@ -18,7 +16,6 @@ import { useToast } from '../Contexts/ToastContext';
 import Section from '../components/shared/Section';
 import WebApi from '../Services/WebApi';
 import Lightning from '../Icons/Lightning';
-import Lightbulb from '../Icons/Lightbulb';
 import {
 	getButtonLabels,
 	BUTTONS,
@@ -103,16 +100,13 @@ const ButtonMasksComponent = (props) => {
 		onChange,
 		error,
 		isInvalid,
-		className,
 		buttonLabelType,
 		buttonMasks,
 	} = props;
 	return (
-		// <div key={key} className={className}>
 		<Form.Select
 			size="sm"
 			name={`${key}.buttonMask`}
-			// className="form-control"
 			value={value}
 			error={error}
 			isInvalid={isInvalid}
@@ -124,7 +118,6 @@ const ButtonMasksComponent = (props) => {
 				</option>
 			))}
 		</Form.Select>
-		// </div>
 	);
 };
 
@@ -489,6 +482,8 @@ export default function MacrosPage() {
 		values[name] = values[name] === 1 ? 0 : 1;
 	};
 
+	const [macroSubTab, setMacroSubTab] = useState('overview');
+
 	return (
 		<Formik
 			validationSchema={schema}
@@ -505,212 +500,178 @@ export default function MacrosPage() {
 			}) => (
 				<div>
 					<Form noValidate onSubmit={handleSubmit}>
-						<Tab.Container defaultActiveKey="settings">
-							<Row style={{ gap: '10px' }}>
-								<Col xs="auto">
-									<Nav variant="pills" className="flex-column">
-										<Nav.Item key="pills-header">
-											<Nav.Link eventKey="settings" className="nav-btn">
-												<span className="d-flex align-items-center gap-2"><Lightning />{t('InputMacroAddon:input-macro-header-text')}</span>
-											</Nav.Link>
-										</Nav.Item>
-										{values.macroList.map((macro, i) => (
-											<Nav.Item key={`pills-item-${i}`}>
-												<Nav.Link eventKey={`macro-${i}`} className="nav-btn">
-													<span className="d-flex align-items-center gap-2"><Lightbulb />{macro.macroLabel.length == 0
-														? t('InputMacroAddon:input-macro-macro-list-txt', {
-																macroNumber: i + 1,
-															})
-														: macro.macroLabel.length > 24
-															? macro.macroLabel.substr(0, 24) + '...'
-															: macro.macroLabel}</span>
-												</Nav.Link>
-											</Nav.Item>
-										))}
-									</Nav>
-								</Col>
-								<div style={{ flex: 1, minWidth: 0 }}>
-									<Tab.Content>
-										<Tab.Pane eventKey="settings">
-											<Section
-												heading
-												icon={<Lightning />}
-												title={t('InputMacroAddon:input-macro-header-text')}
-											>
-												<div className="card-section">
-													<Row>
-														<Col>
-															<Table
-																striped
-																bordered
-																hover
-																className="text-center"
-															>
-																<thead>
-																	<tr>
-																		<th>#</th>
-																		<th>
-																			{t('InputMacroAddon:table-thread-label')}
-																		</th>
-																		<th>
-																			{t('InputMacroAddon:table-thread-type')}
-																		</th>
-																		<th>
-																			{t(
-																				'InputMacroAddon:table-thread-assigned-to',
-																			)}
-																		</th>
-																		<th>
-																			{t('InputMacroAddon:table-thread-button')}
-																		</th>
-																		<th>
-																			{t('InputMacroAddon:table-thread-actions')}
-																		</th>
-																		<th>
-																			{t('InputMacroAddon:table-thread-status')}
-																		</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	{values.macroList.map((macro, i) => (
-																		<tr key={`macro-list-item-${i}`}>
-																			<td>{i + 1}</td>
-																			<td>
-																				{macro.macroLabel.length == 0 && (
-																					<em>None</em>
-																				)}
-																				{macro.macroLabel.length > 0 &&
-																					macro.macroLabel.slice(0, 32)}
-																				{macro.macroLabel.length > 32 && '...'}
-																			</td>
-																			<td>
-																				{t(
-																					MACRO_TYPES.find(
-																						(m) => m.value === macro.macroType,
-																					).label,
-																				)}
-																			</td>
-																			<td>
-																				{macro.useMacroTriggerButton == 1
-																					? t(
-																							'InputMacroAddon:input-macro-macro-trigger-type-button',
-																						)
-																					: t(
-																							'InputMacroAddon:input-macro-macro-trigger-type-pin',
-																						)}
-																			</td>
-																			{macro.useMacroTriggerButton == 0 ? (
-																				<td>
-																					<em>---</em>
-																				</td>
-																			) : (
-																				<td>{`${
-																					BUTTON_MASKS_OPTIONS.find(
-																						(b) =>
-																							b.value == macro.macroTriggerButton,
-																					).label
-																				}`}</td>
-																			)}
-																			<td>{macro.macroInputs.length}</td>
-																			<td>
-																				{macro.enabled == true ? (
-																					<Badge bg="success">
-																						{t(
-																							'InputMacroAddon:input-macro-macro-enabled-badge',
-																						)}
-																					</Badge>
-																				) : (
-																					<Badge bg="danger">
-																						{t(
-																							'InputMacroAddon:input-macro-macro-disabled-badge',
-																						)}
-																					</Badge>
-																				)}
-																			</td>
-																		</tr>
-																	))}
-																</tbody>
-															</Table>
-														</Col>
-													</Row>
-												</div>
-												<div className="alert alert-info">
-													{t('InputMacroAddon:input-macro-sub-header')}
-												</div>
-												<div className="card-section">
-													<Row>
-														<Col sm={10}>
-															<Form.Check
-																label={t(
-																	'InputMacroAddon:input-macro-board-led-enabled',
-																)}
-																type="switch"
-																id="InputMacroAddonBoardLed"
-																isInvalid={false}
-																checked={Boolean(values.macroBoardLedEnabled)}
-																onChange={(e) => {
-																	handleCheckbox('macroBoardLedEnabled', values);
-																	handleChange(e);
-																}}
-															/>
-														</Col>
-													</Row>
-												</div>
-												<div className="card-section">
-													<div className="d-flex justify-content-end">
-														<Button type="submit">
-															{t('Common:button-save-label')}
-														</Button>
-													</div>
-												</div>
-											</Section>
-										</Tab.Pane>
-										{values.macroList.map((macro, i) => (
-											<Tab.Pane
-												key={`macro-list-tab-pane-${i}`}
-												eventKey={`macro-${i}`}
-											>
-												<Section
-													heading
-													icon={<Lightbulb />}
-													title={t(
-														'InputMacroAddon:input-macro-macro-list-txt',
-														{ macroNumber: i + 1 },
-													)}
-												>
-													<div className="card-section">
-														<MacroComponent
-															key={`macroList[${i}]`}
-															id={`macroList[${i}]`}
-															value={values.macroList?.at(i)}
-															errors={errors?.macroList?.at(i)}
-															translation={t}
-															buttonLabelType={buttonLabelType}
-															handleChange={handleChange}
-															index={i}
-															setFieldValue={setFieldValue}
-															deleteMacroInput={(i) => {
-																macro.macroInputs.splice(i, 1);
-																setValues(values);
-															}}
-															buttonNames={buttonNames}
-															macroList={values.macroList}
-														/>
-													</div>
-													<div className="card-section">
-														<div className="d-flex justify-content-end">
-															<Button type="submit">
-																{t('Common:button-save-label')}
-															</Button>
-														</div>
-													</div>
-												</Section>
-											</Tab.Pane>
-										))}
-									</Tab.Content>
+						<Section
+							heading
+							icon={<Lightning />}
+							title={t('InputMacroAddon:input-macro-header-text')}
+						>
+							<div className="card-section">
+								<Row>
+									<Col>
+										<Table
+											striped
+											bordered
+											hover
+											className="text-center"
+										>
+											<thead>
+												<tr>
+													<th>#</th>
+													<th>
+														{t('InputMacroAddon:table-thread-label')}
+													</th>
+													<th>
+														{t('InputMacroAddon:table-thread-type')}
+													</th>
+													<th>
+														{t(
+															'InputMacroAddon:table-thread-assigned-to',
+														)}
+													</th>
+													<th>
+														{t('InputMacroAddon:table-thread-button')}
+													</th>
+													<th>
+														{t('InputMacroAddon:table-thread-actions')}
+													</th>
+													<th>
+														{t('InputMacroAddon:table-thread-status')}
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{values.macroList.map((macro, i) => (
+													<tr key={`macro-list-item-${i}`}>
+														<td>{i + 1}</td>
+														<td>
+															{macro.macroLabel.length == 0 && (
+																<em>None</em>
+															)}
+															{macro.macroLabel.length > 0 &&
+																macro.macroLabel.slice(0, 32)}
+															{macro.macroLabel.length > 32 && '...'}
+														</td>
+														<td>
+															{t(
+																MACRO_TYPES.find(
+																	(m) => m.value === macro.macroType,
+																).label,
+															)}
+														</td>
+														<td>
+															{macro.useMacroTriggerButton == 1
+																? t(
+																		'InputMacroAddon:input-macro-macro-trigger-type-button',
+																	)
+																: t(
+																		'InputMacroAddon:input-macro-macro-trigger-type-pin',
+																	)}
+														</td>
+														{macro.useMacroTriggerButton == 0 ? (
+															<td>
+																<em>---</em>
+															</td>
+														) : (
+															<td>{`${
+																BUTTON_MASKS_OPTIONS.find(
+																	(b) =>
+																		b.value == macro.macroTriggerButton,
+																).label
+															}`}</td>
+														)}
+														<td>{macro.macroInputs.length}</td>
+														<td>
+															{macro.enabled == true ? (
+																<Badge bg="success">
+																	{t(
+																		'InputMacroAddon:input-macro-macro-enabled-badge',
+																	)}
+																</Badge>
+															) : (
+																<Badge bg="danger">
+																	{t(
+																		'InputMacroAddon:input-macro-macro-disabled-badge',
+																	)}
+																</Badge>
+															)}
+														</td>
+													</tr>
+												))}
+											</tbody>
+										</Table>
+									</Col>
+								</Row>
+							</div>
+							<div className="alert alert-info">
+								{t('InputMacroAddon:input-macro-sub-header')}
+							</div>
+							<div className="card-section">
+								<Row>
+									<Col sm={10}>
+										<Form.Check
+											label={t(
+												'InputMacroAddon:input-macro-board-led-enabled',
+											)}
+											type="switch"
+											id="InputMacroAddonBoardLed"
+											isInvalid={false}
+											checked={Boolean(values.macroBoardLedEnabled)}
+											onChange={(e) => {
+												handleCheckbox('macroBoardLedEnabled', values);
+												handleChange(e);
+											}}
+										/>
+									</Col>
+								</Row>
+							</div>
+							<div className="card-section">
+								<div className="profile-tabs">
+									{values.macroList.map((macro, i) => (
+										<button
+											key={`macro-tab-${i}`}
+											type="button"
+											className={`profile-tab${macroSubTab === `macro-${i}` ? ' active' : ''}`}
+											onClick={() => setMacroSubTab(`macro-${i}`)}
+										>
+											{macro.macroLabel.length == 0
+												? t('InputMacroAddon:input-macro-macro-list-txt', {
+														macroNumber: i + 1,
+													})
+												: macro.macroLabel.length > 24
+													? macro.macroLabel.substr(0, 24) + '...'
+													: macro.macroLabel}
+										</button>
+									))}
 								</div>
-							</Row>
-						</Tab.Container>
+							</div>
+							{macroSubTab !== 'overview' && (() => {
+								const macroIndex = parseInt(macroSubTab.split('-')[1]);
+								return (
+									<MacroComponent
+										key={`macroList[${macroIndex}]`}
+										id={`macroList[${macroIndex}]`}
+										value={values.macroList?.at(macroIndex)}
+										errors={errors?.macroList?.at(macroIndex)}
+										translation={t}
+										buttonLabelType={buttonLabelType}
+										handleChange={handleChange}
+										index={macroIndex}
+										setFieldValue={setFieldValue}
+										deleteMacroInput={(i) => {
+											values.macroList[macroIndex].macroInputs.splice(i, 1);
+											setValues(values);
+										}}
+										buttonNames={buttonNames}
+										macroList={values.macroList}
+									/>
+								);
+							})()}
+							<div className="d-flex justify-content-end">
+								<Button type="submit">
+									{t('Common:button-save-label')}
+								</Button>
+							</div>
+						</Section>
 						<FormContext />
 					</Form>
 				</div>

@@ -10,18 +10,10 @@ import Footer from './components/layout/Footer';
 
 import HomePage from './Pages/HomePage';
 import PinMappingPage from './Pages/PinMapping';
-import PeripheralMappingPage from './Pages/PeripheralMappingPage';
-import ResetSettingsPage from './Pages/ResetSettingsPage';
 import SettingsPage from './Pages/SettingsPage';
-import DisplayConfigPage from './Pages/DisplayConfig';
-import LEDConfigPage from './Pages/LEDConfigPage';
-
 import AddonsConfigPage from './Pages/AddonsConfigPage';
-import BackupPage from './Pages/BackupPage';
 import ConfigurationPage from './Pages/ConfigurationPage';
 import PlaygroundPage from './Pages/PlaygroundPage';
-import InputMacroAddonPage from './Pages/InputMacroAddonPage';
-import ButtonLayoutConfigPage from './Pages/ButtonLayoutConfigPage';
 
 const App = () => {
 	const { getSystemStats } = useSystemStats();
@@ -42,18 +34,36 @@ const App = () => {
 							<Route path="/settings" element={<SettingsPage />} />
 							<Route path="/layout" element={<PinMappingPage />} />
 							<Route path="/pin-mapping" element={<Navigate to="/layout" replace />} />
-							<Route path="/button-layout" element={<ButtonLayoutConfigPage />} />
+							<Route
+								path="/button-layout"
+								element={<Navigate to="/configuration#button-layout" replace />}
+							/>
 							<Route
 								path="/peripheral-mapping"
-								element={<PeripheralMappingPage />}
+								element={<Navigate to="/configuration#peripheral-mapping" replace />}
 							/>
-							<Route path="/reset-settings" element={<ResetSettingsPage />} />
-							<Route path="/led-config" element={<LEDConfigPage />} />
-							<Route path="/display-config" element={<DisplayConfigPage />} />
+							<Route
+								path="/reset-settings"
+								element={<Navigate to="/configuration#reset-settings" replace />}
+							/>
+							<Route
+								path="/led-config"
+								element={<Navigate to="/configuration#led-config" replace />}
+							/>
+							<Route
+								path="/display-config"
+								element={<Navigate to="/configuration#display-config" replace />}
+							/>
 							<Route path="/add-ons" element={<AddonsConfigPage />} />
-							<Route path="/backup" element={<BackupPage />} />
+							<Route
+								path="/backup"
+								element={<Navigate to="/configuration#backup" replace />}
+							/>
 							<Route path="/playground" element={<PlaygroundPage />} />
-							<Route path="/macro" element={<InputMacroAddonPage />} />
+							<Route
+								path="/macro"
+								element={<Navigate to="/configuration#macro" replace />}
+							/>
 							<Route path="/configuration" element={<ConfigurationPage />} />
 						</Routes>
 					</div>

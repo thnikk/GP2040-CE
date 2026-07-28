@@ -11,7 +11,7 @@ export default {
 	'input-macro-macro-uses-buttons':
 		'Use Macro Button + Gamepad Button to Trigger',
 	'input-macro-macro-button-pin-plus': 'Button Assignment:',
-	'input-macro-header-text': 'Macros Overview',
+	'input-macro-header-text': 'Macros',
 	'input-macro-macro-list-txt': 'Macro {{macroNumber}}',
 	'input-macro-duration-label': 'Duration',
 	'input-macro-wait-duration-label': 'Wait Duration',
