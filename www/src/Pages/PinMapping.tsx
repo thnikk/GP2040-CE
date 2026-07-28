@@ -161,10 +161,13 @@ const PinSection = memo(function PinSection({
 			profileNumber: profileIndex + 1,
 		});
 
-	const { updateUsedPins, buttonLabels } = useContext(AppContext);
+	const { updateUsedPins, buttonLabels, useNintendoLayout } = useContext(AppContext);
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
-	const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
+	let buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
+	if (buttonLabelType === 'switch' && !useNintendoLayout) {
+		buttonNames = { ...buttonNames, B1: buttonNames.B2, B2: buttonNames.B1, B3: buttonNames.B4, B4: buttonNames.B3 };
+	}
 
 	const { showToast } = useToast();
 

@@ -498,7 +498,7 @@ const schema = yup.object().shape({
 	usbProductID: yup.string().label('USB Product ID').validateUSBHexID(),
 });
 
-const FormContext = ({ setButtonLabels, setInputMode }) => {
+const FormContext = ({ setButtonLabels, setInputMode, setUseNintendoLayout }) => {
 	const { values, setValues } = useFormikContext();
 	const { setLoading } = useContext(AppContext);
 
@@ -507,6 +507,7 @@ const FormContext = ({ setButtonLabels, setInputMode }) => {
 			const options = await WebApi.getGamepadOptions(setLoading);
 			setValues(options);
 			setInputMode(options.inputMode);
+			setUseNintendoLayout(!!options.useNintendoLayout);
 			setButtonLabels({
 				swapTpShareLabels:
 					options.switchTpShareForDs4 === 1 && options.inputMode === 4,
@@ -537,6 +538,7 @@ const FormContext = ({ setButtonLabels, setInputMode }) => {
 			values.ps4ControllerIDMode = parseInt(values.ps4ControllerIDMode);
 
 		setInputMode(values.inputMode);
+		setUseNintendoLayout(!!values.useNintendoLayout);
 		setButtonLabels({
 			swapTpShareLabels:
 				values.switchTpShareForDs4 === 1 && values.inputMode === 4,
@@ -569,6 +571,7 @@ export default function SettingsPage() {
 	const {
 		buttonLabels,
 		setButtonLabels,
+		setUseNintendoLayout,
 		setInputMode,
 		getAvailablePeripherals,
 		updatePeripherals,
@@ -1906,6 +1909,7 @@ export default function SettingsPage() {
 							</Tab.Container>
 							<FormContext
 								setButtonLabels={setButtonLabels}
+								setUseNintendoLayout={setUseNintendoLayout}
 								setInputMode={setInputMode}
 							/>
 						</Form>

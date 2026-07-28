@@ -287,10 +287,13 @@ export default function BoardSVG({
 	onTestToggle,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const { buttonLabels } = useContext(AppContext);
+	const { buttonLabels, useNintendoLayout } = useContext(AppContext);
 	const { buttonLabelType, swapTpShareLabels } = buttonLabels;
 	const CURRENT_BUTTONS = getButtonLabels(buttonLabelType, swapTpShareLabels);
-    const buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
+	let buttonNames = omit(CURRENT_BUTTONS, ['label', 'value']);
+	if (buttonLabelType === 'switch' && !useNintendoLayout) {
+		buttonNames = { ...buttonNames, B1: buttonNames.B2, B2: buttonNames.B1, B3: buttonNames.B4, B4: buttonNames.B3 };
+	}
     const originalFills = useRef<Map<string, { fill: string; strokeWidth: string }>>(new Map());
 
     const pins = useProfilesStore(

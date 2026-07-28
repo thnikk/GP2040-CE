@@ -102,6 +102,7 @@ const inputModeToLabelType = (inputMode) => {
 		case 5:
 			return 'xinput';
 		case 1:
+		case 15:
 			return 'switch';
 		case 2:
 			return 'ps3';
@@ -127,6 +128,7 @@ export const AppContextProvider = ({ children, ...props }) => {
 	const localValue2 =
 		parseBoolean(localStorage.getItem('swapTpShareLabels')) || false;
 	const [inputMode, setInputMode] = useState(0);
+	const [useNintendoLayout, setUseNintendoLayout] = useState(true);
 	const [buttonLabels, _setButtonLabels] = useState({
 		swapTpShareLabels: localValue2,
 		buttonLabelType: inputModeToLabelType(0),
@@ -158,6 +160,9 @@ export const AppContextProvider = ({ children, ...props }) => {
 				const options = await WebApi.getGamepadOptions(setLoading);
 				if (options?.inputMode !== undefined) {
 					setInputMode(options.inputMode);
+				}
+				if (options?.useNintendoLayout !== undefined) {
+					setUseNintendoLayout(!!options.useNintendoLayout);
 				}
 			} catch {
 				// input mode fetch failed, use default
@@ -337,6 +342,7 @@ export const AppContextProvider = ({ children, ...props }) => {
 			{...props}
 			value={{
 				buttonLabels,
+				useNintendoLayout,
 				inputMode,
 				gradientNormalColor1,
 				gradientNormalColor2,
@@ -349,6 +355,7 @@ export const AppContextProvider = ({ children, ...props }) => {
 				expansionPins,
 				getSelectedPeripheral,
 				setButtonLabels,
+				setUseNintendoLayout,
 				setInputMode,
 				setGradientNormalColor1,
 				setGradientNormalColor2,
