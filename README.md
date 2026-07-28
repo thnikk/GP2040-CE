@@ -25,9 +25,11 @@ This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes ar
 
 ## New Features
 
-<p align="center">
-  <img alt="Web Config Screenshot" src="assets/web-config.png" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" />
-</p>
+### Rebuilt Web Config
+
+![Web Config](assets/web-config.png)
+
+The web config has been reworked with a focus on configuration of existing boards over broader compatiblity with custom boards.
 
 ### SVG Remapper
 Instead of using pin remapping, a board SVG can be used to define pins for their positions on the board and that will be displayed on the pin remapping page of the web config instead of the list of pins. This is a lot more intuitive for remapping, since it mirrors what you see on the controller.
@@ -35,22 +37,16 @@ Instead of using pin remapping, a board SVG can be used to define pins for their
 ### Board LED addon
 The Waveshare RP2040-Zero includes an on-board LED and this addon sets the color based on the input mode.
 
-### Revamped Web Config
-The web config has been streamlined for configuring a premade board rather than configuring a custom board.
-
 ### Per-profile Keyboard Mapping
 Unique keyboard mapping for each profile.
 
 ### Multi-key Keyboard Mapping
 Map each button to a key and multiple modifiers.
 
-### Keyboard Widget
+### Mapping widgets
+There are controller and keyboard widgets for easily selecting mapping for keys.
 
-<p align="center">
-  <img alt="Keyboard widget" src="assets/keyboard-widget.png" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" />
-</p>
-
-Instead of setting keys with a dropdown, you can just click on the keyboard keys you'd like to use.
+![Widgets](assets/widgets.png)
 
 ## Installation
 
