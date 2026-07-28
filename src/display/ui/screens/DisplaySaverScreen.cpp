@@ -203,9 +203,31 @@ void DisplaySaverScreen::initStarsScene() {
     occasionalStarX = 3 + (rand() % (SCREEN_WIDTH - 6));
     occasionalStarY = 3 + (rand() % (SCREEN_HEIGHT - 6));
     nextStarTime = getMillis() + 2000 + (rand() % 3000);
+
+    const int16_t MOON_CX = 64, MOON_CY = 32, MOON_R2 = 30 * 30;
+    const int16_t STAR_MIN_DIST2 = 12 * 12;
+    const int16_t MARGIN = 2;
+    const int16_t X_MAX = SCREEN_WIDTH - 1 - MARGIN;
+    const int16_t Y_MAX = SCREEN_HEIGHT - 1 - MARGIN;
+
     for (uint8_t i = 0; i < NUM_STARS; ++i) {
-        stars[i][0] = rand() % SCREEN_WIDTH;
-        stars[i][1] = rand() % SCREEN_HEIGHT;
+        bool valid = false;
+        for (uint8_t attempt = 0; attempt < 50; ++attempt) {
+            int16_t x = MARGIN + (rand() % (X_MAX - MARGIN + 1));
+            int16_t y = MARGIN + (rand() % (Y_MAX - MARGIN + 1));
+            int16_t dx = x - MOON_CX, dy = y - MOON_CY;
+            if (dx * dx + dy * dy < MOON_R2) continue;
+            bool tooClose = false;
+            for (uint8_t j = 0; j < i; ++j) {
+                int16_t dxs = x - stars[j][0], dys = y - stars[j][1];
+                if (dxs * dxs + dys * dys < STAR_MIN_DIST2) {
+                    tooClose = true;
+                    break;
+                }
+            }
+            if (!tooClose) { stars[i][0] = x; stars[i][1] = y; valid = true; break; }
+        }
+        if (!valid) { stars[i][0] = MARGIN + (rand() % (X_MAX - MARGIN + 1)); stars[i][1] = MARGIN + (rand() % (Y_MAX - MARGIN + 1)); }
     }
 }
 
