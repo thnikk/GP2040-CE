@@ -10,11 +10,14 @@ import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
 import omit from 'lodash/omit';
 
+import PillToggle from '../components/ui/PillToggle';
 import CustomSelect from '../components/form/CustomSelect';
+import { Tooltip, TooltipTrigger } from '../components/ui/Tooltip';
 import { AppContext } from '../Contexts/AppContext';
 import { useToast } from '../Contexts/ToastContext';
 import Section from '../components/shared/Section';
 import WebApi from '../Services/WebApi';
+import InfoCircle from '../Icons/InfoCircle';
 import Lightning from '../Icons/Lightning';
 import {
 	getButtonLabels,
@@ -273,100 +276,97 @@ const MacroComponent = (props) => {
 				</Row>
 			</div>
 			<div className="card-section">
-				<Row>
+				<Row className="align-items-center gx-3">
 					<Col sm={'auto'}>
-						<Form.Check
-							name={`${key}.interruptible`}
-							label={t('InputMacroAddon:input-macro-macro-interruptible')}
-							type="switch"
-							className="form-select-sm"
+						<PillToggle
 							checked={interruptible}
-							onChange={(e) => {
-								setFieldValue(`${key}.interruptible`, e.target.checked ? 1 : 0);
-							}}
-							isInvalid={false}
+							onChange={(v) => setFieldValue(`${key}.interruptible`, v ? 1 : 0)}
+							label={
+								<div className="d-flex gap-1 align-items-center">
+									<span>{t('InputMacroAddon:input-macro-macro-interruptible')}</span>
+									<TooltipTrigger
+										placement="bottom"
+										content={<Tooltip>{t('InputMacroAddon:input-macro-macro-interruptible-tooltip')}</Tooltip>}
+									>
+										<InfoCircle />
+									</TooltipTrigger>
+								</div>
+							}
 						/>
 					</Col>
-				</Row>
-				<Row>
 					<Col sm={'auto'}>
-						<Form.Check
-							name={`${key}.exclusive`}
-							label={t('InputMacroAddon:input-macro-macro-exclusive')}
-							type="switch"
-							className="form-select-sm"
-							disabled={interruptible}
+						<PillToggle
 							checked={exclusive}
-							onChange={(e) => {
-								setFieldValue(`${key}.exclusive`, e.target.checked ? 1 : 0);
-							}}
-							isInvalid={false}
+							disabled={interruptible}
+							onChange={(v) => setFieldValue(`${key}.exclusive`, v ? 1 : 0)}
+							label={
+								<div className="d-flex gap-1 align-items-center">
+									<span>{t('InputMacroAddon:input-macro-macro-exclusive')}</span>
+									<TooltipTrigger
+										placement="bottom"
+										content={<Tooltip>{t('InputMacroAddon:input-macro-macro-exclusive-tooltip')}</Tooltip>}
+									>
+										<InfoCircle />
+									</TooltipTrigger>
+								</div>
+							}
 						/>
 					</Col>
-				</Row>
-				<Row mt={2} className="align-items-center">
 					<Col sm={'auto'}>
-						<Form.Check
-							name={`${key}.useMacroTriggerButton`}
-							label={t('InputMacroAddon:input-macro-macro-uses-buttons')}
-							type="switch"
-							className="form-select-sm"
+						<PillToggle
 							checked={useMacroTriggerButton}
-							onChange={(e) => {
-								setFieldValue(
-									`${key}.useMacroTriggerButton`,
-									e.target.checked ? 1 : 0,
-								);
-							}}
-							isInvalid={false}
+							onChange={(v) => setFieldValue(`${key}.useMacroTriggerButton`, v ? 1 : 0)}
+							label={t('InputMacroAddon:input-macro-macro-uses-buttons')}
 						/>
 					</Col>
-					{useMacroTriggerButton == true && (
-						<Row>
-							<Col sm={'auto'}>
-								{t('InputMacroAddon:input-macro-macro-button-pin-plus')}
-							</Col>
-							<Col sm={'auto'}>
-								<ButtonMasksComponent
-									className="col-sm-auto"
-									value={macroTriggerButton}
-									onChange={(e) => {
-										setFieldValue(
-											`${key}.macroTriggerButton`,
-											parseInt(e.target.value),
-										);
-									}}
-									buttonLabelType={buttonLabelType}
-									translation={t}
-									buttonMasks={BUTTON_MASKS_OPTIONS.filter(
-										(b, i) =>
-											macroList.find(
-												(m, macroIdx) =>
-													index != macroIdx &&
-													m.useMacroTriggerButton &&
-													m.macroTriggerButton === b.value,
-											) === undefined,
-									)}
-								/>
-							</Col>
-						</Row>
-					)}
-				</Row>
-				<Row>
 					<Col sm={'auto'}>
-						<Form.Check
-							name={`${key}.showFrames`}
-							label={t('InputMacroAddon:input-macro-macro-show-frames')}
-							type="switch"
-							className="form-select-sm"
+						<PillToggle
 							checked={showFrames}
-							onChange={(e) => {
-								setFieldValue(`${key}.showFrames`, e.target.checked ? 1 : 0);
-							}}
-							isInvalid={false}
+							onChange={(v) => setFieldValue(`${key}.showFrames`, v ? 1 : 0)}
+							label={
+								<div className="d-flex gap-1 align-items-center">
+									<span>{t('InputMacroAddon:input-macro-macro-show-frames')}</span>
+									<TooltipTrigger
+										placement="bottom"
+										content={<Tooltip>{t('InputMacroAddon:input-macro-macro-show-frames-tooltip')}</Tooltip>}
+									>
+										<InfoCircle />
+									</TooltipTrigger>
+								</div>
+							}
 						/>
 					</Col>
 				</Row>
+				{useMacroTriggerButton == true && (
+					<Row className="align-items-center mt-2">
+						<Col sm={'auto'}>
+							{t('InputMacroAddon:input-macro-macro-button-pin-plus')}
+						</Col>
+						<Col sm={'auto'}>
+							<ButtonMasksComponent
+								className="col-sm-auto"
+								value={macroTriggerButton}
+								onChange={(e) => {
+									setFieldValue(
+										`${key}.macroTriggerButton`,
+										parseInt(e.target.value),
+									);
+								}}
+								buttonLabelType={buttonLabelType}
+								translation={t}
+								buttonMasks={BUTTON_MASKS_OPTIONS.filter(
+									(b, i) =>
+										macroList.find(
+											(m, macroIdx) =>
+												index != macroIdx &&
+												m.useMacroTriggerButton &&
+												m.macroTriggerButton === b.value,
+										) === undefined,
+								)}
+							/>
+						</Col>
+					</Row>
+				)}
 			</div>
 			<div className="card-section">
 				<Row className="pb-1 fw-semibold flex-nowrap">

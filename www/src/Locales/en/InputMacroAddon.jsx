@@ -3,13 +3,13 @@ export default {
 	'input-macro-macro-enabled': 'Enabled',
 	'input-macro-macro-enabled-badge': 'Enabled',
 	'input-macro-macro-disabled-badge': 'Disabled',
-	'input-macro-macro-exclusive':
-		'Exclusive (Cannot Be Switched to Another Macro)',
-	'input-macro-macro-interruptible':
-		'Interruptible (User Input Cancels the Macro)',
-	'input-macro-macro-show-frames': 'Show Frames (1 Frame = 16.666 ms)',
-	'input-macro-macro-uses-buttons':
-		'Use Macro Button + Gamepad Button to Trigger',
+	'input-macro-macro-exclusive': 'Exclusive',
+	'input-macro-macro-exclusive-tooltip': 'Cannot be switched to another macro',
+	'input-macro-macro-interruptible': 'Interruptible',
+	'input-macro-macro-interruptible-tooltip': 'User input cancels the macro',
+	'input-macro-macro-show-frames': 'Show Frames',
+	'input-macro-macro-show-frames-tooltip': 'Display time in frames instead of milliseconds',
+	'input-macro-macro-uses-buttons': 'Use Trigger Button',
 	'input-macro-macro-button-pin-plus': 'Button Assignment:',
 	'input-macro-header-text': 'Macros',
 	'input-macro-macro-list-txt': 'Macro {{macroNumber}}',

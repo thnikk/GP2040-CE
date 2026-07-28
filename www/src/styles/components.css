@@ -122,6 +122,50 @@
 	flex-shrink: 0;
 }
 
+.pill-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 5px 10px;
+	border: 1px solid var(--gp-border-color);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--gp-body-color);
+	font-size: 1rem;
+	font-weight: 800;
+	line-height: 1.4;
+	cursor: pointer;
+	user-select: none;
+	transition: background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
+	opacity: 0.4;
+	white-space: nowrap;
+}
+
+.pill-toggle:hover {
+	opacity: 0.7;
+}
+
+.pill-toggle.active {
+	background: var(--gp-nord-14);
+	border-color: var(--gp-nord-14);
+	color: var(--gp-nord-0);
+	opacity: 1;
+}
+
+.pill-toggle.active:hover {
+	opacity: 0.85;
+}
+
+.pill-toggle:disabled {
+	opacity: 0.2;
+	cursor: not-allowed;
+}
+
+.pill-toggle:disabled {
+	opacity: 0.2;
+	cursor: not-allowed;
+}
+
 .btn.justify-content-start {
 	justify-content: flex-start;
 }
