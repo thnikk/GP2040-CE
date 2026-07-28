@@ -44,7 +44,7 @@ export default {
 		'inverted-label': 'Inverted',
 		'power-management-header': 'Power Management',
 		'turn-off-when-suspended': 'Turn Off When Suspended',
-		'input-history-label': 'Input History',
+		'input-history-label': 'Enabled',
 		'display-state': {
 			'disabled': 'Disabled',
 			'enabled': 'Enabled'

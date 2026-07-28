@@ -20,6 +20,7 @@ import { useToast } from '../Contexts/ToastContext';
 
 import ContextualHelpOverlay from '../components/shared/ContextualHelpOverlay';
 import CustomSelect from '../components/form/CustomSelect';
+import PillToggle from '../components/ui/PillToggle';
 import PinSelectList from '../components/pins/PinSelectList';
 import Section from '../components/shared/Section';
 import AlertIcon from '../Icons/Alert';
@@ -1573,20 +1574,12 @@ export default function SettingsPage() {
 																	{errors.dpadMode}
 																</Form.Control.Feedback>
 															</div>
-															<Form.Check
+															<PillToggle
+																checked={Boolean(values.fourWayMode)}
+																onChange={(v) => setFieldValue('fourWayMode', v ? 1 : 0)}
 																label={t(
 																	'SettingsPage:4-way-joystick-mode-label',
 																)}
-																type="switch"
-																id="fourWayMode"
-																isInvalid={false}
-																checked={Boolean(values.fourWayMode)}
-																onChange={(e) => {
-																	setFieldValue(
-																		'fourWayMode',
-																		e.target.checked ? 1 : 0,
-																	);
-																}}
 															/>
 														</div>
 													</div>

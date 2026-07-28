@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import Button from '../components/ui/Button';
 import Form from '../components/ui/Form';
+import PillToggle from '../components/ui/PillToggle';
 import DisplayMonitor from '../Icons/DisplayMonitor';
 import { Formik, useFormikContext, Field } from 'formik';
 import chunk from 'lodash/chunk';
@@ -626,107 +627,47 @@ export default function DisplayConfigPage() {
 													</div>
 												)}
 												<h1>{t('DisplayConfig:section.status-layout-header')}</h1>
-												<div className="d-flex flex-wrap gap-3 justify-content-center">
-													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
-														<Form.Check className="d-inline-flex"
-															label={t(
-																'DisplayConfig:form.status-header.input-mode',
-															)}
-															type="switch"
-															name="inputMode"
-															isInvalid={false}
+												<div className="d-flex flex-wrap gap-3">
+													<div className="pill-toggle-fill">
+														<PillToggle
 															checked={Boolean(values.inputMode)}
-															onChange={(e) => {
-																setFieldValue(
-																	'inputMode',
-																	e.target.checked ? 1 : 0,
-																);
-															}}
+															onChange={(v) => setFieldValue('inputMode', v ? 1 : 0)}
+															label={t('DisplayConfig:form.status-header.input-mode')}
 														/>
 													</div>
-													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
-														<Form.Check className="d-inline-flex"
-															label={t(
-																'DisplayConfig:form.status-header.turbo-mode',
-															)}
-															type="switch"
-															name="turboMode"
-															isInvalid={false}
+													<div className="pill-toggle-fill">
+														<PillToggle
 															checked={Boolean(values.turboMode)}
-															onChange={(e) => {
-																setFieldValue(
-																	'turboMode',
-																	e.target.checked ? 1 : 0,
-																);
-															}}
+															onChange={(v) => setFieldValue('turboMode', v ? 1 : 0)}
+															label={t('DisplayConfig:form.status-header.turbo-mode')}
 														/>
 													</div>
-													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
-														<Form.Check className="d-inline-flex"
-															label={t(
-																'DisplayConfig:form.status-header.dpad-mode',
-															)}
-															type="switch"
-															name="dpadMode"
-															isInvalid={false}
+													<div className="pill-toggle-fill">
+														<PillToggle
 															checked={Boolean(values.dpadMode)}
-															onChange={(e) => {
-																setFieldValue(
-																	'dpadMode',
-																	e.target.checked ? 1 : 0,
-																);
-															}}
+															onChange={(v) => setFieldValue('dpadMode', v ? 1 : 0)}
+															label={t('DisplayConfig:form.status-header.dpad-mode')}
 														/>
 													</div>
-													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
-														<Form.Check className="d-inline-flex"
-															label={t(
-																'DisplayConfig:form.status-header.socd-mode',
-															)}
-															type="switch"
-															name="displaySocdMode"
-															isInvalid={false}
+													<div className="pill-toggle-fill">
+														<PillToggle
 															checked={Boolean(values.socdMode)}
-															onChange={(e) => {
-																setFieldValue(
-																	'socdMode',
-																	e.target.checked ? 1 : 0,
-																);
-															}}
+															onChange={(v) => setFieldValue('socdMode', v ? 1 : 0)}
+															label={t('DisplayConfig:form.status-header.socd-mode')}
 														/>
 													</div>
-													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
-														<Form.Check className="d-inline-flex"
-															label={t(
-																'DisplayConfig:form.status-header.macro-mode',
-															)}
-															type="switch"
-															name="macroMode"
-															isInvalid={false}
+													<div className="pill-toggle-fill">
+														<PillToggle
 															checked={Boolean(values.macroMode)}
-															onChange={(e) => {
-																setFieldValue(
-																	'macroMode',
-																	e.target.checked ? 1 : 0,
-																);
-															}}
+															onChange={(v) => setFieldValue('macroMode', v ? 1 : 0)}
+															label={t('DisplayConfig:form.status-header.macro-mode')}
 														/>
 													</div>
-													<div className="d-flex justify-content-center" style={{ flex: '1 0 130px' }}>
-														<Form.Check className="d-inline-flex"
-															label={t(
-																'DisplayConfig:form.status-header.profile-mode',
-															)}
-															type="switch"
-															name="profileMode"
-															isInvalid={false}
+													<div className="pill-toggle-fill">
+														<PillToggle
 															checked={Boolean(values.profileMode)}
-															onChange={(e) => {
-																setFieldValue(
-																	'profileMode',
-																	e.target.checked ? 1 : 0,
-																);
-															}}
+															onChange={(v) => setFieldValue('profileMode', v ? 1 : 0)}
+															label={t('DisplayConfig:form.status-header.profile-mode')}
 														/>
 													</div>
 												</div>
