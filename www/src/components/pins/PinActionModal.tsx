@@ -19,7 +19,7 @@ import Palette from '../../Icons/Palette';
 
 const MODIFIER_MIN = 0xe0;
 const isModifierKey = (value: number) => value >= MODIFIER_MIN && value <= 0xe7;
-const WIDGET_BREAKPOINT = 992;
+const WIDGET_BREAKPOINT = 799;
 const WIDGET_HEIGHT_BREAKPOINT = 700;
 const bitCount = (n: number) => {
 	let c = 0;
