@@ -2232,6 +2232,7 @@ std::string getBoardLedModeColors()
     addColor("12", BOARD_LEDS_RGB_COLOR_XBOXORIGINAL);
     addColor("13", BOARD_LEDS_RGB_COLOR_PS5);
     addColor("14", BOARD_LEDS_RGB_COLOR_GENERIC);
+    addColor("15", BOARD_LEDS_RGB_COLOR_SWITCH_PRO);
     return serialize_json(doc);
 }
 

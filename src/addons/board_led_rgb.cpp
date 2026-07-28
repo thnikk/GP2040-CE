@@ -39,6 +39,7 @@ uint32_t BoardLedRgbAddon::colorForInputMode(InputMode mode) {
     switch (mode) {
         case INPUT_MODE_XINPUT:      return BOARD_LEDS_RGB_COLOR_XINPUT;
         case INPUT_MODE_SWITCH:      return BOARD_LEDS_RGB_COLOR_SWITCH;
+        case INPUT_MODE_SWITCH_PRO:  return BOARD_LEDS_RGB_COLOR_SWITCH_PRO;
         case INPUT_MODE_PS3:         return BOARD_LEDS_RGB_COLOR_PS3;
         case INPUT_MODE_PS4:         return BOARD_LEDS_RGB_COLOR_PS4;
         case INPUT_MODE_PS5:         return BOARD_LEDS_RGB_COLOR_PS5;
