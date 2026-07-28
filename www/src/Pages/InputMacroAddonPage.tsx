@@ -3,7 +3,6 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Col from '../components/ui/Col';
 import Form from '../components/ui/Form';
-import InputGroup from '../components/ui/InputGroup';
 import Row from '../components/ui/Row';
 import Table from '../components/ui/Table';
 import { Formik, useFormikContext } from 'formik';
@@ -11,6 +10,7 @@ import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
 import omit from 'lodash/omit';
 
+import CustomSelect from '../components/form/CustomSelect';
 import { AppContext } from '../Contexts/AppContext';
 import { useToast } from '../Contexts/ToastContext';
 import Section from '../components/shared/Section';
@@ -124,111 +124,66 @@ const ButtonMasksComponent = (props) => {
 const MacroInputComponent = (props) => {
 	const {
 		value: { duration, buttonMask, waitDuration },
-		buttonLabelType,
 		showFrames,
 		errors,
 		id: key,
-		translation: t,
 		deleteMacroInput,
 		setFieldValue,
 	} = props;
 
 	return (
-		<Row className="align-content-start align-items-center row-gap-2 gx-2 pb-2">
-			<Col xs="auto" style={{ width: 150 }}>
-				<InputGroup size="sm">
-					<Form.Control
-						className="text-center"
-						type="number"
-						placeholder={t('InputMacroAddon:input-macro-duration-label')}
-						name={`${key}.duration`}
-						value={duration / (showFrames ? ONE_FRAME_US : 1000)}
-						step="any"
-						error={errors?.duration}
-						isInvalid={errors?.duration}
-						onChange={(e) => {
-							setFieldValue(
-								`${key}.duration`,
-								e.target.value * (showFrames ? ONE_FRAME_US : 1000),
-							);
-						}}
-						min={0}
-					/>
-					<InputGroup.Text>
-						{t(
-							showFrames
-								? 'InputMacroAddon:input-macro-time-label-frames'
-								: 'InputMacroAddon:input-macro-time-label-ms',
-						)}
-					</InputGroup.Text>
-				</InputGroup>
-			</Col>
-			{BUTTON_MASKS_OPTIONS.filter((mask) => buttonMask & mask.value).map(
-				(mask, i1) => (
-					<Col xs="auto" key={`${key}.buttonMask[${i1}]`}>
-						<ButtonMasksComponent
-							id={`${key}.buttonMask[${i1}]`}
-							value={buttonMask & mask.value}
-							onChange={(e) => {
-								setFieldValue(
-									`${key}.buttonMask`,
-									(buttonMask ^ mask.value) | e.target.value,
-								);
-							}}
-							error={errors?.buttonMask}
-							isInvalid={errors?.buttonMask}
-							translation={t}
-							buttonLabelType={buttonLabelType}
-							buttonMasks={BUTTON_MASKS_OPTIONS}
-						/>
-					</Col>
-				),
-			)}
-			<Col xs="auto">
-				<ButtonMasksComponent
-					id={`${key}.buttonMaskPlaceholder`}
-					className="col-sm-auto"
-					value={0}
+		<Row className="align-items-center gx-2 pb-2 flex-nowrap">
+			<Col xs="auto" style={{ width: 140 }}>
+				<Form.Control
+					className="text-center"
+					type="number"
+					name={`${key}.duration`}
+					value={duration / (showFrames ? ONE_FRAME_US : 1000)}
+					step="any"
+					error={errors?.duration}
+					isInvalid={errors?.duration}
 					onChange={(e) => {
-						setFieldValue(`${key}.buttonMask`, buttonMask | e.target.value);
+						setFieldValue(
+							`${key}.duration`,
+							e.target.value * (showFrames ? ONE_FRAME_US : 1000),
+						);
 					}}
-					error={errors?.buttonMask}
-					isInvalid={errors?.buttonMask}
-					translation={t}
-					buttonLabelType={buttonLabelType}
-					buttonMasks={BUTTON_MASKS_OPTIONS}
+					min={0}
 				/>
 			</Col>
-			<Col xs="auto" style={{ width: 290 }}>
-				<InputGroup size="sm">
-					<InputGroup.Text>
-						{t('InputMacroAddon:input-macro-release-and-wait-label')}
-					</InputGroup.Text>
-					<Form.Control
-						className="text-center d-flex"
-						type="number"
-						placeholder={t('InputMacroAddon:input-macro-wait-duration-label')}
-						name={`${key}.waitDuration`}
-						value={waitDuration / (showFrames ? ONE_FRAME_US : 1000)}
-						step="any"
-						error={errors?.waitDuration}
-						isInvalid={errors?.waitDuration}
-						onChange={(e) => {
-							setFieldValue(
-								`${key}.waitDuration`,
-								e.target.value * (showFrames ? ONE_FRAME_US : 1000),
-							);
-						}}
-						min={0}
-					/>
-					<InputGroup.Text>
-						{t(
-							showFrames
-								? 'InputMacroAddon:input-macro-time-label-frames'
-								: 'InputMacroAddon:input-macro-time-label-ms',
-						)}
-					</InputGroup.Text>
-				</InputGroup>
+			<Col xs="auto" style={{ flex: '1 1 auto', minWidth: 200 }}>
+				<CustomSelect
+					isMulti
+					isClearable
+					options={BUTTON_MASKS_OPTIONS.filter((o) => o.value !== 0)}
+					value={BUTTON_MASKS_OPTIONS.filter(
+						(o) => o.value !== 0 && buttonMask & o.value,
+					)}
+					onChange={(selected) => {
+						const mask = selected
+							? selected.reduce((acc, opt) => acc | opt.value, 0)
+							: 0;
+						setFieldValue(`${key}.buttonMask`, mask);
+					}}
+				/>
+			</Col>
+			<Col xs="auto" style={{ width: 140 }}>
+				<Form.Control
+					className="text-center"
+					type="number"
+					name={`${key}.waitDuration`}
+					value={waitDuration / (showFrames ? ONE_FRAME_US : 1000)}
+					step="any"
+					error={errors?.waitDuration}
+					isInvalid={errors?.waitDuration}
+					onChange={(e) => {
+						setFieldValue(
+							`${key}.waitDuration`,
+							e.target.value * (showFrames ? ONE_FRAME_US : 1000),
+						);
+					}}
+					min={0}
+				/>
 			</Col>
 			<Col xs="auto">
 				<Button size="sm" onClick={deleteMacroInput}>
@@ -414,6 +369,18 @@ const MacroComponent = (props) => {
 				</Row>
 			</div>
 			<div className="card-section">
+				<Row className="pb-1 fw-semibold flex-nowrap">
+					<Col xs="auto" style={{ width: 140 }}>
+						{t('InputMacroAddon:input-macro-duration-label')}
+					</Col>
+					<Col xs="auto" style={{ flex: '1 1 auto', minWidth: 200 }}>
+						{t('InputMacroAddon:table-thread-button')}
+					</Col>
+					<Col xs="auto" style={{ width: 140 }}>
+						{t('InputMacroAddon:input-macro-release-and-wait-label')}
+					</Col>
+					<Col xs="auto" />
+				</Row>
 				{macroInputs.map((macroInput, a) => (
 					<MacroInputComponent
 						key={`${key}.macroInputs[${a}]`}
@@ -421,10 +388,7 @@ const MacroComponent = (props) => {
 						value={macroInput}
 						errors={errors?.macroInputs?.at(a)}
 						showFrames={showFrames}
-						translation={t}
-						buttonLabelType={buttonLabelType}
 						deleteMacroInput={() => deleteMacroInput(a)}
-						handleChange={handleChange}
 						setFieldValue={setFieldValue}
 					/>
 				))}
@@ -432,6 +396,7 @@ const MacroComponent = (props) => {
 					<Col sm={3}>
 						{macroInputs.length < MACRO_INPUTS_MAX ? (
 							<Button
+								type="button"
 								variant="success"
 								className="col px-2"
 								size="sm"
@@ -482,7 +447,7 @@ export default function MacrosPage() {
 		values[name] = values[name] === 1 ? 0 : 1;
 	};
 
-	const [macroSubTab, setMacroSubTab] = useState('overview');
+	const [macroSubTab, setMacroSubTab] = useState('macro-0');
 
 	return (
 		<Formik
