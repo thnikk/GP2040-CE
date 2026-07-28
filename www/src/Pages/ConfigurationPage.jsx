@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import Section from '../components/shared/Section';
+import Flask from '../Icons/Flask';
 
 const configLinks = [
 	{ to: '/peripheral-mapping', labelKey: 'Navigation:peripheral-mapping-label' },
@@ -19,7 +20,7 @@ export default function ConfigurationPage() {
 	const { t } = useTranslation('');
 
 	return (
-		<Section title={t('Navigation:config-label')}>
+		<Section heading icon={<Flask />} title={t('Navigation:config-label')}>
 			<div className="alert alert-danger">{t('ConfigurationPage:warning-text')}</div>
 			<div className="d-flex flex-column gap-2">
 				{configLinks.map((link) => (
