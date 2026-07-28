@@ -14,7 +14,6 @@ export default function ResetSettingsPage() {
 
 		if (window.confirm(t('ResetSettings:confirm-text'))) {
 			const result = await WebApi.resetSettings();
-			console.log(result);
 			setTimeout(() => {
 				window.location.reload();
 			}, 2000);

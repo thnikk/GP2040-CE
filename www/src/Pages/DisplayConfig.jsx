@@ -300,11 +300,8 @@ export default function DisplayConfigPage() {
 			onSubmit={onSuccess}
 			initialValues={defaultValues}
 		>
-			{({ handleSubmit, handleChange, values, errors, setFieldValue }) => {
-		return (
-					console.log('errors', errors) ||
-					console.log('values', values) || (
-						<Section
+			{({ handleSubmit, handleChange, values, errors, setFieldValue }) => (
+				<Section
 							heading
 							icon={<DisplayMonitor />}
 							title={t('DisplayConfig:header-text')}
@@ -883,10 +880,8 @@ export default function DisplayConfigPage() {
 								</Form.Label>
 							)}
 						</Section>
-					)
-				);
-			}}
-		</Formik>
+					)}
+				</Formik>
 	);
 }
 

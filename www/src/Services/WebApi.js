@@ -240,7 +240,6 @@ async function setDisplayOptions(options, isPreview) {
 		: `${baseUrl}/api/setPreviewDisplayOptions`;
 	return Http.post(url, newOptions)
 		.then((response) => {
-			console.log(response.data);
 			return true;
 		})
 		.catch((err) => {
@@ -350,7 +349,6 @@ async function getCustomTheme(setLoading) {
 					};
 				});
 
-			console.log(data);
 			return data;
 	} catch (error) {
 		setLoading(false);

@@ -1446,7 +1446,7 @@ export default function SettingsPage() {
 	return (
 		<Formik validationSchema={schema} onSubmit={onSubmit} initialValues={{}}>
 			{({ handleSubmit, handleChange, values, errors, setFieldValue }) =>
-				console.log('errors', errors) || (
+				(
 					<div>
 						<Form noValidate onSubmit={handleSubmit}>
 							<Tab.Container

@@ -83,7 +83,6 @@ export default function PeripheralMappingPage() {
 
 	const onSuccess = async (values) => {
 		const cleanValues = schema.cast(values);
-		console.dir(cleanValues);
 
 		const success = await WebApi.setPeripheralOptions(cleanValues);
 
@@ -154,7 +153,7 @@ export default function PeripheralMappingPage() {
 			initialValues={basePeripheralMapping}
 		>
 			{({ errors, handleSubmit, setFieldValue, values }) =>
-				console.log('errors', errors) || (
+				(
 					<div>
 						<Form noValidate onSubmit={handleSubmit}>
 							<Section
