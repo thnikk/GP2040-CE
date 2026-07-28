@@ -120,6 +120,8 @@ static const ActionNameEntry actionNameOverrides[] = {
 	{ BUTTON_PRESS_A1, INPUT_MODE_NEOGEO, "Select" },
 	{ BUTTON_PRESS_A1, INPUT_MODE_MDMINI, "Select" },
 
+	{ BUTTON_PRESS_A2, INPUT_MODE_XBONE, "Share" },
+	{ BUTTON_PRESS_A2, INPUT_MODE_XBOXORIGINAL, "Share" },
 	{ BUTTON_PRESS_A2, INPUT_MODE_SWITCH, "Capture" },
 	{ BUTTON_PRESS_A2, INPUT_MODE_SWITCH_PRO, "Capture" },
 	{ BUTTON_PRESS_A2, INPUT_MODE_PS4, "Touchpad" },

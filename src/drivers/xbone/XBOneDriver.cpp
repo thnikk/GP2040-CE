@@ -120,6 +120,7 @@ CFG_TUSB_MEM_SECTION static xboned_interface_t _xboned_itf[CFG_TUD_XBONE];
 static XGIPProtocol * outgoingXGIP = nullptr;
 static XGIPProtocol * incomingXGIP = nullptr;
 static XboxOneAuthData * xboxOneAuthData = nullptr;
+static XboxOneAuthData noAuthData;
 
 // Windows requires a Descriptor Single for Xbox One
 typedef struct {
@@ -298,13 +299,14 @@ bool xbone_xfer_cb(uint8_t rhport, uint8_t ep_addr, xfer_result_t result,
                 xboxOneAuthData->authCompleted = true;
                 xboneDriverState = AUTH_DONE;
             }
-            if ( (incomingXGIP->getChunked() == true && incomingXGIP->endOfChunk() == true) ||
-                    (incomingXGIP->getChunked() == false )) {
-                xboxOneAuthData->consoleBuffer.setBuffer(incomingXGIP->getData(), incomingXGIP->getDataLength(),
-                    incomingXGIP->getSequence(), incomingXGIP->getCommand());
-                xboxOneAuthData->xboneState = GPAuthState::send_auth_console_to_dongle;
-                incomingXGIP->reset();
-            }
+    if ( xboxOneAuthData->authCompleted != true &&
+         ((incomingXGIP->getChunked() == true && incomingXGIP->endOfChunk() == true) ||
+         (incomingXGIP->getChunked() == false )) ) {
+        xboxOneAuthData->consoleBuffer.setBuffer(incomingXGIP->getData(), incomingXGIP->getDataLength(),
+            incomingXGIP->getSequence(), incomingXGIP->getCommand());
+        xboxOneAuthData->xboneState = GPAuthState::send_auth_console_to_dongle;
+        incomingXGIP->reset();
+    }
         }
 
         TU_ASSERT(usbd_edpt_xfer(rhport, p_xbone->ep_out, p_xbone->epout_buf,
@@ -339,7 +341,8 @@ void XBOneDriver::initialize() {
         .leftStickY = GAMEPAD_JOYSTICK_MID,
         .rightStickX = GAMEPAD_JOYSTICK_MID,
         .rightStickY = GAMEPAD_JOYSTICK_MID,
-        .reserved = {}
+        .share = 0,
+        .reserved2 = {}
     };
     class_driver = 	{
 #if CFG_TUSB_DEBUG >= 2
@@ -374,7 +377,9 @@ void XBOneDriver::initializeAux() {
         authDriver->initialize();
         xboxOneAuthData = ((XBOneAuth*)authDriver)->getAuthData();
     } else {
-        xboxOneAuthData = nullptr;
+        noAuthData.authCompleted = true;
+        noAuthData.xboneState = GPAuthState::auth_idle_state;
+        xboxOneAuthData = &noAuthData;
     }
 }
 
@@ -481,7 +486,8 @@ void XBOneDriver::process(Gamepad * gamepad) {
     newInputReport.start = gamepad->pressedS2();
     newInputReport.back = gamepad->pressedS1();
     newInputReport.guide = 0; // always 0
-    newInputReport.sync = 0; 
+    newInputReport.sync = 0;
+    newInputReport.share = gamepad->pressedA2();
     newInputReport.dpadUp = gamepad->pressedUp();
     newInputReport.dpadDown = gamepad->pressedDown();
     newInputReport.dpadLeft = gamepad->pressedLeft();
@@ -594,7 +600,15 @@ const uint16_t * XBOneDriver::get_descriptor_string_cb(uint8_t index, uint16_t l
     return getStringDescriptor(value, index); // getStringDescriptor returns a static array
 }
 
-const uint8_t * XBOneDriver::get_descriptor_device_cb() {
+    const uint8_t * XBOneDriver::get_descriptor_device_cb() {
+    GamepadOptions & gamepadOptions = Storage::getInstance().getGamepadOptions();
+    if ( gamepadOptions.usbOverrideID == true ) {
+        static uint8_t modified_device_descriptor[18];
+        memcpy(modified_device_descriptor, xbone_device_descriptor, sizeof(xbone_device_descriptor));
+        memcpy(&modified_device_descriptor[8], (uint8_t*)&gamepadOptions.usbVendorID, sizeof(uint16_t));
+        memcpy(&modified_device_descriptor[10], (uint8_t*)&gamepadOptions.usbProductID, sizeof(uint16_t));
+        return (const uint8_t*)modified_device_descriptor;
+    }
     return xbone_device_descriptor;
 }
 
@@ -650,8 +664,12 @@ void XBOneDriver::update() {
                 set_ack_wait();
             }
             break;
-        case SETUP_AUTH:
-            // Received packet from dongle to console / PC
+    case SETUP_AUTH:
+        if ( xboxOneAuthData->authCompleted ) {
+            xboneDriverState = AUTH_DONE;
+            break;
+        }
+        // Received packet from dongle to console / PC
             if ( xboxOneAuthData->xboneState == GPAuthState::send_auth_dongle_to_console ) {
                 uint16_t len = xboxOneAuthData->dongleBuffer.length;
                 uint8_t type = xboxOneAuthData->dongleBuffer.type;

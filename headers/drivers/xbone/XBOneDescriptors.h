@@ -100,7 +100,10 @@ typedef struct
     int16_t rightStickX;
     int16_t rightStickY;
 
-    uint8_t reserved[18]; // 18-byte padding at the end
+    uint8_t share : 1;
+    uint8_t : 7;
+
+    uint8_t reserved2[17]; // 17-byte padding at the end
 } __attribute__((packed)) XboxOneGamepad_Data_t;
 
 typedef struct {
@@ -141,8 +144,8 @@ static const uint8_t xbone_device_descriptor[] =
 	0xFF,	      // bDeviceSubClass
 	0xFF,	      // bDeviceProtocol
 	0x40,	      // bMaxPacketSize0 64
-	0x6F, 0x0E, // idVendor 0x045E = Xbox One  0x0E6F = SuperPDP  0x0079 = MagicBootS
-	0xA4, 0x02, // idProduct 0x02A4 = SuperPDP Gamepad  0x02EA = Xbox One S  0x02D1 = Xbox One  0x2DD = Xbox One v2  0x1894 = MagicBootS
+	0x95, 0x2E, // idVendor 0x2E95 = SCUF
+	0x04, 0x05, // idProduct 0x0504 = SCUF Gaming Controller
 	0x01, 0x01, // bcdDevice 1.01?
 	0x01,       // iManufacturer (String Index)
 	0x02,       // iProduct (String Index)
