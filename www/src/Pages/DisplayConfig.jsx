@@ -695,8 +695,7 @@ export default function DisplayConfigPage() {
 														<Form.Control
 															type="number"
 															name="inputHistoryLength"
-															className="form-control-sm"
-															className="mt-auto"
+															className="form-control-sm mt-auto"
 															value={values.inputHistoryLength}
 															error={errors.inputHistoryLength}
 															isInvalid={errors.inputHistoryLength}
@@ -712,8 +711,7 @@ export default function DisplayConfigPage() {
 														<Form.Control
 															type="number"
 															name="inputHistoryCol"
-															className="form-control-sm"
-															className="mt-auto"
+															className="form-control-sm mt-auto"
 															value={values.inputHistoryCol}
 															error={errors.inputHistoryCol}
 															isInvalid={errors.inputHistoryCol}
@@ -729,8 +727,7 @@ export default function DisplayConfigPage() {
 														<Form.Control
 															type="number"
 															name="inputHistoryRow"
-															className="form-control-sm"
-															className="mt-auto"
+															className="form-control-sm mt-auto"
 															value={values.inputHistoryRow}
 															error={errors.inputHistoryRow}
 															isInvalid={errors.inputHistoryRow}
@@ -746,8 +743,7 @@ export default function DisplayConfigPage() {
 														<Form.Control
 															type="number"
 															name="inputHistoryTimeout"
-															className="form-control-sm"
-															className="mt-auto"
+															className="form-control-sm mt-auto"
 															value={values.inputHistoryTimeout}
 															error={errors.inputHistoryTimeout}
 															isInvalid={errors.inputHistoryTimeout}
