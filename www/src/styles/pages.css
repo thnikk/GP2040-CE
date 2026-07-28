@@ -87,7 +87,6 @@
 	align-items: center;
 	justify-content: center;
 	transition: background 0.15s, color 0.15s;
-	border: 1px solid transparent;
 	color: var(--gp-body-color);
 }
 
@@ -97,7 +96,6 @@
 
 .profile-tab.active {
 	background: rgba(0, 0, 0, 0.3);
-	border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .profile-tab.disabled {
