@@ -12,7 +12,13 @@ const ContextualHelpOverlay = ({ ...props }) => {
 
 	return (
 		<>
-			<Button variant="link" onClick={handleShow} className="me-2">
+			<Button
+				type="button"
+				variant="link"
+				onClick={handleShow}
+				className="p-0 text-decoration-none"
+				style={{ color: 'inherit' }}
+			>
 				<InfoCircle />
 			</Button>
 			<Offcanvas show={show} onHide={handleClose} {...props}>
