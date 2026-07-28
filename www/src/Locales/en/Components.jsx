@@ -17,7 +17,8 @@ export default {
 		'key-header': 'Key',
 	},
 	'footer': {
-		'copyright': 'GP2040-CE © {{year}}',
+		'copyright': 'thnikk © {{year}}',
 		'github': 'GitHub',
+		'system-stats': 'System Stats',
 	},
 };
