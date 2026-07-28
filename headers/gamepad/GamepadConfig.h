@@ -370,3 +370,249 @@
 #ifndef KEY_BUTTON_A2
 #define KEY_BUTTON_A2 0
 #endif
+
+// Default KEY_BUTTON_* values (used by KeyboardDriver fallback and KeyboardHostAddon)
+// Boards no longer need to define these — per-pin KEYBOARD_KEYCODE_GPxx are the primary mechanism.
+#ifndef KEY_DPAD_UP
+#define KEY_DPAD_UP 0
+#endif
+#ifndef KEY_DPAD_DOWN
+#define KEY_DPAD_DOWN 0
+#endif
+#ifndef KEY_DPAD_LEFT
+#define KEY_DPAD_LEFT 0
+#endif
+#ifndef KEY_DPAD_RIGHT
+#define KEY_DPAD_RIGHT 0
+#endif
+#ifndef KEY_BUTTON_B1
+#define KEY_BUTTON_B1 0
+#endif
+#ifndef KEY_BUTTON_B2
+#define KEY_BUTTON_B2 0
+#endif
+#ifndef KEY_BUTTON_R2
+#define KEY_BUTTON_R2 0
+#endif
+#ifndef KEY_BUTTON_L2
+#define KEY_BUTTON_L2 0
+#endif
+#ifndef KEY_BUTTON_B3
+#define KEY_BUTTON_B3 0
+#endif
+#ifndef KEY_BUTTON_B4
+#define KEY_BUTTON_B4 0
+#endif
+#ifndef KEY_BUTTON_R1
+#define KEY_BUTTON_R1 0
+#endif
+#ifndef KEY_BUTTON_L1
+#define KEY_BUTTON_L1 0
+#endif
+#ifndef KEY_BUTTON_S1
+#define KEY_BUTTON_S1 0
+#endif
+#ifndef KEY_BUTTON_S2
+#define KEY_BUTTON_S2 0
+#endif
+#ifndef KEY_BUTTON_L3
+#define KEY_BUTTON_L3 0
+#endif
+#ifndef KEY_BUTTON_R3
+#define KEY_BUTTON_R3 0
+#endif
+#ifndef KEY_BUTTON_A1
+#define KEY_BUTTON_A1 0
+#endif
+#ifndef KEY_BUTTON_A2
+#define KEY_BUTTON_A2 0
+#endif
+#ifndef KEY_BUTTON_FN
+#define KEY_BUTTON_FN 0
+#endif
+
+// Per-pin keyboard keycode defaults (pin → direct HID keycode)
+// KEYBOARD_KEYCODE_GPxx = explicit HID keycode for a pin
+// KEYBOARD_MODIFIER_GPxx = modifier mask for a pin
+// These take priority over the KEY_BUTTON_* by-action fallback in setKeyboardDefaults.
+#ifndef KEYBOARD_KEYCODE_GP00
+#define KEYBOARD_KEYCODE_GP00 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP01
+#define KEYBOARD_KEYCODE_GP01 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP02
+#define KEYBOARD_KEYCODE_GP02 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP03
+#define KEYBOARD_KEYCODE_GP03 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP04
+#define KEYBOARD_KEYCODE_GP04 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP05
+#define KEYBOARD_KEYCODE_GP05 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP06
+#define KEYBOARD_KEYCODE_GP06 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP07
+#define KEYBOARD_KEYCODE_GP07 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP08
+#define KEYBOARD_KEYCODE_GP08 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP09
+#define KEYBOARD_KEYCODE_GP09 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP10
+#define KEYBOARD_KEYCODE_GP10 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP11
+#define KEYBOARD_KEYCODE_GP11 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP12
+#define KEYBOARD_KEYCODE_GP12 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP13
+#define KEYBOARD_KEYCODE_GP13 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP14
+#define KEYBOARD_KEYCODE_GP14 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP15
+#define KEYBOARD_KEYCODE_GP15 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP16
+#define KEYBOARD_KEYCODE_GP16 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP17
+#define KEYBOARD_KEYCODE_GP17 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP18
+#define KEYBOARD_KEYCODE_GP18 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP19
+#define KEYBOARD_KEYCODE_GP19 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP20
+#define KEYBOARD_KEYCODE_GP20 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP21
+#define KEYBOARD_KEYCODE_GP21 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP22
+#define KEYBOARD_KEYCODE_GP22 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP23
+#define KEYBOARD_KEYCODE_GP23 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP24
+#define KEYBOARD_KEYCODE_GP24 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP25
+#define KEYBOARD_KEYCODE_GP25 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP26
+#define KEYBOARD_KEYCODE_GP26 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP27
+#define KEYBOARD_KEYCODE_GP27 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP28
+#define KEYBOARD_KEYCODE_GP28 0
+#endif
+#ifndef KEYBOARD_KEYCODE_GP29
+#define KEYBOARD_KEYCODE_GP29 0
+#endif
+
+#ifndef KEYBOARD_MODIFIER_GP00
+#define KEYBOARD_MODIFIER_GP00 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP01
+#define KEYBOARD_MODIFIER_GP01 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP02
+#define KEYBOARD_MODIFIER_GP02 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP03
+#define KEYBOARD_MODIFIER_GP03 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP04
+#define KEYBOARD_MODIFIER_GP04 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP05
+#define KEYBOARD_MODIFIER_GP05 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP06
+#define KEYBOARD_MODIFIER_GP06 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP07
+#define KEYBOARD_MODIFIER_GP07 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP08
+#define KEYBOARD_MODIFIER_GP08 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP09
+#define KEYBOARD_MODIFIER_GP09 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP10
+#define KEYBOARD_MODIFIER_GP10 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP11
+#define KEYBOARD_MODIFIER_GP11 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP12
+#define KEYBOARD_MODIFIER_GP12 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP13
+#define KEYBOARD_MODIFIER_GP13 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP14
+#define KEYBOARD_MODIFIER_GP14 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP15
+#define KEYBOARD_MODIFIER_GP15 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP16
+#define KEYBOARD_MODIFIER_GP16 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP17
+#define KEYBOARD_MODIFIER_GP17 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP18
+#define KEYBOARD_MODIFIER_GP18 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP19
+#define KEYBOARD_MODIFIER_GP19 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP20
+#define KEYBOARD_MODIFIER_GP20 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP21
+#define KEYBOARD_MODIFIER_GP21 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP22
+#define KEYBOARD_MODIFIER_GP22 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP23
+#define KEYBOARD_MODIFIER_GP23 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP24
+#define KEYBOARD_MODIFIER_GP24 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP25
+#define KEYBOARD_MODIFIER_GP25 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP26
+#define KEYBOARD_MODIFIER_GP26 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP27
+#define KEYBOARD_MODIFIER_GP27 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP28
+#define KEYBOARD_MODIFIER_GP28 0
+#endif
+#ifndef KEYBOARD_MODIFIER_GP29
+#define KEYBOARD_MODIFIER_GP29 0
+#endif

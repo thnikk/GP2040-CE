@@ -19,22 +19,40 @@
 // Main pin mapping Configuration
 //                                                  // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
 #define GPIO_PIN_29 GpioAction::BUTTON_PRESS_UP     // UP     | UP     | UP      | UP       | UP     | UP     |
+#define KEYBOARD_KEYCODE_GP29 HID_KEY_ARROW_UP
 #define GPIO_PIN_27 GpioAction::BUTTON_PRESS_DOWN   // DOWN   | DOWN   | DOWN    | DOWN     | DOWN   | DOWN   |
+#define KEYBOARD_KEYCODE_GP27 HID_KEY_ARROW_DOWN
 #define GPIO_PIN_26 GpioAction::BUTTON_PRESS_RIGHT  // RIGHT  | RIGHT  | RIGHT   | RIGHT    | RIGHT  | RIGHT  |
+#define KEYBOARD_KEYCODE_GP26 HID_KEY_ARROW_RIGHT
 #define GPIO_PIN_28 GpioAction::BUTTON_PRESS_LEFT   // LEFT   | LEFT   | LEFT    | LEFT     | LEFT   | LEFT   |
+#define KEYBOARD_KEYCODE_GP28 HID_KEY_ARROW_LEFT
 #define GPIO_PIN_05 GpioAction::BUTTON_PRESS_B1     // B1     | A      | B       | Cross    | 2      | K1     |
+#define KEYBOARD_KEYCODE_GP05 HID_KEY_SHIFT_LEFT
 #define GPIO_PIN_06 GpioAction::BUTTON_PRESS_B2     // B2     | B      | A       | Circle   | 3      | K2     |
+#define KEYBOARD_KEYCODE_GP06 HID_KEY_Z
 #define GPIO_PIN_07 GpioAction::BUTTON_PRESS_R2     // R2     | RT     | ZR      | R2       | 8      | K3     |
+#define KEYBOARD_KEYCODE_GP07 HID_KEY_X
 #define GPIO_PIN_08 GpioAction::BUTTON_PRESS_L2     // L2     | LT     | ZL      | L2       | 7      | K4     |
+#define KEYBOARD_KEYCODE_GP08 HID_KEY_V
 #define GPIO_PIN_01 GpioAction::BUTTON_PRESS_B3     // B3     | X      | Y       | Square   | 1      | P1     |
+#define KEYBOARD_KEYCODE_GP01 HID_KEY_CONTROL_LEFT
 #define GPIO_PIN_02 GpioAction::BUTTON_PRESS_B4     // B4     | Y      | X       | Triangle | 4      | P2     |
+#define KEYBOARD_KEYCODE_GP02 HID_KEY_ALT_LEFT
 #define GPIO_PIN_03 GpioAction::BUTTON_PRESS_R1     // R1     | RB     | R       | R1       | 6      | P3     |
+#define KEYBOARD_KEYCODE_GP03 HID_KEY_SPACE
 #define GPIO_PIN_04 GpioAction::BUTTON_PRESS_L1     // L1     | LB     | L       | L1       | 5      | P4     |
+#define KEYBOARD_KEYCODE_GP04 HID_KEY_C
 #define GPIO_PIN_10 GpioAction::BUTTON_PRESS_S1     // S1     | Back   | Minus   | Select   | 9      | Coin   |
+#define KEYBOARD_KEYCODE_GP10 HID_KEY_5
 #define GPIO_PIN_12 GpioAction::BUTTON_PRESS_S2     // S2     | Start  | Plus    | Start    | 10     | Start  |
+#define KEYBOARD_KEYCODE_GP12 HID_KEY_1
 #define GPIO_PIN_09 GpioAction::BUTTON_PRESS_L3     // L3     | LS     | LS      | L3       | 11     | LS     |
+#define KEYBOARD_KEYCODE_GP09 HID_KEY_EQUAL
+#define KEYBOARD_MODIFIER_GP09 KEYBOARD_MODIFIER_LEFTSHIFT
 #define GPIO_PIN_13 GpioAction::BUTTON_PRESS_R3     // R3     | RS     | RS      | R3       | 12     | RS     |
+#define KEYBOARD_KEYCODE_GP13 HID_KEY_MINUS
 #define GPIO_PIN_11 GpioAction::BUTTON_PRESS_A1     // A1     | Guide  | Home    | PS       | 13     | ~      |
+#define KEYBOARD_KEYCODE_GP11 HID_KEY_9
 
 // Set physical pin to open webconfig
 #define PIN_WEBCONFIG 12
@@ -47,28 +65,6 @@
 #define GPIO_PIN_00 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_14 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_15 GpioAction::ASSIGNED_TO_ADDON
-
-// Keyboard Mapping Configuration
-//                                            // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
-#define KEY_DPAD_UP     HID_KEY_ARROW_UP      // UP     | UP     | UP      | UP       | UP     | UP     |
-#define KEY_DPAD_DOWN   HID_KEY_ARROW_DOWN    // DOWN   | DOWN   | DOWN    | DOWN     | DOWN   | DOWN   |
-#define KEY_DPAD_RIGHT  HID_KEY_ARROW_RIGHT   // RIGHT  | RIGHT  | RIGHT   | RIGHT    | RIGHT  | RIGHT  |
-#define KEY_DPAD_LEFT   HID_KEY_ARROW_LEFT    // LEFT   | LEFT   | LEFT    | LEFT     | LEFT   | LEFT   |
-#define KEY_BUTTON_B1   HID_KEY_SHIFT_LEFT    // B1     | A      | B       | Cross    | 2      | K1     |
-#define KEY_BUTTON_B2   HID_KEY_Z             // B2     | B      | A       | Circle   | 3      | K2     |
-#define KEY_BUTTON_R2   HID_KEY_X             // R2     | RT     | ZR      | R2       | 8      | K3     |
-#define KEY_BUTTON_L2   HID_KEY_V             // L2     | LT     | ZL      | L2       | 7      | K4     |
-#define KEY_BUTTON_B3   HID_KEY_CONTROL_LEFT  // B3     | X      | Y       | Square   | 1      | P1     |
-#define KEY_BUTTON_B4   HID_KEY_ALT_LEFT      // B4     | Y      | X       | Triangle | 4      | P2     |
-#define KEY_BUTTON_R1   HID_KEY_SPACE         // R1     | RB     | R       | R1       | 6      | P3     |
-#define KEY_BUTTON_L1   HID_KEY_C             // L1     | LB     | L       | L1       | 5      | P4     |
-#define KEY_BUTTON_S1   HID_KEY_5             // S1     | Back   | Minus   | Select   | 9      | Coin   |
-#define KEY_BUTTON_S2   HID_KEY_1             // S2     | Start  | Plus    | Start    | 10     | Start  |
-#define KEY_BUTTON_L3   HID_KEY_EQUAL         // L3     | LS     | LS      | L3       | 11     | LS     |
-#define KEY_BUTTON_L3_MOD KEYBOARD_MODIFIER_LEFTSHIFT
-#define KEY_BUTTON_R3   HID_KEY_MINUS         // R3     | RS     | RS      | R3       | 12     | RS     |
-#define KEY_BUTTON_A1   HID_KEY_9             // A1     | Guide  | Home    | PS       | 13     | ~      |
-#define KEY_BUTTON_FN   -1                    // Hotkey Function                                        |
 
 // Hotkeys
 #define HOTKEY_08_BUTTONS_MASK 3072  // L3+R3
