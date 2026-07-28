@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Button from '../components/ui/Button';
-import Row from '../components/ui/Row';
 import Form from '../components/ui/Form';
 
 import { Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '../Contexts/ToastContext';
 
 import { AppContext } from '../Contexts/AppContext';
-import FormSelect from '../components/form/FormSelect';
 import Section from '../components/shared/Section';
+import LayerStack from '../Icons/LayerStack';
 import WebApi from '../Services/WebApi';
 
 const LAYOUT_ORIENTATION = [
@@ -54,7 +54,7 @@ const FormContext = ({ setButtonLayoutDefs }) => {
 export default function ButtonLayoutConfigPage() {
 	const { t } = useTranslation('');
 	const { updateUsedPins } = useContext(AppContext);
-	const [saveMessage, setSaveMessage] = useState('');
+	const { showToast } = useToast();
 	const [layoutDefs, setButtonLayoutDefs] = useState({
 		buttonLayout: {},
 		buttonLayoutRight: {},
@@ -70,17 +70,12 @@ export default function ButtonLayoutConfigPage() {
 		const success = await WebApi.setButtonLayout(data);
 		if (success) updateUsedPins();
 
-		setSaveMessage(
+		showToast(
 			success
 				? t('Common:saved-success-message')
 				: t('Common:saved-error-message'),
+			success ? 'success' : 'error',
 		);
-	};
-
-	const onSubmit = (e, handleSubmit) => {
-		e.preventDefault();
-		setSaveMessage('');
-		handleSubmit();
 	};
 
 	return (
@@ -91,19 +86,23 @@ export default function ButtonLayoutConfigPage() {
 		>
 			{({
 				handleSubmit,
-				handleChange,
 				values,
 				errors,
 				setFieldValue,
 			}) => (
-				<Form noValidate onSubmit={(e) => onSubmit(e, handleSubmit)}>
-					<Section title={t('LayoutConfig:header-text')}>
-						<Row>
-							<FormSelect
-								label={t('DisplayConfig:form.button-layout-label')}
+				<Form noValidate onSubmit={handleSubmit}>
+					<Section
+						heading
+						icon={<LayerStack />}
+						title={t('LayoutConfig:header-text')}
+					>
+						<div className="d-flex flex-column gap-1">
+							<Form.Label>
+								{t('DisplayConfig:form.button-layout-label')}
+							</Form.Label>
+							<Form.Select
 								name="buttonLayout"
 								className="form-select-sm"
-								groupClassName="col-sm-4"
 								value={values.buttonLayout}
 								error={errors.buttonLayout}
 								isInvalid={errors.buttonLayout}
@@ -119,12 +118,13 @@ export default function ButtonLayoutConfigPage() {
 										{t(`LayoutConfig:layouts.left.${o}`)}
 									</option>
 								))}
-							</FormSelect>
-							<FormSelect
-								label={t('DisplayConfig:form.button-layout-right-label')}
+							</Form.Select>
+							<Form.Label>
+								{t('DisplayConfig:form.button-layout-right-label')}
+							</Form.Label>
+							<Form.Select
 								name="buttonLayoutRight"
 								className="form-select-sm"
-								groupClassName="col-sm-4"
 								value={values.buttonLayoutRight}
 								error={errors.buttonLayoutRight}
 								isInvalid={errors.buttonLayoutRight}
@@ -143,12 +143,13 @@ export default function ButtonLayoutConfigPage() {
 										{t(`LayoutConfig:layouts.right.${o}`)}
 									</option>
 								))}
-							</FormSelect>
-							<FormSelect
-								label={t('DisplayConfig:form.button-layout-orientation')}
+							</Form.Select>
+							<Form.Label>
+								{t('DisplayConfig:form.button-layout-orientation')}
+							</Form.Label>
+							<Form.Select
 								name="buttonLayoutOrientation"
 								className="form-select-sm"
-								groupClassName="col-sm-4"
 								value={values.buttonLayoutOrientation}
 								error={errors.buttonLayoutOrientation}
 								isInvalid={errors.buttonLayoutOrientation}
@@ -164,13 +165,14 @@ export default function ButtonLayoutConfigPage() {
 										{o.label}
 									</option>
 								))}
-							</FormSelect>
-						</Row>
+							</Form.Select>
+						</div>
+						<div className="d-flex gap-2 align-self-end">
+							<Button type="submit">
+								{t('Common:button-save-label')}
+							</Button>
+						</div>
 					</Section>
-					<div className="d-flex align-items-center gap-2">
-						{saveMessage ? <span className="alert alert-success mb-0 py-1">{saveMessage}</span> : null}
-						<Button type="submit">{t('Common:button-save-label')}</Button>
-					</div>
 					<FormContext setButtonLayoutDefs={setButtonLayoutDefs} />
 				</Form>
 			)}
