@@ -123,6 +123,7 @@ class ButtonLayoutScreen : public GPScreen {
             {INPUT_MODE_PS3, 0},
             {INPUT_MODE_GENERIC, 0},
             {INPUT_MODE_SWITCH, 1},
+            {INPUT_MODE_SWITCH_PRO, 1},
             {INPUT_MODE_XINPUT, 2},
             {INPUT_MODE_XBONE, 2},
             {INPUT_MODE_KEYBOARD, 3},
