@@ -707,8 +707,12 @@ export default function BoardSVG({
 		const color = inputMode !== undefined ? (modeColors?.[inputMode] ?? INPUT_MODE_COLORS[inputMode]) : undefined;
 		if (color) {
 			ledEl.style.setProperty('fill', color, 'important');
+			ledEl.style.setProperty('stroke', 'var(--bg-4)', 'important');
+			ledEl.style.setProperty('stroke-width', '2', 'important');
 		} else {
 			ledEl.style.removeProperty('fill');
+			ledEl.style.removeProperty('stroke');
+			ledEl.style.removeProperty('stroke-width');
 		}
 	}, [inputMode, modeColors]);
 
