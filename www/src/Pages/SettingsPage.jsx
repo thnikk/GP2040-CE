@@ -422,6 +422,10 @@ const schema = yup.object().shape({
 		.number()
 		.required()
 		.label('Switch Touchpad and Share'),
+	useNintendoLayout: yup
+		.number()
+		.required()
+		.label('Use Nintendo Switch button layout'),
 	ps4ControllerIDMode: yup
 		.number()
 		.required()
@@ -516,6 +520,8 @@ const FormContext = ({ setButtonLabels, setInputMode }) => {
 		if (!!values.socdMode) values.socdMode = parseInt(values.socdMode);
 		if (!!values.switchTpShareForDs4)
 			values.switchTpShareForDs4 = parseInt(values.switchTpShareForDs4);
+		if (!!values.useNintendoLayout)
+			values.useNintendoLayout = parseInt(values.useNintendoLayout);
 		if (!!values.forcedSetupMode)
 			values.forcedSetupMode = parseInt(values.forcedSetupMode);
 		if (!!values.lockHotkeys) values.lockHotkeys = parseInt(values.lockHotkeys);
@@ -1239,6 +1245,21 @@ export default function SettingsPage() {
 		);
 	};
 
+	const switchModeSpecifics = (values, errors, setFieldValue, handleChange) => {
+		return (
+			<Form.Check
+				label={t('SettingsPage:switch-nintendo-layout-label')}
+				type="switch"
+				name="useNintendoLayout"
+				isInvalid={false}
+				checked={Boolean(values.useNintendoLayout)}
+				onChange={(e) => {
+					setFieldValue('useNintendoLayout', e.target.checked ? 1 : 0);
+				}}
+			/>
+		);
+	};
+
 	const genericHidModeSpecifics = (
 		values,
 		errors,
@@ -1294,6 +1315,9 @@ export default function SettingsPage() {
 				);
 			case 'input-mode-options.xbone':
 				return xboneModeSpecifics(values, errors, setFieldValue, handleChange);
+			case 'input-mode-options.nintendo-switch':
+			case 'input-mode-options.nintendo-switch-pro':
+				return switchModeSpecifics(values, errors, setFieldValue, handleChange);
 			default:
 				return t('SettingsPage:no-mode-settings-text', {
 					mode: t(`SettingsPage:${inputMode.labelKey}`),

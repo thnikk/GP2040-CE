@@ -8,6 +8,7 @@ export default {
 	'input-mode-label': 'Input Mode',
 	'current-input-mode-label': 'Current Input Mode',
 	'input-mode-extra-label': 'Switch Touchpad and Share',
+	'switch-nintendo-layout-label': 'Use Nintendo Switch button layout (A/B, X/Y reversed)',
 	'input-mode-options': {
 		none: 'No Mode Selected',
 		xinput: 'XInput',

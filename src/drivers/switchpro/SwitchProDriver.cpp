@@ -103,10 +103,18 @@ void SwitchProDriver::process(Gamepad * gamepad) {
 
     switchReport.inputs.chargingGrip = 1;
 
-    switchReport.inputs.buttonY = gamepad->pressedB3();
-    switchReport.inputs.buttonX = gamepad->pressedB4();
-    switchReport.inputs.buttonB = gamepad->pressedB1();
-    switchReport.inputs.buttonA = gamepad->pressedB2();
+    const auto& gamepadOptions = Storage::getInstance().getGamepadOptions();
+    if (gamepadOptions.useNintendoLayout) {
+        switchReport.inputs.buttonY = gamepad->pressedB3();
+        switchReport.inputs.buttonX = gamepad->pressedB4();
+        switchReport.inputs.buttonB = gamepad->pressedB1();
+        switchReport.inputs.buttonA = gamepad->pressedB2();
+    } else {
+        switchReport.inputs.buttonY = gamepad->pressedB4();
+        switchReport.inputs.buttonX = gamepad->pressedB3();
+        switchReport.inputs.buttonB = gamepad->pressedB2();
+        switchReport.inputs.buttonA = gamepad->pressedB1();
+    }
     switchReport.inputs.buttonRightSR = 0;
     switchReport.inputs.buttonRightSL = 0;
     switchReport.inputs.buttonR = gamepad->pressedR1();

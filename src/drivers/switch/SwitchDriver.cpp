@@ -1,5 +1,6 @@
 #include "drivers/switch/SwitchDriver.h"
 #include "drivers/shared/driverhelper.h"
+#include "storagemanager.h"
 
 void SwitchDriver::initialize() {
 	switchReport = {
@@ -39,11 +40,14 @@ void SwitchDriver::process(Gamepad * gamepad) {
 		default:                                     switchReport.hat = SWITCH_HAT_NOTHING;   break;
 	}
 
+	const auto& gamepadOptions = Storage::getInstance().getGamepadOptions();
+	const bool nintendoLayout = gamepadOptions.useNintendoLayout;
+
 	switchReport.buttons = 0
-		| (gamepad->pressedB1() ? SWITCH_MASK_B       : 0)
-		| (gamepad->pressedB2() ? SWITCH_MASK_A       : 0)
-		| (gamepad->pressedB3() ? SWITCH_MASK_Y       : 0)
-		| (gamepad->pressedB4() ? SWITCH_MASK_X       : 0)
+		| (gamepad->pressedB1() ? (nintendoLayout ? SWITCH_MASK_B : SWITCH_MASK_A) : 0)
+		| (gamepad->pressedB2() ? (nintendoLayout ? SWITCH_MASK_A : SWITCH_MASK_B) : 0)
+		| (gamepad->pressedB3() ? (nintendoLayout ? SWITCH_MASK_Y : SWITCH_MASK_X) : 0)
+		| (gamepad->pressedB4() ? (nintendoLayout ? SWITCH_MASK_X : SWITCH_MASK_Y) : 0)
 		| (gamepad->pressedL1() ? SWITCH_MASK_L       : 0)
 		| (gamepad->pressedR1() ? SWITCH_MASK_R       : 0)
 		| (gamepad->pressedL2() ? SWITCH_MASK_ZL      : 0)

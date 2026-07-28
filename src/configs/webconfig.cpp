@@ -753,6 +753,7 @@ std::string setGamepadOptions()
     readDoc(gamepadOptions.inputModePs5Pin, doc, "inputModePs5Pin");
     readDoc(gamepadOptions.inputModeKeyboardPin, doc, "inputModeKeyboardPin");
     readDoc(gamepadOptions.inputModeSwitchProPin, doc, "inputModeSwitchProPin");
+    readDoc(gamepadOptions.useNintendoLayout, doc, "useNintendoLayout");
     readDoc(gamepadOptions.ps4AuthType, doc, "ps4AuthType");
     readDoc(gamepadOptions.ps5AuthType, doc, "ps5AuthType");
     readDoc(gamepadOptions.xinputAuthType, doc, "xinputAuthType");
@@ -819,6 +820,7 @@ std::string getGamepadOptions()
     writeDoc(doc, "inputModePs5Pin", gamepadOptions.inputModePs5Pin);
     writeDoc(doc, "inputModeKeyboardPin", gamepadOptions.inputModeKeyboardPin);
     writeDoc(doc, "inputModeSwitchProPin", gamepadOptions.inputModeSwitchProPin);
+    writeDoc(doc, "useNintendoLayout", gamepadOptions.useNintendoLayout ? 1 : 0);
     writeDoc(doc, "ps4AuthType", gamepadOptions.ps4AuthType);
     writeDoc(doc, "ps5AuthType", gamepadOptions.ps5AuthType);
     writeDoc(doc, "xinputAuthType", gamepadOptions.xinputAuthType);

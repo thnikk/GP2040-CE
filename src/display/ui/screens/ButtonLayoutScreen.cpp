@@ -510,7 +510,11 @@ void ButtonLayoutScreen::processInputHistory() {
 		if (b) { lastInputTime = getMillis(); break; }
 	}
 
-	uint8_t mode = ((displayModeLookup.count(getGamepad()->getOptions().inputMode) > 0) ? displayModeLookup.at(getGamepad()->getOptions().inputMode) : 0);
+	const InputMode inputMode = getGamepad()->getOptions().inputMode;
+	uint8_t mode = (displayModeLookup.count(inputMode) > 0) ? displayModeLookup.at(inputMode) : 0;
+	if ((inputMode == INPUT_MODE_SWITCH || inputMode == INPUT_MODE_SWITCH_PRO) &&
+		!Storage::getInstance().getGamepadOptions().useNintendoLayout)
+		mode = 2;
 
 	// Check if any new keys have been pressed
 	if (lastInput != currentInput) {

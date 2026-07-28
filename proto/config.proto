@@ -31,6 +31,7 @@ message GamepadOptions
     optional int32 inputModePs5Pin = 36;
     optional int32 inputModeKeyboardPin = 37;
     optional int32 inputModeSwitchProPin = 38;
+    optional bool useNintendoLayout = 39;
     optional bool ps4ReportHack = 20 [deprecated = true];
     optional InputModeAuthType ps4AuthType = 21;
     optional InputModeAuthType ps5AuthType = 22;
