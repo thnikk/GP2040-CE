@@ -22,6 +22,9 @@ void DisplaySaverScreen::init() {
         case DisplaySaverMode::DISPLAY_SAVER_TOAST:
             initToasters();
             break;
+        case DisplaySaverMode::DISPLAY_SAVER_STARS:
+            initStarsScene();
+            break;
     }
 }
 
@@ -42,6 +45,9 @@ void DisplaySaverScreen::drawScreen() {
             break;
         case DisplaySaverMode::DISPLAY_SAVER_TOAST:
             drawToasterScene();
+            break;
+        case DisplaySaverMode::DISPLAY_SAVER_STARS:
+            drawStarsScene();
             break;
     }
 }
@@ -188,6 +194,56 @@ void DisplaySaverScreen::drawToasterScene() {
 
         if (sprite.y > SCREEN_HEIGHT) {
             sprite.y = 0;
+        }
+    }
+}
+
+void DisplaySaverScreen::initStarsScene() {
+    starsEnteredTime = getMillis();
+    occasionalStarX = 3 + (rand() % (SCREEN_WIDTH - 6));
+    occasionalStarY = 3 + (rand() % (SCREEN_HEIGHT - 6));
+    nextStarTime = getMillis() + 2000 + (rand() % 3000);
+    for (uint8_t i = 0; i < NUM_STARS; ++i) {
+        stars[i][0] = rand() % SCREEN_WIDTH;
+        stars[i][1] = rand() % SCREEN_HEIGHT;
+    }
+}
+
+void DisplaySaverScreen::drawStarsScene() {
+    uint32_t elapsed = getMillis() - starsEnteredTime;
+
+    if (elapsed <= 2000) {
+        for (uint8_t i = 0; i < NUM_STARS; ++i) {
+            uint8_t starSize = rand() % 3;
+            int16_t cx = stars[i][0];
+            int16_t cy = stars[i][1];
+            getRenderer()->drawLine(cx - starSize, cy, cx + starSize, cy, 1, 0);
+            getRenderer()->drawLine(cx, cy - starSize, cx, cy + starSize, 1, 0);
+        }
+
+        getRenderer()->drawEllipse(64, 32, 28, 28, 1, 1);
+        getRenderer()->drawEllipse(70, 26, 25, 25, 0, 1);
+    } else {
+        const uint32_t GROW_MS = 200;
+        const uint32_t SHRINK_MS = 200;
+        const uint32_t ANIM_MS = GROW_MS + SHRINK_MS;
+
+        uint32_t now = getMillis();
+        if (now >= nextStarTime) {
+            uint32_t animPos = now - nextStarTime;
+            if (animPos < ANIM_MS) {
+                uint8_t starSize;
+                if (animPos < GROW_MS)
+                    starSize = (animPos * 3) / GROW_MS;
+                else
+                    starSize = 3 - ((animPos - GROW_MS) * 3) / SHRINK_MS;
+                getRenderer()->drawLine(occasionalStarX - starSize, occasionalStarY, occasionalStarX + starSize, occasionalStarY, 1, 0);
+                getRenderer()->drawLine(occasionalStarX, occasionalStarY - starSize, occasionalStarX, occasionalStarY + starSize, 1, 0);
+            } else {
+                occasionalStarX = 3 + (rand() % (SCREEN_WIDTH - 6));
+                occasionalStarY = 3 + (rand() % (SCREEN_HEIGHT - 6));
+                nextStarTime = now + 2000 + (rand() % 3000);
+            }
         }
     }
 }

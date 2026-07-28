@@ -198,6 +198,9 @@ void MainMenuScreen::init() {
     displaySaverModeMenu.push_back({"Toast", NULL, nullptr,
         std::bind(&MainMenuScreen::currentDisplaySaverMode, this),
         std::bind(&MainMenuScreen::selectDisplaySaverMode, this), 4});
+    displaySaverModeMenu.push_back({"Stars", NULL, nullptr,
+        std::bind(&MainMenuScreen::currentDisplaySaverMode, this),
+        std::bind(&MainMenuScreen::selectDisplaySaverMode, this), 5});
 
     displayMenu.clear();
     displayMenu.push_back({"Idle Timeout", NULL, &displayTimeoutMenu,

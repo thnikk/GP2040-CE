@@ -392,7 +392,8 @@ export enum DisplaySaverMode {
     DISPLAY_SAVER_SNOW = 1,
     DISPLAY_SAVER_BOUNCE = 2,
     DISPLAY_SAVER_PIPES = 3,
-    DISPLAY_SAVER_TOAST = 4
+    DISPLAY_SAVER_TOAST = 4,
+    DISPLAY_SAVER_STARS = 5
 }
 
 export enum ButtonLayoutOrientation {

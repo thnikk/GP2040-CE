@@ -40,6 +40,16 @@ class DisplaySaverScreen : public GPScreen {
         // pipes
         void drawPipeScene();
 
+        // stars
+        static const uint8_t NUM_STARS = 16;
+        uint8_t stars[NUM_STARS][2] = {};
+        uint32_t starsEnteredTime = 0;
+        int16_t occasionalStarX = 0;
+        int16_t occasionalStarY = 0;
+        uint32_t nextStarTime = 0;
+        void initStarsScene();
+        void drawStarsScene();
+
         // toaster
         struct ToastParams {
             uint8_t* image;

@@ -40,6 +40,7 @@ const DISPLAY_SAVER_MODES = [
 	{ label: 'form.saver-modes.bounce', value: 2 },
 	{ label: 'form.saver-modes.pipes', value: 3 },
 	{ label: 'form.saver-modes.toast', value: 4 },
+	{ label: 'form.saver-modes.stars', value: 5 },
 ];
 
 const LAYOUT_ORIENTATION = [

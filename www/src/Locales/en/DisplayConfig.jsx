@@ -67,6 +67,7 @@ export default {
 			'bounce': 'Logo Bounce',
 			'pipes': 'Pipes',
 			'toast': 'Toast',
+			'stars': 'Starry Night',
 		},
 		'layout-modes': {
 			'standard': 'Default',
