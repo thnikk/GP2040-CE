@@ -146,8 +146,8 @@
 }
 
 .pill-toggle.active {
-	background: var(--gp-nord-14);
-	border-color: var(--gp-nord-14);
+	background: var(--gp-nord-9);
+	border-color: var(--gp-nord-9);
 	color: var(--gp-nord-0);
 	opacity: 1;
 }
@@ -783,7 +783,7 @@
 	white-space: nowrap;
 	vertical-align: baseline;
 	border-radius: 999px;
-	color: #fff;
+	color: var(--gp-body-color);
 }
 
 .badge.bg-info {
