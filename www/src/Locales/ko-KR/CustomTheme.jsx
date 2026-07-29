@@ -12,4 +12,5 @@ export default {
 		'현재의 LED 테마를 삭제 하시겠습니까?',
 	'modal-no': '아니오',
 	'modal-yes': '예',
+	'animation-per-key-tooltip': 'Per-key LED colors can only be set when Animation is set to Custom Theme.',
 };

@@ -6,6 +6,7 @@ export default {
 	'animation-mode-2': 'Chase',
 	'animation-mode-3': 'Static Theme',
 	'animation-mode-4': 'Custom Theme',
+	'animation-per-key-tooltip': 'Per-key LED colors can only be set when Animation is set to Custom Theme.',
 	'static-theme-label': 'Theme',
 	'static-theme-static-rainbow': 'Static Rainbow',
 	'static-theme-xbox': 'Xbox',

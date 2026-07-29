@@ -11,4 +11,5 @@ export default {
 	'modal-body': 'カスタムテーマの設定を削除します。よろしいですか？',
 	'modal-no': 'いいえ',
 	'modal-yes': 'はい',
+	'animation-per-key-tooltip': 'Per-key LED colors can only be set when Animation is set to Custom Theme.',
 };

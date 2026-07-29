@@ -587,6 +587,11 @@ const submitTheme = useCallback(async () => {
 							<div className="d-flex align-items-center gap-3 flex-wrap">
 								<div className="d-flex align-items-center gap-2">
 									<Form.Label className="mb-0">{t('CustomTheme:animation-label')}</Form.Label>
+									<TooltipTrigger
+										content={<Tooltip>{t('CustomTheme:animation-per-key-tooltip')}</Tooltip>}
+									>
+										<InfoCircle />
+									</TooltipTrigger>
 									<Form.Select
 										value={animationMode}
 										onChange={handleAnimationModeChange}

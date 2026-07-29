@@ -11,4 +11,5 @@ export default {
 		'Sind Sie sicher, dass Sie Ihr aktuelles benutzerdefiniertes LED-Thema löschen möchten?',
 	'modal-no': 'Nein',
 	'modal-yes': 'Ja',
+	'animation-per-key-tooltip': 'Per-key LED colors can only be set when Animation is set to Custom Theme.',
 };

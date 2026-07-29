@@ -11,4 +11,5 @@ export default {
 		'Tem certeza de que deseja limpar seu tema de LED personalizado atual?',
 	'modal-no': 'Não',
 	'modal-yes': 'Sim',
+	'animation-per-key-tooltip': 'Per-key LED colors can only be set when Animation is set to Custom Theme.',
 };

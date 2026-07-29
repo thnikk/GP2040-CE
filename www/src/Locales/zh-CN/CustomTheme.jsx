@@ -11,4 +11,5 @@ export default {
 	'modal-body': '确定要清除当前的自定义主题吗？',
 	'modal-no': '否',
 	'modal-yes': '是',
+	'animation-per-key-tooltip': 'Per-key LED colors can only be set when Animation is set to Custom Theme.',
 };
