@@ -513,8 +513,8 @@ export default function PinMapping() {
 			const options = await WebApi.getLedOptions(setLoading);
 			const gamepadOptions = await WebApi.getGamepadOptions(setLoading);
 			const modeColorsRaw = await WebApi.getBoardLedModeColors();
-			setLedsEnabled(options?.dataPin > -1);
 			setPinLedIndices(options?.pinLedIndices);
+			setLedsEnabled(options?.dataPin > -1);
 			setInputMode(gamepadOptions?.inputMode);
 			if (modeColorsRaw) {
 				const parsed: Record<number, string> = {};
@@ -679,14 +679,14 @@ const submitTheme = useCallback(async () => {
 							key={`profile-${index}`}
 							profileIndex={index}
 							pressedPin={pressedPin}
-							customTheme={ledsEnabled ? customTheme : undefined}
-							animationMode={ledsEnabled ? animationMode : undefined}
-							themeIndex={ledsEnabled ? themeIndex : undefined}
-							hasCustomTheme={ledsEnabled ? hasCustomTheme : undefined}
+							customTheme={customTheme}
+							animationMode={animationMode}
+							themeIndex={themeIndex}
+							hasCustomTheme={hasCustomTheme}
 							onLedColorChange={ledsEnabled ? handleLedColorChange : undefined}
 							onSavePinColors={ledsEnabled ? savePinColors : undefined}
 							submitTheme={ledsEnabled ? submitTheme : undefined}
-							staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
+							staticColorNormal={staticColorNormal}
 							inputMode={inputMode}
 							pinLedIndices={pinLedIndices}
 							modeColors={modeColors}

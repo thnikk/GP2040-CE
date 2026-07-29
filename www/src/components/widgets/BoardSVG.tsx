@@ -513,8 +513,10 @@ export default function BoardSVG({
 					(s as HTMLElement).style.setProperty('stroke-width', '2', 'important');
 					if (animationMode !== 4) {
 						(s as HTMLElement).style.setProperty('opacity', '0.4', 'important');
+						(s as HTMLElement).style.setProperty('cursor', 'default');
 					} else {
 						(s as HTMLElement).style.removeProperty('opacity');
+						(s as HTMLElement).style.setProperty('cursor', 'pointer');
 					}
 				});
 			}
@@ -650,15 +652,10 @@ export default function BoardSVG({
 			if (!match) return;
 			const ledIndex = parseInt(match[1], 10);
 			const handler = () => {
-				const btnKey = ledButtonOrder?.[ledIndex] || BUTTON_ORDER[ledIndex % BUTTON_ORDER.length];
+				const btnKey = ledButtonOrderRef.current?.[ledIndex] || BUTTON_ORDER[ledIndex % BUTTON_ORDER.length];
 				onLedClickRef.current?.(btnKey, ledEl as HTMLElement);
 			};
 			ledEl.addEventListener('click', handler);
-			if (animationMode === 4) {
-				ledEl.style.setProperty('cursor', 'pointer');
-			} else {
-				ledEl.style.removeProperty('cursor');
-			}
 			handlers.push(() => ledEl.removeEventListener('click', handler));
 		});
 
@@ -706,13 +703,16 @@ export default function BoardSVG({
 		}
 
 		return () => handlers.forEach((remove) => remove());
-	}, [svgContent, pinElements, onPinClick, ledButtonOrder, animationMode, onTestToggle]);
+	}, [svgContent, pinElements, onPinClick, onTestToggle]);
 
 	const updateLabelsRef = useRef(updateLabels);
 	updateLabelsRef.current = updateLabels;
 
 	const onLedClickRef = useRef(onLedClick);
 	onLedClickRef.current = onLedClick;
+
+	const ledButtonOrderRef = useRef(ledButtonOrder);
+	ledButtonOrderRef.current = ledButtonOrder;
 
 	useEffect(() => {
 		updateLabels();
@@ -754,6 +754,10 @@ export default function BoardSVG({
 		if (!showPerKeyLeds) {
 			containerRef.current.querySelectorAll('[id^="led-"]').forEach((el) => {
 				(el as HTMLElement).style.setProperty('display', 'none', 'important');
+			});
+		} else {
+			containerRef.current.querySelectorAll('[id^="led-"]').forEach((el) => {
+				(el as HTMLElement).style.removeProperty('display');
 			});
 		}
 		const oled = containerRef.current.querySelector('#oled');
