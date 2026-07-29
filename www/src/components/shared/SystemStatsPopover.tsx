@@ -98,10 +98,10 @@ const SystemStatsPopover = ({ show, onHide, triggerRef }: SystemStatsPopoverProp
 							<InfoCircle /> {t('HomePage:system-stats-header-text')}
 						</div>
 						<div className="system-text d-flex align-items-center gap-2">
-							<Microchip /> <strong>{t('HomePage:board-text')}:</strong> {boardConfigProperties.label}
+							<Microchip /> {t('HomePage:board-text')}: {boardConfigProperties.label}
 						</div>
 						<div className="system-text d-flex align-items-center gap-2">
-							<CodeBranch /> <strong>{t('HomePage:version-text')}:</strong> {currentVersion}
+							<CodeBranch /> {t('HomePage:version-text')}: {currentVersion}
 							{latestVersion && isNewerVersion(currentVersion, latestVersion) && (
 								<span className="badge bg-info">{t('HomePage:pre-release-badge-text')}</span>
 							)}
