@@ -1,4 +1,4 @@
-# GP2040-CE Agent Guide
+# GP2040-th Agent Guide
 
 ## Build (firmware)
 - **Docker only** — do not attempt direct CMake builds (no local ARM toolchain)
@@ -7,7 +7,7 @@
   - `-c` clean build, `-v` verbose, `-f` flash to board, `-n` nuke first, `-p <path>` flash mount
   - Boards: Pico, Fightboard-v3[-m|-b|-b-m], KB2040, WaveshareZero, Springboard, Blank
 	- When testing, use `Fightboard-v3`
-- Output: `build/GP2040-CE_<version>_<sha>_<Board>.uf2`
+- Output: `build/GP2040-th_<version>_<sha>_<Board>.uf2`
 
 ## Build (web configurator)
 - Dev: `npm run dev` from `www/` — starts Vite dev server + mock Express backend

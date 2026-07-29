@@ -50,7 +50,7 @@ export default {
 	'profile-label': 'プロファイル',
 	'debounce-delay-label': 'チャタリング除去ディレイ(ミリ秒)',
 	'ps4-mode-explanation-text':
-		'PS4モードはGP2040-CEコントローラを認証済みPS4コントローラとして動作させることができます。',
+		'PS4モードはGP2040-thコントローラを認証済みPS4コントローラとして動作させることができます。',
 	'ps4-mode-warning-text':
 		'<span>⏳ 警告 ⏳:</span> 認証無しの場合8分でPS4はタイムアウトして切断します.',
 	'ps4-usb-host-mode-text':
@@ -63,7 +63,7 @@ export default {
 		emulation: 'リモート/エミュレーション',
 	},
 	'ps5-mode-explanation-text':
-		'PS5モードはGP2040-CEコントローラを認証済みPS5互換アケコンとして動作させることができます。',
+		'PS5モードはGP2040-thコントローラを認証済みPS5互換アケコンとして動作させることができます。',
 	'ps5-mode-warning-text':
 		'<span>⏳ 警告 ⏳:</span> 認証無しの場合8分でPS5はタイムアウトして切断します.',
 	'ps5-usb-host-mode-text':
@@ -115,7 +115,7 @@ export default {
 		'load-profile-2': 'プロファイル #2をロード',
 		'load-profile-3': 'プロファイル #3をロード',
 		'load-profile-4': 'プロファイル #4をロード',
-		'reboot-default': 'GP2040-CEを再起動',
+		'reboot-default': 'GP2040-thを再起動',
 		'next-profile': '次のプロファイル',
 		'previous-profile': '前のプロファイル',
 	},

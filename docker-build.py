@@ -88,7 +88,7 @@ def main():
     valid_boards = get_valid_boards()
 
     parser = argparse.ArgumentParser(
-        description="Build GP2040-CE firmware via Docker.",
+        description="Build GP2040-th firmware via Docker.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"Available boards: {', '.join(valid_boards)}",
     )
@@ -175,7 +175,7 @@ def main():
             log_msg(f"Build failed (exit {ret}). Log: {args.output}")
         sys.exit(ret)
 
-    uf2_matches = sorted(glob.glob(str(REPO_ROOT / "build" / f"GP2040-CE_*_{args.board}.uf2")))
+    uf2_matches = sorted(glob.glob(str(REPO_ROOT / "build" / f"GP2040-th_*_{args.board}.uf2")))
     if uf2_matches:
         log_msg(f"Build complete! → {Path(uf2_matches[-1]).name}", args.output)
     else:
@@ -195,7 +195,7 @@ def main():
             log_msg(f"Warning: flash path {flash_path} not found, skipping flash",
                     args.output)
         else:
-            pattern = f"GP2040-CE_*_{args.board}.uf2"
+            pattern = f"GP2040-th_*_{args.board}.uf2"
             matches = sorted(glob.glob(str(REPO_ROOT / "build" / pattern)))
             if not matches:
                 log_msg(f"Warning: no UF2 found matching '{pattern}', "

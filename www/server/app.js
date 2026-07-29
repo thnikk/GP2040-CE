@@ -1,5 +1,5 @@
 /**
- * GP2040-CE Configurator Development Server
+ * GP2040-th Configurator Development Server
  */
 
 import express from 'express';
@@ -152,7 +152,7 @@ app.get('/api/getGamepadOptions', (req, res) => {
 			xinputAuthType: 0,
 			ps4ControllerIDMode: 0,
 			usbDescOverride: 0,
-			usbDescProduct: 'GP2040-CE (Custom)',
+			usbDescProduct: 'GP2040-th (Custom)',
 			usbDescManufacturer: 'Open Stick Community',
 			usbDescVersion: '1.0',
 			usbOverrideID: 0,

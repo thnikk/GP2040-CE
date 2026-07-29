@@ -58,7 +58,7 @@ export default {
 	'profile-label': '档案',
 	'debounce-delay-label': '去抖动延迟 (以毫秒为单位)',
 	'ps4-mode-explanation-text':
-		'PS4 模式允许 GP2040-CE 作为经过认证的 PS4 控制器运行。',
+		'PS4 模式允许 GP2040-th 作为经过认证的 PS4 控制器运行。',
 	'ps4-mode-warning-text':
 		'<span>⏳警告⏳：</span>在没有认证的情况下 PS4 将在 8 分钟后超时并断开连接。',
 	'ps4-usb-host-mode-text':
@@ -71,7 +71,7 @@ export default {
 		emulation: '串流/模拟',
 	},
 	'ps5-mode-explanation-text':
-		'PS5 模式允许 GP2040-CE 作为经过认证的 PS5 兼容街机摇杆运行。',
+		'PS5 模式允许 GP2040-th 作为经过认证的 PS5 兼容街机摇杆运行。',
 	'ps5-mode-warning-text':
 		'<span>⏳警告⏳：</span>在没有认证的情况下 PS5 将在 8 分钟后超时并断开连接。',
 	'ps5-usb-host-mode-text':
@@ -123,7 +123,7 @@ export default {
 		'load-profile-2': '加载 档案 #2',
 		'load-profile-3': '加载 档案 #3',
 		'load-profile-4': '加载 档案 #4',
-		'reboot-default': '重启 GP2040-CE',
+		'reboot-default': '重启 GP2040-th',
 		'next-profile': '下一个档案',
 		'previous-profile': '上一个档案',
 	},

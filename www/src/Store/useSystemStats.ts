@@ -76,7 +76,7 @@ const useSystemStats = create<State & Actions>()((set, get) => ({
 			const [memoryReport, latestRelease] = await Promise.all([
 				fetch(`${baseUrl}/api/getMemoryReport`).then((res) => res.json()),
 				fetch(
-					'https://api.github.com/repos/thnikk/GP2040-CE/releases/latest',
+					'https://api.github.com/repos/thnikk/GP2040-th/releases/latest',
 				).then((res) => res.json()),
 			]);
 
@@ -88,7 +88,7 @@ const useSystemStats = create<State & Actions>()((set, get) => ({
 							?.replace('.uf2', '')
 							?.toLowerCase() === firmwareVersion.boardConfig.toLowerCase(),
 				)?.browser_download_url ||
-				`https://github.com/thnikk/GP2040-CE/releases/tag/${latestRelease.tag_name}`;
+				`https://github.com/thnikk/GP2040-th/releases/tag/${latestRelease.tag_name}`;
 
 			set({
 				boardName,

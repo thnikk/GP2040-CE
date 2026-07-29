@@ -17,7 +17,7 @@ export default {
 		'key-header': '키',
 	},
 	'footer': {
-		'copyright': 'GP2040-CE © {{year}}',
+		'copyright': 'GP2040-th © {{year}}',
 		'github': 'GitHub',
 	},
 };

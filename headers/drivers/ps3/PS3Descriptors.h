@@ -253,7 +253,7 @@ typedef struct __attribute((packed, aligned(1)))
 
 static const uint8_t ps3_string_language[]     = { 0x09, 0x04 };
 static const uint8_t ps3_string_manufacturer[] = "Open Stick Community";
-static const uint8_t ps3_string_product[]      = "GP2040-CE (PS3)";
+static const uint8_t ps3_string_product[]      = "GP2040-th (PS3)";
 static const uint8_t ps3_string_version[]      = "1.0";
 
 static const uint8_t *ps3_string_descriptors[] __attribute__((unused)) =

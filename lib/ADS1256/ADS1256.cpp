@@ -7,7 +7,7 @@ Editor:	Notepad++
 Comment: Visit https://curiousscientist.tech/blog/ADS1256-custom-library
 Special thanks to Abraão Queiroz for spending time on the code and suggesting corrections for ESP32 microcontrollers!
 
-2024-02-15 - Ported to GP2040-CE PicoPeripheral interface
+2024-02-15 - Ported to GP2040-th PicoPeripheral interface
 */
 
 #include "ADS1256.h"

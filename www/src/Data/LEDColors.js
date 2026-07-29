@@ -1,4 +1,4 @@
-// Definitions in this file should match those in GP2040-CE/lib/AnimationStation/src/Animation.hpp
+// Definitions in this file should match those in GP2040-th/lib/AnimationStation/src/Animation.hpp
 
 import { rgbArrayToHex } from '../Services/Utilities';
 

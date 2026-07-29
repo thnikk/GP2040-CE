@@ -25,7 +25,7 @@ typedef struct
 
 static const uint8_t keyboard_string_language[]    = { 0x09, 0x04 };
 static const uint8_t keyboard_string_manfacturer[] = "Open Stick Community";
-static const uint8_t keyboard_string_product[]     = "GP2040-CE (Keyboard)";
+static const uint8_t keyboard_string_product[]     = "GP2040-th (Keyboard)";
 static const uint8_t keyboard_string_version[]     = "1.1";
 
 static const uint8_t *keyboard_string_descriptors[] __attribute__((unused)) =

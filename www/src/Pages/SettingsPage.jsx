@@ -786,7 +786,7 @@ export default function SettingsPage() {
 		}
 	};
 
-	const WARNING_CHECK_TEXT = 'GP2040-CE';
+	const WARNING_CHECK_TEXT = 'GP2040-th';
 
 	const INPUT_MODE_PERMISSIONS = [
 		{

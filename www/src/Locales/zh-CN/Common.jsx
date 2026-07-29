@@ -1,5 +1,5 @@
 export default {
-	'brand-text': 'GP2040-CE',
+	'brand-text': 'GP2040-th',
 	'button-clear-all-label': '清除所有',
 	'button-delete-color-label': '删除颜色',
 	'button-dismiss-label': '取消',

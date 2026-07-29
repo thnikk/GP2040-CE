@@ -1,7 +1,7 @@
 export default {
 	'current-text': '현재: {{version}}',
 	'get-update-text': '최신 버전 다운로드',
-	'header-text': 'GP2040-CE 웹 설정에 오신걸 환영합니다!',
+	'header-text': 'GP2040-th 웹 설정에 오신걸 환영합니다!',
 	'latest-text': '최신: {{version}}',
 	'memory-flash-text': '플래시',
 	'memory-board-text': '보드 플래시',

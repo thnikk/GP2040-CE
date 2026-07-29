@@ -12,7 +12,7 @@ void StatsScreen::shutdown() {
 }
 
 void StatsScreen::drawScreen() {
-    getRenderer()->drawText(2, 0, "[GP2040-CE Stats]");
+    getRenderer()->drawText(2, 0, "[GP2040-th Stats]");
     getRenderer()->drawText(0, 1, "Version: " GP2040VERSIONID);
     getRenderer()->drawText(0, 2, "Build: " GP2040BUILD);
     getRenderer()->drawText(0, 3, "Board: " GP2040_BOARDCONFIG);

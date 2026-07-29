@@ -53,7 +53,7 @@ const shtmlExtensions = new Set(['shtml', 'shtm', 'ssi', 'xml', 'json']);
 
 const skipCompressionExtensions = new Set(['png', 'json', 'svg']);
 
-const serverHeader = 'GP2040-CE';
+const serverHeader = 'GP2040-th';
 
 const payloadAlignment = 4;
 const hexBytesPerLine = 16;

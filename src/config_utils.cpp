@@ -148,7 +148,7 @@
 #endif
 
 #ifndef DEFAULT_USB_DESC_PRODUCT
-   #define DEFAULT_USB_DESC_PRODUCT "GP2040-CE (Custom)"
+   #define DEFAULT_USB_DESC_PRODUCT "GP2040-th (Custom)"
 #endif
 
 #ifndef DEFAULT_USB_DESC_MANUFACTURER

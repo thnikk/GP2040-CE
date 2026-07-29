@@ -1,6 +1,6 @@
 export default {
 	'header-text': '插件配置',
-	'sub-header-text': '使用下面的选项重新配置 GP2040-CE 中的插件。',
+	'sub-header-text': '使用下面的选项重新配置 GP2040-th 中的插件。',
 	'bootsel-header-text': 'BOOTSEL 键配置',
 	'bootsel-sub-header-text':
 		'注意：如果设置了按键，OLED 可能会失去响应，取消设置以恢复。',
@@ -99,14 +99,14 @@ export default {
 	'player-number-header-text': '玩家编号 (仅 X-INPUT 模式生效)',
 	'player-number-sub-header': '警告',
 	'player-number-sub-header-text':
-		'请仅在连接了多个启用玩家编号功能的 GP2040-CE 设备时启用此功能 ',
+		'请仅在连接了多个启用玩家编号功能的 GP2040-th 设备时启用此功能 ',
 	'player-number-label': '玩家编号',
 	'socd-cleaning-mode-selection-slider-header-text': 'SOCD 覆盖模式选择滑块',
 	'socd-cleaning-mode-selection-slider-sub-header-text':
 		'注意：PS4, PS3 and Nintendo Switch输入模式不支持设置 SOCD 覆盖模式为关闭，默认设置为回中模式。',
 	'socd-cleaning-mode-selection-slider-mode-default-label': 'SOCD 滑块默认模式',
 	'ps4-mode-sub-header': '免责声明！',
-	'ps4-mode-sub-header-text': 'GP2040-CE 从不会提供这些文件！！！',
+	'ps4-mode-sub-header-text': 'GP2040-th 从不会提供这些文件！！！',
 	'ps4-mode-text': '请上传以下 3 个文件，然后点击“验证并保存”启用 PS4 模式。',
 	'ps4-mode-private-key-label': '密钥 (PEM)',
 	'ps4-mode-serial-number-label': '序列号 (16 字节的十六进制 ASCII 码)',

@@ -9,7 +9,7 @@
 #include "AnimationStation.hpp"
 #include "PlayerLEDs.h"
 
-// GP2040-CE Board Config (64 character limit)
+// GP2040-th Board Config (64 character limit)
 #ifndef GP2040_BOARDCONFIG
 #define GP2040_BOARDCONFIG "Unknown"
 #endif

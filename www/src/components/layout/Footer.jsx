@@ -117,7 +117,7 @@ const Footer = () => {
         <div>
           <LanguageSelector />
           <a
-            href="https://github.com/thnikk/GP2040-CE"
+            href="https://github.com/thnikk/GP2040-th"
             target="_blank"
             rel="noopener noreferrer"
             className="icon-btn"

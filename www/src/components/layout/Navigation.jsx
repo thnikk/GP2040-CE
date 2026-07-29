@@ -46,7 +46,7 @@ const Navigation = () => {
 
 	return (
 		<Navbar collapseOnSelect expand="md" fixed="top">
-				<Navbar.Brand title={`GP2040-CE ${t('Navigation:home-label')}`}>
+				<Navbar.Brand title={`GP2040-th ${t('Navigation:home-label')}`}>
 				<Nav.Link as={NavLink} to="/" eventKey={eventKey++} className="logo-link">
 					<svg
 						viewBox="0 0 228.846 121.94489"

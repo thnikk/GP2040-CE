@@ -21,7 +21,7 @@
 class Gamepad;
 
 //
-// GP2040-CE USB Device Class Driver
+// GP2040-th USB Device Class Driver
 //
 class GPDriver {
 public:

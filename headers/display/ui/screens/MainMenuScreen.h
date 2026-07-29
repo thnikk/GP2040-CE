@@ -36,8 +36,6 @@
 #define DPAD_MODE_LEFT_ANALOG_NAME "Left Analog"
 #define DPAD_MODE_RIGHT_ANALOG_NAME "Right Analog"
 
-#define MAIN_MENU_NAME "GP2040-CE Mini Menu"
-
 #define ANIMATION_STATIC_NAME "Static"
 #define ANIMATION_RAINBOW_NAME "Rainbow"
 #define ANIMATION_CHASE_NAME "Chase"

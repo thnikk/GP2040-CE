@@ -39,7 +39,7 @@
 //
 //  This is a free, open-source, guess-work
 //  based interpretation of the protocol for
-//  the GP2040-CE controller platform and in
+//  the GP2040-th controller platform and in
 //  no way reflects any commercial software or
 //  protocols. This implementation is provided
 //  as-is and we are not responsible for

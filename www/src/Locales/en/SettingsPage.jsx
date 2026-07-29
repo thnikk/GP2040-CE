@@ -63,7 +63,7 @@ export default {
 	'profile-label': 'Profile',
 	'debounce-delay-label': 'Debounce Delay in milliseconds',
 	'ps4-mode-explanation-text':
-		'PS4 mode allows GP2040-CE to run as an authenticated PS4 controller.',
+		'PS4 mode allows GP2040-th to run as an authenticated PS4 controller.',
 	'ps4-mode-warning-text':
 		'PS4 will timeout after 8 minutes without authentication.',
 	'ps4-usb-host-mode-text':
@@ -76,7 +76,7 @@ export default {
 		emulation: 'Remote/Emulation',
 	},
 	'ps5-mode-explanation-text':
-		'PS5 mode allows GP2040-CE to run as an authenticated PS5 compatible arcade stick.',
+		'PS5 mode allows GP2040-th to run as an authenticated PS5 compatible arcade stick.',
 	'ps5-mode-warning-text':
 		'PS5 will timeout after 8 minutes without authentication.',
 	'ps5-usb-host-mode-text':
@@ -133,7 +133,7 @@ export default {
 		'load-profile-2': 'Load Profile #2',
 		'load-profile-3': 'Load Profile #3',
 		'load-profile-4': 'Load Profile #4',
-		'reboot-default': 'Reboot GP2040-CE',
+		'reboot-default': 'Reboot GP2040-th',
 		'save-config': 'Save Config',
 		'next-profile': 'Next Profile',
 		'previous-profile': 'Previous Profile',

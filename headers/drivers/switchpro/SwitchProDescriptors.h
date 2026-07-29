@@ -323,7 +323,7 @@ typedef struct
 
 static const uint8_t switch_pro_string_language[]     = { 0x09, 0x04 };
 static const uint8_t switch_pro_string_manufacturer[] = "Open Stick Community";
-static const uint8_t switch_pro_string_product[]      = "GP2040-CE (Pro Controller)";
+static const uint8_t switch_pro_string_product[]      = "GP2040-th (Pro Controller)";
 static const uint8_t switch_pro_string_version[]      = "000000000001";
 
 static const uint8_t *switch_pro_string_descriptors[] __attribute__((unused)) =

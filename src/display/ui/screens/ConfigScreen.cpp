@@ -2,7 +2,7 @@
 #include "version.h"
 
 void ConfigScreen::init() {
-    version = "GP2040-CE : ";
+    version = "GP2040-th : ";
     version += GP2040VERSION;
     getRenderer()->clearScreen();
 }

@@ -64,7 +64,7 @@ export default function HomePage() {
 					</NavLink>
 				)}
 				<a
-					href="https://github.com/thnikk/GP2040-CE"
+					href="https://github.com/thnikk/GP2040-th"
 					target="_blank"
 					rel="noreferrer"
 					className="btn btn-secondary w-100 justify-content-start gap-3"
