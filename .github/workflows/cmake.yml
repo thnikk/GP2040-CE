@@ -143,6 +143,17 @@ jobs:
           echo "" >> notes.md
           echo "> If the device was previously used for other firmware, flash \`flash_nuke.uf2\` first to clear memory." >> notes.md
           echo "" >> notes.md
+          echo "## Firmware" >> notes.md
+          echo "" >> notes.md
+          echo "| Board | File |" >> notes.md
+          echo "|-------|------|" >> notes.md
+          for f in ./artifacts/*/*.uf2; do
+            basename=$(basename "$f")
+            board=$(echo "$basename" | sed 's/.*_\(.*\)\.uf2/\1/')
+            display=$(echo "$board" | sed -e 's/-b-m$/ Basic Mirrored/' -e 's/-m$/ Mirrored/' -e 's/-b$/ Basic/' -e 's/-/ /g')
+            echo "| ${display} | \`${basename}\` |" >> notes.md
+          done
+          echo "" >> notes.md
           TAG_NAME="${{ steps.version.outputs.tag }}"
           PREV_TAG=$(git describe --tags --abbrev=0 "${TAG_NAME}^" 2>/dev/null || echo "")
           if [ -n "$PREV_TAG" ]; then
