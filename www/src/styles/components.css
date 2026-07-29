@@ -1667,6 +1667,8 @@
 	font-weight: 500;
 	cursor: pointer;
 	animation: toast-in 0.3s ease forwards;
+	background-color: color-mix(in srgb, var(--bg-2) 80%, transparent);
+	backdrop-filter: blur(8px);
 	user-select: none;
 }
 
@@ -1676,25 +1678,21 @@
 
 .toast-success {
 	color: var(--gp-nord-14);
-	background-color: rgba(163, 190, 140, 0.15);
 	border: 1px solid var(--gp-nord-14);
 }
 
 .toast-error {
 	color: var(--gp-nord-11);
-	background-color: rgba(191, 97, 106, 0.15);
 	border: 1px solid var(--gp-nord-11);
 }
 
 .toast-info {
 	color: var(--gp-nord-10);
-	background-color: rgba(94, 129, 172, 0.15);
 	border: 1px solid var(--gp-nord-10);
 }
 
 .toast-warning {
 	color: var(--gp-nord-13);
-	background-color: rgba(235, 203, 139, 0.15);
 	border: 1px solid var(--gp-nord-13);
 }
 

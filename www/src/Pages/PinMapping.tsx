@@ -126,6 +126,7 @@ const PinSection = memo(function PinSection({
 	hasCustomTheme,
 	onLedColorChange,
 	onSavePinColors,
+	submitTheme,
 	staticColorNormal,
 	inputMode,
 	pinLedIndices,
@@ -142,6 +143,7 @@ const PinSection = memo(function PinSection({
 	hasCustomTheme?: boolean;
 	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSavePinColors?: () => Promise<boolean>;
+	submitTheme?: () => Promise<boolean>;
 	staticColorNormal?: string;
 	inputMode?: number;
 	pinLedIndices?: Record<string, number>;
@@ -181,13 +183,13 @@ const PinSection = memo(function PinSection({
 		e.stopPropagation();
 		try {
 			await saveProfiles();
-			if (onSavePinColors) await onSavePinColors();
+			if (submitTheme) await submitTheme();
 			updateUsedPins();
 			showToast(t('Common:saved-success-message'));
 		} catch (error) {
 			showToast(t('Common:saved-error-message'), 'error');
 		}
-	}, [saveProfiles, onSavePinColors, updateUsedPins, t, showToast]);
+	}, [saveProfiles, submitTheme, updateUsedPins, t, showToast]);
 
 	const { svgContent, pinElements, loading, svgMode } = useBoardSVG();
 	const svgPinSet = useMemo(
@@ -560,16 +562,6 @@ const submitTheme = useCallback(async () => {
 		return success;
 	}, [customTheme, animationMode, themeIndex, staticColorNormal, staticColorPressed]);
 
-	const handleThemeSave = useCallback(async () => {
-		const success = await submitTheme();
-		showToast(
-			success
-				? t('Common:saved-success-message')
-				: t('Common:saved-error-message'),
-			success ? 'success' : 'error',
-		);
-	}, [submitTheme, t, showToast]);
-
 	const savePinColors = useCallback(async () => {
 		const leds = { ...customTheme };
 		delete leds['ALL'];
@@ -661,9 +653,6 @@ const submitTheme = useCallback(async () => {
 										</div>
 									</div>
 								)}
-								<div className="d-flex align-items-stretch gap-3 ms-auto">
-									<Button onClick={handleThemeSave}>{t('Common:button-save-label')}</Button>
-								</div>
 							</div>
 						</div>
 					)}
@@ -696,6 +685,7 @@ const submitTheme = useCallback(async () => {
 							hasCustomTheme={ledsEnabled ? hasCustomTheme : undefined}
 							onLedColorChange={ledsEnabled ? handleLedColorChange : undefined}
 							onSavePinColors={ledsEnabled ? savePinColors : undefined}
+							submitTheme={ledsEnabled ? submitTheme : undefined}
 							staticColorNormal={ledsEnabled ? staticColorNormal : undefined}
 							inputMode={inputMode}
 							pinLedIndices={pinLedIndices}
