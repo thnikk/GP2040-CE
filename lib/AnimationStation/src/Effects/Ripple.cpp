@@ -35,16 +35,7 @@ void Ripple::Animate(RGB (&frame)[100]) {
     if (prevPressed.find(key) != prevPressed.end())
       continue;
 
-    bool found = false;
-    for (auto &origin : origins) {
-      if (origin.x == pixel.x && origin.y == pixel.y) {
-        origin.elapsed = 0;
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      origins.push_back({pixel.x, pixel.y, 0});
+    origins.push_back({pixel.x, pixel.y, 0});
   }
 
   prevPressed = currentPressed;
