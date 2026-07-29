@@ -37,7 +37,7 @@ void MainMenuScreen::init() {
     gpMenu->setViewport(this->getViewport());
     gpMenu->setShape(GPShape_Type::GP_SHAPE_SQUARE);
     gpMenu->setMenuData(currentMenu);
-    gpMenu->setMenuTitle("");
+    gpMenu->setMenuTitle(MAIN_MENU_NAME);
     addElement(gpMenu);
 
     mapMenuUp = new GamepadButtonMapping(0);
@@ -228,7 +228,7 @@ void MainMenuScreen::init() {
     mainMenu.push_back({"Save & Exit", NULL, &saveMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
 
     gpMenu->setMenuData(currentMenu);
-    gpMenu->setMenuTitle("");
+    gpMenu->setMenuTitle(MAIN_MENU_NAME);
     if (menuIndex >= gpMenu->getDataSize())
         menuIndex = 0;
     gpMenu->setIndex(menuIndex);

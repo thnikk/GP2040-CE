@@ -32,6 +32,8 @@
 #define SOCD_MODE_FIRST_INPUT_PRIORITY_NAME "First Win"
 #define SOCD_MODE_BYPASS_NAME "Off"
 
+#define MAIN_MENU_NAME "Mini Menu"
+
 #define DPAD_MODE_DIGITAL_NAME "D-Pad"
 #define DPAD_MODE_LEFT_ANALOG_NAME "Left Analog"
 #define DPAD_MODE_RIGHT_ANALOG_NAME "Right Analog"
