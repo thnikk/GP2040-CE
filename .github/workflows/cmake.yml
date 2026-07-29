@@ -149,7 +149,7 @@ jobs:
           if [ -n "$PREV_TAG" ] && [ "$PREV_TAG" != "$TAG_NAME" ]; then
             echo "## Changes" >> notes.md
             echo "" >> notes.md
-            git log ${PREV_TAG}..${TAG_NAME} --pretty=format:"* %s (%h)" >> notes.md
+            git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" >> notes.md
             echo "" >> notes.md
           fi
           echo "## Firmware" >> notes.md
