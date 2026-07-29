@@ -141,7 +141,20 @@ jobs:
           echo "3. A removable drive named \`RPI-RP2\` will appear — copy the \`.uf2\` file onto it" >> notes.md
           echo "4. The device will flash and reboot automatically" >> notes.md
           echo "" >> notes.md
-          echo "> If the device was previously used for other firmware, flash \`flash_nuke.uf2\` first to clear memory." >> notes.md
+          echo "> If the device was previously used for other firmware, flash [\`flash_nuke.uf2\`](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/flash_nuke.uf2) first to clear memory." >> notes.md
+          echo "" >> notes.md
+          echo "## Changes" >> notes.md
+          echo "" >> notes.md
+          TAG_NAME="${{ steps.version.outputs.tag }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 "${TAG_NAME}^" 2>/dev/null || echo "")
+          while echo "$PREV_TAG" | grep -qE '(alpha|beta|rc|pre)' && [ -n "$PREV_TAG" ]; do
+            PREV_TAG=$(git describe --tags --abbrev=0 "${PREV_TAG}^" 2>/dev/null || echo "")
+          done
+          if [ -n "$PREV_TAG" ]; then
+            echo "Full changelog:" >> notes.md
+            echo "" >> notes.md
+            git log ${PREV_TAG}..${TAG_NAME} --pretty=format:"* %s (%h)" >> notes.md
+          fi
           echo "" >> notes.md
           echo "## Firmware" >> notes.md
           echo "" >> notes.md
@@ -151,16 +164,9 @@ jobs:
             basename=$(basename "$f")
             board=$(echo "$basename" | sed 's/.*_\(.*\)\.uf2/\1/')
             display=$(echo "$board" | sed -e 's/-b-m$/ Basic Mirrored/' -e 's/-m$/ Mirrored/' -e 's/-b$/ Basic/' -e 's/-/ /g')
-            echo "| ${display} | \`${basename}\` |" >> notes.md
+            url="https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/${basename}"
+            echo "| ${display} | [\`${basename}\"](${url}) |" >> notes.md
           done
-          echo "" >> notes.md
-          TAG_NAME="${{ steps.version.outputs.tag }}"
-          PREV_TAG=$(git describe --tags --abbrev=0 "${TAG_NAME}^" 2>/dev/null || echo "")
-          if [ -n "$PREV_TAG" ]; then
-            echo "## Changes since ${PREV_TAG}" >> notes.md
-            echo "" >> notes.md
-            git log ${PREV_TAG}..${TAG_NAME} --pretty=format:"* %s (%h)" >> notes.md
-          fi
 
       - name: Check if pre-release
         id: prerelease
@@ -181,6 +187,7 @@ jobs:
           files: |
             ./artifacts/**/*.uf2
             ./artifacts/**/*.elf
+            tools/flash_nuke.uf2
           prerelease: ${{ steps.prerelease.outputs.is_prerelease }}
           generate_release_notes: true
         env:
