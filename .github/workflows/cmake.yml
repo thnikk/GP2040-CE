@@ -143,19 +143,17 @@ jobs:
           echo "" >> notes.md
           echo "> If the device was previously used for other firmware, flash [\`flash_nuke.uf2\`](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/flash_nuke.uf2) first to clear memory." >> notes.md
           echo "" >> notes.md
-          echo "## Changes" >> notes.md
-          echo "" >> notes.md
           TAG_NAME="${{ steps.version.outputs.tag }}"
           PREV_TAG=$(git describe --tags --abbrev=0 "${TAG_NAME}^" 2>/dev/null || echo "")
           while echo "$PREV_TAG" | grep -qE '(alpha|beta|rc|pre)' && [ -n "$PREV_TAG" ]; do
             PREV_TAG=$(git describe --tags --abbrev=0 "${PREV_TAG}^" 2>/dev/null || echo "")
           done
           if [ -n "$PREV_TAG" ]; then
-            echo "Full changelog:" >> notes.md
+            echo "## Changes" >> notes.md
             echo "" >> notes.md
             git log ${PREV_TAG}..${TAG_NAME} --pretty=format:"* %s (%h)" >> notes.md
+            echo "" >> notes.md
           fi
-          echo "" >> notes.md
           echo "## Firmware" >> notes.md
           echo "" >> notes.md
           echo "| Board | File |" >> notes.md
@@ -165,7 +163,7 @@ jobs:
             board=$(echo "$basename" | sed 's/.*_\(.*\)\.uf2/\1/')
             display=$(echo "$board" | sed -e 's/-b-m$/ Basic Mirrored/' -e 's/-m$/ Mirrored/' -e 's/-b$/ Basic/' -e 's/-/ /g')
             url="https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/${basename}"
-            echo "| ${display} | [\`${basename}\"](${url}) |" >> notes.md
+            echo "| ${display} | [\`${basename}\`](${url}) |" >> notes.md
           done
 
       - name: Check if pre-release
@@ -189,6 +187,5 @@ jobs:
             ./artifacts/**/*.elf
             tools/flash_nuke.uf2
           prerelease: ${{ steps.prerelease.outputs.is_prerelease }}
-          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
