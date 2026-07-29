@@ -149,7 +149,12 @@ jobs:
           if [ -n "$PREV_TAG" ] && [ "$PREV_TAG" != "$TAG_NAME" ]; then
             echo "## Changes" >> notes.md
             echo "" >> notes.md
-            git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" >> notes.md
+            COUNT=$(git rev-list --count ${PREV_TAG}..HEAD)
+            if [ "$COUNT" -gt 10 ]; then
+              echo "See the [full changelog](https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${TAG_NAME}) for all ${COUNT} commits." >> notes.md
+            else
+              git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" >> notes.md
+            fi
             echo "" >> notes.md
           fi
           echo "## Firmware" >> notes.md
