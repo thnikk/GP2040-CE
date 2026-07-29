@@ -56,6 +56,7 @@ type BoardSVGProps = {
 	pinElements: { id: string; pinNumber: number }[];
 	profileIndex: number;
 	onPinClick: (pinNumber: number) => void;
+	onLedClick?: (buttonName: string, element: HTMLElement) => void;
 	highlightedPin?: number | null;
 	highlightedPins?: number[];
 	dirtyPins?: Set<number>;
@@ -274,6 +275,7 @@ export default function BoardSVG({
 	pinElements,
 	profileIndex,
 	onPinClick,
+	onLedClick,
 	highlightedPin,
 	highlightedPins,
 	dirtyPins,
@@ -636,6 +638,20 @@ export default function BoardSVG({
 			});
 		});
 
+		const ledEls = svgContainer.querySelectorAll('[id^="led-"]');
+		ledEls.forEach((ledEl) => {
+			const match = ledEl.id.match(/^led-(\d+)$/);
+			if (!match) return;
+			const ledIndex = parseInt(match[1], 10);
+			const handler = () => {
+				const btnKey = ledButtonOrder?.[ledIndex] || BUTTON_ORDER[ledIndex % BUTTON_ORDER.length];
+				onLedClickRef.current?.(btnKey, ledEl as HTMLElement);
+			};
+			ledEl.addEventListener('click', handler);
+			ledEl.style.setProperty('cursor', 'pointer');
+			handlers.push(() => ledEl.removeEventListener('click', handler));
+		});
+
 		const testBtn = svgContainer.querySelector('#test-btn');
 		if (testBtn && onTestToggle) {
 			const tagName = testBtn.tagName.toLowerCase();
@@ -680,10 +696,13 @@ export default function BoardSVG({
 		}
 
 		return () => handlers.forEach((remove) => remove());
-	}, [svgContent, pinElements, onPinClick, onTestToggle]);
+	}, [svgContent, pinElements, onPinClick, ledButtonOrder, onTestToggle]);
 
 	const updateLabelsRef = useRef(updateLabels);
 	updateLabelsRef.current = updateLabels;
+
+	const onLedClickRef = useRef(onLedClick);
+	onLedClickRef.current = onLedClick;
 
 	useEffect(() => {
 		updateLabels();

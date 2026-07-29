@@ -23,6 +23,7 @@ import useProfilesStore from '../Store/useProfilesStore';
 import PinSelectList from '../components/pins/PinSelectList';
 import BoardSVG from '../components/widgets/BoardSVG';
 import PinActionModal from '../components/pins/PinActionModal';
+import LedColorPopover from '../components/shared/LedColorPopover';
 
 import { BUTTONS, getButtonLabels } from '../Data/Buttons';
 import { BUTTON_ACTIONS, PinActionValues } from '../Data/Pins';
@@ -194,6 +195,10 @@ const PinSection = memo(function PinSection({
 		[pinElements],
 	);
 	const [modalPin, setModalPin] = useState<number | null>(null);
+	const [ledPopover, setLedPopover] = useState<{
+		buttonName: string;
+		triggerRect: DOMRect;
+	} | null>(null);
 
 	const [listening, setListening] = useState(false);
 	const [pressedPins, setPressedPins] = useState<number[]>([]);
@@ -261,6 +266,21 @@ const PinSection = memo(function PinSection({
 
 	const handlePinClick = useCallback((pinNumber: number) => {
 		setModalPin(pinNumber);
+	}, []);
+
+	const handleLedClick = useCallback((buttonName: string, element: HTMLElement) => {
+		setLedPopover((prev) => {
+			if (prev && prev.buttonName === buttonName) return null;
+			return { buttonName, triggerRect: element.getBoundingClientRect() };
+		});
+	}, []);
+
+	const handleLedPopoverClose = useCallback(() => {
+		setLedPopover(null);
+	}, []);
+
+	const handleTestToggle = useCallback(() => {
+		setListening(l => !l);
 	}, []);
 
 	const handleModalClose = useCallback(() => {
@@ -343,6 +363,7 @@ const PinSection = memo(function PinSection({
 						pinElements={pinElements}
 						profileIndex={profileIndex}
 						onPinClick={handlePinClick}
+						onLedClick={onLedColorChange ? handleLedClick : undefined}
 						highlightedPin={pressedPin}
 						highlightedPins={listening ? pressedPins : undefined}
 						dirtyPins={dirtyPins}
@@ -355,7 +376,7 @@ const PinSection = memo(function PinSection({
 						ledButtonOrder={ledButtonOrder}
 						modeColors={modeColors}
 						listening={listening}
-						onTestToggle={() => setListening(l => !l)}
+						onTestToggle={handleTestToggle}
 						showPerKeyLeds={showPerKeyLeds}
 						showDisplay={showDisplay}
 					/>
@@ -375,14 +396,24 @@ const PinSection = memo(function PinSection({
 						currentKeyboardModifierMask={useProfilesStore.getState().profiles[profileIndex]?.keyboardModifierMasks?.[modalPin ?? 0] ?? 0}
 						onClose={handleModalClose}
 						onAssign={handlePinAssign}
-						customTheme={customTheme}
 						hasCustomTheme={hasCustomTheme}
-						onLedColorChange={onLedColorChange}
 						onSaveColor={onSavePinColors}
 						pinLedIndices={pinLedIndices}
 						inputMode={inputMode}
 						ledButtonOrder={ledButtonOrder}
 					/>
+
+					{customTheme && ledPopover && (
+						<LedColorPopover
+							show
+							onHide={handleLedPopoverClose}
+							triggerRect={ledPopover.triggerRect}
+							buttonName={ledPopover.buttonName}
+							normalColor={customTheme[ledPopover.buttonName]?.normal || '#000000'}
+							pressedColor={customTheme[ledPopover.buttonName]?.pressed || '#000000'}
+							onColorChange={onLedColorChange!}
+						/>
+					)}
 
 				</div>
 			) : (

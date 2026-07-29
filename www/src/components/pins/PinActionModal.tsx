@@ -14,7 +14,7 @@ import { KEY_CODES } from '../../Data/Keyboard';
 import KeyboardWidget from '../widgets/KeyboardWidget';
 import ControllerWidget from '../widgets/ControllerWidget';
 import PlusCircle from '../../Icons/PlusCircle';
-import Palette from '../../Icons/Palette';
+
 
 
 const MODIFIER_MIN = 0xe0;
@@ -68,9 +68,7 @@ type PinActionModalProps = {
 		keyboardKeycode: number,
 		keyboardModifierMask: number,
 	) => void;
-	customTheme?: Record<string, { normal: string; pressed: string }>;
 	hasCustomTheme?: boolean;
-	onLedColorChange?: (buttonName: string, colors: { normal: string; pressed: string }) => void;
 	onSaveColor?: () => void;
 	pinLedIndices?: Record<string, number>;
 	ledButtonOrder?: (string | undefined)[];
@@ -119,9 +117,7 @@ export default function PinActionModal({
 	currentKeyboardModifierMask,
 	onClose,
 	onAssign,
-	customTheme,
 	hasCustomTheme,
-	onLedColorChange,
 	onSaveColor,
 	pinLedIndices,
 	ledButtonOrder,
@@ -178,11 +174,6 @@ export default function PinActionModal({
 	}, [disabled, pinNumber, pinLedIndices, ledButtonOrder]);
 
 	const isButtonPress = !!buttonName;
-
-	const currentLedColors = useMemo(() => {
-		if (!isButtonPress || !customTheme || !buttonName) return null;
-		return customTheme[buttonName] || { normal: '#000000', pressed: '#000000' };
-	}, [isButtonPress, customTheme, buttonName]);
 
 	const getOptionLabel = useCallback(
 		(option: OptionType) => {
@@ -373,8 +364,7 @@ export default function PinActionModal({
 
 	const isAssignable = pendingAction !== BUTTON_ACTIONS.NONE || currentAction !== BUTTON_ACTIONS.NONE;
 
-const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinLedIndices[String(pinNumber)] >= 0;
-	const showLedSection = isButtonPress && !disabled && !!onLedColorChange && hasLed;
+
 
 	const [activeTab, setActiveTab] = useState<'controller' | 'keyboard'>(inputMode === 3 ? 'keyboard' : 'controller');
 
@@ -465,58 +455,7 @@ const hasLed = pinLedIndices && pinLedIndices[String(pinNumber)] != null && pinL
 						)}
 					</div>
 				</div>
-				{showLedSection && (
-					<div className="pin-action-section">
-						<div className="card-heading d-flex align-items-center gap-2">
-							<Palette />
-							{t('CustomTheme:custom-theme-colors')}
-						</div>
-						<div className="d-flex gap-3">
-							<div style={{ position: 'relative' }}>
-								<button type="button" className="led-color-btn" tabIndex={-1}>
-									<span
-										className="led-color-circle"
-										style={{ backgroundColor: currentLedColors?.normal || '#000000' }}
-									/>
-									<span>{t('CustomTheme:normal-label')}</span>
-								</button>
-								<input
-									type="color"
-									value={currentLedColors?.normal || '#000000'}
-									onChange={(e) => {
-										if (!onLedColorChange || !buttonName || !customTheme) return;
-										const current = customTheme[buttonName] || { normal: '#000000', pressed: '#000000' };
-										onLedColorChange(buttonName, { ...current, normal: e.target.value });
-									}}
-									style={{
-										position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
-									}}
-								/>
-							</div>
-							<div style={{ position: 'relative' }}>
-								<button type="button" className="led-color-btn" tabIndex={-1}>
-									<span
-										className="led-color-circle"
-										style={{ backgroundColor: currentLedColors?.pressed || '#000000' }}
-									/>
-									<span>{t('CustomTheme:pressed-label')}</span>
-								</button>
-								<input
-									type="color"
-									value={currentLedColors?.pressed || '#000000'}
-									onChange={(e) => {
-										if (!onLedColorChange || !buttonName || !customTheme) return;
-										const current = customTheme[buttonName] || { normal: '#000000', pressed: '#000000' };
-										onLedColorChange(buttonName, { ...current, pressed: e.target.value });
-									}}
-									style={{
-										position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
-									}}
-								/>
-							</div>
-						</div>
-					</div>
-				)}
+
 				{isAssignable && (
 					<div className="d-flex justify-content-end">
 						<Button variant="primary" onClick={handleSave}>

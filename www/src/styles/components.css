@@ -1374,6 +1374,82 @@
 	margin-bottom: 2px;
 }
 
+.led-popover {
+	position: fixed;
+	z-index: 1050;
+	border: 1px solid var(--gp-border-color);
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--gp-card-bg) 60%, transparent);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+	padding: 6px 8px;
+}
+
+.led-popover::after {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: var(--arrow-left, 11px);
+	transform: translateX(-50%);
+	width: 0;
+	height: 0;
+	border-left: 9px solid transparent;
+	border-right: 9px solid transparent;
+	border-top: 9px solid var(--gp-border-color);
+}
+
+.led-popover::before {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: var(--arrow-left, 12px);
+	transform: translateX(-50%);
+	width: 0;
+	height: 0;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	border-top: 8px solid var(--gp-card-bg);
+	z-index: 1;
+}
+
+.led-popover.arrow-up::after {
+	top: auto;
+	bottom: 100%;
+	border-top: none;
+	border-bottom: 9px solid var(--gp-border-color);
+}
+
+.led-popover.arrow-up::before {
+	top: auto;
+	bottom: 100%;
+	border-top: none;
+	border-bottom: 8px solid var(--gp-card-bg);
+}
+
+.led-popover-body {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.led-popover-body .led-color-btn {
+	padding: 0.25rem 0.6rem;
+	font-size: 0.8rem;
+}
+
+.led-popover-body .led-color-circle {
+	width: 12px;
+	height: 12px;
+}
+
+.led-popover-label {
+	font-weight: 600;
+	font-size: 0.85rem;
+	padding: 0 4px;
+	white-space: nowrap;
+}
+
 .reboot-modal-body {
 	display: flex;
 	flex-direction: column;
