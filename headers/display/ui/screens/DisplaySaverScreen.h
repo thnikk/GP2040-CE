@@ -41,7 +41,7 @@ class DisplaySaverScreen : public GPScreen {
         void drawPipeScene();
 
         // stars
-        static const uint8_t NUM_STARS = 16;
+        static const uint8_t NUM_STARS = 8;
         uint8_t stars[NUM_STARS][2] = {};
         uint8_t starSizes[NUM_STARS] = {};
         uint32_t starsEnteredTime = 0;
