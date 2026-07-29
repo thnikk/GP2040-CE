@@ -16,14 +16,9 @@
   <img src="https://img.shields.io/badge/MiSTer%20latency-0.765%20ms-blue" />
 </p>
 
-This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes are for broader compatibility, so I wanted my own fork for changes that are more specific to my controllers. Original description:
+This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes are for broader compatibility, so I wanted my own fork for changes that are more specific to my controllers.
 
-> [!NOTE]
-> GP2040-CE (Community Edition) is a gamepad firmware for the Raspberry Pi Pico and other boards based on the RP2040 microcontrollers that combines multi-platform compatibility, low latency and a rich feature set to provide endless customization possibilities without sacrificing performance.
->
-> GP2040-CE is compatible with PC, PS3, PS4, PS5, Nintendo Switch, Xbox One, Steam Deck, MiSTer and Android.
-
-## New Features
+## Fork Features
 
 ### Rebuilt Web Config
 
@@ -32,7 +27,12 @@ This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes ar
 The web config has been reworked with a focus on configuration of existing boards over broader compatiblity with custom boards.
 
 ### SVG Remapper
-Instead of using pin remapping, a board SVG can be used to define pins for their positions on the board and that will be displayed on the pin remapping page of the web config instead of the list of pins. This is a lot more intuitive for remapping, since it mirrors what you see on the controller.
+Instead of using pin remapping, a board SVG can be used to define pins for their positions on the board and that will be displayed on the pin remapping page of the web config instead of the list of pins. This is a lot more intuitive for remapping, since it mirrors what you see on the physical controller.
+
+### Mapping widgets
+There are controller and keyboard widgets for easily selecting mapping for keys.
+
+![Widgets](assets/widgets.png)
 
 ### Board LED addon
 The Waveshare RP2040-Zero includes an on-board LED and this addon sets the color based on the input mode.
@@ -43,10 +43,11 @@ Unique keyboard mapping for each profile.
 ### Multi-key Keyboard Mapping
 Map each button to a key and multiple modifiers.
 
-### Mapping widgets
-There are controller and keyboard widgets for easily selecting mapping for keys.
+### Pin-based mapping
+All controller, keyboard, and LED mapping are tied directly to pins instead of actions.
 
-![Widgets](assets/widgets.png)
+### Integrated Mini Menu
+The original implementation of the Mini Menu in GP2040-CE left a lot to be desired. You needed dedicated keys to toggle and navigate. Now there are globally set pins for navigating and a hotkey that can either use actions or pins for toggling the menu.
 
 ## Installation
 
@@ -58,7 +59,16 @@ There are controller and keyboard widgets for easily selecting mapping for keys.
 
 > If the device was previously used for other firmware, [flash nuke](tools/flash_nuke.uf2) it first to clear memory.
 
-## Features
+<details>
+<summary><h2>From original README</h2></summary>
+
+### Description
+
+GP2040-CE (Community Edition) is a gamepad firmware for the Raspberry Pi Pico and other boards based on the RP2040 microcontrollers that combines multi-platform compatibility, low latency and a rich feature set to provide endless customization possibilities without sacrificing performance.
+
+GP2040-CE is compatible with PC, PS3, PS4, PS5, Nintendo Switch, Xbox One, Steam Deck, MiSTer and Android.
+
+### Features
 
 - Select from 13 input modes including X-Input, Nintendo Switch, Playstation 4/5, Xbox One, D-Input, and Keyboard
 - Input latency average of 0.76ms in Xinput and 0.90ms for Playstation 5.
@@ -77,7 +87,7 @@ There are controller and keyboard widgets for easily selecting mapping for keys.
 
 Visit the [GP2040-CE Usage](https://gp2040-ce.info/usage) page for more details.
 
-## Performance
+### Performance
 
 Input latency is tested using the methodology outlined at [WydD's inputlag.science website](https://inputlag.science/controller/methodology), using the default 1000 Hz (1 ms) polling rate in the firmware. You can read more about the setup we use to conduct latency testing [HERE](https://github.com/OpenStickCommunity/Site/blob/main/latency_testing/README.md) if you are interested in testing for yourself or would just like to know more about the devices used to do the testing.
 
@@ -94,6 +104,7 @@ Full results can be found in the [GP2040-CE v0.7.10 Firmware Latency Test Result
 
 Results from v0.7.9 can be found [HERE](https://github.com/OpenStickCommunity/Site/raw/main/latency_testing/GP2040-CE_Firmware_Latency_Test_Results_v0.7.9.xlsx). Previous results can be found in the `latency_testing` folder.
 
+</details>
 
 ## Acknowledgements
 
