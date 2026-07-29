@@ -295,29 +295,17 @@ PLEDAnimationState getSwitchProAnimationNEOPICO(uint16_t ledState)
 
 static uint32_t actionToGamepadMask(GpioAction action);
 
-static std::pair<int8_t, int8_t> getButtonCoords(uint32_t mask) {
-  switch (mask) {
-    case GAMEPAD_MASK_DU: return {1, 0};
-    case GAMEPAD_MASK_DD: return {1, 2};
-    case GAMEPAD_MASK_DL: return {0, 1};
-    case GAMEPAD_MASK_DR: return {2, 1};
-    case GAMEPAD_MASK_B3: return {0, 3};
-    case GAMEPAD_MASK_B4: return {1, 3};
-    case GAMEPAD_MASK_R1: return {2, 3};
-    case GAMEPAD_MASK_L1: return {3, 3};
-    case GAMEPAD_MASK_B1: return {0, 4};
-    case GAMEPAD_MASK_B2: return {1, 4};
-    case GAMEPAD_MASK_R2: return {2, 4};
-    case GAMEPAD_MASK_L2: return {3, 4};
-    case GAMEPAD_MASK_S1: return {0, 5};
-    case GAMEPAD_MASK_L3: return {1, 5};
-    case GAMEPAD_MASK_A1: return {2, 5};
-    case GAMEPAD_MASK_S2: return {3, 5};
-    case GAMEPAD_MASK_R3: return {4, 5};
-    case GAMEPAD_MASK_A2: return {5, 5};
-    default:              return {-1, -1};
-  }
-}
+#ifndef BOARD_LED_POSITIONS
+#define BOARD_LED_POSITION_COLS 1
+#define BOARD_LED_POSITIONS { -1 }
+#endif
+
+#ifndef BOARD_LED_POSITION_COLS
+#define BOARD_LED_POSITION_COLS 1
+#endif
+
+static const int8_t BOARD_LED_GRID[][BOARD_LED_POSITION_COLS] = { BOARD_LED_POSITIONS };
+static const int LED_GRID_ROWS = sizeof(BOARD_LED_GRID) / sizeof(BOARD_LED_GRID[0]);
 
 bool NeoPicoLEDAddon::available() {
     const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
@@ -561,7 +549,15 @@ std::vector<std::vector<Pixel>> NeoPicoLEDAddon::createPinLEDLayout(uint8_t leds
         for (uint8_t l = 0; l < ledsPerPixel; l++)
             positions[l] = ledIndex + l;
 
+        int8_t x = -1, y = -1;
+        for (int r = 0; r < LED_GRID_ROWS && x < 0; r++)
+            for (int c = 0; c < BOARD_LED_POSITION_COLS; c++)
+                if (BOARD_LED_GRID[r][c] >= 0 && BOARD_LED_GRID[r][c] == ledIndex)
+                    { x = c; y = r; break; }
+
         pixels.push_back(Pixel(pin, mask, positions));
+        pixels.back().x = x;
+        pixels.back().y = y;
     }
 
     if (pixels.empty())
@@ -576,18 +572,6 @@ void NeoPicoLEDAddon::configureLEDs()
     const TurboOptions& turboOptions = Storage::getInstance().getAddonOptions().turboOptions;
     vector<vector<Pixel>> pixels = createPinLEDLayout(ledOptions.ledsPerButton);
     matrix.setup(pixels, ledOptions.ledsPerButton);
-
-    // Assign spatial coordinates for ripple animation
-    for (auto &col : matrix.pixels) {
-      for (auto &pixel : col) {
-        if (pixel.mask != 0) {
-          auto coords = getButtonCoords(pixel.mask);
-          pixel.x = coords.first;
-          pixel.y = coords.second;
-        }
-      }
-    }
-
     ledCount = matrix.getLedCount();
     if (ledOptions.pledType == PLED_TYPE_RGB && PLED_COUNT > 0)
         ledCount += PLED_COUNT;

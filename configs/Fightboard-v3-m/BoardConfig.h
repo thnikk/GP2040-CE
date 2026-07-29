@@ -107,6 +107,12 @@
 #define BOARD_LED_INDEX_GP27  2
 #define BOARD_LED_INDEX_GP28  1
 
+// Spatial grid for ripple animation
+#define BOARD_LED_POSITION_COLS 7
+#define BOARD_LED_POSITIONS \
+    {  3,  2,  1,  0, -1, 11, -1 }, \
+    {  4,  5,  6,  7,  8,  9, 10 }
+
 // Onboard WS2812 RGB LED (GPIO16) - shows the active input mode as a
 // color. Runs alongside the per-switch LEDs above (BOARD_LEDS_PIN),
 // each on its own PIO state machine.

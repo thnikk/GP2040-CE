@@ -99,6 +99,12 @@
 #define BOARD_LED_INDEX_GP28  10
 #define BOARD_LED_INDEX_GP29  11
 
+// Spatial grid for ripple animation
+#define BOARD_LED_POSITION_COLS 6
+#define BOARD_LED_POSITIONS \
+    {  9, 10, 11,  2,  1,  0 }, \
+    {  8,  7,  6,  3,  4,  5 }
+
 #define HAS_I2C_DISPLAY 1
 #define I2C1_ENABLED 1
 #define I2C1_PIN_SDA 10
