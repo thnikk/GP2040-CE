@@ -576,6 +576,47 @@ export default function BoardSVG({
 				}
 			}
 		}
+
+		containerRef.current.querySelectorAll('.led-hatch-overlay').forEach((el) => el.remove());
+
+		if (animationMode !== 4 && ledValues.length > 0) {
+			const svgNs = 'http://www.w3.org/2000/svg';
+			const seen = new Set<number>();
+			ledValues.forEach((ledIndex) => {
+				if (seen.has(ledIndex)) return;
+				seen.add(ledIndex);
+				const ledEl = containerRef.current?.querySelector(`#led-${ledIndex}`);
+				if (!ledEl) return;
+				let x: string, y: string, w: string, h: string, rx: string | null = null, ry: string | null = null;
+				if (ledEl.tagName.toLowerCase() === 'rect') {
+					x = ledEl.getAttribute('x') || '0';
+					y = ledEl.getAttribute('y') || '0';
+					w = ledEl.getAttribute('width') || '0';
+					h = ledEl.getAttribute('height') || '0';
+					rx = ledEl.getAttribute('rx');
+					ry = ledEl.getAttribute('ry');
+				} else {
+					const bbox = (ledEl as Element).getBBox();
+					x = String(bbox.x);
+					y = String(bbox.y);
+					w = String(bbox.width);
+					h = String(bbox.height);
+				}
+				const overlay = document.createElementNS(svgNs, 'rect');
+				overlay.setAttribute('x', x);
+				overlay.setAttribute('y', y);
+				overlay.setAttribute('width', w);
+				overlay.setAttribute('height', h);
+				overlay.setAttribute('class', 'led-hatch-overlay');
+				overlay.setAttribute('fill', 'url(#led-hatch)');
+				overlay.setAttribute('pointer-events', 'none');
+				if (rx) overlay.setAttribute('rx', rx);
+				if (ry) overlay.setAttribute('ry', ry);
+				const ledTransform = ledEl.getAttribute('transform');
+				if (ledTransform) overlay.setAttribute('transform', ledTransform);
+				ledEl.parentNode?.insertBefore(overlay, ledEl.nextSibling);
+			});
+		}
 	}, [pinElements, pins, buttonNames, highlightedPin, highlightedPins, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices, ledButtonOrder, listening, showPerKeyLeds]);
 
 	useEffect(() => {
@@ -606,6 +647,34 @@ export default function BoardSVG({
 		const oledEl = svgContainer.querySelector('#oled');
 		if (oledEl) {
 			(oledEl as HTMLElement).style.setProperty('fill', '#000000', 'important');
+		}
+
+		const svgRoot = svgContainer.querySelector('svg');
+		if (svgRoot) {
+			let defs = svgRoot.querySelector('defs');
+			if (!defs) {
+				defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+				svgRoot.insertBefore(defs, svgRoot.firstChild);
+			}
+			if (!defs.querySelector('#led-hatch')) {
+				const pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+				pattern.setAttribute('id', 'led-hatch');
+				pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+				pattern.setAttribute('width', '20');
+				pattern.setAttribute('height', '20');
+				pattern.setAttribute('patternTransform', 'rotate(45)');
+				[2, 7, 12, 17].forEach((x) => {
+					const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+					line.setAttribute('x1', String(x));
+					line.setAttribute('y1', '0');
+					line.setAttribute('x2', String(x));
+					line.setAttribute('y2', '20');
+					line.setAttribute('stroke', 'var(--bg-4)');
+					line.setAttribute('stroke-width', '2');
+					pattern.appendChild(line);
+				});
+				defs.appendChild(pattern);
+			}
 		}
 
 		const groups = svgContainer.querySelectorAll('[id^="pin"]');
