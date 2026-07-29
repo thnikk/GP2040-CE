@@ -28,6 +28,14 @@ def resolve_flash_path(path_str):
     return os.path.expandvars(path_str)
 
 
+def wait_for_mount(path, timeout, log_file=None):
+    for _ in range(timeout):
+        if path.is_dir():
+            return True
+        time.sleep(1)
+    return path.is_dir()
+
+
 def log_msg(msg, log_file=None):
     print(msg)
     if log_file:
@@ -108,6 +116,8 @@ def main():
                         help="Copy built UF2 to board after build")
     parser.add_argument("-p", "--path", default=DEFAULT_FLASH_PATH,
                         help=f"RPI-RP2 mount point (default: {DEFAULT_FLASH_PATH})")
+    parser.add_argument("-t", "--timeout", type=int, default=30,
+                        help="Seconds to wait for mount (default: 30)")
 
     args = parser.parse_args()
 
@@ -130,9 +140,14 @@ def main():
             log_msg(f"Warning: nuke file not found at {NUKE_FILE}, skipping",
                     args.output)
         elif not flash_dir.is_dir():
-            log_msg(f"Warning: flash path {flash_path} not found, skipping nuke",
+            log_msg(f"Waiting {args.timeout}s for {flash_path} to mount...",
                     args.output)
-        else:
+            if not wait_for_mount(flash_dir, args.timeout, args.output):
+                log_msg(f"Warning: flash path {flash_path} not found "
+                        f"after {args.timeout}s, skipping nuke",
+                        args.output)
+                flash_dir = None
+        if flash_dir and flash_dir.is_dir():
             dst = flash_dir / "flash_nuke.uf2"
             log_msg(f"Nuking board: {NUKE_FILE} -> {dst}", args.output)
             try:
@@ -183,16 +198,14 @@ def main():
 
     # --- Flash ---
     if args.flash:
-        if not flash_dir.is_dir() and args.nuke:
-            log_msg("Waiting for board to remount...", args.output)
-            for _ in range(30):
-                if flash_dir.is_dir():
-                    time.sleep(1)
-                    break
-                time.sleep(1)
+        if not flash_dir.is_dir():
+            log_msg(f"Waiting {args.timeout}s for {flash_path} to mount...",
+                    args.output)
+            wait_for_mount(flash_dir, args.timeout, args.output)
 
         if not flash_dir.is_dir():
-            log_msg(f"Warning: flash path {flash_path} not found, skipping flash",
+            log_msg(f"Warning: flash path {flash_path} not found "
+                    f"after {args.timeout}s, skipping flash",
                     args.output)
         else:
             pattern = f"GP2040-th_*_{args.board}.uf2"
