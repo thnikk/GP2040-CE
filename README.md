@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Fork of <a href="https://github.com/OpenStickCommunity/GP2040-th">GP2040-th</a>
+  Fork of <a href="https://github.com/OpenStickCommunity/GP2040-CE">GP2040-CE</a>
 </p>
 
 <p align="center">
@@ -16,12 +16,12 @@
   <img src="https://img.shields.io/badge/MiSTer%20latency-0.765%20ms-blue" />
 </p>
 
-This is a fork of the original GP2040-th as of v0.7.10. Most upstream changes are for broader compatibility, so I wanted my own fork for changes that are more specific to my controllers. Original description:
+This is a fork of the original GP2040-CE as of v0.7.10. Most upstream changes are for broader compatibility, so I wanted my own fork for changes that are more specific to my controllers. Original description:
 
 > [!NOTE]
-> GP2040-th (Community Edition) is a gamepad firmware for the Raspberry Pi Pico and other boards based on the RP2040 microcontrollers that combines multi-platform compatibility, low latency and a rich feature set to provide endless customization possibilities without sacrificing performance.
+> GP2040-CE (Community Edition) is a gamepad firmware for the Raspberry Pi Pico and other boards based on the RP2040 microcontrollers that combines multi-platform compatibility, low latency and a rich feature set to provide endless customization possibilities without sacrificing performance.
 >
-> GP2040-th is compatible with PC, PS3, PS4, PS5, Nintendo Switch, Xbox One, Steam Deck, MiSTer and Android.
+> GP2040-CE is compatible with PC, PS3, PS4, PS5, Nintendo Switch, Xbox One, Steam Deck, MiSTer and Android.
 
 ## New Features
 
@@ -75,7 +75,7 @@ There are controller and keyboard widgets for easily selecting mapping for keys.
 - Support for passive buzzer speaker (3v or 5v).
 - [Built-in, embedded web configuration](https://gp2040-ce.info/web-configurator) - No download required!
 
-Visit the [GP2040-th Usage](https://gp2040-ce.info/usage) page for more details.
+Visit the [GP2040-CE Usage](https://gp2040-ce.info/usage) page for more details.
 
 ## Performance
 
@@ -90,9 +90,9 @@ Input latency is tested using the methodology outlined at [WydD's inputlag.scien
 | v0.7.10 | PS4     | 1 ms      | 0.55 ms | 2.38 ms | 0.91 ms | 0.31 ms | 98.19%    | 1.81%    | 0%       |
 | v0.7.10 | PS5     | 1 ms      | 0.55 ms | 2.38 ms | 0.90 ms | 0.31 ms | 98.20%    | 1.80%    | 0%       |
 
-Full results can be found in the [GP2040-th v0.7.10 Firmware Latency Test Results](https://github.com/OpenStickCommunity/Site/raw/main/latency_testing/GP2040-th_Firmware_Latency_Test_Results_v0.7.10.xlsx) .xlsx Sheet.
+Full results can be found in the [GP2040-CE v0.7.10 Firmware Latency Test Results](https://github.com/OpenStickCommunity/Site/raw/main/latency_testing/GP2040-CE_Firmware_Latency_Test_Results_v0.7.10.xlsx) .xlsx Sheet.
 
-Results from v0.7.9 can be found [HERE](https://github.com/OpenStickCommunity/Site/raw/main/latency_testing/GP2040-th_Firmware_Latency_Test_Results_v0.7.9.xlsx). Previous results can be found in the `latency_testing` folder.
+Results from v0.7.9 can be found [HERE](https://github.com/OpenStickCommunity/Site/raw/main/latency_testing/GP2040-CE_Firmware_Latency_Test_Results_v0.7.9.xlsx). Previous results can be found in the `latency_testing` folder.
 
 
 ## Acknowledgements
