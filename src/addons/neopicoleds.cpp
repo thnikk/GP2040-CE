@@ -295,6 +295,30 @@ PLEDAnimationState getSwitchProAnimationNEOPICO(uint16_t ledState)
 
 static uint32_t actionToGamepadMask(GpioAction action);
 
+static std::pair<int8_t, int8_t> getButtonCoords(uint32_t mask) {
+  switch (mask) {
+    case GAMEPAD_MASK_DU: return {1, 0};
+    case GAMEPAD_MASK_DD: return {1, 2};
+    case GAMEPAD_MASK_DL: return {0, 1};
+    case GAMEPAD_MASK_DR: return {2, 1};
+    case GAMEPAD_MASK_B3: return {0, 3};
+    case GAMEPAD_MASK_B4: return {1, 3};
+    case GAMEPAD_MASK_R1: return {2, 3};
+    case GAMEPAD_MASK_L1: return {3, 3};
+    case GAMEPAD_MASK_B1: return {0, 4};
+    case GAMEPAD_MASK_B2: return {1, 4};
+    case GAMEPAD_MASK_R2: return {2, 4};
+    case GAMEPAD_MASK_L2: return {3, 4};
+    case GAMEPAD_MASK_S1: return {0, 5};
+    case GAMEPAD_MASK_L3: return {1, 5};
+    case GAMEPAD_MASK_A1: return {2, 5};
+    case GAMEPAD_MASK_S2: return {3, 5};
+    case GAMEPAD_MASK_R3: return {4, 5};
+    case GAMEPAD_MASK_A2: return {5, 5};
+    default:              return {-1, -1};
+  }
+}
+
 bool NeoPicoLEDAddon::available() {
     const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
     return isValidPin(ledOptions.dataPin);
@@ -552,6 +576,18 @@ void NeoPicoLEDAddon::configureLEDs()
     const TurboOptions& turboOptions = Storage::getInstance().getAddonOptions().turboOptions;
     vector<vector<Pixel>> pixels = createPinLEDLayout(ledOptions.ledsPerButton);
     matrix.setup(pixels, ledOptions.ledsPerButton);
+
+    // Assign spatial coordinates for ripple animation
+    for (auto &col : matrix.pixels) {
+      for (auto &pixel : col) {
+        if (pixel.mask != 0) {
+          auto coords = getButtonCoords(pixel.mask);
+          pixel.x = coords.first;
+          pixel.y = coords.second;
+        }
+      }
+    }
+
     ledCount = matrix.getLedCount();
     if (ledOptions.pledType == PLED_TYPE_RGB && PLED_COUNT > 0)
         ledCount += PLED_COUNT;

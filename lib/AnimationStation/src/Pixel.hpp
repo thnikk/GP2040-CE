@@ -14,6 +14,8 @@ struct Pixel {
   int index;                      // The pixel index
   uint32_t mask;                  // Used to detect per-pixel lighting
   std::vector<uint8_t> positions; // The actual LED indexes on the chain
+  int8_t x = -1;                  // Spatial X coordinate (for ripple/etc)
+  int8_t y = -1;                  // Spatial Y coordinate (for ripple/etc)
 };
 
 inline const Pixel NO_PIXEL(-1);

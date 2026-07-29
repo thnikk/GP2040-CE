@@ -3,6 +3,7 @@ src/Effects/Chase.cpp
 src/Effects/CustomTheme.cpp
 src/Effects/CustomThemePressed.cpp
 src/Effects/Rainbow.cpp
+src/Effects/Ripple.cpp
 src/Effects/StaticColor.cpp
 src/Effects/StaticTheme.cpp
 src/AnimationStation.cpp

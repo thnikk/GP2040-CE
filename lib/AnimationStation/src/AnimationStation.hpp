@@ -14,6 +14,7 @@
 #include "Effects/CustomTheme.hpp"
 #include "Effects/CustomThemePressed.hpp"
 #include "Effects/Rainbow.hpp"
+#include "Effects/Ripple.hpp"
 #include "Effects/StaticColor.hpp"
 #include "Effects/StaticTheme.hpp"
 
@@ -22,11 +23,12 @@ typedef enum
   EFFECT_STATIC_COLOR,
   EFFECT_RAINBOW,
   EFFECT_CHASE,
+  EFFECT_RIPPLE,
   EFFECT_STATIC_THEME,
   EFFECT_CUSTOM_THEME,
 } AnimationEffects;
 
-const int TOTAL_EFFECTS = 4; // Exclude custom theme until verified present
+const int TOTAL_EFFECTS = 5; // Exclude custom theme until verified present
 
 typedef enum
 {

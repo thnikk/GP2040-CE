@@ -41,6 +41,7 @@
 #define ANIMATION_STATIC_NAME "Static"
 #define ANIMATION_RAINBOW_NAME "Rainbow"
 #define ANIMATION_CHASE_NAME "Chase"
+#define ANIMATION_RIPPLE_NAME "Ripple"
 #define ANIMATION_STATIC_THEME_NAME "Static Theme"
 #define ANIMATION_CUSTOM_THEME_NAME "Custom Theme"
 
@@ -200,8 +201,9 @@ class MainMenuScreen : public GPScreen {
             {ANIMATION_STATIC_NAME,       NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 0},
             {ANIMATION_RAINBOW_NAME,      NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 1},
             {ANIMATION_CHASE_NAME,        NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 2},
-            {ANIMATION_STATIC_THEME_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 3},
-            {ANIMATION_CUSTOM_THEME_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 4},
+            {ANIMATION_RIPPLE_NAME,       NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 3},
+            {ANIMATION_STATIC_THEME_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 4},
+            {ANIMATION_CUSTOM_THEME_NAME, NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 5},
         };
         std::vector<MenuEntry> themeMenu;
         std::vector<MenuEntry> brightnessMenu;
