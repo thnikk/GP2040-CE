@@ -202,11 +202,11 @@ void DisplaySaverScreen::initStarsScene() {
     starsEnteredTime = getMillis();
     occasionalStarX = 3 + (rand() % (SCREEN_WIDTH - 6));
     occasionalStarY = 3 + (rand() % (SCREEN_HEIGHT - 6));
-    nextStarTime = getMillis() + 2000 + (rand() % 3000);
+    nextStarTime = 0;
 
     const int16_t MOON_CX = 64, MOON_CY = 32, MOON_R2 = 30 * 30;
     const int16_t STAR_MIN_DIST2 = 12 * 12;
-    const int16_t MARGIN = 2;
+    const int16_t MARGIN = 5;
     const int16_t X_MAX = SCREEN_WIDTH - 1 - MARGIN;
     const int16_t Y_MAX = SCREEN_HEIGHT - 1 - MARGIN;
 
@@ -225,9 +225,9 @@ void DisplaySaverScreen::initStarsScene() {
                     break;
                 }
             }
-            if (!tooClose) { stars[i][0] = x; stars[i][1] = y; valid = true; break; }
+            if (!tooClose) { stars[i][0] = x; stars[i][1] = y; starSizes[i] = 2 + (rand() % 3); valid = true; break; }
         }
-        if (!valid) { stars[i][0] = MARGIN + (rand() % (X_MAX - MARGIN + 1)); stars[i][1] = MARGIN + (rand() % (Y_MAX - MARGIN + 1)); }
+        if (!valid) { stars[i][0] = MARGIN + (rand() % (X_MAX - MARGIN + 1)); stars[i][1] = MARGIN + (rand() % (Y_MAX - MARGIN + 1)); starSizes[i] = 2 + (rand() % 3); }
     }
 }
 
@@ -236,7 +236,7 @@ void DisplaySaverScreen::drawStarsScene() {
 
     if (elapsed <= 2000) {
         for (uint8_t i = 0; i < NUM_STARS; ++i) {
-            uint8_t starSize = rand() % 3;
+            uint8_t starSize = rand() % (starSizes[i] + 1);
             int16_t cx = stars[i][0];
             int16_t cy = stars[i][1];
             getRenderer()->drawLine(cx - starSize, cy, cx + starSize, cy, 1, 0);
@@ -251,6 +251,8 @@ void DisplaySaverScreen::drawStarsScene() {
         const uint32_t ANIM_MS = GROW_MS + SHRINK_MS;
 
         uint32_t now = getMillis();
+        if (nextStarTime == 0)
+            nextStarTime = now + 2000 + (rand() % 3000);
         if (now >= nextStarTime) {
             uint32_t animPos = now - nextStarTime;
             if (animPos < ANIM_MS) {
