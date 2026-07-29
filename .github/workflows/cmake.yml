@@ -135,39 +135,41 @@ jobs:
       - name: Generate release notes
         id: release_notes
         run: |
-          echo "## Installation" > notes.md
-          echo "" >> notes.md
-          echo "1. Download the \`.uf2\` firmware file for your board below" >> notes.md
-          echo "2. Enter BOOTSEL mode — hold the BOOTSEL button while plugging in (or double-press the reset button)" >> notes.md
-          echo "3. A removable drive named \`RPI-RP2\` will appear — copy the \`.uf2\` file onto it" >> notes.md
-          echo "4. The device will flash and reboot automatically" >> notes.md
-          echo "" >> notes.md
-          echo "> If the device was previously used for other firmware, flash [\`flash_nuke.uf2\`](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/flash_nuke.uf2) first to clear memory." >> notes.md
-          echo "" >> notes.md
           TAG_NAME="${{ steps.version.outputs.tag }}"
           PREV_TAG=$(git tag --list 'v*' --sort=-version:refname | grep -E -v '(alpha|beta|rc|pre)' | head -1)
-          if [ -n "$PREV_TAG" ] && [ "$PREV_TAG" != "$TAG_NAME" ]; then
-            echo "## Changes" >> notes.md
-            echo "" >> notes.md
-            COUNT=$(git rev-list --count ${PREV_TAG}..HEAD)
-            if [ "$COUNT" -gt 10 ]; then
-              echo "See the [full changelog](https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${TAG_NAME}) for all ${COUNT} commits." >> notes.md
-            else
-              git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" >> notes.md
+          {
+            if [ -n "$PREV_TAG" ] && [ "$PREV_TAG" != "$TAG_NAME" ]; then
+              echo "## Changes"
+              echo ""
+              COUNT=$(git rev-list --count ${PREV_TAG}..HEAD)
+              if [ "$COUNT" -gt 10 ]; then
+                echo "See the [full changelog](https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${TAG_NAME}) for all ${COUNT} commits."
+              else
+                git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)"
+              fi
+              echo ""
             fi
-            echo "" >> notes.md
-          fi
-          echo "## Firmware" >> notes.md
-          echo "" >> notes.md
-          echo "| Board | File |" >> notes.md
-          echo "|-------|------|" >> notes.md
-          for f in ./artifacts/*/*.uf2; do
-            basename=$(basename "$f")
-            board=$(echo "$basename" | sed 's/.*_\(.*\)\.uf2/\1/')
-            display=$(echo "$board" | sed -e 's/-b-m$/ Basic Mirrored/' -e 's/-m$/ Mirrored/' -e 's/-b$/ Basic/' -e 's/-/ /g')
-            url="https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/${basename}"
-            echo "| ${display} | [\`${basename}\`](${url}) |" >> notes.md
-          done
+            echo "## Installation"
+            echo ""
+            echo "1. Download the \`.uf2\` firmware file for your board below"
+            echo "2. Enter BOOTSEL mode — hold the BOOTSEL button while plugging in (or double-press the reset button)"
+            echo "3. A removable drive named \`RPI-RP2\` will appear — copy the \`.uf2\` file onto it"
+            echo "4. The device will flash and reboot automatically"
+            echo ""
+            echo "> If the device was previously used for other firmware, flash [\`flash_nuke.uf2\`](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/flash_nuke.uf2) first to clear memory."
+            echo ""
+            echo "## Firmware"
+            echo ""
+            echo "| Board | File |"
+            echo "|-------|------|"
+            for f in ./artifacts/*/*.uf2; do
+              basename=$(basename "$f")
+              board=$(echo "$basename" | sed 's/.*_\(.*\)\.uf2/\1/')
+              display=$(echo "$board" | sed -e 's/-b-m$/ Basic Mirrored/' -e 's/-m$/ Mirrored/' -e 's/-b$/ Basic/' -e 's/-/ /g')
+              url="https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/${basename}"
+              echo "| ${display} | [\`${basename}\`](${url}) |"
+            done
+          } > notes.md
 
       - name: Check if pre-release
         id: prerelease
@@ -183,7 +185,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          name: Release ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
           body_path: notes.md
           files: |
             ./artifacts/**/*.uf2
