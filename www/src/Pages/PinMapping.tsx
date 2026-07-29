@@ -363,7 +363,7 @@ const PinSection = memo(function PinSection({
 						pinElements={pinElements}
 						profileIndex={profileIndex}
 						onPinClick={handlePinClick}
-						onLedClick={onLedColorChange ? handleLedClick : undefined}
+						onLedClick={onLedColorChange && animationMode === 4 ? handleLedClick : undefined}
 						highlightedPin={pressedPin}
 						highlightedPins={listening ? pressedPins : undefined}
 						dirtyPins={dirtyPins}
@@ -403,7 +403,7 @@ const PinSection = memo(function PinSection({
 						ledButtonOrder={ledButtonOrder}
 					/>
 
-					{customTheme && ledPopover && (
+					{customTheme && animationMode === 4 && ledPopover && (
 						<LedColorPopover
 							show
 							onHide={handleLedPopoverClose}
