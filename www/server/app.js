@@ -78,7 +78,7 @@ app.get('/api/resetSettings', (req, res) => {
 
 app.get('/api/getDisplayOptions', (req, res) => {
 	const data = {
-		enabled: 1,
+		enabled: boardConfig?.hasI2cDisplay ?? 1,
 		flipDisplay: 0,
 		invertDisplay: 1,
 		buttonLayout: 0,

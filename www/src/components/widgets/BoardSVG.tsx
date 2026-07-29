@@ -69,6 +69,8 @@ type BoardSVGProps = {
 	ledButtonOrder?: (string | undefined)[];
 	listening?: boolean;
 	onTestToggle?: () => void;
+	showPerKeyLeds?: boolean;
+	showDisplay?: boolean;
 };
 
 const ACTION_LABELS: Record<PinActionValues, string> = {
@@ -285,6 +287,8 @@ export default function BoardSVG({
 	modeColors,
 	listening,
 	onTestToggle,
+	showPerKeyLeds = true,
+	showDisplay = true,
 }: BoardSVGProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { buttonLabels, useNintendoLayout } = useContext(AppContext);
@@ -307,7 +311,7 @@ export default function BoardSVG({
     const updateLabels = useCallback(() => {
 	        if (!containerRef.current) return;
 
-	        const hasLedElements = containerRef.current.querySelector('[id^="led-"]') !== null;
+	        const hasLedElements = showPerKeyLeds && containerRef.current.querySelector('[id^="led-"]') !== null;
 
 	        if (originalFills.current.size === 0) {
 	            pinElements.forEach(({ id }) => {
@@ -570,7 +574,7 @@ export default function BoardSVG({
 				}
 			}
 		}
-	}, [pinElements, pins, buttonNames, highlightedPin, highlightedPins, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices, ledButtonOrder, listening]);
+	}, [pinElements, pins, buttonNames, highlightedPin, highlightedPins, dirtyPins, customTheme, animationMode, themeIndex, inputMode, pinLedIndices, ledButtonOrder, listening, showPerKeyLeds]);
 
 	useEffect(() => {
 		if (!containerRef.current || !svgContent) return;
@@ -715,6 +719,24 @@ export default function BoardSVG({
 			ledEl.style.removeProperty('stroke-width');
 		}
 	}, [inputMode, modeColors]);
+
+	useEffect(() => {
+		if (!containerRef.current) return;
+		if (!showPerKeyLeds) {
+			containerRef.current.querySelectorAll('[id^="led-"]').forEach((el) => {
+				(el as HTMLElement).style.setProperty('display', 'none', 'important');
+			});
+		}
+		const oled = containerRef.current.querySelector('#oled');
+		const logo = containerRef.current.querySelector('#logo');
+		if (!showDisplay) {
+			if (oled) (oled as HTMLElement).style.setProperty('display', 'none', 'important');
+			if (logo) (logo as HTMLElement).style.setProperty('display', 'none', 'important');
+		} else {
+			if (oled) (oled as HTMLElement).style.removeProperty('display');
+			if (logo) (logo as HTMLElement).style.removeProperty('display');
+		}
+	}, [showPerKeyLeds, showDisplay]);
 
 	const processedSvg = useMemo(() => prepareSvg(svgContent), [svgContent]);
 

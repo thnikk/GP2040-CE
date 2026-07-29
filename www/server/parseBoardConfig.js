@@ -274,6 +274,7 @@ function buildBoardConfig(rawDefines, configDir, rootDir) {
 		svgPath,
 		pinDefaults,
 		pinLedIndices,
+		hasI2cDisplay: rawDefines.HAS_I2C_DISPLAY !== undefined && !!parseInt(rawDefines.HAS_I2C_DISPLAY, 10),
 		ledOptions: {
 			dataPin: isNaN(boardLedsPin) ? -1 : boardLedsPin,
 			brightnessMaximum: isNaN(ledBrightnessMaximum) ? 255 : ledBrightnessMaximum,

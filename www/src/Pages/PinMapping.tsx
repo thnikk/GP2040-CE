@@ -130,6 +130,8 @@ const PinSection = memo(function PinSection({
 	pinLedIndices,
 	modeColors,
 	boardPinDefaults,
+	showPerKeyLeds = true,
+	showDisplay = true,
 }: {
 	profileIndex: number;
 	pressedPin?: number | null;
@@ -144,6 +146,8 @@ const PinSection = memo(function PinSection({
 	pinLedIndices?: Record<string, number>;
 	modeColors?: Record<number, string>;
 	boardPinDefaults?: number[] | null;
+	showPerKeyLeds?: boolean;
+	showDisplay?: boolean;
 }) {
 	const { t } = useTranslation('');
 	const copyBaseProfile = useProfilesStore((state) => state.copyBaseProfile);
@@ -352,6 +356,8 @@ const PinSection = memo(function PinSection({
 						modeColors={modeColors}
 						listening={listening}
 						onTestToggle={() => setListening(l => !l)}
+						showPerKeyLeds={showPerKeyLeds}
+						showDisplay={showDisplay}
 					/>
 					) : (
 						<div className="alert alert-info">
@@ -436,6 +442,7 @@ export default function PinMapping() {
 	const [pinLedIndices, setPinLedIndices] = useState<Record<string, number> | undefined>(undefined);
 	const [modeColors, setModeColors] = useState<Record<number, string> | undefined>(undefined);
 	const [boardPinDefaults, setBoardPinDefaults] = useState<number[] | null>(null);
+	const [displayEnabled, setDisplayEnabled] = useState(true);
 
 	const { setLoading } = useContext(AppContext);
 
@@ -484,6 +491,11 @@ export default function PinMapping() {
 			}
 		}
 		fetchLedOptions();
+		async function fetchDisplayOptions() {
+			const data = await WebApi.getDisplayOptions();
+			if (data) setDisplayEnabled(data.enabled);
+		}
+		fetchDisplayOptions();
 	}, []);
 
 	const handleLedColorChange = useCallback(
@@ -658,6 +670,8 @@ const submitTheme = useCallback(async () => {
 							pinLedIndices={pinLedIndices}
 							modeColors={modeColors}
 							boardPinDefaults={boardPinDefaults}
+							showPerKeyLeds={ledsEnabled}
+							showDisplay={displayEnabled}
 						/>
 						)
 					))}
