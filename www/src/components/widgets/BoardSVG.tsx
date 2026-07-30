@@ -253,10 +253,10 @@ function getLedColor(
 	staticColorNormal?: string,
 	ledButtonOrder?: (string | undefined)[],
 ): string {
-	if (animationMode === 0 && staticColorNormal) {
+	if ((animationMode === 0 || animationMode === 4) && staticColorNormal) {
 		return staticColorNormal;
 	}
-	if (animationMode === 4 && customTheme) {
+	if (animationMode === 5 && customTheme) {
 		const btnKey = ledButtonOrder?.[ledIndex] || BUTTON_ORDER[ledIndex % BUTTON_ORDER.length];
 		if (customTheme[btnKey]) return customTheme[btnKey].normal;
 	}

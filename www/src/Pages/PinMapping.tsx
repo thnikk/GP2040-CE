@@ -101,6 +101,7 @@ const ANIMATION_MODES = [
 	{ value: 2, labelKey: 'animation-mode-2' },
 	{ value: 3, labelKey: 'animation-mode-3' },
 	{ value: 4, labelKey: 'animation-mode-4' },
+	{ value: 5, labelKey: 'animation-mode-5' },
 ];
 
 const STATIC_THEMES = [
@@ -365,7 +366,7 @@ const PinSection = memo(function PinSection({
 						pinElements={pinElements}
 						profileIndex={profileIndex}
 						onPinClick={handlePinClick}
-						onLedClick={onLedColorChange && animationMode === 4 ? handleLedClick : undefined}
+						onLedClick={onLedColorChange && animationMode === 5 ? handleLedClick : undefined}
 						highlightedPin={pressedPin}
 						highlightedPins={listening ? pressedPins : undefined}
 						dirtyPins={dirtyPins}
@@ -405,7 +406,7 @@ const PinSection = memo(function PinSection({
 						ledButtonOrder={ledButtonOrder}
 					/>
 
-					{customTheme && animationMode === 4 && ledPopover && (
+					{customTheme && animationMode === 5 && ledPopover && (
 						<LedColorPopover
 							show
 							onHide={handleLedPopoverClose}
@@ -552,7 +553,7 @@ const submitTheme = useCallback(async () => {
 		delete leds['GRADIENT NORMAL'];
 		delete leds['GRADIENT PRESSED'];
 		const success = await WebApi.setCustomTheme({
-			hasCustomTheme: animationMode === 4,
+			hasCustomTheme: animationMode === 5,
 			customTheme: leds,
 			animationMode,
 			themeIndex,
@@ -570,7 +571,7 @@ const submitTheme = useCallback(async () => {
 		return WebApi.setCustomTheme({ customTheme: leds });
 	}, [customTheme]);
 
-	const hasCustomTheme = animationMode === 4;
+	const hasCustomTheme = animationMode === 5;
 
 	return (
 		<>
@@ -620,44 +621,44 @@ const submitTheme = useCallback(async () => {
 										</Form.Select>
 									</div>
 								)}
-								{animationMode === 0 && (
-									<div className="d-flex align-items-center gap-3">
-										<div style={{ position: 'relative' }}>
-											<button type="button" className="led-color-btn" tabIndex={-1}>
-												<span
-													className="led-color-circle"
-													style={{ backgroundColor: staticColorNormal }}
-												/>
-												<span>{t('CustomTheme:normal-label')}</span>
-											</button>
-											<input
-												type="color"
-												value={staticColorNormal}
-												onChange={(e) => setStaticColorNormal(e.target.value)}
-												style={{
-													position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
-												}}
+							{(animationMode === 0 || animationMode === 4) && (
+								<div className="d-flex align-items-center gap-3">
+									<div style={{ position: 'relative' }}>
+										<button type="button" className="led-color-btn" tabIndex={-1}>
+											<span
+												className="led-color-circle"
+												style={{ backgroundColor: staticColorNormal }}
 											/>
-										</div>
-										<div style={{ position: 'relative' }}>
-											<button type="button" className="led-color-btn" tabIndex={-1}>
-												<span
-													className="led-color-circle"
-													style={{ backgroundColor: staticColorPressed }}
-												/>
-												<span>{t('CustomTheme:pressed-label')}</span>
-											</button>
-											<input
-												type="color"
-												value={staticColorPressed}
-												onChange={(e) => setStaticColorPressed(e.target.value)}
-												style={{
-													position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
-												}}
-											/>
-										</div>
+											<span>{t('CustomTheme:normal-label')}</span>
+										</button>
+										<input
+											type="color"
+											value={staticColorNormal}
+											onChange={(e) => setStaticColorNormal(e.target.value)}
+											style={{
+												position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+											}}
+										/>
 									</div>
-								)}
+									<div style={{ position: 'relative' }}>
+										<button type="button" className="led-color-btn" tabIndex={-1}>
+											<span
+												className="led-color-circle"
+												style={{ backgroundColor: staticColorPressed }}
+											/>
+											<span>{t('CustomTheme:pressed-label')}</span>
+										</button>
+										<input
+											type="color"
+											value={staticColorPressed}
+											onChange={(e) => setStaticColorPressed(e.target.value)}
+											style={{
+												position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+											}}
+										/>
+									</div>
+								</div>
+							)}
 							</div>
 						</div>
 					)}
