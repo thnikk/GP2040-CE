@@ -166,8 +166,8 @@ void AnimationStation::SetMode(uint8_t mode) {
     this->buttonAnimation = new StaticColor(matrix, lastPressed);
     break;
   case AnimationEffects::EFFECT_CUSTOM_THEME:
-    this->baseAnimation = new CustomTheme(matrix);
-    this->buttonAnimation = new CustomThemePressed(matrix, lastPressed);
+    this->baseAnimation = new Ripple(matrix);
+    this->buttonAnimation = new StaticColor(matrix, lastPressed);
     break;
   default:
     this->baseAnimation = new StaticColor(matrix);
