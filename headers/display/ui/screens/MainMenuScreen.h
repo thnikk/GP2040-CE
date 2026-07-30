@@ -94,6 +94,8 @@ class MainMenuScreen : public GPScreen {
         void selectBrightness();
         int32_t currentBrightness();
         int32_t currentSpeed();
+        int32_t currentColorNormal();
+        int32_t currentColorPressed();
 
         void updateMenuNavigation(GpioAction action);
         void queueAction(GpioAction action) { pendingNavAction = (uint8_t)action; }
@@ -215,6 +217,14 @@ class MainMenuScreen : public GPScreen {
         std::vector<MenuEntry> themeMenu;
         std::vector<MenuEntry> brightnessMenu;
         std::vector<MenuEntry> speedMenu;
+
+        std::vector<MenuEntry> colorNormalMenu;
+        std::vector<MenuEntry> colorPressedMenu;
+        std::vector<MenuEntry> colorMenu;
+        uint32_t prevColorNormal;
+        uint32_t updateColorNormal;
+        uint32_t prevColorPressed;
+        uint32_t updateColorPressed;
 
         std::vector<MenuEntry> ledMenu = {
             {"Animation",  NULL, &animationMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},

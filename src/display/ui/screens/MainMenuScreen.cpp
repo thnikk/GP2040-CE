@@ -136,6 +136,11 @@ void MainMenuScreen::init() {
     prevRippleCycleTime = animOpts.rippleCycleTime;
     updateRippleCycleTime = animOpts.rippleCycleTime;
 
+    prevColorNormal = animOpts.staticColorNormal;
+    updateColorNormal = prevColorNormal;
+    prevColorPressed = animOpts.staticColorPressed;
+    updateColorPressed = prevColorPressed;
+
     prevInputHistoryTimeout = Storage::getInstance().getDisplayOptions().inputHistoryTimeout;
     updateInputHistoryTimeout = prevInputHistoryTimeout;
 
@@ -236,6 +241,43 @@ void MainMenuScreen::init() {
         speedMenu.push_back(speedEntry);
     }
 
+    {
+        auto makeColorEntry = [](uint32_t* color) {
+            MenuEntry entry;
+            entry.isSpinner = true;
+            entry.currentValue = [color]() -> int32_t { return (int32_t)*color; };
+            entry.displayValue = [color]() -> std::string {
+                char buf[8];
+                snprintf(buf, sizeof(buf), "#%02X%02X%02X",
+                    (uint8_t)((*color >> 16) & 0xFF),
+                    (uint8_t)((*color >> 8) & 0xFF),
+                    (uint8_t)(*color & 0xFF));
+                return std::string(buf);
+            };
+            return entry;
+        };
+        colorNormalMenu.clear();
+        colorNormalMenu.push_back(makeColorEntry(&updateColorNormal));
+        colorPressedMenu.clear();
+        colorPressedMenu.push_back(makeColorEntry(&updateColorPressed));
+    }
+
+    colorMenu.clear();
+    {
+        colorMenu.push_back({"Normal", NULL, &colorNormalMenu,
+            std::bind(&MainMenuScreen::modeValue, this),
+            std::bind(&MainMenuScreen::testMenu, this)});
+    }
+    {
+        colorMenu.push_back({"Pressed", NULL, &colorPressedMenu,
+            std::bind(&MainMenuScreen::modeValue, this),
+            std::bind(&MainMenuScreen::testMenu, this)});
+    }
+
+    ledMenu.push_back({"Colors", NULL, &colorMenu,
+        std::bind(&MainMenuScreen::modeValue, this),
+        std::bind(&MainMenuScreen::testMenu, this)});
+
     mainMenu.clear();
     mainMenu.push_back({"Input Mode", NULL, &inputModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
     mainMenu.push_back({"D-Pad Mode", NULL, &dpadModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
@@ -274,11 +316,24 @@ void MainMenuScreen::drawScreen() {
                 (21 - gpMenu->getMenuTitle().length()) / 2, 0,
                 gpMenu->getMenuTitle().c_str());
             std::string valueStr = currentMenu->at(0).displayValue();
-            getRenderer()->drawText(
-                (21 - valueStr.length()) / 2, 3, valueStr.c_str());
-            if (currentMenu == &displayTimeoutMenu)
+            if (currentMenu == &colorNormalMenu || currentMenu == &colorPressedMenu) {
+                int textX = (21 - valueStr.length()) / 2;
+                getRenderer()->drawText(textX + 1, 2, "R G B");
+                getRenderer()->drawText(textX, 3, valueStr);
+                int underlineY = 3 * 8 + 8;
+                int channelStartX = (textX + 1 + currentSpinnerUnit * 2) * 6;
+                int channelEndX = channelStartX + 2 * 6 - 1;
+                getRenderer()->drawLine(channelStartX, underlineY,
+                    channelEndX, underlineY, 1, 0);
                 getRenderer()->drawText(2, 5,
-                    CHAR_UP CHAR_DOWN ":adjust " CHAR_LEFT CHAR_RIGHT ":unit");
+                    CHAR_UP CHAR_DOWN ":val " CHAR_LEFT CHAR_RIGHT ":ch");
+            } else {
+                getRenderer()->drawText(
+                    (21 - valueStr.length()) / 2, 3, valueStr.c_str());
+                if (currentMenu == &displayTimeoutMenu)
+                    getRenderer()->drawText(2, 5,
+                        CHAR_UP CHAR_DOWN ":adjust " CHAR_LEFT CHAR_RIGHT ":unit");
+            }
             getRenderer()->drawText(3, 6, "A:set  B:back");
         }
     } else {
@@ -344,7 +399,7 @@ int8_t MainMenuScreen::update() {
         if (repeatDirection < 0 && (values & mapMenuDown->pinMask)) stillHeld = true;
 
         if (stillHeld) {
-            if (!isRepeating && now - repeatTimer >= 400) {
+            if (!isRepeating && now - repeatTimer >= 120) {
                 isRepeating = true;
                 repeatTimer = now;
                 repeatInterval = 100;
@@ -352,7 +407,7 @@ int8_t MainMenuScreen::update() {
                 actionFired = true;
             } else if (isRepeating && now - repeatTimer >= repeatInterval) {
                 repeatTimer = now;
-                repeatInterval = repeatInterval > 35 ? repeatInterval - 5 : 30;
+                repeatInterval = repeatInterval > 5 ? repeatInterval - 5 : 5;
                 updateMenuNavigation(repeatDirection > 0 ? GpioAction::MENU_NAVIGATION_UP : GpioAction::MENU_NAVIGATION_DOWN);
                 actionFired = true;
             }
@@ -461,6 +516,13 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
                             spinnerValueSnapshot = updateDisplaySaverTimeout;
                         else if (currentMenu == &histTimeoutMenu)
                             histSpinnerValueSnapshot = updateInputHistoryTimeout;
+                        else if (currentMenu == &colorNormalMenu) {
+                            spinnerValueSnapshot = updateColorNormal;
+                            currentSpinnerUnit = 0;
+                        } else if (currentMenu == &colorPressedMenu) {
+                            spinnerValueSnapshot = updateColorPressed;
+                            currentSpinnerUnit = 0;
+                        }
                     }
                     gpMenu->setMenuData(currentMenu);
                     gpMenu->setMenuTitle(menuBackStack.back().menu->at(menuBackStack.back().index).label);
@@ -592,6 +654,8 @@ void MainMenuScreen::resetOptions() {
         if (prevInputHistoryTimeout != updateInputHistoryTimeout) updateInputHistoryTimeout = prevInputHistoryTimeout;
         if (prevDisplaySaverTimeout != updateDisplaySaverTimeout) updateDisplaySaverTimeout = prevDisplaySaverTimeout;
         if (prevDisplaySaverMode != updateDisplaySaverMode) updateDisplaySaverMode = prevDisplaySaverMode;
+        if (prevColorNormal != updateColorNormal) updateColorNormal = prevColorNormal;
+        if (prevColorPressed != updateColorPressed) updateColorPressed = prevColorPressed;
     }
 
     changeRequiresSave = false;
@@ -653,6 +717,14 @@ void MainMenuScreen::saveOptions() {
         if (prevBrightness != updateBrightness) {
             AnimationStation::options.brightness = updateBrightness;
             AnimationStation::SetBrightness(AnimationStation::options.brightness);
+            animHasChanged = true;
+        }
+        if (prevColorNormal != updateColorNormal) {
+            AnimationStation::options.staticColorNormal = updateColorNormal;
+            animHasChanged = true;
+        }
+        if (prevColorPressed != updateColorPressed) {
+            AnimationStation::options.staticColorPressed = updateColorPressed;
             animHasChanged = true;
         }
 
@@ -763,6 +835,14 @@ int32_t MainMenuScreen::currentSpeed() {
     return -1;
 }
 
+int32_t MainMenuScreen::currentColorNormal() {
+    return (int32_t)updateColorNormal;
+}
+
+int32_t MainMenuScreen::currentColorPressed() {
+    return (int32_t)updateColorPressed;
+}
+
 void MainMenuScreen::selectInputHistoryTimeout() {
     if (currentMenu->at(menuIndex).optionValue != -1) {
         uint16_t valueToSave = currentMenu->at(menuIndex).optionValue;
@@ -865,10 +945,27 @@ void MainMenuScreen::adjustSpinnerValue(int8_t direction) {
         else if (newVal < (anim == 4 ? 100 : 10)) newVal = (anim == 4 ? 100 : 10);
         *value = newVal;
         if (*prev != *value) changeRequiresSave = true;
+    } else if (currentMenu == &colorNormalMenu || currentMenu == &colorPressedMenu) {
+        uint32_t* color = (currentMenu == &colorNormalMenu) ? &updateColorNormal : &updateColorPressed;
+        uint32_t* prev = (currentMenu == &colorNormalMenu) ? &prevColorNormal : &prevColorPressed;
+        uint8_t shift = (2 - currentSpinnerUnit) * 8;
+        int32_t channel = (*color >> shift) & 0xFF;
+        channel += direction;
+        if (channel > 255) channel = 255;
+        else if (channel < 0) channel = 0;
+        *color = (*color & ~(0xFF << shift)) | ((uint32_t)channel << shift);
+        if (*prev != *color) changeRequiresSave = true;
     }
 }
 
 void MainMenuScreen::switchSpinnerUnit(int8_t direction) {
+    if (currentMenu == &colorNormalMenu || currentMenu == &colorPressedMenu) {
+        if (direction > 0)
+            currentSpinnerUnit = (currentSpinnerUnit + 1) % 3;
+        else
+            currentSpinnerUnit = (currentSpinnerUnit + 2) % 3;
+        return;
+    }
     if (currentMenu != &displayTimeoutMenu) return;
     if (currentSpinnerUnit == 0 && direction > 0) {
         if (updateDisplaySaverTimeout > 0 && updateDisplaySaverTimeout < 60000)
@@ -909,6 +1006,18 @@ void MainMenuScreen::saveSpinnerValue() {
             prevRippleCycleTime = updateRippleCycleTime;
             AnimationStore.save();
         }
+    } else if (currentMenu == &colorNormalMenu) {
+        if (spinnerValueSnapshot != updateColorNormal) {
+            prevColorNormal = updateColorNormal;
+            AnimationStation::options.staticColorNormal = updateColorNormal;
+            AnimationStore.save();
+        }
+    } else if (currentMenu == &colorPressedMenu) {
+        if (spinnerValueSnapshot != updateColorPressed) {
+            prevColorPressed = updateColorPressed;
+            AnimationStation::options.staticColorPressed = updateColorPressed;
+            AnimationStore.save();
+        }
     }
 }
 
@@ -923,5 +1032,11 @@ void MainMenuScreen::revertSpinnerValue() {
         updateRainbowCycleTime = prevRainbowCycleTime;
         updateChaseCycleTime = prevChaseCycleTime;
         updateRippleCycleTime = prevRippleCycleTime;
+    } else if (currentMenu == &colorNormalMenu) {
+        updateColorNormal = spinnerValueSnapshot;
+        prevColorNormal = spinnerValueSnapshot;
+    } else if (currentMenu == &colorPressedMenu) {
+        updateColorPressed = spinnerValueSnapshot;
+        prevColorPressed = spinnerValueSnapshot;
     }
 }
