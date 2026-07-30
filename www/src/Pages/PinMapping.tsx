@@ -621,8 +621,8 @@ const submitTheme = useCallback(async () => {
 										</Form.Select>
 									</div>
 								)}
-							{(animationMode === 0 || animationMode === 4) && (
-								<div className="d-flex align-items-center gap-3">
+							<div className="d-flex align-items-center gap-3">
+								{(animationMode === 0 || animationMode === 4) && (
 									<div style={{ position: 'relative' }}>
 										<button type="button" className="led-color-btn" tabIndex={-1}>
 											<span
@@ -640,25 +640,25 @@ const submitTheme = useCallback(async () => {
 											}}
 										/>
 									</div>
-									<div style={{ position: 'relative' }}>
-										<button type="button" className="led-color-btn" tabIndex={-1}>
-											<span
-												className="led-color-circle"
-												style={{ backgroundColor: staticColorPressed }}
-											/>
-											<span>{t('CustomTheme:pressed-label')}</span>
-										</button>
-										<input
-											type="color"
-											value={staticColorPressed}
-											onChange={(e) => setStaticColorPressed(e.target.value)}
-											style={{
-												position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
-											}}
+								)}
+								<div style={{ position: 'relative' }}>
+									<button type="button" className="led-color-btn" tabIndex={-1}>
+										<span
+											className="led-color-circle"
+											style={{ backgroundColor: staticColorPressed }}
 										/>
-									</div>
+										<span>{t('CustomTheme:pressed-label')}</span>
+									</button>
+									<input
+										type="color"
+										value={staticColorPressed}
+										onChange={(e) => setStaticColorPressed(e.target.value)}
+										style={{
+											position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+										}}
+									/>
 								</div>
-							)}
+							</div>
 							</div>
 						</div>
 					)}
