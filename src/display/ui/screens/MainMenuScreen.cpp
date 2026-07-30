@@ -107,19 +107,19 @@ void MainMenuScreen::init() {
     changeRequiresSave = false;
     prevInputMode = Storage::getInstance().GetGamepad()->getOptions().inputMode;
     updateInputMode = Storage::getInstance().GetGamepad()->getOptions().inputMode;
-    
+
     prevDpadMode = Storage::getInstance().GetGamepad()->getOptions().dpadMode;
     updateDpadMode = Storage::getInstance().GetGamepad()->getOptions().dpadMode;
-    
+
     prevSocdMode = Storage::getInstance().GetGamepad()->getOptions().socdMode;
     updateSocdMode = Storage::getInstance().GetGamepad()->getOptions().socdMode;
-    
+
     prevProfile = Storage::getInstance().GetGamepad()->getOptions().profileNumber;
     updateProfile = Storage::getInstance().GetGamepad()->getOptions().profileNumber;
-    
+
     prevFocus = Storage::getInstance().getAddonOptions().focusModeOptions.enabled;
     updateFocus = Storage::getInstance().getAddonOptions().focusModeOptions.enabled;
-    
+
     prevTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
     updateTurbo = Storage::getInstance().getAddonOptions().turboOptions.enabled;
 
@@ -248,8 +248,8 @@ void MainMenuScreen::init() {
             entry.isSpinner = true;
             entry.currentValue = [color]() -> int32_t { return (int32_t)*color; };
             entry.displayValue = [color]() -> std::string {
-                char buf[8];
-                snprintf(buf, sizeof(buf), "#%02X%02X%02X",
+                char buf[12];
+                snprintf(buf, sizeof(buf), "|%02X|%02X|%02X|",
                     (uint8_t)((*color >> 16) & 0xFF),
                     (uint8_t)((*color >> 8) & 0xFF),
                     (uint8_t)(*color & 0xFF));
@@ -318,14 +318,11 @@ void MainMenuScreen::drawScreen() {
                 gpMenu->getMenuTitle().c_str());
             std::string valueStr = currentMenu->at(0).displayValue();
             if (currentMenu == &colorNormalMenu || currentMenu == &colorPressedMenu) {
-                int textX = (21 - valueStr.length()) / 2;
-                getRenderer()->drawText(textX + 1, 2, "R G B");
+                int textX = (20 - valueStr.length()) / 2;
+                getRenderer()->drawText(textX, 2, "|R |G |B |");
                 getRenderer()->drawText(textX, 3, valueStr);
-                int underlineY = 3 * 8 + 8;
-                int channelStartX = (textX + 1 + currentSpinnerUnit * 2) * 6;
-                int channelEndX = channelStartX + 2 * 6 - 1;
-                getRenderer()->drawLine(channelStartX, underlineY,
-                    channelEndX, underlineY, 1, 0);
+                int digitCol = textX + 1 + currentSpinnerUnit + currentSpinnerUnit / 2;
+                getRenderer()->drawText(digitCol, 4, "^");
                 getRenderer()->drawText(2, 5,
                     CHAR_UP CHAR_DOWN ":val " CHAR_LEFT CHAR_RIGHT ":ch");
             } else {
@@ -348,7 +345,7 @@ void MainMenuScreen::drawScreen() {
         } else {
 
         }
-        
+
         if (promptChoice) getRenderer()->drawText(5, 6, CHAR_RIGHT);
         getRenderer()->drawText(6, 6, "Yes");
         if (!promptChoice) getRenderer()->drawText(11, 6, CHAR_RIGHT);
@@ -445,7 +442,7 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
     if (currentMenu->size() > 0 && currentMenu->at(menuIndex).isSpinner)
         isSpinnerItem = true;
 
-    switch (action) { 
+    switch (action) {
         case GpioAction::MENU_NAVIGATION_UP:
             if (!screenIsPrompting) {
                 if (isSpinnerItem) {
@@ -953,12 +950,12 @@ void MainMenuScreen::adjustSpinnerValue(int8_t direction) {
     } else if (currentMenu == &colorNormalMenu || currentMenu == &colorPressedMenu) {
         uint32_t* color = (currentMenu == &colorNormalMenu) ? &updateColorNormal : &updateColorPressed;
         uint32_t* prev = (currentMenu == &colorNormalMenu) ? &prevColorNormal : &prevColorPressed;
-        uint8_t shift = (2 - currentSpinnerUnit) * 8;
-        int32_t channel = (*color >> shift) & 0xFF;
-        channel += direction;
-        if (channel > 255) channel = 255;
-        else if (channel < 0) channel = 0;
-        *color = (*color & ~(0xFF << shift)) | ((uint32_t)channel << shift);
+        uint8_t shift = (5 - currentSpinnerUnit) * 4;
+        int32_t nibble = (*color >> shift) & 0xF;
+        nibble += direction;
+        if (nibble > 15) nibble = 15;
+        else if (nibble < 0) nibble = 0;
+        *color = (*color & ~(0xF << shift)) | ((uint32_t)nibble << shift);
         if (*prev != *color) changeRequiresSave = true;
         if (auto* led = BoardLedRgbAddon::getInstance())
             led->setPreviewColor(*color);
@@ -968,9 +965,9 @@ void MainMenuScreen::adjustSpinnerValue(int8_t direction) {
 void MainMenuScreen::switchSpinnerUnit(int8_t direction) {
     if (currentMenu == &colorNormalMenu || currentMenu == &colorPressedMenu) {
         if (direction > 0)
-            currentSpinnerUnit = (currentSpinnerUnit + 1) % 3;
+            currentSpinnerUnit = (currentSpinnerUnit + 1) % 6;
         else
-            currentSpinnerUnit = (currentSpinnerUnit + 2) % 3;
+            currentSpinnerUnit = (currentSpinnerUnit + 5) % 6;
         return;
     }
     if (currentMenu != &displayTimeoutMenu) return;
