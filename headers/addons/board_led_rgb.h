@@ -133,7 +133,11 @@ public:
 	virtual void process();     // BoardLedRgb Process
 	virtual void preprocess() {}
 	virtual std::string name() { return BoardLedRgbName; }
+	static BoardLedRgbAddon* getInstance() { return instance; }
+	void setPreviewColor(uint32_t color);
+	void clearPreview();
 private:
+	static BoardLedRgbAddon* instance;
 	uint32_t colorForInputMode(InputMode mode);
 	void showColor(uint32_t color);
 	NeoPico *neoPico = nullptr;
@@ -149,6 +153,8 @@ private:
 	uint8_t profileBlinkTarget;
 	uint32_t profileBlinkTimer;
 	bool profileBlinkStarted;
+	bool previewActive = false;
+	uint32_t previewColor = 0;
 };
 
 #endif  // _BoardLedRgb_H

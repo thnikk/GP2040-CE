@@ -1,6 +1,7 @@
 #include "MainMenuScreen.h"
 #include "hardware/watchdog.h"
 #include "system.h"
+#include "board_led_rgb.h"
 
 #include <cctype>
 
@@ -519,9 +520,13 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
                         else if (currentMenu == &colorNormalMenu) {
                             spinnerValueSnapshot = updateColorNormal;
                             currentSpinnerUnit = 0;
+                            if (auto* led = BoardLedRgbAddon::getInstance())
+                                led->setPreviewColor(updateColorNormal);
                         } else if (currentMenu == &colorPressedMenu) {
                             spinnerValueSnapshot = updateColorPressed;
                             currentSpinnerUnit = 0;
+                            if (auto* led = BoardLedRgbAddon::getInstance())
+                                led->setPreviewColor(updateColorPressed);
                         }
                     }
                     gpMenu->setMenuData(currentMenu);
@@ -955,6 +960,8 @@ void MainMenuScreen::adjustSpinnerValue(int8_t direction) {
         else if (channel < 0) channel = 0;
         *color = (*color & ~(0xFF << shift)) | ((uint32_t)channel << shift);
         if (*prev != *color) changeRequiresSave = true;
+        if (auto* led = BoardLedRgbAddon::getInstance())
+            led->setPreviewColor(*color);
     }
 }
 
@@ -1012,12 +1019,16 @@ void MainMenuScreen::saveSpinnerValue() {
             AnimationStation::options.staticColorNormal = updateColorNormal;
             AnimationStore.save();
         }
+        if (auto* led = BoardLedRgbAddon::getInstance())
+            led->clearPreview();
     } else if (currentMenu == &colorPressedMenu) {
         if (spinnerValueSnapshot != updateColorPressed) {
             prevColorPressed = updateColorPressed;
             AnimationStation::options.staticColorPressed = updateColorPressed;
             AnimationStore.save();
         }
+        if (auto* led = BoardLedRgbAddon::getInstance())
+            led->clearPreview();
     }
 }
 
@@ -1035,8 +1046,12 @@ void MainMenuScreen::revertSpinnerValue() {
     } else if (currentMenu == &colorNormalMenu) {
         updateColorNormal = spinnerValueSnapshot;
         prevColorNormal = spinnerValueSnapshot;
+        if (auto* led = BoardLedRgbAddon::getInstance())
+            led->clearPreview();
     } else if (currentMenu == &colorPressedMenu) {
         updateColorPressed = spinnerValueSnapshot;
         prevColorPressed = spinnerValueSnapshot;
+        if (auto* led = BoardLedRgbAddon::getInstance())
+            led->clearPreview();
     }
 }

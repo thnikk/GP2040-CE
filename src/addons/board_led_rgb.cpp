@@ -7,11 +7,14 @@
 #include "Animation.hpp"
 #include "helper.h"
 
+BoardLedRgbAddon* BoardLedRgbAddon::instance = nullptr;
+
 bool BoardLedRgbAddon::available() {
     return BOARD_LEDS_RGB_ENABLED && isValidPin(BOARD_LEDS_RGB_PIN);
 }
 
 void BoardLedRgbAddon::setup() {
+    instance = this;
     // NeoPico is NOT constructed here — lazy init in process() instead.
     // Loading the WS2812 PIO program during setup (even with an empty
     // FIFO) causes the board to hang when web config mode is entered on
@@ -60,7 +63,14 @@ uint32_t BoardLedRgbAddon::colorForInputMode(InputMode mode) {
 
 void BoardLedRgbAddon::showColor(uint32_t color) {
     if (neoPico == nullptr) {
-        return;
+        const LEDOptions& ledOpts = Storage::getInstance().getLedOptions();
+        resolvedFormat = ledOpts.has_boardLedFormat
+            ? static_cast<LEDFormat>(ledOpts.boardLedFormat)
+            : BOARD_LEDS_RGB_FORMAT;
+        resolvedBrightness = ledOpts.has_boardLedBrightness
+            ? ledOpts.boardLedBrightness
+            : BOARD_LEDS_RGB_BRIGHTNESS;
+        neoPico = new NeoPico(BOARD_LEDS_RGB_PIN, 1, resolvedFormat, BOARD_LEDS_RGB_PIO_SM, BOARD_LEDS_RGB_PIO_BLOCK);
     }
     float brightness = resolvedBrightness / 255.0f;
     uint32_t frame[100] = {0};
@@ -69,7 +79,21 @@ void BoardLedRgbAddon::showColor(uint32_t color) {
     neoPico->Show();
 }
 
+void BoardLedRgbAddon::setPreviewColor(uint32_t color) {
+    if (!available()) return;
+    previewColor = color;
+    previewActive = true;
+    showColor(previewColor);
+}
+
+void BoardLedRgbAddon::clearPreview() {
+    previewActive = false;
+    InputMode mode = Storage::getInstance().GetProcessedGamepad()->getOptions().inputMode;
+    showColor(colorForInputMode(mode));
+}
+
 void BoardLedRgbAddon::process() {
+    if (previewActive) return;
     isConfigMode = Storage::getInstance().GetConfigMode();
 
     if (isConfigMode) {
