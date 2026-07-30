@@ -129,6 +129,12 @@ void MainMenuScreen::init() {
     updateThemeIndex = animOpts.themeIndex;
     prevBrightness = animOpts.brightness;
     updateBrightness = animOpts.brightness;
+    prevRainbowCycleTime = animOpts.rainbowCycleTime;
+    updateRainbowCycleTime = animOpts.rainbowCycleTime;
+    prevChaseCycleTime = animOpts.chaseCycleTime;
+    updateChaseCycleTime = animOpts.chaseCycleTime;
+    prevRippleCycleTime = animOpts.rippleCycleTime;
+    updateRippleCycleTime = animOpts.rippleCycleTime;
 
     prevInputHistoryTimeout = Storage::getInstance().getDisplayOptions().inputHistoryTimeout;
     updateInputHistoryTimeout = prevInputHistoryTimeout;
@@ -212,6 +218,23 @@ void MainMenuScreen::init() {
     displayMenu.push_back({"Hist Timeout", NULL, &histTimeoutMenu,
         std::bind(&MainMenuScreen::modeValue, this),
         std::bind(&MainMenuScreen::testMenu, this)});
+
+    speedMenu.clear();
+    {
+        MenuEntry speedEntry;
+        speedEntry.isSpinner = true;
+        speedEntry.currentValue = std::bind(&MainMenuScreen::currentSpeed, this);
+        speedEntry.displayValue = [this]() -> std::string {
+            uint8_t anim = updateAnimationIndex;
+            if (anim != 1 && anim != 2 && anim != 4) return "N/A";
+            int16_t val;
+            if (anim == 1) val = updateRainbowCycleTime;
+            else if (anim == 2) val = updateChaseCycleTime;
+            else val = updateRippleCycleTime;
+            return std::to_string(val) + "ms";
+        };
+        speedMenu.push_back(speedEntry);
+    }
 
     mainMenu.clear();
     mainMenu.push_back({"Input Mode", NULL, &inputModeMenu, std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)});
@@ -732,6 +755,14 @@ int32_t MainMenuScreen::currentBrightness() {
     return updateBrightness;
 }
 
+int32_t MainMenuScreen::currentSpeed() {
+    uint8_t anim = updateAnimationIndex;
+    if (anim == 1) return updateRainbowCycleTime;
+    if (anim == 2) return updateChaseCycleTime;
+    if (anim == 4) return updateRippleCycleTime;
+    return -1;
+}
+
 void MainMenuScreen::selectInputHistoryTimeout() {
     if (currentMenu->at(menuIndex).optionValue != -1) {
         uint16_t valueToSave = currentMenu->at(menuIndex).optionValue;
@@ -819,6 +850,21 @@ void MainMenuScreen::adjustSpinnerValue(int8_t direction) {
         updateInputHistoryTimeout = displayVal;
         if (prevInputHistoryTimeout != updateInputHistoryTimeout)
             changeRequiresSave = true;
+    } else if (currentMenu == &speedMenu) {
+        uint8_t anim = updateAnimationIndex;
+        int16_t step = (anim == 4) ? 50 : 10;
+        int16_t* value;
+        int16_t* prev;
+        if (anim == 1) { value = &updateRainbowCycleTime; prev = &prevRainbowCycleTime; }
+        else if (anim == 2) { value = &updateChaseCycleTime; prev = &prevChaseCycleTime; }
+        else if (anim == 4) { value = &updateRippleCycleTime; prev = &prevRippleCycleTime; }
+        else return;
+
+        int32_t newVal = *value + direction * step;
+        if (newVal > 2000) newVal = 2000;
+        else if (newVal < (anim == 4 ? 100 : 10)) newVal = (anim == 4 ? 100 : 10);
+        *value = newVal;
+        if (*prev != *value) changeRequiresSave = true;
     }
 }
 
@@ -848,6 +894,21 @@ void MainMenuScreen::saveSpinnerValue() {
             Storage::getInstance().getDisplayOptions().inputHistoryTimeout = updateInputHistoryTimeout;
             EventManager::getInstance().triggerEvent(new GPStorageSaveEvent(true, false));
         }
+    } else if (currentMenu == &speedMenu) {
+        uint8_t anim = updateAnimationIndex;
+        if (anim == 1 && prevRainbowCycleTime != updateRainbowCycleTime) {
+            AnimationStation::options.rainbowCycleTime = updateRainbowCycleTime;
+            prevRainbowCycleTime = updateRainbowCycleTime;
+            AnimationStore.save();
+        } else if (anim == 2 && prevChaseCycleTime != updateChaseCycleTime) {
+            AnimationStation::options.chaseCycleTime = updateChaseCycleTime;
+            prevChaseCycleTime = updateChaseCycleTime;
+            AnimationStore.save();
+        } else if (anim == 4 && prevRippleCycleTime != updateRippleCycleTime) {
+            AnimationStation::options.rippleCycleTime = updateRippleCycleTime;
+            prevRippleCycleTime = updateRippleCycleTime;
+            AnimationStore.save();
+        }
     }
 }
 
@@ -858,5 +919,9 @@ void MainMenuScreen::revertSpinnerValue() {
     } else if (currentMenu == &histTimeoutMenu) {
         updateInputHistoryTimeout = histSpinnerValueSnapshot;
         prevInputHistoryTimeout = histSpinnerValueSnapshot;
+    } else if (currentMenu == &speedMenu) {
+        updateRainbowCycleTime = prevRainbowCycleTime;
+        updateChaseCycleTime = prevChaseCycleTime;
+        updateRippleCycleTime = prevRippleCycleTime;
     }
 }

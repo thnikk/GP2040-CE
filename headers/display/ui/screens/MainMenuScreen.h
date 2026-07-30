@@ -93,6 +93,7 @@ class MainMenuScreen : public GPScreen {
         int32_t currentTheme();
         void selectBrightness();
         int32_t currentBrightness();
+        int32_t currentSpeed();
 
         void updateMenuNavigation(GpioAction action);
         void queueAction(GpioAction action) { pendingNavAction = (uint8_t)action; }
@@ -196,6 +197,12 @@ class MainMenuScreen : public GPScreen {
         uint8_t updateThemeIndex;
         uint8_t prevBrightness;
         uint8_t updateBrightness;
+        int16_t prevRainbowCycleTime;
+        int16_t updateRainbowCycleTime;
+        int16_t prevChaseCycleTime;
+        int16_t updateChaseCycleTime;
+        int16_t prevRippleCycleTime;
+        int16_t updateRippleCycleTime;
 
         std::vector<MenuEntry> animationMenu = {
             {ANIMATION_STATIC_NAME,       NULL, nullptr, std::bind(&MainMenuScreen::currentAnimation, this), std::bind(&MainMenuScreen::selectAnimation, this), 0},
@@ -207,11 +214,13 @@ class MainMenuScreen : public GPScreen {
         };
         std::vector<MenuEntry> themeMenu;
         std::vector<MenuEntry> brightnessMenu;
+        std::vector<MenuEntry> speedMenu;
 
         std::vector<MenuEntry> ledMenu = {
             {"Animation",  NULL, &animationMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"Theme",      NULL, &themeMenu,       std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
             {"Brightness", NULL, &brightnessMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
+            {"Speed",      NULL, &speedMenu,       std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},
         };
 
         std::vector<MenuEntry> displayMenu;
