@@ -43,7 +43,7 @@ void Ripple::Animate(RGB (&frame)[100]) {
   // Advance elapsed and cull expired origins
   for (auto it = origins.begin(); it != origins.end(); ) {
     it->elapsed += updateTimeInMs;
-    if (it->elapsed >= AnimationStation::options.chaseCycleTime)
+    if (it->elapsed >= AnimationStation::options.rippleCycleTime)
       it = origins.erase(it);
     else
       ++it;
@@ -61,7 +61,7 @@ void Ripple::Animate(RGB (&frame)[100]) {
           float dx = pixel.x - origin.x;
           float dist = fabs(dx);
 
-          float progress = (float)origin.elapsed / (float)AnimationStation::options.chaseCycleTime;
+          float progress = (float)origin.elapsed / (float)AnimationStation::options.rippleCycleTime;
           float currentRadius = progress * maxRadius;
 
           if (fabs(dist - currentRadius) < ringThickness) {
@@ -80,13 +80,13 @@ void Ripple::Animate(RGB (&frame)[100]) {
 }
 
 void Ripple::ParameterUp() {
-  AnimationStation::options.chaseCycleTime += RIPPLE_CYCLE_INCREMENT;
-  if (AnimationStation::options.chaseCycleTime > RIPPLE_CYCLE_MAX)
-    AnimationStation::options.chaseCycleTime = RIPPLE_CYCLE_MAX;
+  AnimationStation::options.rippleCycleTime += RIPPLE_CYCLE_INCREMENT;
+  if (AnimationStation::options.rippleCycleTime > RIPPLE_CYCLE_MAX)
+    AnimationStation::options.rippleCycleTime = RIPPLE_CYCLE_MAX;
 }
 
 void Ripple::ParameterDown() {
-  AnimationStation::options.chaseCycleTime -= RIPPLE_CYCLE_INCREMENT;
-  if (AnimationStation::options.chaseCycleTime < RIPPLE_CYCLE_MIN)
-    AnimationStation::options.chaseCycleTime = RIPPLE_CYCLE_MIN;
+  AnimationStation::options.rippleCycleTime -= RIPPLE_CYCLE_INCREMENT;
+  if (AnimationStation::options.rippleCycleTime < RIPPLE_CYCLE_MIN)
+    AnimationStation::options.rippleCycleTime = RIPPLE_CYCLE_MIN;
 }

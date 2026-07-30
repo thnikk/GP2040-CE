@@ -367,6 +367,7 @@ namespace ConfigLegacy
         uint8_t buttonColorIndex;
         int16_t chaseCycleTime;
         int16_t rainbowCycleTime;
+        int16_t rippleCycleTime;
         uint8_t themeIndex;
         bool hasCustomTheme;
         uint32_t customThemeUp;
@@ -905,6 +906,7 @@ bool ConfigUtils::fromLegacyStorage(Config& config)
         SET_PROPERTY(animationOptions, buttonColorIndex, legacyAnimationOptions.buttonColorIndex);
         SET_PROPERTY(animationOptions, chaseCycleTime, legacyAnimationOptions.chaseCycleTime);
         SET_PROPERTY(animationOptions, rainbowCycleTime, legacyAnimationOptions.rainbowCycleTime);
+        SET_PROPERTY(animationOptions, rippleCycleTime, legacyAnimationOptions.rippleCycleTime);
         SET_PROPERTY(animationOptions, themeIndex, legacyAnimationOptions.themeIndex);
         SET_PROPERTY(animationOptions, hasCustomTheme, legacyAnimationOptions.hasCustomTheme);
         SET_PROPERTY(animationOptions, customThemeUp, legacyAnimationOptions.customThemeUp);

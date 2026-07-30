@@ -370,6 +370,7 @@ message AnimationOptions_Proto
     optional uint32 buttonPressColorCooldownTimeInMs = 45;
     optional uint32 staticColorNormal = 46;
     optional uint32 staticColorPressed = 47;
+    optional int32 rippleCycleTime = 48;
 }
 
 message BootselButtonOptions

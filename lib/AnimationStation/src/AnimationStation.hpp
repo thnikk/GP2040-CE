@@ -56,6 +56,7 @@ struct __attribute__ ((__packed__)) AnimationOptions
   uint32_t staticColorPressed;
   int16_t chaseCycleTime;
   int16_t rainbowCycleTime;
+  int16_t rippleCycleTime;
   uint8_t themeIndex;
   bool hasCustomTheme;
   uint32_t customThemeUp;

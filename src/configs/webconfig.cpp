@@ -1100,6 +1100,9 @@ std::string setCustomTheme()
     READ_OPTION(customThemeA2Pressed, "A2", "d");
 
     READ_OPTION(buttonPressColorCooldownTimeInMs, "buttonPressColorCooldownTimeInMs");
+    READ_OPTION(chaseCycleTime, "chaseCycleTime");
+    READ_OPTION(rainbowCycleTime, "rainbowCycleTime");
+    READ_OPTION(rippleCycleTime, "rippleCycleTime");
     READ_OPTION(baseAnimationIndex, "animationMode");
     if (options.baseAnimationIndex == static_cast<uint8_t>(AnimationEffects::EFFECT_CUSTOM_THEME))
         options.hasCustomTheme = true;
@@ -1203,6 +1206,9 @@ std::string getCustomTheme()
     writeDoc(doc, "R3", "u", options.customThemeR3);
     writeDoc(doc, "R3", "d", options.customThemeR3Pressed);
     writeDoc(doc, "buttonPressColorCooldownTimeInMs", options.buttonPressColorCooldownTimeInMs);
+    writeDoc(doc, "chaseCycleTime", options.chaseCycleTime);
+    writeDoc(doc, "rainbowCycleTime", options.rainbowCycleTime);
+    writeDoc(doc, "rippleCycleTime", options.rippleCycleTime);
     writeDoc(doc, "animationMode", options.baseAnimationIndex);
     writeDoc(doc, "themeIndex", options.themeIndex);
 

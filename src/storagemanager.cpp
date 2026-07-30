@@ -52,6 +52,7 @@ static void updateAnimationOptionsProto(const AnimationOptions& options)
 	optionsProto.buttonColorIndex			= options.buttonColorIndex;
 	optionsProto.chaseCycleTime				= options.chaseCycleTime;
 	optionsProto.rainbowCycleTime			= options.rainbowCycleTime;
+	optionsProto.rippleCycleTime			= options.rippleCycleTime;
 	optionsProto.themeIndex					= options.themeIndex;
 	optionsProto.hasCustomTheme				= options.hasCustomTheme;
 	optionsProto.customThemeUp				= options.customThemeUp;
@@ -268,6 +269,7 @@ AnimationOptions AnimationStorage::getAnimationOptions()
 	options.buttonColorIndex		= std::min<uint32_t>(optionsProto.buttonColorIndex, 255);
 	options.chaseCycleTime			= std::min<int32_t>(optionsProto.chaseCycleTime, 65535);
 	options.rainbowCycleTime		= std::min<int32_t>(optionsProto.rainbowCycleTime, 65535);
+	options.rippleCycleTime			= std::min<int32_t>(optionsProto.rippleCycleTime, 65535);
 	options.themeIndex				= std::min<uint8_t>(optionsProto.themeIndex, 255);
 	options.hasCustomTheme			= optionsProto.hasCustomTheme;
 	options.customThemeUp			= optionsProto.customThemeUp;

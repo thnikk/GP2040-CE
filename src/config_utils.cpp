@@ -668,6 +668,7 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.animationOptions, staticColorPressed, 0xFFFFFFFF);
     INIT_UNSET_PROPERTY(config.animationOptions, chaseCycleTime, LEDS_CHASE_CYCLE_TIME);
     INIT_UNSET_PROPERTY(config.animationOptions, rainbowCycleTime, LEDS_RAINBOW_CYCLE_TIME);
+    INIT_UNSET_PROPERTY(config.animationOptions, rippleCycleTime, LEDS_RIPPLE_CYCLE_TIME);
     INIT_UNSET_PROPERTY(config.animationOptions, themeIndex, LEDS_THEME_INDEX);
     INIT_UNSET_PROPERTY(config.animationOptions, hasCustomTheme, false);
     INIT_UNSET_PROPERTY(config.animationOptions, customThemeUp, 0);
