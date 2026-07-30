@@ -12,10 +12,10 @@ void StaticColor::Animate(RGB (&frame)[100]) {
   UpdateTime();
   UpdatePresses(frame);
 
-  RGB normalColor = (AnimationStation::options.staticColorNormal != 0)
+  RGB normalColor = (AnimationStation::options.staticColorNormal != 0xFFFFFFFF)
     ? RGB(AnimationStation::options.staticColorNormal)
     : colors[AnimationStation::options.staticColorIndex];
-  RGB pressedColor = (AnimationStation::options.staticColorPressed != 0)
+  RGB pressedColor = (AnimationStation::options.staticColorPressed != 0xFFFFFFFF)
     ? RGB(AnimationStation::options.staticColorPressed)
     : colors[AnimationStation::options.buttonColorIndex];
 

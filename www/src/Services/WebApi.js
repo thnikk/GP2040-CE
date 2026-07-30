@@ -335,8 +335,10 @@ async function getCustomTheme(setLoading) {
 				animationMode: response.data.animationMode ?? 0,
 				themeIndex: response.data.themeIndex ?? 0,
 				customTheme: {},
-				staticColorNormal: response.data.staticColorNormal ? rgbIntToHex(response.data.staticColorNormal) : null,
-				staticColorPressed: response.data.staticColorPressed ? rgbIntToHex(response.data.staticColorPressed) : null,
+			staticColorNormal: (response.data.staticColorNormal != null && response.data.staticColorNormal !== 0xFFFFFFFF)
+				? rgbIntToHex(response.data.staticColorNormal) : null,
+			staticColorPressed: (response.data.staticColorPressed != null && response.data.staticColorPressed !== 0xFFFFFFFF)
+				? rgbIntToHex(response.data.staticColorPressed) : null,
 			};
 
 			// Transform ARGB int value to hex for easy use on frontend

@@ -492,8 +492,8 @@ export default function PinMapping() {
 			if (data) {
 				setAnimationMode(data.animationMode);
 				setThemeIndex(data.themeIndex);
-				if (data.staticColorNormal) setStaticColorNormal(data.staticColorNormal);
-				if (data.staticColorPressed) setStaticColorPressed(data.staticColorPressed);
+				if (data.staticColorNormal != null) setStaticColorNormal(data.staticColorNormal);
+				if (data.staticColorPressed != null) setStaticColorPressed(data.staticColorPressed);
 				if (!data.customTheme['ALL'])
 					data.customTheme['ALL'] = { normal: '#000000', pressed: '#000000' };
 				if (!data.customTheme['GRADIENT NORMAL'])

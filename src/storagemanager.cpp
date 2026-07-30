@@ -307,8 +307,12 @@ AnimationOptions AnimationStorage::getAnimationOptions()
 	options.customThemeL3Pressed	= optionsProto.customThemeL3Pressed;
 	options.customThemeR3Pressed	= optionsProto.customThemeR3Pressed;
 	options.buttonPressColorCooldownTimeInMs = optionsProto.buttonPressColorCooldownTimeInMs;
-	options.staticColorNormal		= optionsProto.staticColorNormal;
-	options.staticColorPressed		= optionsProto.staticColorPressed;
+	options.staticColorNormal		= optionsProto.has_staticColorNormal
+		? optionsProto.staticColorNormal
+		: 0xFFFFFFFF;
+	options.staticColorPressed		= optionsProto.has_staticColorPressed
+		? optionsProto.staticColorPressed
+		: 0xFFFFFFFF;
 
 	return options;
 }
