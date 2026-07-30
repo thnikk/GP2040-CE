@@ -64,13 +64,50 @@ def parse_padding(values):
         )
 
 
+def make_comparison(img1, img2):
+    """Stitch left half of img1 with right half of img2 side by side.
+
+    If heights differ, the taller image is resized to match the shorter.
+    A 2px white vertical line marks the stitch boundary.
+    """
+    a = img1.convert('RGBA')
+    b = img2.convert('RGBA')
+
+    # Normalize heights — resize the taller to match the shorter
+    if a.height > b.height:
+        ratio = b.height / a.height
+        a = a.resize((round(a.width * ratio), b.height), Image.LANCZOS)
+    elif b.height > a.height:
+        ratio = a.height / b.height
+        b = b.resize((round(b.width * ratio), a.height), Image.LANCZOS)
+
+    h = a.height  # now equal
+
+    left = a.crop((0, 0, a.width // 2, h))
+    right = b.crop((b.width // 2, 0, b.width, h))
+
+    canvas = Image.new('RGBA', (left.width + right.width, h), (0, 0, 0, 0))
+    canvas.paste(left, (0, 0))
+    canvas.paste(right, (left.width, 0))
+
+    draw = ImageDraw.Draw(canvas)
+    draw.line([(left.width, 0), (left.width, h)], fill=(255, 255, 255, 255), width=2)
+
+    return canvas
+
+
 def main():
     parser = argparse.ArgumentParser(
         description='Process PNG images: round corners, add padding, '
-        'add drop shadow.'
+        'add drop shadow, or create a side-by-side comparison.'
     )
     parser.add_argument('input', help='Input PNG file')
     parser.add_argument('output', help='Output PNG file')
+    parser.add_argument(
+        '-c', '--compare', type=str, default=None,
+        help='Second image for side-by-side comparison '
+        '(left half of input + right half of second image)'
+    )
     parser.add_argument(
         '-r', '--radius', type=int, default=None,
         help='Corner radius in pixels (rounded corners)'
@@ -90,7 +127,12 @@ def main():
     if args.expand is not None:
         args.expand = parse_padding(args.expand)
 
-    image = Image.open(args.input).convert('RGBA')
+    if args.compare is not None:
+        a = Image.open(args.input).convert('RGBA')
+        b = Image.open(args.compare).convert('RGBA')
+        image = make_comparison(a, b)
+    else:
+        image = Image.open(args.input).convert('RGBA')
 
     if args.radius is not None:
         image = round_corners(image, args.radius)
