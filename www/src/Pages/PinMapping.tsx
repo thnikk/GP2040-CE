@@ -22,6 +22,7 @@ import useProfilesStore from '../Store/useProfilesStore';
 
 import PinSelectList from '../components/pins/PinSelectList';
 import BoardSVG from '../components/widgets/BoardSVG';
+import PillSlider from '../components/widgets/PillSlider';
 import PinActionModal from '../components/pins/PinActionModal';
 import LedColorPopover from '../components/shared/LedColorPopover';
 
@@ -470,6 +471,9 @@ export default function PinMapping() {
 	const [themeIndex, setThemeIndex] = useState(0);
 	const [staticColorNormal, setStaticColorNormal] = useState('#ff0000');
 	const [staticColorPressed, setStaticColorPressed] = useState('#ffffff');
+	const [chaseCycleTime, setChaseCycleTime] = useState(85);
+	const [rainbowCycleTime, setRainbowCycleTime] = useState(40);
+	const [rippleCycleTime, setRippleCycleTime] = useState(500);
 	const { showToast } = useToast();
 	const [ledsEnabled, setLedsEnabled] = useState(false);
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
@@ -494,6 +498,9 @@ export default function PinMapping() {
 				setThemeIndex(data.themeIndex);
 				if (data.staticColorNormal != null) setStaticColorNormal(data.staticColorNormal);
 				if (data.staticColorPressed != null) setStaticColorPressed(data.staticColorPressed);
+				setChaseCycleTime(data.chaseCycleTime);
+				setRainbowCycleTime(data.rainbowCycleTime);
+				setRippleCycleTime(data.rippleCycleTime);
 				if (!data.customTheme['ALL'])
 					data.customTheme['ALL'] = { normal: '#000000', pressed: '#000000' };
 				if (!data.customTheme['GRADIENT NORMAL'])
@@ -559,9 +566,12 @@ const submitTheme = useCallback(async () => {
 			themeIndex,
 			staticColorNormal,
 			staticColorPressed,
+			chaseCycleTime,
+			rainbowCycleTime,
+			rippleCycleTime,
 		});
 		return success;
-	}, [customTheme, animationMode, themeIndex, staticColorNormal, staticColorPressed]);
+	}, [customTheme, animationMode, themeIndex, staticColorNormal, staticColorPressed, chaseCycleTime, rainbowCycleTime, rippleCycleTime]);
 
 	const savePinColors = useCallback(async () => {
 		const leds = { ...customTheme };
@@ -658,6 +668,30 @@ const submitTheme = useCallback(async () => {
 										}}
 									/>
 								</div>
+							{animationMode === 1 && (
+								<PillSlider
+									value={rainbowCycleTime}
+									min={10}
+									max={2000}
+									onChange={setRainbowCycleTime}
+								/>
+							)}
+							{animationMode === 2 && (
+								<PillSlider
+									value={chaseCycleTime}
+									min={10}
+									max={2000}
+									onChange={setChaseCycleTime}
+								/>
+							)}
+							{animationMode === 4 && (
+								<PillSlider
+									value={rippleCycleTime}
+									min={100}
+									max={2000}
+									onChange={setRippleCycleTime}
+								/>
+							)}
 							</div>
 							</div>
 						</div>

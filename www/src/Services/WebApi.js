@@ -339,11 +339,14 @@ async function getCustomTheme(setLoading) {
 				? rgbIntToHex(response.data.staticColorNormal) : null,
 			staticColorPressed: (response.data.staticColorPressed != null && response.data.staticColorPressed !== 0xFFFFFFFF)
 				? rgbIntToHex(response.data.staticColorPressed) : null,
+			chaseCycleTime: response.data.chaseCycleTime ?? 85,
+			rainbowCycleTime: response.data.rainbowCycleTime ?? 40,
+			rippleCycleTime: response.data.rippleCycleTime ?? 500,
 			};
 
 			// Transform ARGB int value to hex for easy use on frontend
 			Object.keys(response.data)
-				.filter((p) => p !== 'enabled' && p !== 'animationMode' && p !== 'themeIndex' && p !== 'staticColorNormal' && p !== 'staticColorPressed')
+				.filter((p) => p !== 'enabled' && p !== 'animationMode' && p !== 'themeIndex' && p !== 'staticColorNormal' && p !== 'staticColorPressed' && p !== 'chaseCycleTime' && p !== 'rainbowCycleTime' && p !== 'rippleCycleTime')
 				.forEach((button) => {
 					data.customTheme[button] = {
 						normal: rgbIntToHex(response.data[button].u),
@@ -367,6 +370,12 @@ async function setCustomTheme(customThemeOptions) {
 		options.animationMode = customThemeOptions.animationMode;
 	if (customThemeOptions.themeIndex !== undefined)
 		options.themeIndex = customThemeOptions.themeIndex;
+	if (customThemeOptions.chaseCycleTime !== undefined)
+		options.chaseCycleTime = customThemeOptions.chaseCycleTime;
+	if (customThemeOptions.rainbowCycleTime !== undefined)
+		options.rainbowCycleTime = customThemeOptions.rainbowCycleTime;
+	if (customThemeOptions.rippleCycleTime !== undefined)
+		options.rippleCycleTime = customThemeOptions.rippleCycleTime;
 	if (customThemeOptions.staticColorNormal)
 		options.staticColorNormal = hexToInt(customThemeOptions.staticColorNormal.replace('#', ''));
 	if (customThemeOptions.staticColorPressed)
