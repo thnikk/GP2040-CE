@@ -589,7 +589,6 @@ void NeoPicoLEDAddon::configureLEDs()
     neopico->Off();
 
     Animation::format = static_cast<LEDFormat>(ledOptions.ledFormat);
-    as.ConfigureBrightness(ledOptions.brightnessMaximum, ledOptions.brightnessSteps);
     AnimationOptions animationOptions = AnimationStore.getAnimationOptions();
     addStaticThemes(ledOptions, animationOptions);
     as.SetOptions(animationOptions);
@@ -613,16 +612,6 @@ AnimationHotkey animationHotkeys(Gamepad *gamepad)
         {
             action = HOTKEY_LEDS_ANIMATION_DOWN;
             gamepad->state.buttons &= ~(GAMEPAD_MASK_B1 | GAMEPAD_MASK_S1 | GAMEPAD_MASK_S2);
-        }
-        else if (gamepad->pressedB4())
-        {
-            action = HOTKEY_LEDS_BRIGHTNESS_UP;
-            gamepad->state.buttons &= ~(GAMEPAD_MASK_B4 | GAMEPAD_MASK_S1 | GAMEPAD_MASK_S2);
-        }
-        else if (gamepad->pressedB2())
-        {
-            action = HOTKEY_LEDS_BRIGHTNESS_DOWN;
-            gamepad->state.buttons &= ~(GAMEPAD_MASK_B2 | GAMEPAD_MASK_S1 | GAMEPAD_MASK_S2);
         }
         else if (gamepad->pressedR1())
         {

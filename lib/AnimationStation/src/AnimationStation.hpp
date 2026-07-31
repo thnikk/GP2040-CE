@@ -39,8 +39,6 @@ typedef enum
   HOTKEY_LEDS_PRESS_PARAMETER_UP,
   HOTKEY_LEDS_PRESS_PARAMETER_DOWN,
 	HOTKEY_LEDS_PARAMETER_DOWN,
-	HOTKEY_LEDS_BRIGHTNESS_UP,
-	HOTKEY_LEDS_BRIGHTNESS_DOWN,
 	HOTKEY_LEDS_FADETIME_UP,
 	HOTKEY_LEDS_FADETIME_DOWN
 } AnimationHotkey;
@@ -119,8 +117,6 @@ public:
   static float GetBrightnessX();
   static uint8_t GetBrightness();
   static void SetBrightness(uint8_t brightness);
-  static void DecreaseBrightness();
-  static void IncreaseBrightness();
   static void DimBrightnessTo0();
   static void SetOptions(AnimationOptions options);
 
@@ -130,13 +126,10 @@ public:
   static AnimationOptions options;
   static absolute_time_t nextChange;
   static uint8_t effectCount;
-  static uint8_t brightnessMax;
-  static uint8_t brightnessSteps;
   static float brightnessX;
   RGB frame[100];
 
 protected:
-  inline static uint8_t getBrightnessStepSize() { return (brightnessMax / brightnessSteps); }
   PixelMatrix matrix;
 };
 

@@ -7,8 +7,6 @@
 
 #include "AnimationStation.hpp"
 
-uint8_t AnimationStation::brightnessMax = 100;
-uint8_t AnimationStation::brightnessSteps = 5;
 float AnimationStation::brightnessX = 0;
 absolute_time_t AnimationStation::nextChange = nil_time;
 AnimationOptions AnimationStation::options = {};
@@ -16,12 +14,12 @@ uint8_t AnimationStation::effectCount = TOTAL_EFFECTS;
 
 
 AnimationStation::AnimationStation() {
-  AnimationStation::SetBrightness(1);
+  AnimationStation::SetBrightness(128);
 }
 
 void AnimationStation::ConfigureBrightness(uint8_t max, uint8_t steps) {
-  brightnessMax = max;
-  brightnessSteps = steps;
+  (void)max;
+  (void)steps;
 }
 
 void AnimationStation::HandleEvent(AnimationHotkey action) {
@@ -29,14 +27,6 @@ void AnimationStation::HandleEvent(AnimationHotkey action) {
     return;
   }
   AnimationStation::nextChange = make_timeout_time_ms(250);
-
-  if (action == HOTKEY_LEDS_BRIGHTNESS_UP) {
-    AnimationStation::IncreaseBrightness();
-  }
-
-  if (action == HOTKEY_LEDS_BRIGHTNESS_DOWN) {
-    AnimationStation::DecreaseBrightness();
-  }
 
   if (action == HOTKEY_LEDS_ANIMATION_UP) {
     ChangeAnimation(1);
@@ -191,27 +181,10 @@ void AnimationStation::ApplyBrightness(uint32_t *frameValue) {
 }
 
 void AnimationStation::SetBrightness(uint8_t brightness) {
-  AnimationStation::options.brightness =
-      (brightness > brightnessSteps) ? brightnessSteps : options.brightness;
-  AnimationStation::brightnessX =
-      (AnimationStation::options.brightness * getBrightnessStepSize()) / 255.0F;
-
+  AnimationStation::options.brightness = brightness;
+  AnimationStation::brightnessX = brightness / 255.0F;
   if (AnimationStation::brightnessX > 1)
     AnimationStation::brightnessX = 1;
-  else if (AnimationStation::brightnessX < 0)
-    AnimationStation::brightnessX = 0;
-}
-
-void AnimationStation::DecreaseBrightness() {
-  if (AnimationStation::options.brightness > 0)
-    AnimationStation::SetBrightness(--AnimationStation::options.brightness);
-}
-
-void AnimationStation::IncreaseBrightness() {
-  if (AnimationStation::options.brightness < getBrightnessStepSize())
-    AnimationStation::SetBrightness(++AnimationStation::options.brightness);
-  else if (AnimationStation::options.brightness > getBrightnessStepSize())
-    AnimationStation::SetBrightness(brightnessSteps);
 }
 
 void AnimationStation::DimBrightnessTo0() {

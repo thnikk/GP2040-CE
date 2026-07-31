@@ -91,7 +91,6 @@ class MainMenuScreen : public GPScreen {
         int32_t currentAnimation();
         void selectTheme();
         int32_t currentTheme();
-        void selectBrightness();
         int32_t currentBrightness();
         int32_t currentSpeed();
         int32_t currentColorNormal();
@@ -225,6 +224,8 @@ class MainMenuScreen : public GPScreen {
         uint32_t updateColorNormal;
         uint32_t prevColorPressed;
         uint32_t updateColorPressed;
+
+        uint8_t brightnessSpinnerSnapshot;
 
         std::vector<MenuEntry> ledMenu = {
             {"Animation",  NULL, &animationMenu,  std::bind(&MainMenuScreen::modeValue, this), std::bind(&MainMenuScreen::testMenu, this)},

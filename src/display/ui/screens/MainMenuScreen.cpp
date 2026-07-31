@@ -161,11 +161,14 @@ void MainMenuScreen::init() {
     }
 
     brightnessMenu.clear();
-    for (uint8_t i = 0; i <= AnimationStation::brightnessSteps; i++) {
-        std::string label = std::to_string(i);
-        brightnessMenu.push_back({label, NULL, nullptr,
-            std::bind(&MainMenuScreen::currentBrightness, this),
-            std::bind(&MainMenuScreen::selectBrightness, this), i});
+    {
+        MenuEntry entry;
+        entry.isSpinner = true;
+        entry.currentValue = std::bind(&MainMenuScreen::currentBrightness, this);
+        entry.displayValue = [this]() -> std::string {
+            return std::to_string(updateBrightness);
+        };
+        brightnessMenu.push_back(entry);
     }
 
     histTimeoutMenu.clear();
@@ -514,6 +517,8 @@ void MainMenuScreen::updateMenuNavigation(GpioAction action) {
                             spinnerValueSnapshot = updateDisplaySaverTimeout;
                         else if (currentMenu == &histTimeoutMenu)
                             histSpinnerValueSnapshot = updateInputHistoryTimeout;
+                        else if (currentMenu == &brightnessMenu)
+                            brightnessSpinnerSnapshot = updateBrightness;
                         else if (currentMenu == &colorNormalMenu) {
                             spinnerValueSnapshot = updateColorNormal;
                             currentSpinnerUnit = 0;
@@ -816,15 +821,6 @@ int32_t MainMenuScreen::currentTheme() {
     return updateThemeIndex;
 }
 
-void MainMenuScreen::selectBrightness() {
-    if (currentMenu->at(menuIndex).optionValue != -1) {
-        uint8_t valueToSave = currentMenu->at(menuIndex).optionValue;
-        prevBrightness = AnimationStation::options.brightness;
-        updateBrightness = valueToSave;
-        if (prevBrightness != valueToSave) changeRequiresSave = true;
-    }
-}
-
 int32_t MainMenuScreen::currentBrightness() {
     return updateBrightness;
 }
@@ -947,6 +943,12 @@ void MainMenuScreen::adjustSpinnerValue(int8_t direction) {
         else if (newVal < (anim == 4 ? 100 : 10)) newVal = (anim == 4 ? 100 : 10);
         *value = newVal;
         if (*prev != *value) changeRequiresSave = true;
+    } else if (currentMenu == &brightnessMenu) {
+        int32_t val = updateBrightness + direction;
+        if (val > 255) val = 255;
+        else if (val < 0) val = 0;
+        updateBrightness = val;
+        if (prevBrightness != updateBrightness) changeRequiresSave = true;
     } else if (currentMenu == &colorNormalMenu || currentMenu == &colorPressedMenu) {
         uint32_t* color = (currentMenu == &colorNormalMenu) ? &updateColorNormal : &updateColorPressed;
         uint32_t* prev = (currentMenu == &colorNormalMenu) ? &prevColorNormal : &prevColorPressed;
@@ -1026,6 +1028,13 @@ void MainMenuScreen::saveSpinnerValue() {
         }
         if (auto* led = BoardLedRgbAddon::getInstance())
             led->clearPreview();
+    } else if (currentMenu == &brightnessMenu) {
+        if (brightnessSpinnerSnapshot != updateBrightness) {
+            prevBrightness = updateBrightness;
+            AnimationStation::options.brightness = updateBrightness;
+            AnimationStation::SetBrightness(AnimationStation::options.brightness);
+            AnimationStore.save();
+        }
     }
 }
 
@@ -1040,6 +1049,9 @@ void MainMenuScreen::revertSpinnerValue() {
         updateRainbowCycleTime = prevRainbowCycleTime;
         updateChaseCycleTime = prevChaseCycleTime;
         updateRippleCycleTime = prevRippleCycleTime;
+    } else if (currentMenu == &brightnessMenu) {
+        updateBrightness = brightnessSpinnerSnapshot;
+        prevBrightness = brightnessSpinnerSnapshot;
     } else if (currentMenu == &colorNormalMenu) {
         updateColorNormal = spinnerValueSnapshot;
         prevColorNormal = spinnerValueSnapshot;
