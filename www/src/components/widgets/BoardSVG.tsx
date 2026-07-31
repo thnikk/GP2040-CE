@@ -511,7 +511,7 @@ export default function BoardSVG({
 					(s as HTMLElement).style.removeProperty('fill-opacity');
 					(s as HTMLElement).style.setProperty('stroke', 'var(--bg-4)', 'important');
 					(s as HTMLElement).style.setProperty('stroke-width', '2', 'important');
-					if (animationMode !== 4) {
+					if (animationMode !== 5) {
 						(s as HTMLElement).style.setProperty('opacity', '0.4', 'important');
 						(s as HTMLElement).style.setProperty('cursor', 'default');
 					} else {
