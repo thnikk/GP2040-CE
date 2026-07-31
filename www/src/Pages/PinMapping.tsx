@@ -483,6 +483,21 @@ export default function PinMapping() {
 	const [boardPinDefaults, setBoardPinDefaults] = useState<number[] | null>(null);
 	const [displayEnabled, setDisplayEnabled] = useState(true);
 
+	const colorEnabled = animationMode === 0 || animationMode === 4;
+	const pressedEnabled = animationMode !== 5;
+	const themeEnabled = animationMode === 3;
+	const speedEnabled = animationMode === 1 || animationMode === 2 || animationMode === 4;
+	const speedValue = animationMode === 1 ? rainbowCycleTime
+		: animationMode === 2 ? chaseCycleTime
+		: animationMode === 4 ? rippleCycleTime : 500;
+	const speedMin = animationMode === 4 ? 100 : 10;
+
+	const setSpeedValue = useCallback((v: number) => {
+		if (animationMode === 1) setRainbowCycleTime(v);
+		else if (animationMode === 2) setChaseCycleTime(v);
+		else if (animationMode === 4) setRippleCycleTime(v);
+	}, [animationMode]);
+
 	const { setLoading } = useContext(AppContext);
 
 	useEffect(() => {
@@ -618,7 +633,7 @@ const submitTheme = useCallback(async () => {
 										))}
 									</Form.Select>
 								</div>
-								{animationMode === 3 && (
+								{themeEnabled && (
 									<div className="d-flex align-items-center gap-2">
 										<Form.Label className="mb-0">{t('CustomTheme:preset-label')}</Form.Label>
 										<Form.Select
@@ -634,8 +649,20 @@ const submitTheme = useCallback(async () => {
 										</Form.Select>
 									</div>
 								)}
-							<div className="d-flex align-items-center gap-3">
-								{(animationMode === 0 || animationMode === 4) && (
+							</div>
+							<div className="d-flex align-items-center gap-3 flex-wrap">
+								<Form.Label className="mb-0">{t('CustomTheme:parameters-label')}</Form.Label>
+								<PillSlider
+									value={brightness}
+									min={0}
+									max={255}
+									onChange={setBrightness}
+									label="Brightness"
+									divisor={1}
+									unit=""
+									padLength={3}
+								/>
+								{colorEnabled && (
 									<div style={{ position: 'relative' }}>
 										<button type="button" className="led-color-btn" tabIndex={-1}>
 											<span
@@ -654,58 +681,33 @@ const submitTheme = useCallback(async () => {
 										/>
 									</div>
 								)}
-								<div style={{ position: 'relative' }}>
-									<button type="button" className="led-color-btn" tabIndex={-1}>
-										<span
-											className="led-color-circle"
-											style={{ backgroundColor: staticColorPressed }}
+								{pressedEnabled && (
+									<div style={{ position: 'relative' }}>
+										<button type="button" className="led-color-btn" tabIndex={-1}>
+											<span
+												className="led-color-circle"
+												style={{ backgroundColor: staticColorPressed }}
+											/>
+											<span>{t('CustomTheme:pressed-label')}</span>
+										</button>
+										<input
+											type="color"
+											value={staticColorPressed}
+											onChange={(e) => setStaticColorPressed(e.target.value)}
+											style={{
+												position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
+											}}
 										/>
-										<span>{t('CustomTheme:pressed-label')}</span>
-									</button>
-									<input
-										type="color"
-										value={staticColorPressed}
-										onChange={(e) => setStaticColorPressed(e.target.value)}
-										style={{
-											position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer',
-										}}
+									</div>
+								)}
+								{speedEnabled && (
+									<PillSlider
+										value={speedValue}
+										min={speedMin}
+										max={2000}
+										onChange={setSpeedValue}
 									/>
-								</div>
-							<PillSlider
-								value={brightness}
-								min={0}
-								max={255}
-								onChange={setBrightness}
-								label="Brightness"
-								divisor={1}
-								unit=""
-								padLength={3}
-							/>
-							{animationMode === 1 && (
-								<PillSlider
-									value={rainbowCycleTime}
-									min={10}
-									max={2000}
-									onChange={setRainbowCycleTime}
-								/>
-							)}
-							{animationMode === 2 && (
-								<PillSlider
-									value={chaseCycleTime}
-									min={10}
-									max={2000}
-									onChange={setChaseCycleTime}
-								/>
-							)}
-							{animationMode === 4 && (
-								<PillSlider
-									value={rippleCycleTime}
-									min={100}
-									max={2000}
-									onChange={setRippleCycleTime}
-								/>
-							)}
-							</div>
+								)}
 							</div>
 						</div>
 					)}
