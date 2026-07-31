@@ -1108,6 +1108,7 @@ std::string setCustomTheme()
         options.hasCustomTheme = true;
 
     READ_OPTION(themeIndex, "themeIndex");
+    READ_OPTION(brightness, "brightness");
 
 #undef READ_OPTION
 
@@ -1211,6 +1212,7 @@ std::string getCustomTheme()
     writeDoc(doc, "rippleCycleTime", options.rippleCycleTime);
     writeDoc(doc, "animationMode", options.baseAnimationIndex);
     writeDoc(doc, "themeIndex", options.themeIndex);
+    writeDoc(doc, "brightness", options.brightness);
 
     return serialize_json(doc);
 }

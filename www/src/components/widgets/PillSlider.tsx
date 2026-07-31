@@ -5,9 +5,13 @@ type PillSliderProps = {
 	min: number;
 	max: number;
 	onChange: (value: number) => void;
+	label?: string;
+	divisor?: number;
+	unit?: string;
+	padLength?: number;
 };
 
-const PillSlider = ({ value, min, max, onChange }: PillSliderProps) => {
+const PillSlider = ({ value, min, max, onChange, label = 'Animation speed', divisor = 1000, unit = 's', padLength }: PillSliderProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const onChangeRef = useRef(onChange);
 	const dragValueRef = useRef(value);
@@ -73,10 +77,10 @@ const PillSlider = ({ value, min, max, onChange }: PillSliderProps) => {
 		>
 			<div className="pill-slider-fill" style={{ width: `${pct}%` }} />
 			<span className="pill-slider-label">
-				Animation speed: {(displayValue / 1000).toFixed(1)}s
+				{label}: {padLength ? String(displayValue).padStart(padLength, '0') : divisor === 1 ? displayValue : (displayValue / divisor).toFixed(1)}{unit}
 			</span>
 			<span className="pill-slider-label-fill" style={{ clipPath: `inset(0 ${100 - pct}% 0 0)` }} aria-hidden="true">
-				Animation speed: {(displayValue / 1000).toFixed(1)}s
+				{label}: {padLength ? String(displayValue).padStart(padLength, '0') : divisor === 1 ? displayValue : (displayValue / divisor).toFixed(1)}{unit}
 			</span>
 		</div>
 	);

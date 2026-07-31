@@ -342,11 +342,12 @@ async function getCustomTheme(setLoading) {
 			chaseCycleTime: response.data.chaseCycleTime ?? 85,
 			rainbowCycleTime: response.data.rainbowCycleTime ?? 40,
 			rippleCycleTime: response.data.rippleCycleTime ?? 500,
+			brightness: response.data.brightness ?? 0,
 			};
 
 			// Transform ARGB int value to hex for easy use on frontend
 			Object.keys(response.data)
-				.filter((p) => p !== 'enabled' && p !== 'animationMode' && p !== 'themeIndex' && p !== 'staticColorNormal' && p !== 'staticColorPressed' && p !== 'chaseCycleTime' && p !== 'rainbowCycleTime' && p !== 'rippleCycleTime')
+				.filter((p) => p !== 'enabled' && p !== 'animationMode' && p !== 'themeIndex' && p !== 'brightness' && p !== 'staticColorNormal' && p !== 'staticColorPressed' && p !== 'chaseCycleTime' && p !== 'rainbowCycleTime' && p !== 'rippleCycleTime')
 				.forEach((button) => {
 					data.customTheme[button] = {
 						normal: rgbIntToHex(response.data[button].u),
@@ -380,6 +381,8 @@ async function setCustomTheme(customThemeOptions) {
 		options.staticColorNormal = hexToInt(customThemeOptions.staticColorNormal.replace('#', ''));
 	if (customThemeOptions.staticColorPressed)
 		options.staticColorPressed = hexToInt(customThemeOptions.staticColorPressed.replace('#', ''));
+	if (customThemeOptions.brightness !== undefined)
+		options.brightness = customThemeOptions.brightness;
 
 	// Transform RGB hex values to ARGB int before sending back to API
 	if (customThemeOptions.customTheme) {

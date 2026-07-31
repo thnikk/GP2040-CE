@@ -474,6 +474,7 @@ export default function PinMapping() {
 	const [chaseCycleTime, setChaseCycleTime] = useState(85);
 	const [rainbowCycleTime, setRainbowCycleTime] = useState(40);
 	const [rippleCycleTime, setRippleCycleTime] = useState(500);
+	const [brightness, setBrightness] = useState(128);
 	const { showToast } = useToast();
 	const [ledsEnabled, setLedsEnabled] = useState(false);
 	const [inputMode, setInputMode] = useState<number | undefined>(undefined);
@@ -501,6 +502,7 @@ export default function PinMapping() {
 				setChaseCycleTime(data.chaseCycleTime);
 				setRainbowCycleTime(data.rainbowCycleTime);
 				setRippleCycleTime(data.rippleCycleTime);
+				setBrightness(data.brightness);
 				if (!data.customTheme['ALL'])
 					data.customTheme['ALL'] = { normal: '#000000', pressed: '#000000' };
 				if (!data.customTheme['GRADIENT NORMAL'])
@@ -569,9 +571,10 @@ const submitTheme = useCallback(async () => {
 			chaseCycleTime,
 			rainbowCycleTime,
 			rippleCycleTime,
+			brightness,
 		});
 		return success;
-	}, [customTheme, animationMode, themeIndex, staticColorNormal, staticColorPressed, chaseCycleTime, rainbowCycleTime, rippleCycleTime]);
+	}, [customTheme, animationMode, themeIndex, staticColorNormal, staticColorPressed, chaseCycleTime, rainbowCycleTime, rippleCycleTime, brightness]);
 
 	const savePinColors = useCallback(async () => {
 		const leds = { ...customTheme };
@@ -668,6 +671,16 @@ const submitTheme = useCallback(async () => {
 										}}
 									/>
 								</div>
+							<PillSlider
+								value={brightness}
+								min={0}
+								max={255}
+								onChange={setBrightness}
+								label="Brightness"
+								divisor={1}
+								unit=""
+								padLength={3}
+							/>
 							{animationMode === 1 && (
 								<PillSlider
 									value={rainbowCycleTime}
