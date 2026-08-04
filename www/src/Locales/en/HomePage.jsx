@@ -24,4 +24,8 @@ export default {
 	'github-card-text': 'View source code, report issues, or contribute',
 	'etsy-card-label': 'Etsy Shop',
 	'etsy-card-text': 'Contact me, leave a review, or browse other products',
+	'site-card-label': 'Site',
+	'site-card-text': 'Visit main site',
+	'docs-card-label': 'Docs',
+	'docs-card-text': 'Read the documentation',
 };
